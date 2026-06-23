@@ -49,7 +49,7 @@
                 <!-- Logo & Links -->
                 <div class="flex items-center gap-8">
                     <a href="#" class="flex items-center gap-2">
-                        <img src="{{ asset('logo-usu.png') }}" alt="USU Logo" class="h-10 w-auto">
+                        <img src="{{ asset('logo usu.jpeg') }}" alt="USU Logo" class="h-10 w-auto">
                         <div class="flex flex-col hidden sm:flex">
                             <span class="font-bold text-slate-800 leading-none text-sm">Universitas</span>
                             <span class="font-bold text-slate-800 leading-none text-sm">Sumatera Utara</span>
@@ -133,111 +133,40 @@
             <p class="mt-4 text-slate-500">Koleksi tersebar di berbagai fakultas dan perpustakaan pusat</p>
         </div>
 
+        @php
+        $statistics = [
+            ['count' => '122.525', 'label' => 'Perpustakaan Universitas', 'icon' => 'ph-books'],
+            ['count' => '7.729', 'label' => 'Fakultas Hukum', 'icon' => 'ph-scales'],
+            ['count' => '5.698', 'label' => 'Fakultas Ilmu Budaya', 'icon' => 'ph-mask-happy'],
+            ['count' => '5.156', 'label' => 'Fakultas Ekonomi dan Bisnis', 'icon' => 'ph-chart-line-up'],
+            ['count' => '4.175', 'label' => 'Fakultas Kesehatan Masyarakat', 'icon' => 'ph-heartbeat'],
+            ['count' => '3.982', 'label' => 'Sekolah Pascasarjana', 'icon' => 'ph-graduation-cap'],
+            ['count' => '3.646', 'label' => 'Fakultas Kedokteran', 'icon' => 'ph-stethoscope'],
+            ['count' => '3.272', 'label' => 'Fakultas ISIP', 'icon' => 'ph-users-three'],
+            ['count' => '2.961', 'label' => 'Koleksi Out of Stock', 'icon' => 'ph-archive-tray'],
+            ['count' => '2.936', 'label' => 'Fakultas Pertanian', 'icon' => 'ph-plant'],
+            ['count' => '2.839', 'label' => 'Fakultas Keperawatan', 'icon' => 'ph-first-aid'],
+            ['count' => '2.424', 'label' => 'AP. Parlindungan Collections', 'icon' => 'ph-books'],
+            ['count' => '2.316', 'label' => 'Fakultas MIPA', 'icon' => 'ph-test-tube'],
+            ['count' => '2.029', 'label' => 'Fakultas Psikologi', 'icon' => 'ph-brain'],
+            ['count' => '1.827', 'label' => 'Sjahrir Corner Collections', 'icon' => 'ph-books'],
+            ['count' => '1.537', 'label' => 'Fakultas Farmasi', 'icon' => 'ph-pill'],
+            ['count' => '1.106', 'label' => 'Fakultas Kedokteran Gigi', 'icon' => 'ph-tooth'],
+            ['count' => '565', 'label' => 'Fakultas Kehutanan', 'icon' => 'ph-tree'],
+            ['count' => '215', 'label' => 'Local Wisdom', 'icon' => 'ph-map-trifold'],
+        ];
+        @endphp
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Stat Card 1 -->
+            @foreach($statistics as $stat)
             <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
                 <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-books text-8xl"></i>
+                    <i class="ph {{ $stat['icon'] }} text-8xl"></i>
                 </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">122.522</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Perpustakaan Universitas</p>
+                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">{{ $stat['count'] }}</h3>
+                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">{{ $stat['label'] }}</p>
             </div>
-            
-            <!-- Stat Card 2 -->
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-scales text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">7.729</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas Hukum</p>
-            </div>
-
-            <!-- Stat Card 3 -->
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-mask-happy text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">5.698</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas Ilmu Budaya</p>
-            </div>
-
-            <!-- Stat Card 4 -->
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-chart-line-up text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">5.156</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas Ekonomi dan Bisnis</p>
-            </div>
-
-            <!-- Stat Card 5 -->
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-heartbeat text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">4.175</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas Kesehatan Masyarakat</p>
-            </div>
-
-            <!-- Stat Card 6 -->
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-graduation-cap text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">3.982</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Sekolah Pascasarjana</p>
-            </div>
-
-            <!-- Stat Card 7 -->
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-stethoscope text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">3.646</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas Kedokteran</p>
-            </div>
-
-            <!-- Stat Card 8 -->
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-users-three text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">3.272</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas ISIP</p>
-            </div>
-            
-            <!-- Additional Cards to fill out the grid nicely -->
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-plant text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">2.936</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas Pertanian</p>
-            </div>
-            
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-first-aid text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">2.839</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas Keperawatan</p>
-            </div>
-            
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-test-tube text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">2.316</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas MIPA</p>
-            </div>
-            
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph ph-brain text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">2.029</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">Fakultas Psikologi</p>
-            </div>
+            @endforeach
         </div>
     </div>
 
@@ -249,12 +178,42 @@
             <p class="mt-4 text-slate-500">Buku dan literatur terbaru yang baru saja ditambahkan ke katalog kami</p>
         </div>
 
-        <div class="relative max-w-[1400px] mx-auto px-4 sm:px-12 group">
+        @php
+        $latestBooks = [
+            [
+                'title' => 'Orang-orang yang disayangi Allah',
+                'code' => '297.313 Ali o',
+                'category' => 'FAITH AND REASON ISLAM'
+            ],
+            [
+                'title' => 'Elements of chemical reaction engineering. 7th Ed.',
+                'code' => '660.2 Ele',
+                'category' => 'CHEMICAL ENGINEERING'
+            ],
+            [
+                'title' => 'Membangun jembatan menuju kemandirian penyandang disabilitas',
+                'code' => '305.908 Sir m',
+                'category' => 'SOCIAL SCIENCE'
+            ],
+            [
+                'title' => 'Pengantar Ilmu Hukum dan Tata Hukum Indonesia',
+                'code' => '340.1 Kan p',
+                'category' => 'LAW'
+            ],
+            [
+                'title' => 'Sistem Informasi Manajemen: Mengelola Perusahaan Digital',
+                'code' => '658.403 8 Lau s',
+                'category' => 'MANAGEMENT'
+            ]
+        ];
+        @endphp
+
+        <div class="relative max-w-[1400px] mx-auto px-4 sm:px-12 group/slider">
             <!-- Navigation Buttons -->
-            <button id="btn-scroll-left" class="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#106c38] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center hover:bg-[#106c38] hover:text-white transition-all border border-slate-100 opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer">
+            <button id="btn-scroll-left" class="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#106c38] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center hover:bg-[#106c38] hover:text-white transition-all border border-slate-100 opacity-0 group-hover/slider:opacity-100 focus:opacity-100 cursor-pointer">
                 <i class="ph ph-caret-left text-2xl font-bold"></i>
             </button>
-            <button id="btn-scroll-right" class="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#106c38] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center hover:bg-[#106c38] hover:text-white transition-all border border-slate-100 opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer">
+            <button id="btn-scroll-right" class="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#106c38] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center hover:bg-[#106c38] hover:text-white transition-all border border-slate-100 opacity-0 group-hover/slider:opacity-100 focus:opacity-100 cursor-pointer">
                 <i class="ph ph-caret-right text-2xl font-bold"></i>
             </button>
 
@@ -263,176 +222,25 @@
             <div class="hidden sm:block absolute right-12 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
             
             <div id="books-scroll-container" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-8 pt-4 px-2 hide-scrollbar items-stretch">
-                <!-- Card 1 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
+                @for ($i = 0; $i < 4; $i++)
+                    @foreach ($latestBooks as $book)
+                    <div class="snap-start w-[160px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                        <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
+                            <img src="" alt="Cover" class="w-full h-full object-cover hidden">
+                            <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
+                                <i class="ph ph-image text-3xl mb-2"></i>
+                                <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
+                            </div>
+                            <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                         </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Orang-orang yang disayangi Allah</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">297.313 Ali o</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">FAITH AND REASON ISLAM</p>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
+                        <div class="flex flex-col flex-grow">
+                            <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">{{ $book['title'] }}</h4>
+                            <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">{{ $book['code'] }}</p>
+                            <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">{{ $book['category'] }}</p>
                         </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Elements of chemical reaction engineering. 7th Ed.</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">660.2 Ele</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">CHEMICAL ENGINEERING</p>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                        </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Membangun jembatan menuju kemandirian penyandang disabilitas</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">305.908 Sir m</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">SOCIAL SCIENCE</p>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                        </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Pengantar Ilmu Hukum dan Tata Hukum Indonesia</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">340.1 Kan p</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">LAW</p>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                        </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Sistem Informasi Manajemen: Mengelola Perusahaan Digital</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">658.403 8 Lau s</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">MANAGEMENT</p>
-                    </div>
-                </div>
-                
-                <!-- Duplicate Items for seamless loop -->
-                <!-- Card 1 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                        </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Orang-orang yang disayangi Allah</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">297.313 Ali o</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">FAITH AND REASON ISLAM</p>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                        </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Elements of chemical reaction engineering. 7th Ed.</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">660.2 Ele</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">CHEMICAL ENGINEERING</p>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                        </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Membangun jembatan menuju kemandirian penyandang disabilitas</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">305.908 Sir m</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">SOCIAL SCIENCE</p>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                        </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Pengantar Ilmu Hukum dan Tata Hukum Indonesia</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">340.1 Kan p</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">LAW</p>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
-                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                        <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-2"></i>
-                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                        </div>
-                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                    </div>
-                    <div class="flex flex-col flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Sistem Informasi Manajemen: Mengelola Perusahaan Digital</h4>
-                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">658.403 8 Lau s</p>
-                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">MANAGEMENT</p>
-                    </div>
-                </div>
+                    @endforeach
+                @endfor
             </div>
         </div>
 
@@ -444,33 +252,47 @@
                 
                 // Lebar 1 kartu + gap (160px + 20px)
                 const scrollAmount = 180; 
+                // Jumlah kartu unik sebelum perulangan
+                const uniqueItems = 5;
+                const batchWidth = scrollAmount * uniqueItems;
 
-                btnLeft.addEventListener('click', () => {
-                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                });
-
-                btnRight.addEventListener('click', () => {
-                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                });
-
-                // Auto-scroll logic
-                let autoScroll = setInterval(() => {
-                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-                        container.scrollTo({ left: 0, behavior: 'smooth' });
-                    } else {
-                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                const scrollNext = () => {
+                    // Jika mendekati ujung kanan, pindahkan 5 item pertama ke belakang
+                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - scrollAmount * 2) {
+                        container.classList.remove('scroll-smooth');
+                        for (let i = 0; i < uniqueItems; i++) {
+                            container.appendChild(container.firstElementChild);
+                        }
+                        container.scrollLeft -= batchWidth;
+                        void container.offsetWidth; // Force reflow
+                        container.classList.add('scroll-smooth');
                     }
-                }, 3500);
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                };
+
+                const scrollPrev = () => {
+                    // Jika mendekati ujung kiri, pindahkan 5 item terakhir ke depan
+                    if (container.scrollLeft <= scrollAmount) {
+                        container.classList.remove('scroll-smooth');
+                        for (let i = 0; i < uniqueItems; i++) {
+                            container.insertBefore(container.lastElementChild, container.firstElementChild);
+                        }
+                        container.scrollLeft += batchWidth;
+                        void container.offsetWidth; // Force reflow
+                        container.classList.add('scroll-smooth');
+                    }
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                };
+
+                btnLeft.addEventListener('click', scrollPrev);
+                btnRight.addEventListener('click', scrollNext);
+
+                // Auto-scroll logic (infinite looping to the right)
+                let autoScroll = setInterval(scrollNext, 3500);
 
                 const resetAutoScroll = () => {
                     clearInterval(autoScroll);
-                    autoScroll = setInterval(() => {
-                        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-                            container.scrollTo({ left: 0, behavior: 'smooth' });
-                        } else {
-                            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                        }
-                    }, 3500);
+                    autoScroll = setInterval(scrollNext, 3500);
                 };
 
                 // Pause on hover or touch
