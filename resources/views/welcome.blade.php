@@ -85,6 +85,9 @@
 
     <!-- Hero Section -->
     <div class="hero-gradient pt-32 pb-24 relative overflow-hidden">
+        <!-- Background Image of USU Pond with Low Opacity Overlay -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center mix-blend-multiply opacity-35" style="background-image: url('{{ asset('kolam_perpustakaan.jpg') }}');"></div>
+
         <!-- Abstract Shapes -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-40">
             <div class="absolute -top-24 -left-24 w-96 h-96 bg-green-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
@@ -108,19 +111,19 @@
             </p>
 
             <!-- Search Bar -->
-            <div class="max-w-3xl mx-auto bg-white rounded-2xl p-2 shadow-2xl flex items-center focus-within:ring-4 focus-within:ring-[#106c38]/30 transition-all">
+            <form action="{{ route('search') }}" method="GET" class="max-w-3xl mx-auto bg-white rounded-2xl p-2 shadow-2xl flex items-center focus-within:ring-4 focus-within:ring-[#106c38]/30 transition-all">
                 <div class="pl-5 text-slate-400">
                     <i class="ph ph-magnifying-glass text-2xl"></i>
                 </div>
-                <input type="text" placeholder="Cari buku, jurnal, penulis, atau kata kunci..." class="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder-slate-400 px-4 py-4 text-lg outline-none">
-                <button class="bg-[#106c38] text-white rounded-xl px-8 py-4 font-semibold text-lg hover:bg-green-800 transition shadow-lg shadow-[#106c38]/30">
+                <input type="text" name="q" placeholder="Cari buku, jurnal, penulis, atau kata kunci..." class="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder-slate-400 px-4 py-4 text-lg outline-none">
+                <button type="submit" class="bg-[#106c38] text-white rounded-xl px-8 py-4 font-semibold text-lg hover:bg-green-800 transition shadow-lg shadow-[#106c38]/30">
                     Cari
                 </button>
-            </div>
+            </form>
             <div class="mt-5">
-                <a href="#" class="text-green-200 hover:text-white transition text-sm font-medium flex items-center justify-center gap-1">
+                <button id="open-modal-pencarian-spesifik" class="text-green-200 hover:text-white transition text-sm font-medium flex items-center justify-center gap-1 mx-auto bg-transparent border-none outline-none cursor-pointer">
                     Pencarian Spesifik <i class="ph ph-arrow-right"></i>
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -133,39 +136,15 @@
             <p class="mt-4 text-slate-500">Koleksi tersebar di berbagai fakultas dan perpustakaan pusat</p>
         </div>
 
-        @php
-        $statistics = [
-            ['count' => '122.525', 'label' => 'Perpustakaan Universitas', 'icon' => 'ph-books'],
-            ['count' => '7.729', 'label' => 'Fakultas Hukum', 'icon' => 'ph-scales'],
-            ['count' => '5.698', 'label' => 'Fakultas Ilmu Budaya', 'icon' => 'ph-mask-happy'],
-            ['count' => '5.156', 'label' => 'Fakultas Ekonomi dan Bisnis', 'icon' => 'ph-chart-line-up'],
-            ['count' => '4.175', 'label' => 'Fakultas Kesehatan Masyarakat', 'icon' => 'ph-heartbeat'],
-            ['count' => '3.982', 'label' => 'Sekolah Pascasarjana', 'icon' => 'ph-graduation-cap'],
-            ['count' => '3.646', 'label' => 'Fakultas Kedokteran', 'icon' => 'ph-stethoscope'],
-            ['count' => '3.272', 'label' => 'Fakultas ISIP', 'icon' => 'ph-users-three'],
-            ['count' => '2.961', 'label' => 'Koleksi Out of Stock', 'icon' => 'ph-archive-tray'],
-            ['count' => '2.936', 'label' => 'Fakultas Pertanian', 'icon' => 'ph-plant'],
-            ['count' => '2.839', 'label' => 'Fakultas Keperawatan', 'icon' => 'ph-first-aid'],
-            ['count' => '2.424', 'label' => 'AP. Parlindungan Collections', 'icon' => 'ph-books'],
-            ['count' => '2.316', 'label' => 'Fakultas MIPA', 'icon' => 'ph-test-tube'],
-            ['count' => '2.029', 'label' => 'Fakultas Psikologi', 'icon' => 'ph-brain'],
-            ['count' => '1.827', 'label' => 'Sjahrir Corner Collections', 'icon' => 'ph-books'],
-            ['count' => '1.537', 'label' => 'Fakultas Farmasi', 'icon' => 'ph-pill'],
-            ['count' => '1.106', 'label' => 'Fakultas Kedokteran Gigi', 'icon' => 'ph-tooth'],
-            ['count' => '565', 'label' => 'Fakultas Kehutanan', 'icon' => 'ph-tree'],
-            ['count' => '215', 'label' => 'Local Wisdom', 'icon' => 'ph-map-trifold'],
-        ];
-        @endphp
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($statistics as $stat)
-            <div class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300">
+            @foreach($locations as $stat)
+            <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300 block">
                 <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph {{ $stat['icon'] }} text-8xl"></i>
+                    <i class="ph {{ $stat->icon }} text-8xl"></i>
                 </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">{{ $stat['count'] }}</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">{{ $stat['label'] }}</p>
-            </div>
+                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">{{ $stat->name }}</p>
+            </a>
             @endforeach
         </div>
     </div>
@@ -177,36 +156,6 @@
             <div class="w-24 h-1 bg-[#106c38] mx-auto rounded-full"></div>
             <p class="mt-4 text-slate-500">Buku dan literatur terbaru yang baru saja ditambahkan ke katalog kami</p>
         </div>
-
-        @php
-        $latestBooks = [
-            [
-                'title' => 'Orang-orang yang disayangi Allah',
-                'code' => '297.313 Ali o',
-                'category' => 'FAITH AND REASON ISLAM'
-            ],
-            [
-                'title' => 'Elements of chemical reaction engineering. 7th Ed.',
-                'code' => '660.2 Ele',
-                'category' => 'CHEMICAL ENGINEERING'
-            ],
-            [
-                'title' => 'Membangun jembatan menuju kemandirian penyandang disabilitas',
-                'code' => '305.908 Sir m',
-                'category' => 'SOCIAL SCIENCE'
-            ],
-            [
-                'title' => 'Pengantar Ilmu Hukum dan Tata Hukum Indonesia',
-                'code' => '340.1 Kan p',
-                'category' => 'LAW'
-            ],
-            [
-                'title' => 'Sistem Informasi Manajemen: Mengelola Perusahaan Digital',
-                'code' => '658.403 8 Lau s',
-                'category' => 'MANAGEMENT'
-            ]
-        ];
-        @endphp
 
         <div class="relative max-w-[1400px] mx-auto px-4 sm:px-12 group/slider">
             <!-- Navigation Buttons -->
@@ -222,23 +171,26 @@
             <div class="hidden sm:block absolute right-12 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
             
             <div id="books-scroll-container" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-8 pt-4 px-2 hide-scrollbar items-stretch">
-                @for ($i = 0; $i < 4; $i++)
+                @for ($repeat = 0; $repeat < 2; $repeat++)
                     @foreach ($latestBooks as $book)
-                    <div class="snap-start w-[160px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <a href="{{ route('books.show', $book->id) }}" class="snap-start w-[160px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1 block">
                         <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                            <img src="" alt="Cover" class="w-full h-full object-cover hidden">
-                            <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                                <i class="ph ph-image text-3xl mb-2"></i>
-                                <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
-                            </div>
+                            @if ($book->cover_image)
+                                <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
+                                    <i class="ph ph-book-open text-3xl mb-2"></i>
+                                    <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
+                                </div>
+                            @endif
                             <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                         </div>
                         <div class="flex flex-col flex-grow">
-                            <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">{{ $book['title'] }}</h4>
-                            <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">{{ $book['code'] }}</p>
-                            <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">{{ $book['category'] }}</p>
+                            <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">{{ $book->title }}</h4>
+                            <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">{{ $book->classification }}</p>
+                            <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">{{ $book->category }}</p>
                         </div>
-                    </div>
+                    </a>
                     @endforeach
                 @endfor
             </div>
@@ -360,5 +312,188 @@
             text-orientation: mixed;
         }
     </style>
+
+    <!-- Advanced Search Modal -->
+    <div id="modal-pencarian-spesifik" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-emerald-800/10 transform transition-all duration-200 scale-95 opacity-0" id="modal-content">
+            <!-- Modal Header Banner -->
+            <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-6 py-6 text-white relative rounded-t-3xl">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">
+                        <i class="ph ph-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg md:text-xl font-bold tracking-wide">Pencarian Spesifik</h3>
+                        <p class="text-xs text-green-100/90 font-medium font-sans">Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!</p>
+                    </div>
+                </div>
+                <button id="close-modal-pencarian-spesifik" class="absolute top-6 right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-2 rounded-xl flex items-center justify-center">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <form action="{{ route('search') }}" method="GET" class="p-6 md:p-8 space-y-6">
+                <!-- Section 1: Detail Bibliografi -->
+                <div class="space-y-4">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <i class="ph ph-info text-sm text-[#106c38]"></i> Detail Bibliografi
+                    </h4>
+                    
+                    <!-- Judul -->
+                    <div class="relative flex items-center">
+                        <div class="absolute left-4 text-slate-400">
+                            <i class="ph ph-book-open text-xl"></i>
+                        </div>
+                        <input type="text" name="inJudul" placeholder="e.g. Metode Penelitian Hukum" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                    </div>
+                    
+                    <!-- Pengarang -->
+                    <div class="relative flex items-center">
+                        <div class="absolute left-4 text-slate-400">
+                            <i class="ph ph-user text-xl"></i>
+                        </div>
+                        <input type="text" name="inPengarang1" placeholder="e.g. Prof. Soerjono Soekanto" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                    </div>
+                    
+                    <!-- Penerbit & Subyek -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-buildings text-xl"></i>
+                            </div>
+                            <input type="text" name="inPenerbit" placeholder="e.g. Rajawali Pers" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                        </div>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-tag text-xl"></i>
+                            </div>
+                            <input type="text" name="inSubyek" placeholder="e.g. Hukum Perdata" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                        </div>
+                    </div>
+                    
+                    <!-- Tahun Terbit & ISBN -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-calendar text-xl"></i>
+                            </div>
+                            <input type="text" name="intahunterbit" placeholder="e.g. 2023" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                        </div>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-barcode text-xl"></i>
+                            </div>
+                            <input type="text" name="inisbn" placeholder="e.g. 978-602-8512-30-4" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                        </div>
+                    </div>
+                    
+                    <!-- No. Klasifikasi & Barcode -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-hash text-xl"></i>
+                            </div>
+                            <input type="text" name="inKlasifikasi" placeholder="e.g. 340" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                        </div>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-qr-code text-xl"></i>
+                            </div>
+                            <input type="text" name="inbarcode" placeholder="e.g. 120930193" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Filter Pencarian -->
+                <div class="space-y-4 pt-2 border-t border-slate-100">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <i class="ph ph-sliders-horizontal text-sm text-[#106c38]"></i> Lokasi & Jenis Koleksi
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Semua Lokasi -->
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-map-pin text-xl"></i>
+                            </div>
+                            <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
+                                <option value="">Semua Lokasi</option>
+                                @foreach($locations as $loc)
+                                    <option value="{{ $loc->code }}">{{ $loc->name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="absolute right-4 pointer-events-none text-slate-400">
+                                <i class="ph ph-caret-down text-sm"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Semua Jenis -->
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-file-text text-xl"></i>
+                            </div>
+                            <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
+                                <option value="">Semua Jenis</option>
+                                <option value="buku">Buku</option>
+                                <option value="jurnal">Jurnal</option>
+                                <option value="majalah">Majalah</option>
+                                <option value="skripsi">Skripsi/Tesis/Disertasi</option>
+                                <option value="laporan_penelitian">Laporan Penelitian</option>
+                            </select>
+                            <div class="absolute right-4 pointer-events-none text-slate-400">
+                                <i class="ph ph-caret-down text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cari Button -->
+                <div class="flex justify-center pt-4">
+                    <button type="submit" class="bg-[#106c38] hover:bg-green-800 text-white px-12 py-4 rounded-full font-bold text-sm tracking-wider uppercase transition-all shadow-lg shadow-green-950/20 hover:shadow-green-900/40 hover:-translate-y-0.5 focus:outline-none flex items-center gap-2">
+                        <i class="ph ph-magnifying-glass text-lg"></i> Cari Koleksi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script for Modal Toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('modal-pencarian-spesifik');
+            const modalContent = document.getElementById('modal-content');
+            const btnOpen = document.getElementById('open-modal-pencarian-spesifik');
+            const btnClose = document.getElementById('close-modal-pencarian-spesifik');
+
+            function openModal() {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            }
+
+            function closeModal() {
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                }, 200);
+            }
+
+            if (btnOpen) btnOpen.addEventListener('click', openModal);
+            if (btnClose) btnClose.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+
