@@ -249,186 +249,241 @@
             <p class="mt-4 text-slate-500">Buku dan literatur terbaru yang baru saja ditambahkan ke katalog kami</p>
         </div>
 
-        <div class="marquee-container relative">
-            <!-- Left fade gradient -->
-            <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
+        <div class="relative max-w-[1400px] mx-auto px-4 sm:px-12 group">
+            <!-- Navigation Buttons -->
+            <button id="btn-scroll-left" class="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#106c38] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center hover:bg-[#106c38] hover:text-white transition-all border border-slate-100 opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer">
+                <i class="ph ph-caret-left text-2xl font-bold"></i>
+            </button>
+            <button id="btn-scroll-right" class="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#106c38] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center hover:bg-[#106c38] hover:text-white transition-all border border-slate-100 opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer">
+                <i class="ph ph-caret-right text-2xl font-bold"></i>
+            </button>
+
+            <!-- Fade gradients -->
+            <div class="hidden sm:block absolute left-12 top-0 bottom-0 w-24 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
+            <div class="hidden sm:block absolute right-12 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
             
-            <div class="marquee-track">
+            <div id="books-scroll-container" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-8 pt-4 px-2 hide-scrollbar items-stretch">
                 <!-- Card 1 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Orang-orang yang disayangi Allah</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">297.313 Ali o</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">FAITH AND REASON ISLAM</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Orang-orang yang disayangi Allah</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">297.313 Ali o</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">FAITH AND REASON ISLAM</p>
                     </div>
                 </div>
-                
+
                 <!-- Card 2 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Elements of chemical reaction engineering. 7th Ed.</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">660.2 Ele</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">CHEMICAL ENGINEERING</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Elements of chemical reaction engineering. 7th Ed.</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">660.2 Ele</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">CHEMICAL ENGINEERING</p>
                     </div>
                 </div>
 
                 <!-- Card 3 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Membangun jembatan menuju kemandirian penyandang disabilitas</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">305.908 Sir m</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">SOCIAL SCIENCE</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Membangun jembatan menuju kemandirian penyandang disabilitas</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">305.908 Sir m</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">SOCIAL SCIENCE</p>
                     </div>
                 </div>
 
                 <!-- Card 4 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Pengantar Ilmu Hukum dan Tata Hukum Indonesia</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">340.1 Kan p</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">LAW</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Pengantar Ilmu Hukum dan Tata Hukum Indonesia</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">340.1 Kan p</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">LAW</p>
                     </div>
                 </div>
 
                 <!-- Card 5 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Sistem Informasi Manajemen: Mengelola Perusahaan Digital</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">658.403 8 Lau s</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">MANAGEMENT</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Sistem Informasi Manajemen: Mengelola Perusahaan Digital</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">658.403 8 Lau s</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">MANAGEMENT</p>
                     </div>
                 </div>
                 
                 <!-- Duplicate Items for seamless loop -->
                 <!-- Card 1 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Orang-orang yang disayangi Allah</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">297.313 Ali o</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">FAITH AND REASON ISLAM</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Orang-orang yang disayangi Allah</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">297.313 Ali o</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">FAITH AND REASON ISLAM</p>
                     </div>
                 </div>
-                
+
                 <!-- Card 2 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Elements of chemical reaction engineering. 7th Ed.</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">660.2 Ele</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">CHEMICAL ENGINEERING</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Elements of chemical reaction engineering. 7th Ed.</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">660.2 Ele</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">CHEMICAL ENGINEERING</p>
                     </div>
                 </div>
 
                 <!-- Card 3 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Membangun jembatan menuju kemandirian penyandang disabilitas</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">305.908 Sir m</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">SOCIAL SCIENCE</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Membangun jembatan menuju kemandirian penyandang disabilitas</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">305.908 Sir m</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">SOCIAL SCIENCE</p>
                     </div>
                 </div>
 
                 <!-- Card 4 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Pengantar Ilmu Hukum dan Tata Hukum Indonesia</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">340.1 Kan p</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">LAW</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Pengantar Ilmu Hukum dan Tata Hukum Indonesia</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">340.1 Kan p</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">LAW</p>
                     </div>
                 </div>
 
                 <!-- Card 5 -->
-                <div class="w-[360px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-sm border border-slate-100 p-4 flex gap-4 hover:shadow-lg transition-colors duration-300 group cursor-pointer">
-                    <div class="relative w-20 h-28 bg-slate-100 rounded-md flex-shrink-0 overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors">
+                <div class="snap-start w-[160px] h-full flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                    <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
                         <img src="" alt="Cover" class="w-full h-full object-cover hidden">
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                            <i class="ph ph-image text-3xl mb-1"></i>
-                            <span class="text-[9px] font-medium text-center leading-tight px-1">Cover Buku</span>
+                            <i class="ph ph-image text-3xl mb-2"></i>
+                            <span class="text-[10px] font-medium text-center leading-tight px-2">Cover Buku</span>
                         </div>
+                        <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
                     </div>
-                    <div class="flex flex-col justify-center flex-grow">
-                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-tight mb-1 group-hover:underline line-clamp-2 transition-colors">Sistem Informasi Manajemen: Mengelola Perusahaan Digital</h4>
-                        <div class="mb-1"><span class="inline-block px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">NEW</span></div>
-                        <p class="text-xs text-slate-500 group-hover:text-green-100 mb-0.5 transition-colors">658.403 8 Lau s</p>
-                        <p class="text-[10px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors">MANAGEMENT</p>
+                    <div class="flex flex-col flex-grow">
+                        <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">Sistem Informasi Manajemen: Mengelola Perusahaan Digital</h4>
+                        <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">658.403 8 Lau s</p>
+                        <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">MANAGEMENT</p>
                     </div>
                 </div>
             </div>
-            
-            <!-- Right fade gradient -->
-            <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const container = document.getElementById('books-scroll-container');
+                const btnLeft = document.getElementById('btn-scroll-left');
+                const btnRight = document.getElementById('btn-scroll-right');
+                
+                // Lebar 1 kartu + gap (160px + 20px)
+                const scrollAmount = 180; 
+
+                btnLeft.addEventListener('click', () => {
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
+
+                btnRight.addEventListener('click', () => {
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+
+                // Auto-scroll logic
+                let autoScroll = setInterval(() => {
+                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+                        container.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                    }
+                }, 3500);
+
+                const resetAutoScroll = () => {
+                    clearInterval(autoScroll);
+                    autoScroll = setInterval(() => {
+                        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+                            container.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                        }
+                    }, 3500);
+                };
+
+                // Pause on hover or touch
+                container.addEventListener('mouseenter', () => clearInterval(autoScroll));
+                container.addEventListener('mouseleave', resetAutoScroll);
+                container.addEventListener('touchstart', () => clearInterval(autoScroll));
+                container.addEventListener('touchend', resetAutoScroll);
+                
+                // Reset timer when manually clicking buttons
+                btnLeft.addEventListener('click', resetAutoScroll);
+                btnRight.addEventListener('click', resetAutoScroll);
+            });
+        </script>
     </div>
 
     <!-- Footer -->
@@ -470,26 +525,13 @@
             animation-delay: 4s;
         }
 
-        /* Marquee styles */
-        @keyframes scroll-left {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-360px * 5 - 1.5rem * 5)); }
+        /* Hide scrollbar for slider */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-        .marquee-container {
-            width: 100vw;
-            margin-left: calc(-50vw + 50%);
-            overflow: hidden;
-            display: flex;
-        }
-        .marquee-track {
-            display: flex;
-            gap: 1.5rem;
-            padding: 1rem 1.5rem;
-            animation: scroll-left 25s linear infinite;
-            width: max-content;
-        }
-        .marquee-track:hover {
-            animation-play-state: paused;
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         .writing-vertical-rl {
             writing-mode: vertical-rl;
