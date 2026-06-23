@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('items', function (Blueprint $table) {
-            $table->id();
+            $table->string('barcode')->primary();
             $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
             $table->foreignId('location_id')->constrained('locations')->onDelete('cascade');
-            $table->string('barcode')->unique();
             $table->string('call_number');
             $table->string('status')->default('Tersedia');
             $table->timestamps();

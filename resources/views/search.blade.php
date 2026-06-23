@@ -291,66 +291,90 @@
                     </h4>
                     
                     <!-- Judul -->
-                    <div class="relative flex items-center">
-                        <div class="absolute left-4 text-slate-400">
-                            <i class="ph ph-book-open text-xl"></i>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-slate-500 pl-1">Judul</label>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-book-open text-xl"></i>
+                            </div>
+                            <input type="text" name="inJudul" placeholder="e.g. Metode Penelitian Hukum" value="{{ request('inJudul') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <input type="text" name="inJudul" placeholder="e.g. Metode Penelitian Hukum" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                     </div>
                     
                     <!-- Pengarang -->
-                    <div class="relative flex items-center">
-                        <div class="absolute left-4 text-slate-400">
-                            <i class="ph ph-user text-xl"></i>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-slate-500 pl-1">Pengarang</label>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-user text-xl"></i>
+                            </div>
+                            <input type="text" name="inPengarang1" placeholder="e.g. Prof. Soerjono Soekanto" value="{{ request('inPengarang1') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <input type="text" name="inPengarang1" placeholder="e.g. Prof. Soerjono Soekanto" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                     </div>
                     
                     <!-- Penerbit & Subyek -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-buildings text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Penerbit</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-buildings text-xl"></i>
+                                </div>
+                                <input type="text" name="inPenerbit" placeholder="e.g. Rajawali Pers" value="{{ request('inPenerbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inPenerbit" placeholder="e.g. Rajawali Pers" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-tag text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Subyek</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-tag text-xl"></i>
+                                </div>
+                                <input type="text" name="inSubyek" placeholder="e.g. Hukum Perdata" value="{{ request('inSubyek') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inSubyek" placeholder="e.g. Hukum Perdata" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
                     <!-- Tahun Terbit & ISBN -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-calendar text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Tahun Terbit</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-calendar text-xl"></i>
+                                </div>
+                                <input type="text" name="intahunterbit" placeholder="e.g. 2023" value="{{ request('intahunterbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="intahunterbit" placeholder="e.g. 2023" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-barcode text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">ISBN</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-barcode text-xl"></i>
+                                </div>
+                                <input type="text" name="inisbn" placeholder="e.g. 978-602-8512-30-4" value="{{ request('inisbn') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inisbn" placeholder="e.g. 978-602-8512-30-4" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
                     <!-- No. Klasifikasi & Barcode -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-hash text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">No. Klasifikasi</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-hash text-xl"></i>
+                                </div>
+                                <input type="text" name="inKlasifikasi" placeholder="e.g. 340" value="{{ request('inKlasifikasi') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inKlasifikasi" placeholder="e.g. 340" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-qr-code text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Barcode</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-qr-code text-xl"></i>
+                                </div>
+                                <input type="text" name="inbarcode" placeholder="e.g. 120930193" value="{{ request('inbarcode') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inbarcode" placeholder="e.g. 120930193" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                 </div>
@@ -363,36 +387,42 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Semua Lokasi -->
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-map-pin text-xl"></i>
-                            </div>
-                            <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                <option value="">Semua Lokasi</option>
-                                @foreach($locations as $loc)
-                                    <option value="{{ $loc->code }}" {{ request('inLokasi') == $loc->code ? 'selected' : '' }}>{{ $loc->name }}</option>
-                                @endforeach
-                            </select>
-                            <div class="absolute right-4 pointer-events-none text-slate-400">
-                                <i class="ph ph-caret-down text-sm"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Lokasi</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-map-pin text-xl"></i>
+                                </div>
+                                <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
+                                    <option value="">Semua Lokasi</option>
+                                    @foreach($locations as $loc)
+                                        <option value="{{ $loc->code }}" {{ request('inLokasi') == $loc->code ? 'selected' : '' }}>{{ $loc->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute right-4 pointer-events-none text-slate-400">
+                                    <i class="ph ph-caret-down text-sm"></i>
+                                </div>
                             </div>
                         </div>
                         
                         <!-- Semua Jenis -->
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-file-text text-xl"></i>
-                            </div>
-                            <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                <option value="">Semua Jenis</option>
-                                <option value="buku" {{ request('inJenis') == 'buku' ? 'selected' : '' }}>Buku</option>
-                                <option value="jurnal" {{ request('inJenis') == 'jurnal' ? 'selected' : '' }}>Jurnal</option>
-                                <option value="majalah" {{ request('inJenis') == 'majalah' ? 'selected' : '' }}>Majalah</option>
-                                <option value="skripsi" {{ request('inJenis') == 'skripsi' ? 'selected' : '' }}>Skripsi/Tesis/Disertasi</option>
-                                <option value="laporan_penelitian" {{ request('inJenis') == 'laporan_penelitian' ? 'selected' : '' }}>Laporan Penelitian</option>
-                            </select>
-                            <div class="absolute right-4 pointer-events-none text-slate-400">
-                                <i class="ph ph-caret-down text-sm"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Jenis Koleksi</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-file-text text-xl"></i>
+                                </div>
+                                <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
+                                    <option value="">Semua Jenis</option>
+                                    <option value="buku" {{ request('inJenis') == 'buku' ? 'selected' : '' }}>Buku</option>
+                                    <option value="jurnal" {{ request('inJenis') == 'jurnal' ? 'selected' : '' }}>Jurnal</option>
+                                    <option value="majalah" {{ request('inJenis') == 'majalah' ? 'selected' : '' }}>Majalah</option>
+                                    <option value="skripsi" {{ request('inJenis') == 'skripsi' ? 'selected' : '' }}>Skripsi/Tesis/Disertasi</option>
+                                    <option value="laporan_penelitian" {{ request('inJenis') == 'laporan_penelitian' ? 'selected' : '' }}>Laporan Penelitian</option>
+                                </select>
+                                <div class="absolute right-4 pointer-events-none text-slate-400">
+                                    <i class="ph ph-caret-down text-sm"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
