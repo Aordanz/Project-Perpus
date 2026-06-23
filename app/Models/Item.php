@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Item extends Model
 {
+    protected $primaryKey = 'barcode';
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $guarded = [];
 
     /**

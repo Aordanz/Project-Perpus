@@ -364,9 +364,8 @@ class DatabaseSeeder extends Seeder
             // Let's create copies
             $numCopies = rand(2, 4);
             for ($c = 1; $c <= $numCopies; $c++) {
-                // First copy is always at the primary location
-                // Subsequent copies could be at perpustakaan_pusat or other matching library
-                $locObj = ($c == 1) ? $locations[$primaryLocCode] : $locations['perpustakaan_pusat'];
+                // All copies of a book are stored at its primary location
+                $locObj = $locations[$primaryLocCode];
                 
                 // Realistic barcode: e.g. 1020210001
                 $barcode = '10' . ($book->publish_year) . str_pad($index + 1, 3, '0', STR_PAD_LEFT) . $c;
