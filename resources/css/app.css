@@ -19,21 +19,17 @@ body.page-exit {
 @keyframes pageFadeIn {
     0% {
         opacity: 0;
-        transform: translateY(15px);
     }
     100% {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
 @keyframes pageFadeOut {
     0% {
         opacity: 1;
-        transform: translateY(0);
     }
     100% {
         opacity: 0;
-        transform: translateY(-15px);
     }
 }

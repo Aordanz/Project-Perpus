@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>OPAC - {{ __('Universitas Sumatera Utara') }}</title>
 
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;850;900&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -26,7 +26,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .hero-gradient {
-            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+            background: linear-gradient(135deg, #07522d 0%, #106c38 50%, #15803d 100%);
         }
         .stat-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,6 +36,163 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             border-color: #106c38;
         }
+
+        /* 3D Carousel Styles */
+        .carousel-slide {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            z-index: 30;
+            pointer-events: auto;
+        }
+
+        /* Mobile positions */
+        .carousel-slide.prev {
+            opacity: 0.8;
+            transform: translate(-210%, -50%) scale(0.8);
+            z-index: 20;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .carousel-slide.next {
+            opacity: 0.8;
+            transform: translate(110%, -50%) scale(0.8);
+            z-index: 20;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .carousel-slide.hidden-left {
+            opacity: 0;
+            transform: translate(-300%, -50%) scale(0.5);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .carousel-slide.hidden-right {
+            opacity: 0;
+            transform: translate(200%, -50%) scale(0.5);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Desktop positions */
+        @media (min-width: 640px) {
+            .carousel-slide.active {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            .carousel-slide.prev {
+                opacity: 0.85;
+                transform: translate(-215%, -50%) scale(0.8);
+            }
+
+            .carousel-slide.next {
+                opacity: 0.85;
+                transform: translate(115%, -50%) scale(0.8);
+            }
+
+            .carousel-slide.hidden-left {
+                transform: translate(-315%, -50%) scale(0.5);
+            }
+
+            .carousel-slide.hidden-right {
+                transform: translate(215%, -50%) scale(0.5);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .carousel-slide.prev {
+                opacity: 0.85;
+                transform: translate(-220%, -50%) scale(0.85);
+            }
+
+            .carousel-slide.next {
+                opacity: 0.85;
+                transform: translate(120%, -50%) scale(0.85);
+            }
+
+            .carousel-slide.hidden-left {
+                transform: translate(-320%, -50%) scale(0.5);
+            }
+
+            .carousel-slide.hidden-right {
+                transform: translate(220%, -50%) scale(0.5);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .carousel-slide.prev {
+                opacity: 0.9;
+                transform: translate(-225%, -50%) scale(0.85);
+            }
+
+            .carousel-slide.next {
+                opacity: 0.9;
+                transform: translate(125%, -50%) scale(0.85);
+            }
+
+            .carousel-slide.hidden-left {
+                transform: translate(-325%, -50%) scale(0.5);
+            }
+
+            .carousel-slide.hidden-right {
+                transform: translate(225%, -50%) scale(0.5);
+            }
+        }
+
+        /* Info panel collapse/expand */
+        .carousel-slide .info-panel {
+            width: 0;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding: 0;
+            transition: max-width 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, padding 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .carousel-slide.active .info-panel {
+            width: 150px;
+            max-width: 150px;
+            opacity: 1;
+            padding: 1rem;
+            border-left: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        @media (min-width: 640px) {
+            .carousel-slide.active .info-panel {
+                width: 300px;
+                max-width: 300px;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .carousel-slide.active .info-panel {
+                width: 360px;
+                max-width: 360px;
+                padding: 2rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .carousel-slide.active .info-panel {
+                width: 400px;
+                max-width: 400px;
+                padding: 2rem;
+            }
+        }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-green-200 selection:text-green-900">
@@ -43,53 +200,139 @@
     @include('partials.navbar')
 
     <!-- Hero Section -->
-    <div class="hero-gradient pt-32 pb-24 relative overflow-hidden">
+    <div class="hero-gradient min-h-[74vh] pt-24 pb-0 relative overflow-hidden flex flex-col justify-start">
         <!-- Background Image of USU Pond with Low Opacity Overlay -->
         <div class="absolute inset-0 z-0 bg-cover bg-center mix-blend-multiply opacity-35" style="background-image: url('{{ asset('kolam_perpustakaan.jpg') }}');"></div>
 
         <!-- Abstract Shapes -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-40">
-            <div class="absolute -top-24 -left-24 w-96 h-96 bg-green-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
-            <div class="absolute top-12 -right-12 w-96 h-96 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
-            <div class="absolute -bottom-32 left-1/2 w-96 h-96 bg-teal-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-4000"></div>
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-green-500 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+            <div class="absolute top-12 -right-12 w-96 h-96 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+            <div class="absolute -bottom-32 left-1/2 w-96 h-96 bg-teal-500 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-4000"></div>
         </div>
 
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <div class="inline-flex items-center gap-3 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 backdrop-blur-md mb-8">
-                <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="w-6 h-6">
+        <!-- Content Container -->
+        <div class="relative z-10 flex flex-col justify-start pt-6 pb-2 w-full">
+            <!-- Search Area -->
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-4 w-full">
+                <!-- Search Bar -->
+                <form action="{{ route('search') }}" method="GET" class="max-w-3xl mx-auto bg-white rounded-2xl p-2 shadow-2xl flex items-center focus-within:ring-4 focus-within:ring-[#106c38]/30 transition-all">
+                    <div class="pl-5 text-slate-400">
+                        <i class="ph ph-magnifying-glass text-2xl"></i>
+                    </div>
+                    <input type="text" name="q" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder-slate-400 px-4 py-4 text-lg outline-none">
+                    <button type="submit" class="bg-[#106c38] text-white rounded-xl px-8 py-4 font-semibold text-lg hover:bg-green-800 transition shadow-lg shadow-[#106c38]/30">
+                        {{ __('Cari') }}
+                    </button>
+                </form>
+                <div class="mt-3">
+                    <button id="open-modal-pencarian-spesifik" class="text-green-200 hover:text-white transition text-sm font-medium flex items-center justify-center gap-1 mx-auto bg-transparent border-none outline-none cursor-pointer">
+                        {{ __('Pencarian Spesifik') }} <i class="ph ph-arrow-right"></i>
+                    </button>
                 </div>
-                <span class="text-white/90 text-sm font-medium tracking-wide">{{ __('Perpustakaan Universitas Sumatera Utara') }}</span>
             </div>
-            
-            <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tight mb-4">
-                O P A C
-            </h1>
-            <p class="text-green-100 text-lg md:text-xl font-light tracking-wide mb-10 max-w-2xl mx-auto">
-                {{ __('Online Public Access Catalog. Jelajahi jutaan koleksi pustaka untuk mendukung riset dan pendidikan Anda.') }}
-            </p>
 
-            <!-- Search Bar -->
-            <form action="{{ route('search') }}" method="GET" class="max-w-3xl mx-auto bg-white rounded-2xl p-2 shadow-2xl flex items-center focus-within:ring-4 focus-within:ring-[#106c38]/30 transition-all">
-                <div class="pl-5 text-slate-400">
-                    <i class="ph ph-magnifying-glass text-2xl"></i>
+            <!-- 20 Koleksi Terbaru Carousel -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
+                <div class="text-center mb-1 max-w-5xl mx-auto px-4">
+                    <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-normal">
+                        {{ __('Koleksi Baru') }}
+                    </h3>
                 </div>
-                <input type="text" name="q" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder-slate-400 px-4 py-4 text-lg outline-none">
-                <button type="submit" class="bg-[#106c38] text-white rounded-xl px-8 py-4 font-semibold text-lg hover:bg-green-800 transition shadow-lg shadow-[#106c38]/30">
-                    {{ __('Cari') }}
-                </button>
-            </form>
-            <div class="mt-5">
-                <button id="open-modal-pencarian-spesifik" class="text-green-200 hover:text-white transition text-sm font-medium flex items-center justify-center gap-1 mx-auto bg-transparent border-none outline-none cursor-pointer">
-                    {{ __('Pencarian Spesifik') }} <i class="ph ph-arrow-right"></i>
-                </button>
+
+                <!-- Carousel Area -->
+                <div class="relative w-full h-[340px] sm:h-[390px] md:h-[420px] flex items-center justify-center overflow-hidden">
+                    <!-- Left Navigation Button -->
+                    <button id="prev-btn-koleksi" class="absolute left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-10 h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full flex items-center justify-center transition-all cursor-pointer">
+                        <i class="ph ph-caret-left text-xl font-bold"></i>
+                    </button>
+
+                    <!-- Slides Track -->
+                    <div id="carousel-koleksi-track" class="relative w-full h-full flex items-center justify-center">
+                        @foreach ($latestBooks as $index => $book)
+                        <div class="carousel-slide absolute transition-all duration-500 ease-in-out opacity-0 pointer-events-none" data-index="{{ $index }}">
+                            <div class="flex bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-500 max-w-[90vw] md:max-w-4xl">
+                                <!-- Cover Panel -->
+                                <div class="w-[110px] sm:w-[190px] md:w-[210px] flex-shrink-0 aspect-[2/3] bg-slate-50 relative overflow-hidden flex items-center justify-center p-3 sm:p-5 border-r border-slate-100">
+                                    @if ($book->cover_image)
+                                        <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover rounded-lg shadow-md">
+                                    @else
+                                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4 border border-dashed border-slate-200 rounded-lg bg-slate-100/50">
+                                            <i class="ph ph-book-open text-4xl sm:text-5xl mb-2 text-[#106c38]"></i>
+                                            <span class="text-[9px] sm:text-xs font-semibold text-slate-500 text-center leading-tight">{{ __('Cover Buku') }}</span>
+                                        </div>
+                                    @endif
+                                    <span class="absolute top-3 left-3 bg-red-600 text-white text-[8px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded shadow">NEW</span>
+                                </div>
+
+                                <!-- Info Panel (Slides out when active) -->
+                                <div class="info-panel flex flex-col justify-between text-left">
+                                    <div class="overflow-hidden">
+                                        <!-- Category -->
+                                        <span class="inline-block px-2.5 py-0.5 bg-green-50 text-[#106c38] border border-green-200/60 text-[8px] sm:text-[9px] font-bold rounded-full uppercase tracking-wider mb-2 sm:mb-3">
+                                            {{ $book->category ?: 'GENERAL' }}
+                                        </span>
+                                        <!-- Title -->
+                                        <h4 class="text-sm sm:text-base md:text-xl font-bold text-slate-900 leading-snug mb-1 sm:mb-2 line-clamp-2" title="{{ $book->title }}">
+                                            {{ $book->title }}
+                                        </h4>
+                                        <!-- Author (Mobile only) -->
+                                        <p class="text-[9px] sm:hidden text-slate-500 mb-2 truncate">
+                                            {{ __('Penulis:') }} <span class="text-[#106c38] font-bold">{{ $book->author ?: '-' }}</span>
+                                        </p>
+                                        <!-- Short description -->
+                                        <p class="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-5 leading-relaxed line-clamp-2 sm:line-clamp-3">
+                                            {{ $book->physical_description ?: 'Koleksi literatur terbaru Perpustakaan Universitas Sumatera Utara yang siap mendukung riset, studi, dan referensi akademik Anda.' }}
+                                        </p>
+
+                                        <!-- Metadata Grid (Tablet/Desktop) -->
+                                        <div class="hidden sm:grid grid-cols-2 gap-x-6 gap-y-3 border-t border-slate-100 pt-4 mb-2 text-xs sm:text-sm">
+                                            <div>
+                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Penulis') }}</span>
+                                                <span class="text-slate-800 font-semibold block truncate" title="{{ $book->author }}">{{ $book->author ?: '-' }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Klasifikasi') }}</span>
+                                                <span class="text-slate-800 font-semibold block truncate">{{ $book->classification ?: '-' }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Penerbit') }}</span>
+                                                <span class="text-slate-800 font-semibold block truncate" title="{{ $book->publisher }}">{{ $book->publisher ?: '-' }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Tahun Terbit') }}</span>
+                                                <span class="text-slate-800 font-semibold block">{{ $book->publish_year ?: '-' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Footer -->
+                                    <div class="flex justify-between items-center border-t border-slate-100 pt-3 mt-auto">
+                                        <span class="text-[10px] sm:text-xs font-mono text-slate-500 font-medium">
+                                            <span class="text-[#106c38] font-bold">{{ $index + 1 }}</span> / {{ count($latestBooks) }}
+                                        </span>
+                                        <a href="{{ route('books.show', $book->id) }}" class="w-8 h-8 sm:w-10 sm:h-10 bg-[#106c38] hover:bg-green-700 text-white rounded-full flex items-center justify-center transition-all hover:scale-105 shadow-lg shadow-green-600/20 cursor-pointer">
+                                            <i class="ph ph-arrow-right text-base sm:text-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Right Navigation Button -->
+                    <button id="next-btn-koleksi" class="absolute right-2 sm:right-6 md:left-auto md:right-10 lg:right-12 xl:right-16 z-40 w-10 h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full flex items-center justify-center transition-all cursor-pointer">
+                        <i class="ph ph-caret-right text-xl font-bold"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Statistics Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div class="text-center mb-14">
+    <div id="statistics-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-20">
+        <div class="text-center mb-6">
             <h2 class="text-3xl font-bold text-slate-800 mb-3">{{ __('Jumlah Judul Buku Berdasarkan Lokasi') }}</h2>
             <div class="w-24 h-1 bg-[#106c38] mx-auto rounded-full"></div>
             <p class="mt-4 text-slate-500">{{ __('Koleksi tersebar di berbagai fakultas dan perpustakaan pusat') }}</p>
@@ -175,123 +418,6 @@
         </div>
     </div>
 
-    <!-- Newest Collections Section (Marquee) -->
-    <div class="py-16 bg-slate-50 border-t border-slate-200 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 relative">
-            <div class="text-center">
-                <h2 class="text-3xl font-bold text-slate-800 mb-3">{{ __('20 Koleksi Terbaru') }}</h2>
-                <div class="w-24 h-1 bg-[#106c38] mx-auto rounded-full"></div>
-                <p class="mt-4 text-slate-500">{{ __('Buku dan literatur terbaru yang baru saja ditambahkan ke katalog kami') }}</p>
-            </div>
-            <div class="mt-6 sm:mt-0 sm:absolute sm:top-0 sm:right-4 lg:right-8 flex justify-center">
-                <a href="{{ route('koleksi.terbaru') }}" class="inline-flex items-center gap-1.5 bg-white text-[#106c38] px-5 py-2.5 rounded-full font-bold text-sm tracking-wide border border-slate-200 hover:border-[#106c38] hover:bg-[#106c38] hover:text-white transition-all shadow-sm">
-                    {{ __('Lihat Semua') }} <i class="ph ph-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="relative max-w-[1400px] mx-auto px-4 sm:px-12 group/slider">
-            <!-- Navigation Buttons -->
-            <button id="btn-scroll-left" class="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#106c38] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center hover:bg-[#106c38] hover:text-white transition-all border border-slate-100 opacity-0 group-hover/slider:opacity-100 focus:opacity-100 cursor-pointer">
-                <i class="ph ph-caret-left text-2xl font-bold"></i>
-            </button>
-            <button id="btn-scroll-right" class="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#106c38] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center hover:bg-[#106c38] hover:text-white transition-all border border-slate-100 opacity-0 group-hover/slider:opacity-100 focus:opacity-100 cursor-pointer">
-                <i class="ph ph-caret-right text-2xl font-bold"></i>
-            </button>
-
-            <!-- Fade gradients -->
-            <div class="hidden sm:block absolute left-12 top-0 bottom-0 w-24 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
-            <div class="hidden sm:block absolute right-12 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
-            
-            <div id="books-scroll-container" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-8 pt-4 px-2 hide-scrollbar items-stretch">
-                @for ($repeat = 0; $repeat < 2; $repeat++)
-                    @foreach ($latestBooks as $book)
-                    <a href="{{ route('books.show', $book->id) }}" class="snap-start w-[160px] flex-shrink-0 bg-white hover:bg-[#106c38] rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 p-4 flex flex-col gap-3 hover:shadow-xl transition-all duration-300 group cursor-pointer hover:-translate-y-1 block">
-                        <div class="relative w-full aspect-[2/3] bg-slate-100 rounded-md overflow-hidden border border-slate-200 group-hover:border-green-700 transition-colors flex-shrink-0">
-                            @if ($book->cover_image)
-                                <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-200">
-                                    <i class="ph ph-book-open text-3xl mb-2"></i>
-                                    <span class="text-[10px] font-medium text-center leading-tight px-2">{{ __('Cover Buku') }}</span>
-                                </div>
-                            @endif
-                            <div class="absolute top-2 right-2"><span class="inline-block px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded shadow-sm">NEW</span></div>
-                        </div>
-                        <div class="flex flex-col flex-grow">
-                            <h4 class="font-bold text-[#106c38] group-hover:text-white text-sm leading-snug mb-2 group-hover:underline transition-colors break-words">{{ $book->title }}</h4>
-                            <p class="text-[11px] text-slate-500 group-hover:text-green-100 mb-1 transition-colors">{{ $book->classification }}</p>
-                            <p class="text-[9px] text-slate-400 group-hover:text-green-200 uppercase tracking-wider transition-colors mt-auto pt-2 border-t border-slate-100 group-hover:border-[#064e3b]">{{ $book->category }}</p>
-                        </div>
-                    </a>
-                    @endforeach
-                @endfor
-            </div>
-        </div>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const container = document.getElementById('books-scroll-container');
-                const btnLeft = document.getElementById('btn-scroll-left');
-                const btnRight = document.getElementById('btn-scroll-right');
-                
-                // Lebar 1 kartu + gap (160px + 20px)
-                const scrollAmount = 180; 
-                // Jumlah kartu unik sebelum perulangan
-                const uniqueItems = 5;
-                const batchWidth = scrollAmount * uniqueItems;
-
-                const scrollNext = () => {
-                    // Jika mendekati ujung kanan, pindahkan 5 item pertama ke belakang
-                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - scrollAmount * 2) {
-                        container.classList.remove('scroll-smooth');
-                        for (let i = 0; i < uniqueItems; i++) {
-                            container.appendChild(container.firstElementChild);
-                        }
-                        container.scrollLeft -= batchWidth;
-                        void container.offsetWidth; // Force reflow
-                        container.classList.add('scroll-smooth');
-                    }
-                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                };
-
-                const scrollPrev = () => {
-                    // Jika mendekati ujung kiri, pindahkan 5 item terakhir ke depan
-                    if (container.scrollLeft <= scrollAmount) {
-                        container.classList.remove('scroll-smooth');
-                        for (let i = 0; i < uniqueItems; i++) {
-                            container.insertBefore(container.lastElementChild, container.firstElementChild);
-                        }
-                        container.scrollLeft += batchWidth;
-                        void container.offsetWidth; // Force reflow
-                        container.classList.add('scroll-smooth');
-                    }
-                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                };
-
-                btnLeft.addEventListener('click', scrollPrev);
-                btnRight.addEventListener('click', scrollNext);
-
-                // Auto-scroll logic (infinite looping to the right)
-                let autoScroll = setInterval(scrollNext, 3500);
-
-                const resetAutoScroll = () => {
-                    clearInterval(autoScroll);
-                    autoScroll = setInterval(scrollNext, 3500);
-                };
-
-                // Pause on hover or touch
-                container.addEventListener('mouseenter', () => clearInterval(autoScroll));
-                container.addEventListener('mouseleave', resetAutoScroll);
-                container.addEventListener('touchstart', () => clearInterval(autoScroll));
-                container.addEventListener('touchend', resetAutoScroll);
-                
-                // Reset timer when manually clicking buttons
-                btnLeft.addEventListener('click', resetAutoScroll);
-                btnRight.addEventListener('click', resetAutoScroll);
-            });
-        </script>
-    </div>
 
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-[#064e3b] to-[#022c22] border-t-4 border-[#106c38] mt-12 py-10 relative overflow-hidden">
@@ -626,6 +752,105 @@
                     if (carouselContainer) carouselContainer.classList.remove('hidden');
                     if (expandContainer) expandContainer.classList.remove('hidden');
                 });
+            }
+
+            // 3D Koleksi Terbaru Carousel
+            const newestSlides = document.querySelectorAll('.carousel-slide');
+            if (newestSlides.length > 0) {
+                let newestCurrentIndex = 0;
+                const newestTotalSlides = newestSlides.length;
+                let newestAutoScroll;
+
+                function updateNewestCarousel() {
+                    newestSlides.forEach((slide, idx) => {
+                        slide.className = 'carousel-slide absolute transition-all duration-500 ease-in-out';
+                        
+                        let diff = idx - newestCurrentIndex;
+                        
+                        // Handle circular index wrapping
+                        if (diff < -newestTotalSlides / 2) {
+                            diff += newestTotalSlides;
+                        } else if (diff > newestTotalSlides / 2) {
+                            diff -= newestTotalSlides;
+                        }
+
+                        if (diff === 0) {
+                            slide.classList.add('active');
+                        } else if (diff === -1) {
+                            slide.classList.add('prev');
+                        } else if (diff === 1) {
+                            slide.classList.add('next');
+                        } else if (diff < 0) {
+                            slide.classList.add('hidden-left');
+                        } else {
+                            slide.classList.add('hidden-right');
+                        }
+                    });
+                }
+
+                function newestNextSlide() {
+                    newestCurrentIndex = (newestCurrentIndex + 1) % newestTotalSlides;
+                    updateNewestCarousel();
+                }
+
+                function newestPrevSlide() {
+                    newestCurrentIndex = (newestCurrentIndex - 1 + newestTotalSlides) % newestTotalSlides;
+                    updateNewestCarousel();
+                }
+
+                const prevBtnKoleksi = document.getElementById('prev-btn-koleksi');
+                const nextBtnKoleksi = document.getElementById('next-btn-koleksi');
+
+                if (prevBtnKoleksi) {
+                    prevBtnKoleksi.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        newestPrevSlide();
+                        resetNewestAutoPlay();
+                    });
+                }
+
+                if (nextBtnKoleksi) {
+                    nextBtnKoleksi.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        newestNextSlide();
+                        resetNewestAutoPlay();
+                    });
+                }
+
+                // Click on adjacent slides to move to them
+                newestSlides.forEach((slide, idx) => {
+                    slide.addEventListener('click', (e) => {
+                        if (slide.classList.contains('prev')) {
+                            e.preventDefault();
+                            newestPrevSlide();
+                            resetNewestAutoPlay();
+                        } else if (slide.classList.contains('next')) {
+                            e.preventDefault();
+                            newestNextSlide();
+                            resetNewestAutoPlay();
+                        }
+                    });
+                });
+
+                function startNewestAutoPlay() {
+                    newestAutoScroll = setInterval(newestNextSlide, 4500);
+                }
+
+                function resetNewestAutoPlay() {
+                    clearInterval(newestAutoScroll);
+                    startNewestAutoPlay();
+                }
+
+                // Initialize
+                updateNewestCarousel();
+                startNewestAutoPlay();
+
+                // Pause on hover
+                const carouselTrack = document.getElementById('carousel-koleksi-track');
+                if (carouselTrack) {
+                    carouselTrack.addEventListener('mouseenter', () => clearInterval(newestAutoScroll));
+                    carouselTrack.addEventListener('mouseleave', resetNewestAutoPlay);
+                }
             }
         });
     </script>

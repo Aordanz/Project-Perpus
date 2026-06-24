@@ -36,18 +36,28 @@
 
     <!-- Header Navigation -->
     <nav class="glass-nav sticky top-0 z-40 w-full transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo & Brand -->
-                <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-0.5 shadow-sm overflow-hidden">
-                        <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="w-full h-full rounded-full object-cover">
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-white tracking-wide leading-tight group-hover:text-green-200 transition">OPAC USU</span>
-                        <span class="text-[10px] text-green-100 font-semibold tracking-wider uppercase">Library Catalogue</span>
-                    </div>
-                </a>
+                <div class="flex items-center gap-6">
+                    <!-- OPAC Brand Block -->
+                    <a href="{{ route('home') }}" class="flex flex-col text-white group whitespace-nowrap">
+                        <span class="font-extrabold text-xl sm:text-2xl lg:text-3xl leading-none tracking-[0.15em] group-hover:text-green-200 transition">O P A C</span>
+                        <span class="text-[7.5px] sm:text-[8px] lg:text-[9px] font-bold text-green-100/90 leading-none tracking-wide uppercase mt-0.5 whitespace-nowrap">ONLINE PUBLIC ACCESS CATALOG</span>
+                    </a>
+
+                    <!-- Divider -->
+                    <div class="h-8 w-px bg-white/20 hidden md:block"></div>
+
+                    <!-- USU Logo & Name -->
+                    <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+                        <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
+                        <div class="flex flex-col hidden sm:flex">
+                            <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas') }}</span>
+                            <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Sumatera Utara') }}</span>
+                        </div>
+                    </a>
+                </div>
 
                 <!-- Back button -->
                 <div class="flex items-center gap-4">
