@@ -136,7 +136,8 @@
             <p class="mt-4 text-slate-500">Koleksi tersebar di berbagai fakultas dan perpustakaan pusat</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Desktop Grid (Hidden on Mobile) -->
+        <div id="locations-desktop" class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($locations as $stat)
             <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300 block">
                 <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
@@ -146,6 +147,72 @@
                 <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">{{ $stat->name }}</p>
             </a>
             @endforeach
+        </div>
+
+        <!-- Mobile Carousel View (Hidden on Desktop) -->
+        <div id="locations-mobile" class="block md:hidden relative overflow-hidden">
+            <!-- Carousel Track -->
+            <div id="mobile-carousel-track" class="flex transition-transform duration-500 ease-in-out">
+                @foreach($locations->chunk(6) as $chunkIndex => $chunk)
+                <div class="w-full flex-shrink-0 grid grid-cols-2 gap-4 px-2">
+                    @foreach($chunk as $stat)
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-4 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300 block">
+                        <div class="absolute top-0 right-0 p-2 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
+                            <i class="ph {{ $stat->icon }} text-5xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-1">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                        <p class="text-xs text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300 leading-tight">{{ $stat->name }}</p>
+                    </a>
+                    @endforeach
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Carousel Navigation Controls -->
+            <div id="mobile-carousel-nav" class="flex items-center justify-between mt-6 px-4">
+                <button id="btn-mobile-prev" class="w-10 h-10 bg-white text-[#106c38] rounded-full shadow-md flex items-center justify-center border border-slate-100 disabled:opacity-40" disabled>
+                    <i class="ph ph-caret-left text-xl font-bold"></i>
+                </button>
+                
+                <!-- Dots Indicator -->
+                <div class="flex gap-2" id="carousel-dots">
+                    @foreach($locations->chunk(6) as $chunkIndex => $chunk)
+                    <span class="dot w-2.5 h-2.5 rounded-full transition-all duration-300 {{ $chunkIndex === 0 ? 'bg-[#106c38] scale-110' : 'bg-slate-300' }}"></span>
+                    @endforeach
+                </div>
+
+                <button id="btn-mobile-next" class="w-10 h-10 bg-white text-[#106c38] rounded-full shadow-md flex items-center justify-center border border-slate-100">
+                    <i class="ph ph-caret-right text-xl font-bold"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Expand Button Container -->
+        <div id="mobile-expand-container" class="block md:hidden mt-6 text-center">
+            <button id="btn-mobile-expand" class="inline-flex items-center gap-2 bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white px-6 py-3 rounded-full font-bold text-xs tracking-wider uppercase border-2 border-[#106c38]/20 hover:border-[#106c38] transition shadow-md focus:outline-none cursor-pointer">
+                Tampilkan Semua Kebawah <i class="ph ph-arrow-down-right"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Expanded View (Hidden by default) -->
+        <div id="locations-mobile-expanded" class="hidden md:hidden">
+            <div class="grid grid-cols-2 gap-4 px-2">
+                @foreach($locations as $stat)
+                <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-4 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300 block">
+                    <div class="absolute top-0 right-0 p-2 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
+                        <i class="ph {{ $stat->icon }} text-5xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-1">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                    <p class="text-xs text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300 leading-tight">{{ $stat->name }}</p>
+                </a>
+                @endforeach
+            </div>
+            
+            <div class="mt-6 text-center">
+                <button id="btn-mobile-collapse" class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 px-6 py-3 rounded-full font-bold text-xs tracking-wider uppercase border-2 border-slate-200 transition shadow-md focus:outline-none cursor-pointer">
+                    Kembalikan ke Slider <i class="ph ph-arrow-up-left"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -341,66 +408,90 @@
                     </h4>
                     
                     <!-- Judul -->
-                    <div class="relative flex items-center">
-                        <div class="absolute left-4 text-slate-400">
-                            <i class="ph ph-book-open text-xl"></i>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-slate-500 pl-1">Judul</label>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-book-open text-xl"></i>
+                            </div>
+                            <input type="text" name="inJudul" placeholder="e.g. Metode Penelitian Hukum" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <input type="text" name="inJudul" placeholder="e.g. Metode Penelitian Hukum" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                     </div>
                     
                     <!-- Pengarang -->
-                    <div class="relative flex items-center">
-                        <div class="absolute left-4 text-slate-400">
-                            <i class="ph ph-user text-xl"></i>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-slate-500 pl-1">Pengarang</label>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-4 text-slate-400">
+                                <i class="ph ph-user text-xl"></i>
+                            </div>
+                            <input type="text" name="inPengarang1" placeholder="e.g. Prof. Soerjono Soekanto" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <input type="text" name="inPengarang1" placeholder="e.g. Prof. Soerjono Soekanto" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                     </div>
                     
                     <!-- Penerbit & Subyek -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-buildings text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Penerbit</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-buildings text-xl"></i>
+                                </div>
+                                <input type="text" name="inPenerbit" placeholder="e.g. Rajawali Pers" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inPenerbit" placeholder="e.g. Rajawali Pers" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-tag text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Subyek</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-tag text-xl"></i>
+                                </div>
+                                <input type="text" name="inSubyek" placeholder="e.g. Hukum Perdata" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inSubyek" placeholder="e.g. Hukum Perdata" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
                     <!-- Tahun Terbit & ISBN -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-calendar text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Tahun Terbit</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-calendar text-xl"></i>
+                                </div>
+                                <input type="text" name="intahunterbit" placeholder="e.g. 2023" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="intahunterbit" placeholder="e.g. 2023" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-barcode text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">ISBN</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-barcode text-xl"></i>
+                                </div>
+                                <input type="text" name="inisbn" placeholder="e.g. 978-602-8512-30-4" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inisbn" placeholder="e.g. 978-602-8512-30-4" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
                     <!-- No. Klasifikasi & Barcode -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-hash text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">No. Klasifikasi</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-hash text-xl"></i>
+                                </div>
+                                <input type="text" name="inKlasifikasi" placeholder="e.g. 340" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inKlasifikasi" placeholder="e.g. 340" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-qr-code text-xl"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Barcode</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-qr-code text-xl"></i>
+                                </div>
+                                <input type="text" name="inbarcode" placeholder="e.g. 120930193" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
-                            <input type="text" name="inbarcode" placeholder="e.g. 120930193" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                 </div>
@@ -413,36 +504,42 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Semua Lokasi -->
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-map-pin text-xl"></i>
-                            </div>
-                            <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                <option value="">Semua Lokasi</option>
-                                @foreach($locations as $loc)
-                                    <option value="{{ $loc->code }}">{{ $loc->name }}</option>
-                                @endforeach
-                            </select>
-                            <div class="absolute right-4 pointer-events-none text-slate-400">
-                                <i class="ph ph-caret-down text-sm"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Lokasi</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-map-pin text-xl"></i>
+                                </div>
+                                <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
+                                    <option value="">Semua Lokasi</option>
+                                    @foreach($locations as $loc)
+                                        <option value="{{ $loc->code }}">{{ $loc->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute right-4 pointer-events-none text-slate-400">
+                                    <i class="ph ph-caret-down text-sm"></i>
+                                </div>
                             </div>
                         </div>
                         
                         <!-- Semua Jenis -->
-                        <div class="relative flex items-center">
-                            <div class="absolute left-4 text-slate-400">
-                                <i class="ph ph-file-text text-xl"></i>
-                            </div>
-                            <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                <option value="">Semua Jenis</option>
-                                <option value="buku">Buku</option>
-                                <option value="jurnal">Jurnal</option>
-                                <option value="majalah">Majalah</option>
-                                <option value="skripsi">Skripsi/Tesis/Disertasi</option>
-                                <option value="laporan_penelitian">Laporan Penelitian</option>
-                            </select>
-                            <div class="absolute right-4 pointer-events-none text-slate-400">
-                                <i class="ph ph-caret-down text-sm"></i>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-500 pl-1">Jenis Koleksi</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-4 text-slate-400">
+                                    <i class="ph ph-file-text text-xl"></i>
+                                </div>
+                                <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
+                                    <option value="">Semua Jenis</option>
+                                    <option value="buku">Buku</option>
+                                    <option value="jurnal">Jurnal</option>
+                                    <option value="majalah">Majalah</option>
+                                    <option value="skripsi">Skripsi/Tesis/Disertasi</option>
+                                    <option value="laporan_penelitian">Laporan Penelitian</option>
+                                </select>
+                                <div class="absolute right-4 pointer-events-none text-slate-400">
+                                    <i class="ph ph-caret-down text-sm"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -492,8 +589,79 @@
                     closeModal();
                 }
             });
+
+            // Mobile locations carousel & expand functionality
+            const track = document.getElementById('mobile-carousel-track');
+            const dots = document.querySelectorAll('#carousel-dots .dot');
+            const btnPrev = document.getElementById('btn-mobile-prev');
+            const btnNext = document.getElementById('btn-mobile-next');
+            const btnExpand = document.getElementById('btn-mobile-expand');
+            const btnCollapse = document.getElementById('btn-mobile-collapse');
+            const carouselContainer = document.getElementById('locations-mobile');
+            const expandContainer = document.getElementById('mobile-expand-container');
+            const expandedContainer = document.getElementById('locations-mobile-expanded');
+
+            let currentSlide = 0;
+            const totalSlides = dots.length;
+
+            function goToSlide(slideIndex) {
+                if (slideIndex < 0 || slideIndex >= totalSlides) return;
+                currentSlide = slideIndex;
+                
+                if (track) {
+                    track.style.transform = `translateX(-${slideIndex * 100}%)`;
+                }
+
+                // Update dots
+                dots.forEach((dot, idx) => {
+                    if (idx === slideIndex) {
+                        dot.classList.remove('bg-slate-300');
+                        dot.classList.add('bg-[#106c38]', 'scale-110');
+                    } else {
+                        dot.classList.remove('bg-[#106c38]', 'scale-110');
+                        dot.classList.add('bg-slate-300');
+                    }
+                });
+
+                // Enable/disable buttons
+                if (btnPrev) btnPrev.disabled = (slideIndex === 0);
+                if (btnNext) btnNext.disabled = (slideIndex === totalSlides - 1);
+            }
+
+            if (btnPrev) {
+                btnPrev.addEventListener('click', () => {
+                    goToSlide(currentSlide - 1);
+                });
+            }
+
+            if (btnNext) {
+                btnNext.addEventListener('click', () => {
+                    goToSlide(currentSlide + 1);
+                });
+            }
+
+            if (btnExpand) {
+                btnExpand.addEventListener('click', () => {
+                    if (carouselContainer) carouselContainer.classList.add('hidden');
+                    if (expandContainer) expandContainer.classList.add('hidden');
+                    if (expandedContainer) {
+                        expandedContainer.classList.remove('hidden');
+                        expandedContainer.classList.add('block');
+                    }
+                });
+            }
+
+            if (btnCollapse) {
+                btnCollapse.addEventListener('click', () => {
+                    if (expandedContainer) {
+                        expandedContainer.classList.remove('block');
+                        expandedContainer.classList.add('hidden');
+                    }
+                    if (carouselContainer) carouselContainer.classList.remove('hidden');
+                    if (expandContainer) expandContainer.classList.remove('hidden');
+                });
+            }
         });
     </script>
 </body>
 </html>
-
