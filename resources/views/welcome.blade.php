@@ -22,10 +22,8 @@
             background-color: #f8fafc;
         }
         .glass-nav {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            background: #106c38;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .hero-gradient {
             background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
@@ -49,33 +47,33 @@
                 <!-- Logo & Links -->
                 <div class="flex items-center gap-8">
                     <a href="#" class="flex items-center gap-2">
-                        <img src="{{ asset('logo usu.jpeg') }}" alt="USU Logo" class="h-10 w-auto">
+                        <img src="{{ asset('logo usu.jpeg') }}" alt="USU Logo" class="h-10 w-auto rounded bg-white p-0.5">
                         <div class="flex flex-col hidden sm:flex">
-                            <span class="font-bold text-slate-800 leading-none text-sm">Universitas</span>
-                            <span class="font-bold text-slate-800 leading-none text-sm">Sumatera Utara</span>
+                            <span class="font-bold text-white leading-none text-sm">Universitas</span>
+                            <span class="font-bold text-white leading-none text-sm">Sumatera Utara</span>
                         </div>
                     </a>
                     <div class="hidden lg:flex space-x-6 items-center">
-                    <a href="#" class="text-[#106c38] font-semibold text-sm hover:text-green-900 transition">Beranda</a>
-                    <a href="#" class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition">Koleksi Terbaru</a>
-                    <a href="#" class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition">Index Judul</a>
+                    <a href="#" class="text-white font-bold text-sm hover:text-green-200 transition border-b-2 border-white pb-1">Beranda</a>
+                    <a href="{{ route('koleksi.terbaru') }}" class="text-green-100 font-medium text-sm hover:text-white transition pb-1">Koleksi Terbaru</a>
+                    <a href="#" class="text-green-100 font-medium text-sm hover:text-white transition pb-1">Index Judul</a>
                     <div class="relative group">
-                        <button class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition flex items-center gap-1">
+                        <button class="text-green-100 font-medium text-sm hover:text-white transition flex items-center gap-1 pb-1">
                             Tautan Lain <i class="ph ph-caret-down"></i>
                         </button>
                     </div>
-                    <a href="#" class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition">Cek Pinjaman</a>
+                    <a href="#" class="text-green-100 font-medium text-sm hover:text-white transition pb-1">Cek Pinjaman</a>
                     </div>
                 </div>
                 
                 <!-- Right Side -->
                 <div class="hidden md:flex space-x-5 items-center">
-                    <a href="#" class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition">Bantuan</a>
-                    <a href="#" class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition">Kontak Kami</a>
-                    <button class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition flex items-center gap-1">
+                    <a href="#" class="text-green-100 font-medium text-sm hover:text-white transition">Bantuan</a>
+                    <a href="#" class="text-green-100 font-medium text-sm hover:text-white transition">Kontak Kami</a>
+                    <button class="text-green-100 font-medium text-sm hover:text-white transition flex items-center gap-1">
                         <i class="ph ph-translate text-lg"></i> Bahasa
                     </button>
-                    <a href="#" class="bg-[#106c38] text-white px-5 py-2 rounded-full font-medium text-sm shadow-md shadow-green-700/30 hover:bg-green-800 hover:shadow-green-800/50 transition-all">
+                    <a href="#" class="bg-white text-[#106c38] px-5 py-2 rounded-full font-bold text-sm shadow hover:bg-green-50 transition-all">
                         Login
                     </a>
                 </div>

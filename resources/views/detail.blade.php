@@ -24,10 +24,8 @@
             font-family: 'Inter', sans-serif !important;
         }
         .glass-nav {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            background: #106c38;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .cover-glow {
             box-shadow: 0 20px 40px -15px rgba(16, 108, 56, 0.15), 0 15px 25px -10px rgba(0, 0, 0, 0.1);
@@ -42,18 +40,18 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo & Brand -->
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-0.5 shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-0.5 shadow-sm overflow-hidden">
                         <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="w-full h-full rounded-full object-cover">
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-bold text-slate-800 tracking-wide leading-tight group-hover:text-[#106c38] transition">OPAC USU</span>
-                        <span class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">Library Catalogue</span>
+                        <span class="font-bold text-white tracking-wide leading-tight group-hover:text-green-200 transition">OPAC USU</span>
+                        <span class="text-[10px] text-green-100 font-semibold tracking-wider uppercase">Library Catalogue</span>
                     </div>
                 </a>
 
                 <!-- Back button -->
                 <div class="flex items-center gap-4">
-                    <button onclick="history.back()" class="text-[#106c38] hover:text-green-800 transition text-sm font-semibold flex items-center gap-1 bg-transparent border-none cursor-pointer">
+                    <button onclick="history.back()" class="text-white hover:text-green-200 transition text-sm font-semibold flex items-center gap-1 bg-transparent border-none cursor-pointer">
                         <i class="ph ph-arrow-left"></i> Kembali
                     </button>
                 </div>

@@ -104,4 +104,14 @@ class BookController extends Controller
         
         return view('detail', compact('book'));
     }
+
+    /**
+     * Display the 20 latest books.
+     */
+    public function latest()
+    {
+        $latestBooks = Book::with(['items.location'])->latest()->take(20)->get();
+        
+        return view('koleksi-terbaru', compact('latestBooks'));
+    }
 }
