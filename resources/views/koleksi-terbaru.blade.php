@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Koleksi Terbaru - OPAC USU Library</title>
+    <title>{{ __('Koleksi Terbaru') }} - OPAC USU Library</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,53 +29,14 @@
 </head>
 <body class="min-h-screen flex flex-col text-slate-800 antialiased">
 
-    <!-- Navigation -->
-    <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo & Links -->
-                <div class="flex items-center gap-8">
-                    <a href="{{ route('home') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('logo usu.jpeg') }}" alt="USU Logo" class="h-10 w-auto rounded bg-white p-0.5">
-                        <div class="flex flex-col hidden sm:flex">
-                            <span class="font-bold text-white leading-none text-sm">Universitas</span>
-                            <span class="font-bold text-white leading-none text-sm">Sumatera Utara</span>
-                        </div>
-                    </a>
-                    <div class="hidden lg:flex space-x-6 items-center">
-                        <a href="{{ route('home') }}" class="text-green-100 font-medium text-sm hover:text-white transition pb-1">Beranda</a>
-                        <a href="{{ route('koleksi.terbaru') }}" class="text-white font-bold text-sm hover:text-green-200 transition border-b-2 border-white pb-1">Koleksi Terbaru</a>
-                        <a href="#" class="text-green-100 font-medium text-sm hover:text-white transition pb-1">Index Judul</a>
-                        <div class="relative group">
-                            <button class="text-green-100 font-medium text-sm hover:text-white transition flex items-center gap-1 pb-1">
-                                Tautan Lain <i class="ph ph-caret-down"></i>
-                            </button>
-                        </div>
-                        <a href="#" class="text-green-100 font-medium text-sm hover:text-white transition pb-1">Cek Pinjaman</a>
-                    </div>
-                </div>
-                
-                <!-- Right Side -->
-                <div class="hidden md:flex space-x-5 items-center">
-                    <a href="#" class="text-green-100 font-medium text-sm hover:text-white transition">Bantuan</a>
-                    <a href="#" class="text-green-100 font-medium text-sm hover:text-white transition">Kontak Kami</a>
-                    <button class="text-green-100 font-medium text-sm hover:text-white transition flex items-center gap-1">
-                        <i class="ph ph-translate text-lg"></i> Bahasa
-                    </button>
-                    <a href="#" class="bg-white text-[#106c38] px-5 py-2 rounded-full font-bold text-sm shadow hover:bg-green-50 transition-all">
-                        Login
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    @include('partials.navbar')
 
     <!-- Main Content Area -->
     <main class="flex-grow w-full pt-16">
         
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-light text-slate-800 tracking-widest" style="font-family: 'Inter', sans-serif;">20 Koleksi Terbaru</h2>
+                <h2 class="text-3xl font-light text-slate-800 tracking-widest" style="font-family: 'Inter', sans-serif;">{{ __('20 Koleksi Terbaru') }}</h2>
             </div>
 
         <div class="space-y-6">
@@ -93,7 +54,7 @@
                         @else
                             <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 group-hover:text-green-300 transition-colors p-2">
                                 <i class="ph ph-book-open text-3xl mb-1.5"></i>
-                                <span class="text-[10px] font-bold text-center leading-tight">Cover Buku</span>
+                                <span class="text-[10px] font-bold text-center leading-tight">{{ __('Cover Buku') }}</span>
                             </div>
                         @endif
                         
@@ -127,12 +88,12 @@
                     <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="w-full h-full rounded-full object-cover">
                 </div>
                 <div class="flex flex-col">
-                    <span class="font-bold text-base tracking-wide">Universitas Sumatera Utara</span>
+                    <span class="font-bold text-base tracking-wide">{{ __('Universitas Sumatera Utara') }}</span>
                     <span class="text-xs text-green-200">Online Public Access Catalog © 2026</span>
                 </div>
             </div>
             <p class="text-xs text-green-100/60 max-w-md text-center sm:text-right">
-                Perpustakaan Universitas Sumatera Utara. Jl. Perpustakaan No. 1, Kampus Padang Bulan, Medan, Sumatera Utara.
+                {{ __('Perpustakaan Universitas Sumatera Utara. Jl. Perpustakaan No. 1, Kampus Padang Bulan, Medan, Sumatera Utara.') }}
             </p>
         </div>
     </footer>

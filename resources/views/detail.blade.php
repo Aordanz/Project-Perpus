@@ -52,7 +52,7 @@
                 <!-- Back button -->
                 <div class="flex items-center gap-4">
                     <button onclick="history.back()" class="text-white hover:text-green-200 transition text-sm font-semibold flex items-center gap-1 bg-transparent border-none cursor-pointer">
-                        <i class="ph ph-arrow-left"></i> Kembali
+                        <i class="ph ph-arrow-left"></i> {{ __('Kembali') }}
                     </button>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                         @else
                             <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4">
                                 <i class="ph ph-book-open text-6xl mb-3"></i>
-                                <span class="text-xs font-bold text-center leading-normal">NO COVER IMAGE</span>
+                                <span class="text-xs font-bold text-center leading-normal">{{ __('NO COVER IMAGE') }}</span>
                             </div>
                         @endif
                         <span class="absolute top-3 left-3 bg-[#106c38] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
@@ -87,16 +87,16 @@
                         $availableCopies = $book->items->where('status', 'Tersedia')->count();
                     @endphp
                     <div class="w-full text-center py-4 border-t border-slate-100">
-                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ketersediaan Fisik</span>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __('Ketersediaan Fisik') }}</span>
                         @if($availableCopies > 0)
                             <div class="inline-flex items-center gap-1.5 bg-green-50 text-green-700 font-bold px-4 py-1.5 rounded-full border border-green-200/50 text-xs">
                                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                                {{ $availableCopies }} dari {{ $totalCopies }} Salinan Tersedia
+                                {{ $availableCopies }} {{ __('dari') }} {{ $totalCopies }} {{ __('Salinan Tersedia') }}
                             </div>
                         @else
                             <div class="inline-flex items-center gap-1.5 bg-red-50 text-red-700 font-bold px-4 py-1.5 rounded-full border border-red-200/50 text-xs">
                                 <span class="w-2 h-2 rounded-full bg-red-500"></span>
-                                Semua Salinan Dipinjam
+                                {{ __('Semua Salinan Dipinjam') }}
                             </div>
                         @endif
                     </div>
@@ -105,9 +105,9 @@
                 <!-- Contact / Help info -->
                 <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 text-white shadow-sm flex flex-col gap-3">
                     <i class="ph ph-info text-2xl text-green-200"></i>
-                    <h4 class="font-bold text-sm">Butuh bantuan mencari buku?</h4>
+                    <h4 class="font-bold text-sm">{{ __('Butuh bantuan mencari buku?') }}</h4>
                     <p class="text-xs text-green-100/80 leading-relaxed">
-                        Silakan hubungi pustakawan kami di meja informasi atau gunakan layanan pesan instan perpustakaan untuk memandu pencarian Anda di rak buku.
+                        {{ __('Silakan hubungi pustakawan kami di meja informasi atau gunakan layanan pesan instan perpustakaan untuk memandu pencarian Anda di rak buku.') }}
                     </p>
                 </div>
             </div>
@@ -121,7 +121,7 @@
                     </span>
                     <h1 class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug mb-3">{{ $book->title }}</h1>
                     <p class="text-sm font-semibold text-slate-500 flex items-center gap-1.5">
-                        <i class="ph ph-user text-base text-slate-400"></i> Oleh: <span class="text-slate-800">{{ $book->author }}</span>
+                        <i class="ph ph-user text-base text-slate-400"></i> {{ __('Oleh:') }} <span class="text-slate-800">{{ $book->author }}</span>
                     </p>
                 </div>
 
@@ -131,17 +131,17 @@
                         <div class="w-8 h-8 bg-emerald-50 text-[#106c38] rounded-xl flex items-center justify-center text-lg">
                             <i class="ph ph-list-checks"></i>
                         </div>
-                        <h2 class="text-lg font-bold text-slate-800">Tabel Ketersediaan Buku</h2>
+                        <h2 class="text-lg font-bold text-slate-800">{{ __('Tabel Ketersediaan Buku') }}</h2>
                     </div>
 
                     <div class="overflow-x-auto rounded-2xl border border-slate-100">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-50/50 border-b border-slate-100 text-slate-400 font-bold text-xs uppercase tracking-wider">
-                                    <th class="px-5 py-4">No. Barcode</th>
-                                    <th class="px-5 py-4">No. Panggil</th>
-                                    <th class="px-5 py-4">Lokasi Rak</th>
-                                    <th class="px-5 py-4 text-center">Status</th>
+                                    <th class="px-5 py-4">{{ __('No. Barcode') }}</th>
+                                    <th class="px-5 py-4">{{ __('No. Panggil') }}</th>
+                                    <th class="px-5 py-4">{{ __('Lokasi Rak') }}</th>
+                                    <th class="px-5 py-4 text-center">{{ __('Status') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 text-sm font-medium text-slate-600">
@@ -165,7 +165,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="4" class="px-5 py-6 text-center text-slate-400">
-                                            Belum ada salinan fisik terdaftar untuk koleksi ini.
+                                            {{ __('Belum ada salinan fisik terdaftar untuk koleksi ini.') }}
                                         </td>
                                     </tr>
                                 @endforelse
@@ -180,50 +180,50 @@
                         <div class="w-8 h-8 bg-emerald-50 text-[#106c38] rounded-xl flex items-center justify-center text-lg">
                             <i class="ph ph-info"></i>
                         </div>
-                        <h2 class="text-lg font-bold text-slate-800">Informasi Detail Bibliografi</h2>
+                        <h2 class="text-lg font-bold text-slate-800">{{ __('Informasi Detail Bibliografi') }}</h2>
                     </div>
 
                     <div class="overflow-hidden rounded-2xl border border-slate-100">
                         <table class="w-full text-left border-collapse">
                             <tbody class="divide-y divide-slate-100 text-sm font-medium">
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">Judul Seri</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Judul Seri') }}</td>
                                     <td class="px-5 py-4 text-slate-700">-</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">No. Panggil</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('No. Panggil') }}</td>
                                     <td class="px-5 py-4 text-slate-700">{{ $book->classification }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">Penerbit</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Penerbit') }}</td>
                                     <td class="px-5 py-4 text-slate-700">{{ $book->publisher ?: '-' }} : {{ $book->publish_year ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">Deskripsi Fisik</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Deskripsi Fisik') }}</td>
                                     <td class="px-5 py-4 text-slate-700">{{ $book->physical_description ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">Bahasa</td>
-                                    <td class="px-5 py-4 text-slate-700">{{ $book->language }}</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Bahasa') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ __($book->language) }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">ISBN / ISSN</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('ISBN / ISSN') }}</td>
                                     <td class="px-5 py-4 text-slate-700">{{ $book->isbn ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">Klasifikasi</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Klasifikasi') }}</td>
                                     <td class="px-5 py-4 text-slate-700">{{ $book->classification }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">Tipe Konten</td>
-                                    <td class="px-5 py-4 text-slate-700">Teks</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Tipe Konten') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ __('Teks') }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">Tipe Media</td>
-                                    <td class="px-5 py-4 text-slate-700">Tanpa Perantara</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Tipe Media') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ __('Tanpa Perantara') }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">Subyek</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Subyek') }}</td>
                                     <td class="px-5 py-4 text-slate-700">{{ $book->subject ?: '-' }}</td>
                                 </tr>
                             </tbody>
@@ -243,12 +243,12 @@
                     <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="w-full h-full rounded-full object-cover">
                 </div>
                 <div class="flex flex-col">
-                    <span class="font-bold text-base tracking-wide">Universitas Sumatera Utara</span>
+                    <span class="font-bold text-base tracking-wide">{{ __('Perpustakaan Universitas Sumatera Utara') }}</span>
                     <span class="text-xs text-green-200">Online Public Access Catalog © 2026</span>
                 </div>
             </div>
             <p class="text-xs text-green-100/60 max-w-md text-center sm:text-right">
-                Perpustakaan Universitas Sumatera Utara. Jl. Perpustakaan No. 1, Kampus Padang Bulan, Medan, Sumatera Utara.
+                {{ __('Perpustakaan Universitas Sumatera Utara. Jl. Perpustakaan No. 1, Kampus Padang Bulan, Medan, Sumatera Utara.') }}
             </p>
         </div>
     </footer>

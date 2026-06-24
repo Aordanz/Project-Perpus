@@ -46,6 +46,11 @@ class BookController extends Controller
             });
         }
 
+        // 1.5 Starts with (Index Judul)
+        if ($request->filled('starts_with')) {
+            $query->where('title', 'like', $request->starts_with . '%');
+        }
+
         // 2. Specific search modal parameters
         if ($request->filled('inJudul')) {
             $query->where('title', 'like', "%{$request->inJudul}%");
