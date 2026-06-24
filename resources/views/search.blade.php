@@ -60,16 +60,7 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo & Brand -->
                 <div class="flex items-center gap-6">
-                    <!-- OPAC Brand Block -->
-                    <a href="{{ route('home') }}" class="flex flex-col text-white group whitespace-nowrap">
-                        <span class="font-extrabold text-xl sm:text-2xl lg:text-3xl leading-none tracking-[0.15em] group-hover:text-green-200 transition">O P A C</span>
-                        <span class="text-[7.5px] sm:text-[8px] lg:text-[9px] font-bold text-green-100/90 leading-none tracking-wide uppercase mt-0.5 whitespace-nowrap">ONLINE PUBLIC ACCESS CATALOG</span>
-                    </a>
-
-                    <!-- Divider -->
-                    <div class="h-8 w-px bg-white/20 hidden md:block"></div>
-
-                    <!-- USU Logo & Name -->
+                <!-- USU Logo & Name -->
                     <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                         <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
                         <div class="flex flex-col hidden sm:flex">
@@ -78,19 +69,21 @@
                         </div>
                     </a>
                 </div>
-
-                <!-- Back to Home Link -->
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('home') }}" class="text-white hover:text-green-200 transition text-sm font-semibold flex items-center gap-1">
-                        <i class="ph ph-arrow-left"></i> {{ __('Kembali ke Beranda') }}
-                    </a>
-                </div>
+                
+                <div></div> <!-- Empty right section -->
             </div>
         </div>
     </nav>
 
     <!-- Main Content Area -->
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Back to Home Link (Below Navbar) -->
+        <div class="mb-6">
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-[#106c38] hover:text-[#064e3b] transition text-sm font-bold bg-[#106c38]/5 hover:bg-[#106c38]/10 px-4 py-2 rounded-lg border border-[#106c38]/10">
+                <i class="ph ph-arrow-left"></i> {{ __('Kembali ke Beranda') }}
+            </a>
+        </div>
         
         <!-- Search Header Banner with Background Image -->
         <div class="relative bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 sm:p-10 mb-8 overflow-hidden text-white shadow-lg">
@@ -148,7 +141,7 @@
         <!-- Results List -->
         <div class="space-y-4 mb-8">
             @forelse($books as $book)
-                <div class="result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-5 sm:gap-6 items-start shadow-sm">
+                <div class="result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-5 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group">
                     <!-- Book Cover -->
                     <div class="w-24 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
@@ -253,23 +246,7 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-br from-[#064e3b] to-[#022c22] border-t-4 border-[#106c38] py-10 text-white mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-0.5 overflow-hidden">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="w-full h-full rounded-full object-cover">
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-bold text-base tracking-wide">{{ __('Perpustakaan Universitas Sumatera Utara') }}</span>
-                    <span class="text-xs text-green-200">Online Public Access Catalog © 2026</span>
-                </div>
-            </div>
-            <p class="text-xs text-green-100/60 max-w-md text-center sm:text-right">
-                Perpustakaan Universitas Sumatera Utara. Jl. Perpustakaan No. 1, Kampus Padang Bulan, Medan, Sumatera Utara.
-            </p>
-        </div>
-    </footer>
+    @include('partials.footer')
 
     <!-- Advanced Search Modal -->
     <div id="modal-pencarian-spesifik" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
