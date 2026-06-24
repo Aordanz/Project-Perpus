@@ -4,15 +4,6 @@
         <div class="flex justify-between items-center h-16">
             <!-- Logo & Links -->
             <div class="flex items-center gap-4 lg:gap-6 flex-shrink-0">
-                <!-- OPAC Brand Block -->
-                <a href="{{ route('home') }}" class="flex flex-col text-white group whitespace-nowrap">
-                    <span class="font-extrabold text-xl sm:text-2xl lg:text-3xl leading-none tracking-[0.15em] group-hover:text-green-200 transition">O P A C</span>
-                    <span class="text-[7.5px] sm:text-[8px] lg:text-[9px] font-bold text-green-100/90 leading-none tracking-wide uppercase mt-0.5 whitespace-nowrap">ONLINE PUBLIC ACCESS CATALOG</span>
-                </a>
-
-                <!-- Divider -->
-                <div class="h-8 w-px bg-white/20 hidden md:block"></div>
-
                 <!-- USU Logo & Name -->
                 <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                     <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
@@ -29,9 +20,17 @@
                 <a href="{{ route('koleksi.terbaru') }}" class="{{ request()->routeIs('koleksi.terbaru') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Koleksi Terbaru') }}</a>
                 <a href="{{ route('index-judul') }}" class="{{ request()->routeIs('index-judul') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Index Judul') }}</a>
                 <div class="relative group">
-                    <button class="text-green-100 font-medium hover:text-white transition flex items-center gap-1 pb-1 whitespace-nowrap">
+                    <button class="text-green-100 font-medium hover:text-white transition flex items-center gap-1 pb-1 whitespace-nowrap cursor-pointer">
                         {{ __('Tautan Lain') }} <i class="ph ph-caret-down"></i>
                     </button>
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden border border-slate-100">
+                        <a href="https://www.usu.ac.id/" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">Universitas Sumatera Utara</a>
+                        <a href="https://library.usu.ac.id/id" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">Perpustakaan</a>
+                        <a href="https://repositori.usu.ac.id/" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">USU-IR</a>
+                        <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">Scientific eJournals</a>
+                        <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">Scientific eBooks</a>
+                    </div>
                 </div>
                 <a href="#" class="text-green-100 font-medium hover:text-white transition pb-1 whitespace-nowrap">{{ __('Cek Pinjaman') }}</a>
                 <a href="{{ route('bantuan') }}" class="{{ request()->routeIs('bantuan') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Bantuan') }}</a>

@@ -180,25 +180,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-[#064e3b] to-[#022c22] border-t-4 border-[#106c38] mt-auto py-10 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-green-400 rounded-full mix-blend-multiply filter blur-2xl"></div>
-            <div class="absolute bottom-0 left-1/4 w-60 h-60 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
-            <div class="flex items-center gap-4">
-                <div class="bg-white p-1.5 rounded-full shadow-lg">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="w-10 h-10">
-                </div>
-                <div>
-                    <p class="text-white font-bold text-lg tracking-wide">{{ __('Perpustakaan Universitas Sumatera Utara') }}</p>
-                    <p class="text-green-200/80 text-sm">© 2026 OPAC Redesign Project</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 
 </body>
 </html>

@@ -113,10 +113,21 @@ class BookController extends Controller
     /**
      * Display the 20 latest books.
      */
-    public function latest()
+    public function latest(Request $request)
     {
-        $latestBooks = Book::with(['items.location'])->latest()->take(20)->get();
+        $query = Book::with(['items.location'])->latest();
+
+        if ($request->filled('location')) {
+            $locationCode = $request->location;
+            $query->whereHas('items.location', function ($q) use ($locationCode) {
+                $q->where('code', $locationCode);
+            });
+        }
+
+        $latestBooks = $query->take(20)->get();
         
-        return view('koleksi-terbaru', compact('latestBooks'));
+        $locations = Location::all();
+        
+        return view('koleksi-terbaru', compact('latestBooks', 'locations'));
     }
 }

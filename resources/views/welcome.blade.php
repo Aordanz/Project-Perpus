@@ -212,24 +212,35 @@
         </div>
 
         <!-- Content Container -->
-        <div class="relative z-10 flex flex-col justify-start pt-6 pb-2 w-full">
-            <!-- Search Area -->
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-4 w-full">
-                <!-- Search Bar -->
-                <form action="{{ route('search') }}" method="GET" class="max-w-3xl mx-auto bg-white rounded-2xl p-2 shadow-2xl flex items-center focus-within:ring-4 focus-within:ring-[#106c38]/30 transition-all">
-                    <div class="pl-5 text-slate-400">
-                        <i class="ph ph-magnifying-glass text-2xl"></i>
-                    </div>
-                    <input type="text" name="q" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder-slate-400 px-4 py-4 text-lg outline-none">
-                    <button type="submit" class="bg-[#106c38] text-white rounded-xl px-8 py-4 font-semibold text-lg hover:bg-green-800 transition shadow-lg shadow-[#106c38]/30">
-                        {{ __('Cari') }}
-                    </button>
-                </form>
-                <div class="mt-3">
-                    <button id="open-modal-pencarian-spesifik" class="text-green-200 hover:text-white transition text-sm font-medium flex items-center justify-center gap-1 mx-auto bg-transparent border-none outline-none cursor-pointer">
-                        {{ __('Pencarian Spesifik') }} <i class="ph ph-arrow-right"></i>
-                    </button>
+        <div class="relative z-10 flex flex-col justify-start pt-2 w-full">
+            <!-- OPAC Brand Block -->
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-4 mt-2">
+                <div class="flex flex-col text-white">
+                    <span class="font-extrabold text-4xl sm:text-5xl lg:text-6xl leading-none tracking-[0.2em] drop-shadow-lg mb-2">O P A C</span>
+                    <span class="text-xs sm:text-sm lg:text-base font-bold text-green-100/90 leading-none tracking-widest uppercase drop-shadow-md mb-1">ONLINE PUBLIC ACCESS CATALOG</span>
+                    <span class="text-[10px] sm:text-xs lg:text-sm font-semibold text-green-100/80 leading-none tracking-wide drop-shadow-md">University of Sumatera Utara Library</span>
                 </div>
+            </div>
+
+            <!-- Search Area -->
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-6 w-full mt-4">
+                <!-- Search Bar -->
+                <form action="{{ route('search') }}" method="GET" class="max-w-3xl mx-auto flex flex-col md:flex-row gap-3 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-xl">
+                    <div class="flex-grow relative flex items-center bg-white rounded-xl border border-transparent overflow-hidden focus-within:ring-2 focus-within:ring-[#106c38]/20 transition-all">
+                        <div class="absolute left-4 text-slate-400">
+                            <i class="ph ph-magnifying-glass text-xl"></i>
+                        </div>
+                        <input type="text" name="q" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full pl-11 pr-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm sm:text-base font-medium">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" class="bg-[#106c38] hover:bg-green-800 text-white font-bold text-sm sm:text-base px-6 py-3 sm:py-4 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
+                            <i class="ph ph-magnifying-glass"></i> {{ __('Cari') }}
+                        </button>
+                        <button type="button" id="open-modal-pencarian-spesifik" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base px-5 py-3 sm:py-4 rounded-xl transition border border-emerald-500/35 flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="ph ph-sliders-horizontal"></i> {{ __('Spesifik') }}
+                        </button>
+                    </div>
+                </form>
             </div>
 
             <!-- 20 Koleksi Terbaru Carousel -->
@@ -330,115 +341,93 @@
         </div>
     </div>
 
-    <!-- Statistics Section -->
-    <div id="statistics-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-20">
-        <div class="text-center mb-6">
-            <h2 class="text-3xl font-bold text-slate-800 mb-3">{{ __('Jumlah Judul Buku Berdasarkan Lokasi') }}</h2>
-            <div class="w-24 h-1 bg-[#106c38] mx-auto rounded-full"></div>
-            <p class="mt-4 text-slate-500">{{ __('Koleksi tersebar di berbagai fakultas dan perpustakaan pusat') }}</p>
+    <!-- Statistics Section (Marquee) -->
+    <div id="statistics-section" class="pt-6 pb-6 w-full overflow-hidden bg-[#f8fafc]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 relative flex flex-col items-center justify-center">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800 mb-3">{{ __('Jumlah Judul Buku Berdasarkan Lokasi') }}</h2>
+                <div class="w-24 h-1 bg-[#106c38] mx-auto rounded-full"></div>
+            </div>
+            <div class="mt-5 sm:mt-0 sm:absolute sm:right-8 sm:top-0 sm:bottom-0 flex items-center justify-center">
+                <button id="btn-toggle-locations" class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-[#106c38] px-6 py-2.5 rounded-full font-bold text-sm tracking-wider uppercase border-2 border-[#106c38]/20 hover:border-[#106c38] transition shadow-sm focus:outline-none cursor-pointer">
+                    <span id="text-toggle-locations">{{ __('Lihat Semua') }}</span> 
+                    <i class="ph ph-caret-down text-lg transition-transform duration-300" id="icon-toggle-locations"></i>
+                </button>
+            </div>
         </div>
 
-        <!-- Desktop Grid (Hidden on Mobile) -->
-        <div id="locations-desktop" class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($locations as $stat)
-            <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-8 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300 block">
-                <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                    <i class="ph {{ $stat->icon }} text-8xl"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-2">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                <p class="text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300">{{ __($stat->name) }}</p>
-            </a>
-            @endforeach
-        </div>
+        <div id="marquee-locations-container" class="marquee-container relative w-full overflow-hidden py-4 transition-all duration-500">
+            <!-- Fade edges -->
+            <div class="absolute top-0 left-0 w-8 md:w-32 h-full bg-gradient-to-r from-[#f8fafc] to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute top-0 right-0 w-8 md:w-32 h-full bg-gradient-to-l from-[#f8fafc] to-transparent z-10 pointer-events-none"></div>
 
-        <!-- Mobile Carousel View (Hidden on Desktop) -->
-        <div id="locations-mobile" class="block md:hidden relative overflow-hidden">
-            <!-- Carousel Track -->
-            <div id="mobile-carousel-track" class="flex transition-transform duration-500 ease-in-out">
-                @foreach($locations->chunk(6) as $chunkIndex => $chunk)
-                <div class="w-full flex-shrink-0 grid grid-cols-2 gap-4 px-2">
-                    @foreach($chunk as $stat)
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-4 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300 block">
-                        <div class="absolute top-0 right-0 p-2 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                            <i class="ph {{ $stat->icon }} text-5xl"></i>
+            <div class="animate-marquee-right flex gap-6 px-3">
+                <!-- Original Set -->
+                <div class="flex gap-6 shrink-0">
+                    @foreach($locations as $stat)
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[280px] shrink-0 h-[100px]">
+                        
+                        <!-- Orange glow at bottom right -->
+                        <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
+
+                        <div class="flex flex-col z-10 max-w-[75%]">
+                            <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                            <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
                         </div>
-                        <h3 class="text-2xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-1">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                        <p class="text-xs text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300 leading-tight">{{ __($stat->name) }}</p>
+                        
+                        <div class="text-[#064e3b] z-10 opacity-90">
+                            <i class="ph {{ $stat->icon }} text-[42px]"></i>
+                        </div>
                     </a>
                     @endforeach
                 </div>
-                @endforeach
-            </div>
+                <!-- Duplicated Set for Loop -->
+                <div class="flex gap-6 shrink-0">
+                    @foreach($locations as $stat)
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[280px] shrink-0 h-[100px]">
+                        
+                        <!-- Orange glow at bottom right -->
+                        <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
 
-            <!-- Carousel Navigation Controls -->
-            <div id="mobile-carousel-nav" class="flex items-center justify-between mt-6 px-4">
-                <button id="btn-mobile-prev" class="w-10 h-10 bg-white text-[#106c38] rounded-full shadow-md flex items-center justify-center border border-slate-100 disabled:opacity-40" disabled>
-                    <i class="ph ph-caret-left text-xl font-bold"></i>
-                </button>
-                
-                <!-- Dots Indicator -->
-                <div class="flex gap-2" id="carousel-dots">
-                    @foreach($locations->chunk(6) as $chunkIndex => $chunk)
-                    <span class="dot w-2.5 h-2.5 rounded-full transition-all duration-300 {{ $chunkIndex === 0 ? 'bg-[#106c38] scale-110' : 'bg-slate-300' }}"></span>
+                        <div class="flex flex-col z-10 max-w-[75%]">
+                            <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                            <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
+                        </div>
+                        
+                        <div class="text-[#064e3b] z-10 opacity-90">
+                            <i class="ph {{ $stat->icon }} text-[42px]"></i>
+                        </div>
+                    </a>
                     @endforeach
                 </div>
-
-                <button id="btn-mobile-next" class="w-10 h-10 bg-white text-[#106c38] rounded-full shadow-md flex items-center justify-center border border-slate-100">
-                    <i class="ph ph-caret-right text-xl font-bold"></i>
-                </button>
             </div>
         </div>
 
-        <!-- Mobile Expand Button Container -->
-        <div id="mobile-expand-container" class="block md:hidden mt-6 text-center">
-            <button id="btn-mobile-expand" class="inline-flex items-center gap-2 bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white px-6 py-3 rounded-full font-bold text-xs tracking-wider uppercase border-2 border-[#106c38]/20 hover:border-[#106c38] transition shadow-md focus:outline-none cursor-pointer">
-                {{ __('Tampilkan Semua Kebawah') }} <i class="ph ph-arrow-down-right"></i>
-            </button>
-        </div>
-
-        <!-- Mobile Expanded View (Hidden by default) -->
-        <div id="locations-mobile-expanded" class="hidden md:hidden">
-            <div class="grid grid-cols-2 gap-4 px-2">
+        <!-- Expanded Grid View (Hidden by default) -->
+        <div id="expanded-locations-grid" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hidden transition-all duration-500 opacity-0 transform -translate-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 pt-2">
                 @foreach($locations as $stat)
-                <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="stat-card bg-white hover:bg-[#106c38] rounded-2xl p-4 border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer transition-colors duration-300 block">
-                    <div class="absolute top-0 right-0 p-2 opacity-5 group-hover:opacity-20 transition-opacity duration-300 text-[#106c38] group-hover:text-white">
-                        <i class="ph {{ $stat->icon }} text-5xl"></i>
+                <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 h-[100px] w-full">
+                    
+                    <!-- Orange glow at bottom right -->
+                    <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
+
+                    <div class="flex flex-col z-10 max-w-[75%]">
+                        <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                        <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
                     </div>
-                    <h3 class="text-2xl font-bold text-[#106c38] group-hover:text-white transition-colors duration-300 mb-1">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                    <p class="text-xs text-slate-600 group-hover:text-green-50 font-medium transition-colors duration-300 leading-tight">{{ $stat->name }}</p>
+                    
+                    <div class="text-[#064e3b] z-10 opacity-90">
+                        <i class="ph {{ $stat->icon }} text-[42px]"></i>
+                    </div>
                 </a>
                 @endforeach
-            </div>
-            
-            <div class="mt-6 text-center">
-                <button id="btn-mobile-collapse" class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 px-6 py-3 rounded-full font-bold text-xs tracking-wider uppercase border-2 border-slate-200 transition shadow-md focus:outline-none cursor-pointer">
-                    {{ __('Kembalikan ke Slider') }} <i class="ph ph-arrow-up-left"></i>
-                </button>
             </div>
         </div>
     </div>
 
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-[#064e3b] to-[#022c22] border-t-4 border-[#106c38] mt-12 py-10 relative overflow-hidden">
-        <!-- Abstract Shapes in Footer -->
-        <div class="absolute top-0 right-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-green-400 rounded-full mix-blend-multiply filter blur-2xl"></div>
-            <div class="absolute bottom-0 left-1/4 w-60 h-60 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
-            <div class="flex items-center gap-4">
-                <div class="bg-white p-1.5 rounded-full shadow-lg">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="w-10 h-10">
-                </div>
-                <div>
-                    <p class="text-white font-bold text-lg tracking-wide">{{ __('Perpustakaan Universitas Sumatera Utara') }}</p>
-                    <p class="text-green-200/80 text-sm">© 2026 OPAC Redesign Project</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 
     <!-- Animations -->
     <style>
@@ -456,6 +445,20 @@
         }
         .animation-delay-4000 {
             animation-delay: 4s;
+        }
+
+        /* Marquee Animation */
+        @keyframes marquee-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+        .animate-marquee-right {
+            display: flex;
+            width: max-content;
+            animation: marquee-right 90s linear infinite;
+        }
+        .marquee-container:hover .animate-marquee-right {
+            animation-play-state: paused;
         }
 
         /* Hide scrollbar for slider */
@@ -851,6 +854,43 @@
                     carouselTrack.addEventListener('mouseenter', () => clearInterval(newestAutoScroll));
                     carouselTrack.addEventListener('mouseleave', resetNewestAutoPlay);
                 }
+            }
+            // Location grid toggle functionality
+            const btnToggleLocations = document.getElementById('btn-toggle-locations');
+            const marqueeView = document.getElementById('marquee-locations-container');
+            const gridView = document.getElementById('expanded-locations-grid');
+            const iconToggleLoc = document.getElementById('icon-toggle-locations');
+            const textToggleLoc = document.getElementById('text-toggle-locations');
+
+            if (btnToggleLocations) {
+                btnToggleLocations.addEventListener('click', function() {
+                    if (gridView.classList.contains('hidden')) {
+                        // Show grid, hide marquee
+                        marqueeView.classList.add('hidden');
+                        gridView.classList.remove('hidden');
+                        
+                        // Small delay for transition
+                        setTimeout(() => {
+                            gridView.classList.remove('opacity-0', '-translate-y-4');
+                            gridView.classList.add('opacity-100', 'translate-y-0');
+                        }, 10);
+                        
+                        iconToggleLoc.classList.replace('ph-caret-down', 'ph-caret-up');
+                        textToggleLoc.textContent = '{{ __("Sembunyikan") }}';
+                    } else {
+                        // Hide grid, show marquee
+                        gridView.classList.remove('opacity-100', 'translate-y-0');
+                        gridView.classList.add('opacity-0', '-translate-y-4');
+                        
+                        setTimeout(() => {
+                            gridView.classList.add('hidden');
+                            marqueeView.classList.remove('hidden');
+                        }, 300); // match transition duration
+                        
+                        iconToggleLoc.classList.replace('ph-caret-up', 'ph-caret-down');
+                        textToggleLoc.textContent = '{{ __("Lihat Semua") }}';
+                    }
+                });
             }
         });
     </script>

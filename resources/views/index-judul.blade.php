@@ -32,12 +32,19 @@
     @include('partials.navbar')
 
     <!-- Header Section with Image Background -->
-    <div class="relative pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden bg-slate-900">
+    <div class="relative pt-24 pb-24 lg:pt-28 lg:pb-32 overflow-hidden bg-slate-900">
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('kolam_perpustakaan.jpg') }}" alt="Perpustakaan USU" class="w-full h-full object-cover opacity-40">
             <div class="absolute inset-0 bg-gradient-to-b from-[#064e3b]/80 via-[#064e3b]/60 to-[#f8fafc]"></div>
         </div>
         
+        <!-- Back to Home Link -->
+        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 sm:mb-8 text-left">
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-white/90 hover:text-white transition text-sm font-bold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg border border-white/20 backdrop-blur-md shadow-sm">
+                <i class="ph ph-arrow-left"></i> {{ __('Kembali ke Beranda') }}
+            </a>
+        </div>
+
         <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white mb-6 shadow-xl">
                 <i class="ph ph-books text-3xl"></i>
@@ -51,7 +58,7 @@
 
     <!-- Content Section -->
     <div class="flex-grow max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20">
-        <div class="bg-white rounded-3xl p-8 md:p-12 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+        <div class="bg-white rounded-3xl p-8 md:p-12 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative">
             
             <div class="text-center mb-10">
                 <h2 class="text-2xl font-bold text-slate-800">{{ __('Cari Berdasarkan Awalan') }}</h2>
@@ -89,25 +96,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-[#064e3b] to-[#022c22] border-t-4 border-[#106c38] mt-auto py-10 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-green-400 rounded-full mix-blend-multiply filter blur-2xl"></div>
-            <div class="absolute bottom-0 left-1/4 w-60 h-60 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
-            <div class="flex items-center gap-4">
-                <div class="bg-white p-1.5 rounded-full shadow-lg">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="w-10 h-10 rounded-full object-cover">
-                </div>
-                <div>
-                    <p class="text-white font-bold text-lg tracking-wide">{{ __('Perpustakaan Universitas Sumatera Utara') }}</p>
-                    <p class="text-green-200/80 text-sm">© 2026 OPAC Redesign Project</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 
 </body>
 </html>
