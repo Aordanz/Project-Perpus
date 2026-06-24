@@ -42,6 +42,28 @@
 </head>
 <body class="text-slate-800 antialiased selection:bg-green-200 selection:text-green-900">
 
+    @if (session('success'))
+        <div id="toast-success" class="fixed bottom-5 right-5 z-50 bg-[#106c38] text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-500">
+            <i class="ph ph-check-circle text-2xl text-emerald-350"></i>
+            <div>
+                <p class="font-bold text-sm">Berhasil!</p>
+                <p class="text-xs text-green-100 mt-0.5">{{ session('success') }}</p>
+            </div>
+            <button onclick="document.getElementById('toast-success').remove()" class="text-white hover:text-green-200 ml-4 bg-transparent border-none cursor-pointer">
+                <i class="ph ph-x text-lg"></i>
+            </button>
+        </div>
+        <script>
+            setTimeout(() => {
+                const toast = document.getElementById('toast-success');
+                if (toast) {
+                    toast.classList.add('opacity-0', 'translate-y-4');
+                    setTimeout(() => toast.remove(), 500);
+                }
+            }, 6000);
+        </script>
+    @endif
+
     <!-- Navigation -->
     <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,12 +94,35 @@
                 <div class="hidden md:flex space-x-5 items-center">
                     <a href="#" class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition">Bantuan</a>
                     <a href="#" class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition">Kontak Kami</a>
-                    <button class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition flex items-center gap-1">
+                    <button class="text-slate-600 font-medium text-sm hover:text-[#106c38] transition flex items-center gap-1 bg-transparent border-none cursor-pointer">
                         <i class="ph ph-translate text-lg"></i> Bahasa
                     </button>
-                    <a href="#" class="bg-[#106c38] text-white px-5 py-2 rounded-full font-medium text-sm shadow-md shadow-green-700/30 hover:bg-green-800 hover:shadow-green-800/50 transition-all">
-                        Login
-                    </a>
+                    @auth
+                        <div class="relative group">
+                            <button class="bg-[#106c38] text-white px-5 py-2.5 rounded-full font-semibold text-sm flex items-center gap-2 shadow-md shadow-green-700/20 hover:bg-green-800 transition cursor-pointer border-none">
+                                <i class="ph ph-user text-base"></i>
+                                <span>{{ Auth::user()->name }}</span>
+                                <i class="ph ph-caret-down text-xs"></i>
+                            </button>
+                            <!-- Dropdown Menu -->
+                            <div class="absolute right-0 mt-2 w-56 bg-white border border-slate-100 rounded-2xl shadow-2xl py-2 hidden group-hover:block transition-all duration-300">
+                                <div class="px-4 py-2 border-b border-slate-50">
+                                    <span class="block text-[10px] text-slate-400 uppercase font-bold tracking-wider">Peran Masuk</span>
+                                    <span class="block text-xs text-green-700 font-bold uppercase mt-0.5">{{ Auth::user()->role === 'pustakawan' ? 'Pustakawan' : 'Anggota' }}</span>
+                                </div>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2.5 text-xs text-rose-600 hover:bg-rose-50 font-bold transition flex items-center gap-2 border-none bg-transparent cursor-pointer">
+                                        <i class="ph ph-sign-out text-base"></i> KELUAR (LOGOUT)
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="bg-[#106c38] text-white px-5 py-2 rounded-full font-medium text-sm shadow-md shadow-green-700/30 hover:bg-green-800 hover:shadow-green-800/50 transition-all">
+                            Login
+                        </a>
+                    @endauth
                 </div>
             </div>
         </div>
