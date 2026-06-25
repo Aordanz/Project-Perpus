@@ -153,7 +153,7 @@
                             </div>
                         @endif
                         <span class="absolute top-2 left-2 bg-[#106c38] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
-                            {{ strtoupper($book->type) }}
+                            {{ strtoupper(__($book->type)) }}
                         </span>
                     </div>
 
@@ -162,7 +162,7 @@
                         <div class="mb-2">
                             <!-- Category Badge -->
                             <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[9px] font-bold px-2 py-0.5 rounded-full mb-1 tracking-wider uppercase">
-                                {{ $book->category ?: 'GENERAL' }}
+                                {{ __($book->category ?: 'Umum') }}
                             </span>
                             <h3 class="text-base sm:text-lg font-bold text-slate-800 hover:text-[#106c38] hover:underline transition leading-snug">
                                 <a href="{{ route('books.show', $book->id) }}">{{ $book->title }}</a>
@@ -282,7 +282,7 @@
                             <div class="absolute left-4 text-slate-400">
                                 <i class="ph ph-book-open text-xl"></i>
                             </div>
-                            <input type="text" name="inJudul" placeholder="e.g. Metode Penelitian Hukum" value="{{ request('inJudul') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                            <input type="text" name="inJudul" placeholder="{{ __('e.g. Metode Penelitian Hukum') }}" value="{{ request('inJudul') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
@@ -293,7 +293,7 @@
                             <div class="absolute left-4 text-slate-400">
                                 <i class="ph ph-user text-xl"></i>
                             </div>
-                            <input type="text" name="inPengarang1" placeholder="e.g. Prof. Soerjono Soekanto" value="{{ request('inPengarang1') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                            <input type="text" name="inPengarang1" placeholder="{{ __('e.g. Prof. Soerjono Soekanto') }}" value="{{ request('inPengarang1') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
@@ -305,7 +305,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-buildings text-xl"></i>
                                 </div>
-                                <input type="text" name="inPenerbit" placeholder="e.g. Rajawali Pers" value="{{ request('inPenerbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inPenerbit" placeholder="{{ __('e.g. Rajawali Pers') }}" value="{{ request('inPenerbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
@@ -314,7 +314,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-tag text-xl"></i>
                                 </div>
-                                <input type="text" name="inSubyek" placeholder="e.g. Hukum Perdata" value="{{ request('inSubyek') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inSubyek" placeholder="{{ __('e.g. Hukum Perdata') }}" value="{{ request('inSubyek') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>
@@ -327,7 +327,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-calendar text-xl"></i>
                                 </div>
-                                <input type="text" name="intahunterbit" placeholder="e.g. 2023" value="{{ request('intahunterbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="intahunterbit" placeholder="{{ __('e.g. 2023') }}" value="{{ request('intahunterbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
@@ -336,7 +336,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-barcode text-xl"></i>
                                 </div>
-                                <input type="text" name="inisbn" placeholder="e.g. 978-602-8512-30-4" value="{{ request('inisbn') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inisbn" placeholder="{{ __('e.g. 978-602-8512-30-4') }}" value="{{ request('inisbn') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>
@@ -349,7 +349,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-hash text-xl"></i>
                                 </div>
-                                <input type="text" name="inKlasifikasi" placeholder="e.g. 340" value="{{ request('inKlasifikasi') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inKlasifikasi" placeholder="{{ __('e.g. 340') }}" value="{{ request('inKlasifikasi') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
@@ -358,7 +358,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-qr-code text-xl"></i>
                                 </div>
-                                <input type="text" name="inbarcode" placeholder="e.g. 120930193" value="{{ request('inbarcode') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inbarcode" placeholder="{{ __('e.g. 120930193') }}" value="{{ request('inbarcode') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>

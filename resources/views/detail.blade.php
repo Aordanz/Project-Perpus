@@ -130,7 +130,7 @@
                             </div>
                         @endif
                         <span class="absolute top-3 left-3 bg-[#106c38] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
-                            {{ strtoupper($book->type) }}
+                            {{ strtoupper(__($book->type)) }}
                         </span>
                     </div>
                     
