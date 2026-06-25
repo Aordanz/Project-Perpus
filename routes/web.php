@@ -12,6 +12,7 @@ Route::get('/koleksi-terbaru', [BookController::class, 'latest'])->name('koleksi
 Route::get('/bantuan', function () { return view('bantuan'); })->name('bantuan');
 Route::get('/kontak', function () { return view('kontak'); })->name('kontak');
 Route::get('/index-judul', function () { return view('index-judul'); })->name('index-judul');
+Route::get('/galeri', [BookController::class, 'galeri'])->name('galeri');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
