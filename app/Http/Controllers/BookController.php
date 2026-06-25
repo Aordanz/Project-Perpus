@@ -10,6 +10,79 @@ use Illuminate\Http\Request;
 class BookController extends Controller
 {
     /**
+     * Apply advanced search logic to the query.
+     * Supports: Exact Match, Semantic Search (Synonyms), Full-Text Search, Fuzzy Search
+     */
+    /**
+     * Apply advanced search logic to the query.
+     * Supports: Exact Match, Semantic Search (Synonyms), Full-Text Search, Fuzzy Search
+     */
+    private function applyAdvancedSearch($query, $q, $columns = ['title', 'author', 'publisher', 'subject', 'isbn', 'classification'])
+    {
+        // 1. EXACT MATCH (if query is wrapped in quotes)
+        if (preg_match('/^"(.*)"$/', $q, $matches)) {
+            $exactTerm = $matches[1];
+            $query->where(function($w) use ($columns, $exactTerm) {
+                foreach ($columns as $column) {
+                    $w->orWhere($column, '=', $exactTerm);
+                }
+            });
+            return;
+        }
+
+        // 2. SEMANTIC SEARCH (Synonyms Mapping)
+        $synonyms = [
+            'komputer' => ['it', 'teknologi', 'sistem informasi', 'laptop', 'informatika', 'software', 'hardware', 'jaringan'],
+            'skripsi' => ['tugas akhir', 'tesis', 'disertasi', 'penelitian', 'jurnal', 'karya ilmiah'],
+            'hukum' => ['undang-undang', 'pidana', 'perdata', 'kriminal', 'konstitusi', 'pengadilan', 'ham'],
+            'agama' => ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'kepercayaan', 'teologi', 'akhlak'],
+            'kedokteran' => ['medis', 'kesehatan', 'keperawatan', 'farmasi', 'obat', 'penyakit', 'klinik'],
+            'sejarah' => ['historis', 'masa lalu', 'purbakala', 'zaman', 'kemerdekaan', 'kerajaan'],
+            'ekonomi' => ['bisnis', 'keuangan', 'akuntansi', 'manajemen', 'pasar', 'uang', 'perdagangan'],
+            'sastra' => ['bahasa', 'puisi', 'novel', 'linguistik', 'cerpen', 'drama'],
+        ];
+
+        $searchTerms = [$q];
+        $qLower = strtolower($q);
+        
+        // Add related terms if keyword matches our dictionary
+        foreach ($synonyms as $key => $relatedTerms) {
+            if (str_contains($qLower, $key) || in_array($qLower, $relatedTerms)) {
+                $searchTerms[] = $key;
+                $searchTerms = array_merge($searchTerms, $relatedTerms);
+            }
+        }
+        $searchTerms = array_unique($searchTerms);
+
+        $query->where(function($w) use ($columns, $searchTerms, $q) {
+            // 3. FULL TEXT SEARCH (FTS) for exact keyword/phrase relevance
+            // Hanya aktifkan FTS pada kolom yang sudah kita beri FULLTEXT index
+            $ftsColumns = array_intersect($columns, ['title', 'author', 'publisher', 'subject']);
+            if (!empty($ftsColumns)) {
+                $w->orWhereFullText($ftsColumns, $q, ['mode' => 'boolean']);
+            }
+
+            foreach ($searchTerms as $term) {
+                // PARTIAL MATCH (Normal LIKE)
+                foreach ($columns as $column) {
+                    $w->orWhere($column, 'like', "%{$term}%");
+                }
+            }
+            
+            // 4. FUZZY MATCH (mengubah spasi menjadi wildcard '%' contoh: 'Budi Santoso' -> '%Budi%Santoso%')
+            // Berguna jika ada typo spasi atau pencarian beberapa kata yang tidak berurutan
+            if (str_contains($q, ' ')) {
+                // Pastikan setiap spasi (bahkan multiple spasi) diubah menjadi % tunggal
+                $qClean = preg_replace('/\s+/', ' ', trim($q));
+                $fuzzyTerm = '%' . str_replace(' ', '%', $qClean) . '%';
+                foreach ($columns as $column) {
+                    $w->orWhere($column, 'like', $fuzzyTerm);
+                }
+            }
+        });
+    }
+
+    /**
      * Display the landing page (welcome).
      */
     public function index()
@@ -33,17 +106,9 @@ class BookController extends Controller
     {
         $query = Book::query();
 
-        // 1. Simple search bar
+        // 1. Simple search bar (Advanced Search)
         if ($request->filled('q')) {
-            $q = $request->q;
-            $query->where(function ($w) use ($q) {
-                $w->where('title', 'like', "%{$q}%")
-                  ->orWhere('author', 'like', "%{$q}%")
-                  ->orWhere('publisher', 'like', "%{$q}%")
-                  ->orWhere('subject', 'like', "%{$q}%")
-                  ->orWhere('isbn', 'like', "%{$q}%")
-                  ->orWhere('classification', 'like', "%{$q}%");
-            });
+            $this->applyAdvancedSearch($query, $request->q);
         }
 
         // 1.5 Starts with (Index Judul)
@@ -53,25 +118,25 @@ class BookController extends Controller
 
         // 2. Specific search modal parameters
         if ($request->filled('inJudul')) {
-            $query->where('title', 'like', "%{$request->inJudul}%");
+            $this->applyAdvancedSearch($query, $request->inJudul, ['title']);
         }
         if ($request->filled('inPengarang1')) {
-            $query->where('author', 'like', "%{$request->inPengarang1}%");
+            $this->applyAdvancedSearch($query, $request->inPengarang1, ['author']);
         }
         if ($request->filled('inPenerbit')) {
-            $query->where('publisher', 'like', "%{$request->inPenerbit}%");
+            $this->applyAdvancedSearch($query, $request->inPenerbit, ['publisher']);
         }
         if ($request->filled('inSubyek')) {
-            $query->where('subject', 'like', "%{$request->inSubyek}%");
+            $this->applyAdvancedSearch($query, $request->inSubyek, ['subject']);
         }
         if ($request->filled('intahunterbit')) {
             $query->where('publish_year', $request->intahunterbit);
         }
         if ($request->filled('inisbn')) {
-            $query->where('isbn', 'like', "%{$request->inisbn}%");
+            $this->applyAdvancedSearch($query, $request->inisbn, ['isbn']);
         }
         if ($request->filled('inKlasifikasi')) {
-            $query->where('classification', 'like', "%{$request->inKlasifikasi}%");
+            $this->applyAdvancedSearch($query, $request->inKlasifikasi, ['classification']);
         }
         if ($request->filled('inJenis')) {
             $query->where('type', $request->inJenis);
@@ -145,12 +210,7 @@ class BookController extends Controller
         $query = Book::with(['items.location'])->orderBy('title', 'asc')->orderBy('id', 'asc');
         
         if ($request->filled('q')) {
-            $q = $request->q;
-            $query->where(function ($w) use ($q) {
-                $w->where('title', 'like', "%{$q}%")
-                  ->orWhere('author', 'like', "%{$q}%")
-                  ->orWhere('publisher', 'like', "%{$q}%");
-            });
+            $this->applyAdvancedSearch($query, $request->q);
         }
 
         if ($request->filled('category')) {

@@ -61,7 +61,7 @@
                 <!-- Search -->
                 <div class="w-full md:w-96">
                     <form action="{{ route('galeri') }}" method="GET" class="relative">
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="{{ __('Cari di Galeri...') }}" 
+                        <input type="text" id="live-search-input" name="q" value="{{ request('q') }}" placeholder="{{ __('Cari di Galeri...') }}" 
                                class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-0 rounded-xl focus:ring-2 focus:ring-[#106c38]/20 focus:bg-white transition-all text-sm font-medium">
                         <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#106c38]">
                             <i class="ph ph-magnifying-glass text-lg font-bold"></i>
@@ -166,7 +166,10 @@
             <!-- Grid Layout mimicking Tokopedia -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
                 @foreach($books as $book)
-                    <a href="{{ route('books.show', $book->id) }}" class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+                    <a href="{{ route('books.show', $book->id) }}" class="book-card bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col group"
+                       data-title="{{ strtolower($book->title) }}" 
+                       data-author="{{ strtolower($book->author) }}" 
+                       data-publisher="{{ strtolower($book->publisher) }}">
                         
                         <!-- Image Container -->
                         <div class="aspect-[4/5] bg-slate-50 relative border-b border-slate-100 flex items-center justify-center overflow-hidden p-2">
@@ -316,6 +319,33 @@
     </div>
 
     @include('partials.footer')
+
+    <!-- Live Search Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('live-search-input');
+            const bookCards = document.querySelectorAll('.book-card');
+
+            if(searchInput && bookCards.length > 0) {
+                searchInput.addEventListener('input', function(e) {
+                    const keyword = e.target.value.toLowerCase().trim();
+
+                    bookCards.forEach(card => {
+                        const title = card.getAttribute('data-title') || '';
+                        const author = card.getAttribute('data-author') || '';
+                        const publisher = card.getAttribute('data-publisher') || '';
+
+                        // If any of the data matches the keyword, show it, otherwise hide it.
+                        if (title.includes(keyword) || author.includes(keyword) || publisher.includes(keyword)) {
+                            card.classList.remove('!hidden');
+                        } else {
+                            card.classList.add('!hidden');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>
