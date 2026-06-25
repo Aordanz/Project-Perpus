@@ -51,7 +51,8 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $roleText = $role === 'pustakawan' ? 'Pustakawan' : 'Anggota';
-            return redirect()->route('home')->with('success', "Selamat datang kembali, {$user->name}! Anda masuk sebagai {$roleText}.");
+            $redirectRoute = $role === 'pustakawan' ? 'admin.index' : 'home';
+            return redirect()->route($redirectRoute)->with('success', "Selamat datang kembali, {$user->name}! Anda masuk sebagai {$roleText}.");
         }
 
         return back()->withErrors([
