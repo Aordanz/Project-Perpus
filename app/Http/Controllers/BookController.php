@@ -46,6 +46,11 @@ class BookController extends Controller
             });
         }
 
+        // 1.5 Starts with (Index Judul)
+        if ($request->filled('starts_with')) {
+            $query->where('title', 'like', $request->starts_with . '%');
+        }
+
         // 2. Specific search modal parameters
         if ($request->filled('inJudul')) {
             $query->where('title', 'like', "%{$request->inJudul}%");
@@ -103,5 +108,26 @@ class BookController extends Controller
         $book = Book::with(['items.location'])->findOrFail($id);
         
         return view('detail', compact('book'));
+    }
+
+    /**
+     * Display the 20 latest books.
+     */
+    public function latest(Request $request)
+    {
+        $query = Book::with(['items.location'])->latest();
+
+        if ($request->filled('location')) {
+            $locationCode = $request->location;
+            $query->whereHas('items.location', function ($q) use ($locationCode) {
+                $q->where('code', $locationCode);
+            });
+        }
+
+        $latestBooks = $query->take(20)->get();
+        
+        $locations = Location::all();
+        
+        return view('koleksi-terbaru', compact('latestBooks', 'locations'));
     }
 }
