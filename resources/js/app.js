@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.getAttribute('href') === '#' ||
                 this.getAttribute('href').startsWith('#') ||
                 this.hostname !== window.location.hostname ||
+                this.hasAttribute('data-location') ||
                 e.ctrlKey || e.metaKey || e.shiftKey
             ) {
                 return;
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('submit', function (e) {
         // Abaikan form yang membuka di tab baru
         if (e.target.target === '_blank') return;
-        
+
         e.preventDefault(); // Cegah submit langsung
         triggerExitAnimation(); // Mainkan animasi keluar
 
