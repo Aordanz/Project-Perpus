@@ -135,4 +135,30 @@ class BookController extends Controller
         
         return view('koleksi-terbaru', compact('latestBooks', 'locations'));
     }
+
+    /**
+     * Display the gallery page.
+     */
+    public function galeri(Request $request)
+    {
+        // Urutkan berdasarkan abjad (title) lalu berdasarkan ID (penomoran)
+        $query = Book::with(['items.location'])->orderBy('title', 'asc')->orderBy('id', 'asc');
+        
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $query->where(function ($w) use ($q) {
+                $w->where('title', 'like', "%{$q}%")
+                  ->orWhere('author', 'like', "%{$q}%")
+                  ->orWhere('publisher', 'like', "%{$q}%");
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        $perPage = $request->input('per', 24);
+        $books = $query->paginate($perPage)->withQueryString();
+        return view('galeri', compact('books', 'perPage'));
+    }
 }
