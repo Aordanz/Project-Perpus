@@ -281,7 +281,7 @@
                                     <div class="overflow-hidden">
                                         <!-- Category -->
                                         <span class="inline-block px-2.5 py-0.5 bg-green-50 text-[#106c38] border border-green-200/60 text-[8px] sm:text-[9px] font-bold rounded-full uppercase tracking-wider mb-2 sm:mb-3">
-                                            {{ $book->category ?: 'GENERAL' }}
+                                            {{ __($book->category ?: 'Umum') }}
                                         </span>
                                         <!-- Title -->
                                         <h4 class="text-sm sm:text-base md:text-xl font-bold text-slate-900 leading-snug mb-1 sm:mb-2 line-clamp-2" title="{{ $book->title }}">
@@ -293,7 +293,7 @@
                                         </p>
                                         <!-- Short description -->
                                         <p class="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-5 leading-relaxed line-clamp-2 sm:line-clamp-3">
-                                            {{ $book->physical_description ?: 'Koleksi literatur terbaru Perpustakaan Universitas Sumatera Utara yang siap mendukung riset, studi, dan referensi akademik Anda.' }}
+                                            {{ $book->physical_description ?: __('Koleksi literatur terbaru Perpustakaan Universitas Sumatera Utara yang siap mendukung riset, studi, dan referensi akademik Anda.') }}
                                         </p>
 
                                         <!-- Metadata Grid (Tablet/Desktop) -->
@@ -517,7 +517,7 @@
                             <div class="absolute left-4 text-slate-400">
                                 <i class="ph ph-book-open text-xl"></i>
                             </div>
-                            <input type="text" name="inJudul" placeholder="e.g. Metode Penelitian Hukum" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                            <input type="text" name="inJudul" placeholder="{{ __('e.g. Metode Penelitian Hukum') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
@@ -528,7 +528,7 @@
                             <div class="absolute left-4 text-slate-400">
                                 <i class="ph ph-user text-xl"></i>
                             </div>
-                            <input type="text" name="inPengarang1" placeholder="e.g. Prof. Soerjono Soekanto" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                            <input type="text" name="inPengarang1" placeholder="{{ __('e.g. Prof. Soerjono Soekanto') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
@@ -540,7 +540,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-buildings text-xl"></i>
                                 </div>
-                                <input type="text" name="inPenerbit" placeholder="e.g. Rajawali Pers" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inPenerbit" placeholder="{{ __('e.g. Rajawali Pers') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
@@ -549,7 +549,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-tag text-xl"></i>
                                 </div>
-                                <input type="text" name="inSubyek" placeholder="e.g. Hukum Perdata" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inSubyek" placeholder="{{ __('e.g. Hukum Perdata') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>
@@ -562,7 +562,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-calendar text-xl"></i>
                                 </div>
-                                <input type="text" name="intahunterbit" placeholder="e.g. 2023" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="intahunterbit" placeholder="{{ __('e.g. 2023') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
@@ -571,7 +571,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-barcode text-xl"></i>
                                 </div>
-                                <input type="text" name="inisbn" placeholder="e.g. 978-602-8512-30-4" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inisbn" placeholder="{{ __('e.g. 978-602-8512-30-4') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>
@@ -584,7 +584,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-hash text-xl"></i>
                                 </div>
-                                <input type="text" name="inKlasifikasi" placeholder="e.g. 340" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inKlasifikasi" placeholder="{{ __('e.g. 340') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
@@ -593,7 +593,7 @@
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-qr-code text-xl"></i>
                                 </div>
-                                <input type="text" name="inbarcode" placeholder="e.g. 120930193" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inbarcode" placeholder="{{ __('e.g. 120930193') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>
@@ -668,8 +668,8 @@
                         <i id="modal-hasil-icon" class="ph ph-buildings"></i>
                     </div>
                     <div>
-                        <h3 id="modal-hasil-title" class="text-lg md:text-xl font-bold tracking-wide">Koleksi Buku</h3>
-                        <p class="text-xs text-green-100/90 font-medium font-sans">Daftar koleksi buku yang tersedia di lokasi ini</p>
+                        <h3 id="modal-hasil-title" class="text-lg md:text-xl font-bold tracking-wide">{{ __('Koleksi Buku') }}</h3>
+                        <p class="text-xs text-green-100/90 font-medium font-sans">{{ __('Daftar koleksi buku yang tersedia di lokasi ini') }}</p>
                     </div>
                 </div>
                 <button id="close-modal-hasil-lokasi" class="absolute top-5 right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-2 rounded-xl flex items-center justify-center cursor-pointer">
@@ -685,7 +685,7 @@
                         <div class="absolute left-4 text-slate-400">
                             <i class="ph ph-magnifying-glass text-xl"></i>
                         </div>
-                        <input type="text" id="modal-hasil-search" placeholder="Cari berdasarkan judul, pengarang, atau penerbit..." class="w-full pl-11 pr-10 py-3.5 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm font-medium">
+                        <input type="text" id="modal-hasil-search" placeholder="{{ __('Cari berdasarkan judul, pengarang, atau penerbit...') }}" class="w-full pl-11 pr-10 py-3.5 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm font-medium">
                         <button id="modal-hasil-search-clear" class="absolute right-4 text-slate-400 hover:text-slate-600 hidden bg-transparent border-none cursor-pointer">
                             <i class="ph ph-x-circle text-lg"></i>
                         </button>
@@ -708,7 +708,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200 mt-4 flex-shrink-0">
                     <!-- Show entries dropdown -->
                     <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                        <span>Tampilkan:</span>
+                        <span>{{ __('Tampilkan:') }}</span>
                         <div class="relative inline-block text-left" id="modal-custom-dropdown">
                             <!-- Dropdown Trigger Button -->
                             <button type="button" id="modal-dropdown-trigger" class="flex items-center justify-between gap-4 bg-white border border-emerald-600/35 text-slate-700 text-xs font-bold rounded-full pl-4 pr-3 py-1.5 outline-none cursor-pointer hover:border-emerald-600 focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all shadow-sm min-w-[75px]">
@@ -833,7 +833,7 @@
                 card.addEventListener('click', function (e) {
                     e.preventDefault();
                     
-                    const branchName = this.querySelector('p') ? this.querySelector('p').innerText : 'Koleksi Buku';
+                    const branchName = this.querySelector('p') ? this.querySelector('p').innerText : '{{ __("Koleksi Buku") }}';
                     const iconEl = this.querySelector('i');
                     const iconClass = iconEl ? iconEl.className : 'ph ph-buildings';
                     const searchUrl = this.getAttribute('href');
@@ -885,7 +885,7 @@
                     if (queryVal === '') return; // Don't search if empty
 
                     // Set modal info
-                    if (modalHasilTitle) modalHasilTitle.innerText = 'Hasil Pencarian: "' + queryVal + '"';
+                    if (modalHasilTitle) modalHasilTitle.innerText = '{{ __("Hasil Pencarian: ") }}' + '"' + queryVal + '"';
                     if (modalHasilIcon) modalHasilIcon.className = 'ph ph-magnifying-glass text-2xl';
 
                     // Reset search state
@@ -974,7 +974,7 @@
                             renderResults();
                         } else {
                             if (container) {
-                                container.innerHTML = '<div class="text-center py-12 text-slate-500 font-medium">Gagal memuat data koleksi.</div>';
+                                container.innerHTML = '<div class="text-center py-12 text-slate-500 font-medium">{{ __("Gagal memuat data koleksi.") }}</div>';
                             }
                         }
 
@@ -985,7 +985,7 @@
                         console.error('Error loading location results:', err);
                         if (loading) loading.classList.add('hidden');
                         if (container) {
-                            container.innerHTML = '<div class="text-center py-12 text-red-500 font-bold">Terjadi kesalahan saat memuat data. Silakan coba lagi.</div>';
+                            container.innerHTML = '<div class="text-center py-12 text-red-500 font-bold">{{ __("Terjadi kesalahan saat memuat data. Silakan coba lagi.") }}</div>';
                             container.classList.remove('hidden');
                         }
                     });
@@ -1004,9 +1004,9 @@
                             <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
                                 <i class="ph ph-warning-circle"></i>
                             </div>
-                            <h3 class="text-lg font-bold text-slate-800 mb-1">Koleksi Tidak Ditemukan</h3>
+                            <h3 class="text-lg font-bold text-slate-800 mb-1">{{ __("Koleksi Tidak Ditemukan") }}</h3>
                             <p class="text-sm text-slate-500 max-w-md mx-auto">
-                                Maaf, kami tidak dapat menemukan buku atau referensi yang cocok dengan kata kunci pencarian Anda di lokasi ini.
+                                {{ __("Maaf, kami tidak dapat menemukan buku atau referensi yang cocok dengan kata kunci pencarian Anda di lokasi ini.") }}
                             </p>
                         </div>
                     `;
@@ -1038,7 +1038,7 @@
                     // Prev button
                     const prevBtn = document.createElement('button');
                     prevBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
-                    prevBtn.innerHTML = `<i class="ph ph-caret-left"></i> Sebelumnya`;
+                    prevBtn.innerHTML = `<i class="ph ph-caret-left"></i> {{ __('Sebelumnya') }}`;
                     if (currentPage === 1) {
                         prevBtn.classList.add('opacity-50', 'pointer-events-none');
                     } else {
@@ -1071,7 +1071,7 @@
                     // Next button
                     const nextBtn = document.createElement('button');
                     nextBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
-                    nextBtn.innerHTML = `Berikutnya <i class="ph ph-caret-right"></i>`;
+                    nextBtn.innerHTML = `{{ __('Berikutnya') }} <i class="ph ph-caret-right"></i>`;
                     if (currentPage === totalPages) {
                         nextBtn.classList.add('opacity-50', 'pointer-events-none');
                     } else {
