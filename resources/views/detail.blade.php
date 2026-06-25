@@ -34,29 +34,79 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Header Navigation -->
-    <nav class="glass-nav sticky top-0 z-40 w-full transition-all">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo & Brand -->
-                <div class="flex items-center gap-6">
-                <!-- USU Logo & Name -->
-                    <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                        <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
-                        <div class="flex flex-col hidden sm:flex">
-                            <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas') }}</span>
-                            <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Sumatera Utara') }}</span>
-                        </div>
-                    </a>
-                </div>
-                
-                <div></div> <!-- Empty right section -->
-            </div>
-        </div>
-    </nav>
+    @include('partials.navbar')
 
     <!-- Main Content Area -->
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    @php
+        $getBigCategory = function($subj) {
+            $lower = strtolower(trim($subj));
+            
+            // Agama
+            if (str_contains($lower, 'religion') || str_contains($lower, 'islam') || str_contains($lower, 'faith') || str_contains($lower, 'agama')) {
+                return 'Agama';
+            }
+            
+            // Kesehatan & Kedokteran
+            if (
+                str_contains($lower, 'medicine') || 
+                str_contains($lower, 'nursing') || 
+                str_contains($lower, 'public health') || 
+                str_contains($lower, 'pharmacy') || 
+                str_contains($lower, 'dentistry') ||
+                str_contains($lower, 'kedokteran') ||
+                str_contains($lower, 'keperawatan') ||
+                str_contains($lower, 'kesehatan') ||
+                str_contains($lower, 'farmasi')
+            ) {
+                return 'Kesehatan & Kedokteran';
+            }
+            
+            // Sains & Teknologi
+            if (
+                str_contains($lower, 'engineering') || 
+                str_contains($lower, 'chemical') || 
+                str_contains($lower, 'mathematics') || 
+                str_contains($lower, 'biology') || 
+                str_contains($lower, 'computer') || 
+                str_contains($lower, 'forestry') || 
+                str_contains($lower, 'agriculture') ||
+                str_contains($lower, 'teknik') ||
+                str_contains($lower, 'matematika') ||
+                str_contains($lower, 'biologi') ||
+                str_contains($lower, 'komputer') ||
+                str_contains($lower, 'kehutanan') ||
+                str_contains($lower, 'pertanian')
+            ) {
+                return 'Sains & Teknologi';
+            }
+            
+            // Sosial & Humaniora
+            if (
+                str_contains($lower, 'social') || 
+                str_contains($lower, 'economics') || 
+                str_contains($lower, 'management') || 
+                str_contains($lower, 'law') || 
+                str_contains($lower, 'wisdom') ||
+                str_contains($lower, 'ekonomi') ||
+                str_contains($lower, 'manajemen') ||
+                str_contains($lower, 'hukum') ||
+                str_contains($lower, 'sosial') ||
+                str_contains($lower, 'kearifan')
+            ) {
+                return 'Sosial & Humaniora';
+            }
+            
+            return 'Umum';
+        };
+
+        $dbSubject = $book->category ?: ($book->subject ?: 'General');
+        $bigCategoryName = $getBigCategory($dbSubject);
+
+        $totalCopies = $book->items->count();
+        $availableCopies = $book->items->where('status', 'Tersedia')->count();
+        $borrowedCopies = $totalCopies - $availableCopies;
+    @endphp
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         
         <!-- Back button (Below Navbar) -->
         <div class="mb-6">
@@ -85,10 +135,6 @@
                     </div>
                     
                     <!-- Quick Stats -->
-                    @php
-                        $totalCopies = $book->items->count();
-                        $availableCopies = $book->items->where('status', 'Tersedia')->count();
-                    @endphp
                     <div class="w-full text-center py-4 border-t border-slate-100">
                         <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __('Ketersediaan Fisik') }}</span>
                         @if($availableCopies > 0)
@@ -120,7 +166,7 @@
                 <!-- Book Title header -->
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-sm">
                     <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[10px] font-bold px-3 py-1 rounded-full mb-3 tracking-wider uppercase">
-                        {{ $book->category ?: 'GENERAL' }}
+                        {{ __($bigCategoryName) }}
                     </span>
                     <h1 class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug mb-3">{{ $book->title }}</h1>
                     <p class="text-sm font-semibold text-slate-500 flex items-center gap-1.5">
@@ -190,44 +236,72 @@
                         <table class="w-full text-left border-collapse">
                             <tbody class="divide-y divide-slate-100 text-sm font-medium">
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Judul Seri') }}</td>
-                                    <td class="px-5 py-4 text-slate-700">-</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Judul') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->title ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('No. Panggil') }}</td>
-                                    <td class="px-5 py-4 text-slate-700">{{ $book->classification }}</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('No Panggil') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->call_number ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
                                     <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Penerbit') }}</td>
-                                    <td class="px-5 py-4 text-slate-700">{{ $book->publisher ?: '-' }} : {{ $book->publish_year ?: '-' }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->publisher ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Deskripsi Fisik') }}</td>
-                                    <td class="px-5 py-4 text-slate-700">{{ $book->physical_description ?: '-' }}</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Kota') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->publication_city ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Bahasa') }}</td>
-                                    <td class="px-5 py-4 text-slate-700">{{ __($book->language) }}</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Edisi') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->edition ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('ISBN / ISSN') }}</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Tahun') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->publish_year ?: '-' }}</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/30 transition">
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('ISBN') }}</td>
                                     <td class="px-5 py-4 text-slate-700">{{ $book->isbn ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Klasifikasi') }}</td>
-                                    <td class="px-5 py-4 text-slate-700">{{ $book->classification }}</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Deskripsi') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->physical_description ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Tipe Konten') }}</td>
-                                    <td class="px-5 py-4 text-slate-700">{{ __('Teks') }}</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('No. Klasifikasi') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->classification ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
-                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Tipe Media') }}</td>
-                                    <td class="px-5 py-4 text-slate-700">{{ __('Tanpa Perantara') }}</td>
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Golongan') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->golongan ?: '-' }}</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50/30 transition">
                                     <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Subyek') }}</td>
                                     <td class="px-5 py-4 text-slate-700">{{ $book->subject ?: '-' }}</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/30 transition">
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Bahasa') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->language ? __($book->language) : '-' }}</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/30 transition">
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Jenis') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->type ? __(ucfirst($book->type)) : '-' }}</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/30 transition">
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Catatan Umum') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $book->general_note ?: '-' }}</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/30 transition">
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Jumlah Eksemplar') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $totalCopies }}</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/30 transition">
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Terpinjam') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $borrowedCopies }}</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/30 transition">
+                                    <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Tersedia') }}</td>
+                                    <td class="px-5 py-4 text-slate-700">{{ $availableCopies }}</td>
                                 </tr>
                             </tbody>
                         </table>
