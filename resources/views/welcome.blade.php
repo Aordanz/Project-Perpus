@@ -709,13 +709,33 @@
                     <!-- Show entries dropdown -->
                     <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
                         <span>Tampilkan:</span>
-                        <div class="relative">
-                            <select id="modal-hasil-perpage" class="appearance-none bg-white border border-emerald-600/35 hover:border-emerald-600 rounded-full px-4 py-1.5 pr-8 outline-none font-bold text-slate-700 transition cursor-pointer text-xs">
-                                <option value="10">10</option>
-                                <option value="all">Semua</option>
-                            </select>
-                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                <i class="ph ph-caret-down text-[10px]"></i>
+                        <div class="relative inline-block text-left" id="modal-custom-dropdown">
+                            <!-- Dropdown Trigger Button -->
+                            <button type="button" id="modal-dropdown-trigger" class="flex items-center justify-between gap-4 bg-white border border-emerald-600/35 text-slate-700 text-xs font-bold rounded-full pl-4 pr-3 py-1.5 outline-none cursor-pointer hover:border-emerald-600 focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all shadow-sm min-w-[75px]">
+                                <span id="modal-dropdown-selected-label">10</span>
+                                <i class="ph ph-caret-down text-[10px] text-slate-400"></i>
+                            </button>
+                            <!-- Hidden input to store value -->
+                            <input type="hidden" id="modal-hasil-perpage" value="10">
+                            
+                            <!-- Dropdown Options Menu -->
+                            <div id="modal-dropdown-menu" class="hidden absolute left-0 bottom-full mb-2 w-28 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-30 transition-all">
+                                <button type="button" data-value="10" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-bold text-[#106c38] bg-green-50/50 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                                    <span>10</span>
+                                    <i class="ph ph-check text-[12px] modal-active-check"></i>
+                                </button>
+                                <button type="button" data-value="50" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                                    <span>50</span>
+                                    <i class="ph ph-check text-[12px] modal-active-check hidden"></i>
+                                </button>
+                                <button type="button" data-value="100" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                                    <span>100</span>
+                                    <i class="ph ph-check text-[12px] modal-active-check hidden"></i>
+                                </button>
+                                <button type="button" data-value="all" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                                    <span>{{ __('Semua') }}</span>
+                                    <i class="ph ph-check text-[12px] modal-active-check hidden"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -826,7 +846,25 @@
                     filteredCards = [];
                     currentPage = 1;
                     perPage = 10;
-                    if (perPageSelect) perPageSelect.value = "10";
+                    if (perPageSelect) {
+                        perPageSelect.value = "10";
+                        const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
+                        modalDropdownOptions.forEach(o => {
+                            const val = o.getAttribute('data-value');
+                            const check = o.querySelector('.modal-active-check');
+                            if (val === "10") {
+                                o.classList.remove('text-slate-600', 'font-semibold');
+                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                if (check) check.classList.remove('hidden');
+                            } else {
+                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                o.classList.add('text-slate-600', 'font-semibold');
+                                if (check) check.classList.add('hidden');
+                            }
+                        });
+                    }
                     if (searchInput) searchInput.value = '';
                     if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
 
@@ -1047,6 +1085,53 @@
                     }
                     currentPage = 1;
                     renderResults();
+                });
+            }
+
+            // Custom Dropdown UI Handler for Modal
+            const modalDropdownTrigger = document.getElementById('modal-dropdown-trigger');
+            const modalDropdownMenu = document.getElementById('modal-dropdown-menu');
+            const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
+            const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
+
+            if (modalDropdownTrigger && modalDropdownMenu) {
+                modalDropdownTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    modalDropdownMenu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', () => {
+                    modalDropdownMenu.classList.add('hidden');
+                });
+
+                modalDropdownOptions.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        const val = opt.getAttribute('data-value');
+                        const labelText = opt.querySelector('span').textContent.trim();
+                        
+                        modalDropdownLabel.textContent = labelText;
+                        perPageSelect.value = val;
+                        
+                        // Update active state in UI
+                        modalDropdownOptions.forEach(o => {
+                            const check = o.querySelector('.modal-active-check');
+                            if (o === opt) {
+                                o.classList.remove('text-slate-600', 'font-semibold');
+                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                if (check) check.classList.remove('hidden');
+                            } else {
+                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                o.classList.add('text-slate-600', 'font-semibold');
+                                if (check) check.classList.add('hidden');
+                            }
+                        });
+
+                        // Trigger change event programmatically
+                        const changeEvent = new Event('change');
+                        perPageSelect.dispatchEvent(changeEvent);
+                        
+                        modalDropdownMenu.classList.add('hidden');
+                    });
                 });
             }
 
