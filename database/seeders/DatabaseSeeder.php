@@ -17,11 +17,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Default User
+        // 1. Create Default User (Pustakawan)
         User::factory()->create([
             'name' => 'Admin Perpustakaan USU',
             'email' => 'admin@usu.ac.id',
             'password' => bcrypt('password'),
+            'role' => 'pustakawan',
+        ]);
+
+        // Create Default User (Anggota)
+        User::factory()->create([
+            'name' => 'Anggota Perpustakaan USU',
+            'email' => 'anggota@usu.ac.id',
+            'password' => bcrypt('password'),
+            'role' => 'anggota',
         ]);
 
         // 2. Create University

@@ -91,8 +91,13 @@ class BookController extends Controller
             });
         }
 
-        // Paginate results (10 items per page)
-        $books = $query->with(['items.location'])->paginate(10)->withQueryString();
+        // Paginate results (supports dynamic per_page or custom limit)
+        $perPage = request()->input('per_page', 10);
+        if ($perPage === 'all') {
+            $books = $query->with(['items.location'])->paginate(999999)->withQueryString();
+        } else {
+            $books = $query->with(['items.location'])->paginate((int)$perPage)->withQueryString();
+        }
 
         // Get locations for the advanced search form in results page
         $locations = Location::all();

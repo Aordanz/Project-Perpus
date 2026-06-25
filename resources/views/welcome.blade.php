@@ -365,7 +365,7 @@
                 <!-- Original Set -->
                 <div class="flex gap-6 shrink-0">
                     @foreach($locations as $stat)
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[280px] shrink-0 h-[100px]">
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[280px] shrink-0 h-[100px]">
                         
                         <!-- Orange glow at bottom right -->
                         <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
@@ -384,7 +384,7 @@
                 <!-- Duplicated Set for Loop -->
                 <div class="flex gap-6 shrink-0">
                     @foreach($locations as $stat)
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[280px] shrink-0 h-[100px]">
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[280px] shrink-0 h-[100px]">
                         
                         <!-- Orange glow at bottom right -->
                         <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
@@ -407,7 +407,7 @@
         <div id="expanded-locations-grid" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hidden transition-all duration-500 opacity-0 transform -translate-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 pt-2">
                 @foreach($locations as $stat)
-                <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 h-[100px] w-full">
+                <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 h-[100px] w-full">
                     
                     <!-- Orange glow at bottom right -->
                     <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
@@ -472,6 +472,14 @@
         .writing-vertical-rl {
             writing-mode: vertical-rl;
             text-orientation: mixed;
+        }
+        .result-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.05), 0 8px 8px -5px rgba(0, 0, 0, 0.02);
+            border-color: rgba(16, 108, 56, 0.3);
         }
     </style>
 
@@ -650,6 +658,76 @@
         </div>
     </div>
 
+    <!-- Location Results Modal -->
+    <div id="modal-hasil-lokasi" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[85vh] overflow-hidden border border-emerald-800/10 transform transition-all duration-200 scale-95 opacity-0 flex flex-col" id="modal-hasil-content">
+            <!-- Modal Header Banner -->
+            <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-6 py-5 text-white relative rounded-t-3xl flex-shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">
+                        <i id="modal-hasil-icon" class="ph ph-buildings"></i>
+                    </div>
+                    <div>
+                        <h3 id="modal-hasil-title" class="text-lg md:text-xl font-bold tracking-wide">Koleksi Buku</h3>
+                        <p class="text-xs text-green-100/90 font-medium font-sans">Daftar koleksi buku yang tersedia di lokasi ini</p>
+                    </div>
+                </div>
+                <button id="close-modal-hasil-lokasi" class="absolute top-5 right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-2 rounded-xl flex items-center justify-center cursor-pointer">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body (Flex container) -->
+            <div class="p-6 md:p-8 flex-grow flex flex-col min-h-0 bg-slate-50 rounded-b-3xl">
+                <!-- Search Bar (Fixed at top) -->
+                <div class="mb-6 flex-shrink-0">
+                    <div class="relative flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm focus-within:ring-2 focus-within:ring-[#106c38]/20 focus-within:border-[#106c38] transition-all">
+                        <div class="absolute left-4 text-slate-400">
+                            <i class="ph ph-magnifying-glass text-xl"></i>
+                        </div>
+                        <input type="text" id="modal-hasil-search" placeholder="Cari berdasarkan judul, pengarang, atau penerbit..." class="w-full pl-11 pr-10 py-3.5 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm font-medium">
+                        <button id="modal-hasil-search-clear" class="absolute right-4 text-slate-400 hover:text-slate-600 hidden bg-transparent border-none cursor-pointer">
+                            <i class="ph ph-x-circle text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scrollable list container -->
+                <div class="overflow-y-auto flex-grow min-h-0 pr-1 -mr-2 scrollbar-thin" id="modal-hasil-body">
+                    <!-- Loading State -->
+                    <div id="modal-hasil-loading" class="flex flex-col items-center justify-center py-16 gap-3">
+                        <div class="w-12 h-12 border-4 border-[#106c38] border-t-transparent rounded-full animate-spin"></div>
+                        <p class="text-slate-500 font-medium text-sm">Memuat daftar koleksi...</p>
+                    </div>
+                    <!-- Content Container -->
+                    <div id="modal-hasil-container" class="hidden space-y-4">
+                    </div>
+                </div>
+
+                <!-- Pagination Footer (Fixed at bottom) -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200 mt-4 flex-shrink-0">
+                    <!-- Show entries dropdown -->
+                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                        <span>Tampilkan:</span>
+                        <div class="relative">
+                            <select id="modal-hasil-perpage" class="appearance-none bg-white border border-emerald-600/35 hover:border-emerald-600 rounded-full px-4 py-1.5 pr-8 outline-none font-bold text-slate-700 transition cursor-pointer text-xs">
+                                <option value="10">10</option>
+                                <option value="all">Semua</option>
+                            </select>
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <i class="ph ph-caret-down text-[10px]"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Client-side Pagination links -->
+                    <div id="modal-hasil-pagination" class="flex items-center gap-1.5">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Script for Modal Toggle -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -684,6 +762,293 @@
                     closeModal();
                 }
             });
+
+            // Location results modal toggles
+            const modalHasil = document.getElementById('modal-hasil-lokasi');
+            const modalHasilContent = document.getElementById('modal-hasil-content');
+            const btnCloseHasil = document.getElementById('close-modal-hasil-lokasi');
+
+            function openModalHasil() {
+                modalHasil.classList.remove('hidden');
+                modalHasil.classList.add('flex');
+                setTimeout(() => {
+                    modalHasilContent.classList.remove('scale-95', 'opacity-0');
+                    modalHasilContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            }
+
+            function closeModalHasil() {
+                modalHasilContent.classList.remove('scale-100', 'opacity-100');
+                modalHasilContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modalHasil.classList.remove('flex');
+                    modalHasil.classList.add('hidden');
+                }, 200);
+            }
+
+            if (btnCloseHasil) btnCloseHasil.addEventListener('click', closeModalHasil);
+
+            modalHasil.addEventListener('click', function (e) {
+                if (e.target === modalHasil) {
+                    closeModalHasil();
+                }
+            });
+
+            // State variables for Live Search & Client-side Pagination
+            let allCards = [];
+            let filteredCards = [];
+            let currentPage = 1;
+            let perPage = 10;
+
+            const searchInput = document.getElementById('modal-hasil-search');
+            const clearSearchBtn = document.getElementById('modal-hasil-search-clear');
+            const perPageSelect = document.getElementById('modal-hasil-perpage');
+
+            // Handle location cards click to open search results popup on homepage
+            const locationCards = document.querySelectorAll('[data-location]');
+            const modalHasilTitle = document.getElementById('modal-hasil-title');
+            const modalHasilIcon = document.getElementById('modal-hasil-icon');
+
+            locationCards.forEach(card => {
+                card.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const branchName = this.querySelector('p') ? this.querySelector('p').innerText : 'Koleksi Buku';
+                    const iconEl = this.querySelector('i');
+                    const iconClass = iconEl ? iconEl.className : 'ph ph-buildings';
+                    const searchUrl = this.getAttribute('href');
+
+                    if (modalHasilTitle) modalHasilTitle.innerText = branchName;
+                    if (modalHasilIcon) modalHasilIcon.className = iconClass + ' text-2xl';
+
+                    // Reset search state
+                    allCards = [];
+                    filteredCards = [];
+                    currentPage = 1;
+                    perPage = 10;
+                    if (perPageSelect) perPageSelect.value = "10";
+                    if (searchInput) searchInput.value = '';
+                    if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
+
+                    openModalHasil();
+                    loadLocationResults(searchUrl);
+                });
+            });
+
+            function loadLocationResults(url) {
+                const loading = document.getElementById('modal-hasil-loading');
+                const container = document.getElementById('modal-hasil-container');
+                const paginationEl = document.getElementById('modal-hasil-pagination');
+                
+                if (loading) loading.classList.remove('hidden');
+                if (container) {
+                    container.classList.add('hidden');
+                    container.innerHTML = '';
+                }
+                if (paginationEl) paginationEl.innerHTML = '';
+
+                // Request with per_page=all to get all books for client-side search/pagination
+                const urlObj = new URL(url, window.location.origin);
+                urlObj.searchParams.set('per_page', 'all');
+
+                fetch(urlObj.toString())
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        
+                        const resultsList = doc.querySelector('main > .space-y-4.mb-8');
+
+                        if (resultsList) {
+                            const rawCards = resultsList.querySelectorAll('.result-card');
+                            allCards = Array.from(rawCards).map(card => {
+                                // Extract metadata fields for client-side search attributes
+                                const titleEl = card.querySelector('h3 a');
+                                const title = titleEl ? titleEl.innerText.trim().toLowerCase() : '';
+                                card.setAttribute('data-title', title);
+
+                                const spans = Array.from(card.querySelectorAll('span'));
+                                
+                                const authorSpan = spans.find(span => span.textContent.includes('Pengarang:'));
+                                const author = authorSpan && authorSpan.querySelector('strong') ? authorSpan.querySelector('strong').innerText.trim().toLowerCase() : '';
+                                card.setAttribute('data-author', author);
+
+                                const publisherSpan = spans.find(span => span.textContent.includes('Penerbit:'));
+                                const publisher = publisherSpan && publisherSpan.querySelector('strong') ? publisherSpan.querySelector('strong').innerText.trim().toLowerCase() : '';
+                                card.setAttribute('data-publisher', publisher);
+
+                                return card;
+                            });
+
+                            filteredCards = allCards;
+                            renderResults();
+                        } else {
+                            if (container) {
+                                container.innerHTML = '<div class="text-center py-12 text-slate-500 font-medium">Gagal memuat data koleksi.</div>';
+                            }
+                        }
+
+                        if (loading) loading.classList.add('hidden');
+                        if (container) container.classList.remove('hidden');
+                    })
+                    .catch(err => {
+                        console.error('Error loading location results:', err);
+                        if (loading) loading.classList.add('hidden');
+                        if (container) {
+                            container.innerHTML = '<div class="text-center py-12 text-red-500 font-bold">Terjadi kesalahan saat memuat data. Silakan coba lagi.</div>';
+                            container.classList.remove('hidden');
+                        }
+                    });
+            }
+
+            function renderResults() {
+                const container = document.getElementById('modal-hasil-container');
+                const paginationEl = document.getElementById('modal-hasil-pagination');
+                if (!container) return;
+
+                container.innerHTML = '';
+                
+                if (filteredCards.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-white rounded-3xl border border-slate-100 p-12 text-center shadow-sm">
+                            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                                <i class="ph ph-warning-circle"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-800 mb-1">Koleksi Tidak Ditemukan</h3>
+                            <p class="text-sm text-slate-500 max-w-md mx-auto">
+                                Maaf, kami tidak dapat menemukan buku atau referensi yang cocok dengan kata kunci pencarian Anda di lokasi ini.
+                            </p>
+                        </div>
+                    `;
+                    if (paginationEl) paginationEl.innerHTML = '';
+                    return;
+                }
+
+                let displayCards = [];
+                if (perPage === 'all') {
+                    displayCards = filteredCards;
+                } else {
+                    const startIndex = (currentPage - 1) * perPage;
+                    const endIndex = startIndex + perPage;
+                    displayCards = filteredCards.slice(startIndex, endIndex);
+                }
+
+                displayCards.forEach(card => {
+                    container.appendChild(card.cloneNode(true));
+                });
+
+                if (paginationEl) {
+                    paginationEl.innerHTML = '';
+                    if (perPage === 'all' || filteredCards.length <= perPage) {
+                        return;
+                    }
+
+                    const totalPages = Math.ceil(filteredCards.length / perPage);
+                    
+                    // Prev button
+                    const prevBtn = document.createElement('button');
+                    prevBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
+                    prevBtn.innerHTML = `<i class="ph ph-caret-left"></i> Sebelumnya`;
+                    if (currentPage === 1) {
+                        prevBtn.classList.add('opacity-50', 'pointer-events-none');
+                    } else {
+                        prevBtn.addEventListener('click', () => {
+                            currentPage--;
+                            renderResults();
+                            scrollToModalTop();
+                        });
+                    }
+                    paginationEl.appendChild(prevBtn);
+
+                    // Page buttons
+                    for (let i = 1; i <= totalPages; i++) {
+                        const pageBtn = document.createElement('button');
+                        if (i === currentPage) {
+                            pageBtn.className = `w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center font-bold text-xs border-none cursor-default`;
+                            pageBtn.innerText = i;
+                        } else {
+                            pageBtn.className = `w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-700 flex items-center justify-center font-semibold text-xs cursor-pointer hover:bg-slate-50 transition`;
+                            pageBtn.innerText = i;
+                            pageBtn.addEventListener('click', () => {
+                                currentPage = i;
+                                renderResults();
+                                scrollToModalTop();
+                            });
+                        }
+                        paginationEl.appendChild(pageBtn);
+                    }
+
+                    // Next button
+                    const nextBtn = document.createElement('button');
+                    nextBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
+                    nextBtn.innerHTML = `Berikutnya <i class="ph ph-caret-right"></i>`;
+                    if (currentPage === totalPages) {
+                        nextBtn.classList.add('opacity-50', 'pointer-events-none');
+                    } else {
+                        nextBtn.addEventListener('click', () => {
+                            currentPage++;
+                            renderResults();
+                            scrollToModalTop();
+                        });
+                    }
+                    paginationEl.appendChild(nextBtn);
+                }
+            }
+
+            function scrollToModalTop() {
+                const modalBody = document.getElementById('modal-hasil-body');
+                if (modalBody) {
+                    modalBody.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            // Live Search input listener
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.trim().toLowerCase();
+                    
+                    if (query === '') {
+                        filteredCards = allCards;
+                        if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
+                    } else {
+                        if (clearSearchBtn) clearSearchBtn.classList.remove('hidden');
+                        filteredCards = allCards.filter(card => {
+                            const title = card.getAttribute('data-title') || '';
+                            const author = card.getAttribute('data-author') || '';
+                            const publisher = card.getAttribute('data-publisher') || '';
+                            return title.includes(query) || author.includes(query) || publisher.includes(query);
+                        });
+                    }
+                    
+                    currentPage = 1;
+                    renderResults();
+                });
+            }
+
+            // Clear search button listener
+            if (clearSearchBtn) {
+                clearSearchBtn.addEventListener('click', function() {
+                    if (searchInput) {
+                        searchInput.value = '';
+                        searchInput.dispatchEvent(new Event('input'));
+                        searchInput.focus();
+                    }
+                });
+            }
+
+            // PerPage dropdown listener
+            if (perPageSelect) {
+                perPageSelect.addEventListener('change', function() {
+                    const val = this.value;
+                    if (val === 'all') {
+                        perPage = 'all';
+                    } else {
+                        perPage = parseInt(val, 10);
+                    }
+                    currentPage = 1;
+                    renderResults();
+                });
+            }
 
             // Mobile locations carousel & expand functionality
             const track = document.getElementById('mobile-carousel-track');
