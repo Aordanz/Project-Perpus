@@ -247,7 +247,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
                 <div class="text-center mb-1 max-w-5xl mx-auto px-4">
                     <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-normal">
-                        {{ __('Koleksi Baru') }}
+                        {{ __('Koleksi Terbaru') }}
                     </h3>
                 </div>
 
@@ -260,13 +260,25 @@
 
                     <!-- Slides Track -->
                     <div id="carousel-koleksi-track" class="relative w-full h-full flex items-center justify-center">
+                        @php
+                            $getBigCategoryWelcome = function($subj) {
+                                $lower = strtolower(trim($subj));
+                                if (str_contains($lower, 'religion') || str_contains($lower, 'islam') || str_contains($lower, 'faith') || str_contains($lower, 'agama')) return 'Agama';
+                                if (str_contains($lower, 'medicine') || str_contains($lower, 'nursing') || str_contains($lower, 'pharmacy') || str_contains($lower, 'dentistry') || str_contains($lower, 'kedokteran') || str_contains($lower, 'keperawatan') || str_contains($lower, 'kesehatan') || str_contains($lower, 'farmasi') || str_contains($lower, 'public health')) return 'Kesehatan & Kedokteran';
+                                if (str_contains($lower, 'engineering') || str_contains($lower, 'chemical') || str_contains($lower, 'mathematics') || str_contains($lower, 'biology') || str_contains($lower, 'computer') || str_contains($lower, 'forestry') || str_contains($lower, 'agriculture') || str_contains($lower, 'teknik') || str_contains($lower, 'matematika') || str_contains($lower, 'biologi') || str_contains($lower, 'komputer') || str_contains($lower, 'kehutanan') || str_contains($lower, 'pertanian')) return 'Sains & Teknologi';
+                                if (str_contains($lower, 'social') || str_contains($lower, 'economics') || str_contains($lower, 'management') || str_contains($lower, 'law') || str_contains($lower, 'ekonomi') || str_contains($lower, 'manajemen') || str_contains($lower, 'hukum') || str_contains($lower, 'sosial') || str_contains($lower, 'kearifan') || str_contains($lower, 'wisdom')) return 'Sosial & Humaniora';
+                                return 'Umum';
+                            };
+                        @endphp
                         @foreach ($latestBooks as $index => $book)
+                        @php $bigCat = $getBigCategoryWelcome($book->category ?: ($book->subject ?: 'General')); @endphp
                         <div class="carousel-slide absolute transition-all duration-500 ease-in-out opacity-0 pointer-events-none" data-index="{{ $index }}">
-                            <div class="flex bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-500 max-w-[90vw] md:max-w-4xl">
+                            <a href="{{ route('books.show', $book->id) }}"
+                               class="flex bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
                                 <!-- Cover Panel -->
                                 <div class="w-[110px] sm:w-[190px] md:w-[210px] flex-shrink-0 aspect-[2/3] bg-slate-50 relative overflow-hidden flex items-center justify-center p-3 sm:p-5 border-r border-slate-100">
                                     @if ($book->cover_image)
-                                        <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover rounded-lg shadow-md">
+                                        <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
                                     @else
                                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4 border border-dashed border-slate-200 rounded-lg bg-slate-100/50">
                                             <i class="ph ph-book-open text-4xl sm:text-5xl mb-2 text-[#106c38]"></i>
@@ -276,24 +288,20 @@
                                     <span class="absolute top-3 left-3 bg-red-600 text-white text-[8px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded shadow">NEW</span>
                                 </div>
 
-                                <!-- Info Panel (Slides out when active) -->
+                                <!-- Info Panel -->
                                 <div class="info-panel flex flex-col justify-between text-left">
                                     <div class="overflow-hidden">
-                                        <!-- Category -->
+                                        <!-- Big Category Badge -->
                                         <span class="inline-block px-2.5 py-0.5 bg-green-50 text-[#106c38] border border-green-200/60 text-[8px] sm:text-[9px] font-bold rounded-full uppercase tracking-wider mb-2 sm:mb-3">
-                                            {{ __($book->category ?: 'Umum') }}
+                                            {{ __($bigCat) }}
                                         </span>
                                         <!-- Title -->
-                                        <h4 class="text-sm sm:text-base md:text-xl font-bold text-slate-900 leading-snug mb-1 sm:mb-2 line-clamp-2" title="{{ $book->title }}">
+                                        <h4 class="text-sm sm:text-base md:text-xl font-bold text-slate-900 leading-snug mb-1 sm:mb-2 line-clamp-2 group-hover:text-[#106c38] transition-colors" title="{{ $book->title }}">
                                             {{ $book->title }}
                                         </h4>
                                         <!-- Author (Mobile only) -->
                                         <p class="text-[9px] sm:hidden text-slate-500 mb-2 truncate">
                                             {{ __('Penulis:') }} <span class="text-[#106c38] font-bold">{{ $book->author ?: '-' }}</span>
-                                        </p>
-                                        <!-- Short description -->
-                                        <p class="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-5 leading-relaxed line-clamp-2 sm:line-clamp-3">
-                                            {{ $book->physical_description ?: __('Koleksi literatur terbaru Perpustakaan Universitas Sumatera Utara yang siap mendukung riset, studi, dan referensi akademik Anda.') }}
                                         </p>
 
                                         <!-- Metadata Grid (Tablet/Desktop) -->
@@ -303,7 +311,7 @@
                                                 <span class="text-slate-800 font-semibold block truncate" title="{{ $book->author }}">{{ $book->author ?: '-' }}</span>
                                             </div>
                                             <div>
-                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Klasifikasi') }}</span>
+                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('No. Klasifikasi') }}</span>
                                                 <span class="text-slate-800 font-semibold block truncate">{{ $book->classification ?: '-' }}</span>
                                             </div>
                                             <div>
@@ -317,17 +325,13 @@
                                         </div>
                                     </div>
 
-                                    <!-- Action Footer -->
-                                    <div class="flex justify-between items-center border-t border-slate-100 pt-3 mt-auto">
-                                        <span class="text-[10px] sm:text-xs font-mono text-slate-500 font-medium">
-                                            <span class="text-[#106c38] font-bold">{{ $index + 1 }}</span> / {{ count($latestBooks) }}
-                                        </span>
-                                        <a href="{{ route('books.show', $book->id) }}" class="w-8 h-8 sm:w-10 sm:h-10 bg-[#106c38] hover:bg-green-700 text-white rounded-full flex items-center justify-center transition-all hover:scale-105 shadow-lg shadow-green-600/20 cursor-pointer">
-                                            <i class="ph ph-arrow-right text-base sm:text-lg"></i>
-                                        </a>
+                                    <!-- Footer: hint text only -->
+                                    <div class="flex items-center gap-2 border-t border-slate-100 pt-3 mt-auto text-[10px] text-slate-400 font-medium">
+                                        <i class="ph ph-arrow-square-out text-sm text-[#106c38]"></i>
+                                        <span class="group-hover:text-[#106c38] transition-colors">{{ __('Klik untuk lihat detail buku') }}</span>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         @endforeach
                     </div>
