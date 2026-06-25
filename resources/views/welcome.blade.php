@@ -230,7 +230,7 @@
                         <div class="absolute left-4 text-slate-400">
                             <i class="ph ph-magnifying-glass text-xl"></i>
                         </div>
-                        <input type="text" name="q" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full pl-11 pr-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm sm:text-base font-medium">
+                        <input type="text" id="live-search-input" name="q" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full pl-11 pr-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm sm:text-base font-medium">
                     </div>
                     <div class="flex gap-2">
                         <button type="submit" class="bg-[#106c38] hover:bg-green-800 text-white font-bold text-sm sm:text-base px-6 py-3 sm:py-4 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
@@ -272,7 +272,10 @@
                         @endphp
                         @foreach ($latestBooks as $index => $book)
                         @php $bigCat = $getBigCategoryWelcome($book->category ?: ($book->subject ?: 'General')); @endphp
-                        <div class="carousel-slide absolute transition-all duration-500 ease-in-out opacity-0 pointer-events-none" data-index="{{ $index }}">
+                        <div class="book-card carousel-slide absolute transition-all duration-500 ease-in-out opacity-0 pointer-events-none" data-index="{{ $index }}"
+                             data-title="{{ strtolower($book->title) }}" 
+                             data-author="{{ strtolower($book->author) }}" 
+                             data-publisher="{{ strtolower($book->publisher) }}">
                             <a href="{{ route('books.show', $book->id) }}"
                                class="flex bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
                                 <!-- Cover Panel -->
@@ -921,15 +924,14 @@
 
                     openModalHasil();
                     
-                    // Construct search URL
+                    // Construct search URL (do NOT set q to server to let JS handle fuzzy search!)
                     const searchUrl = new URL(this.action, window.location.origin);
-                    searchUrl.searchParams.set('q', queryVal);
                     
-                    loadLocationResults(searchUrl.toString());
+                    loadLocationResults(searchUrl.toString(), queryVal);
                 });
             }
 
-            function loadLocationResults(url) {
+            function loadLocationResults(url, initialQuery = '') {
                 const loading = document.getElementById('modal-hasil-loading');
                 const container = document.getElementById('modal-hasil-container');
                 const paginationEl = document.getElementById('modal-hasil-pagination');
@@ -974,7 +976,23 @@
                                 return card;
                             });
 
-                            filteredCards = allCards;
+                            if (initialQuery !== '') {
+                                filteredCards = allCards.filter(card => {
+                                    const title = card.getAttribute('data-title') || '';
+                                    const author = card.getAttribute('data-author') || '';
+                                    const publisher = card.getAttribute('data-publisher') || '';
+                                    
+                                    if (typeof window.isFuzzyMatch === 'function') {
+                                        return window.isFuzzyMatch(title, initialQuery) || 
+                                               window.isFuzzyMatch(author, initialQuery) || 
+                                               window.isFuzzyMatch(publisher, initialQuery);
+                                    }
+                                    return title.includes(initialQuery) || author.includes(initialQuery) || publisher.includes(initialQuery);
+                                });
+                            } else {
+                                filteredCards = allCards;
+                            }
+                            
                             renderResults();
                         } else {
                             if (container) {
@@ -1110,6 +1128,12 @@
                             const title = card.getAttribute('data-title') || '';
                             const author = card.getAttribute('data-author') || '';
                             const publisher = card.getAttribute('data-publisher') || '';
+                            
+                            if (typeof window.isFuzzyMatch === 'function') {
+                                return window.isFuzzyMatch(title, query) || 
+                                       window.isFuzzyMatch(author, query) || 
+                                       window.isFuzzyMatch(publisher, query);
+                            }
                             return title.includes(query) || author.includes(query) || publisher.includes(query);
                         });
                     }

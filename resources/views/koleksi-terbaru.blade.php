@@ -355,7 +355,14 @@
                     const isAvailable = card.getAttribute('data-available') === 'true';
                     const subject = card.getAttribute('data-subject') || '';
 
-                    const matchesSearch = title.includes(activeSearch) || author.includes(activeSearch) || publisher.includes(activeSearch);
+                    let matchesSearch = false;
+                    if (typeof window.isFuzzyMatch === 'function') {
+                        matchesSearch = window.isFuzzyMatch(title, activeSearch) || 
+                                        window.isFuzzyMatch(author, activeSearch) || 
+                                        window.isFuzzyMatch(publisher, activeSearch);
+                    } else {
+                        matchesSearch = title.includes(activeSearch) || author.includes(activeSearch) || publisher.includes(activeSearch);
+                    }
                     
                     let matchesFilter = true;
                     if (activeFilter === 'available') {

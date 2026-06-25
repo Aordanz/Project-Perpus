@@ -100,7 +100,7 @@
                         <div class="absolute left-4 text-slate-400">
                             <i class="ph ph-magnifying-glass text-xl"></i>
                         </div>
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full pl-11 pr-4 py-3 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm font-medium">
+                        <input type="text" id="live-search-input" name="q" value="{{ request('q') }}" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full pl-11 pr-4 py-3 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm font-medium">
                     </div>
                     <div class="flex gap-2">
                         <button type="submit" class="btn-cari bg-[#106c38] hover:bg-green-800 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
@@ -141,7 +141,10 @@
         <!-- Results List -->
         <div class="space-y-4 mb-8">
             @forelse($books as $book)
-                <div class="result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-5 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group">
+                <div class="book-card result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-5 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
+                     data-title="{{ strtolower($book->title) }}" 
+                     data-author="{{ strtolower($book->author) }}" 
+                     data-publisher="{{ strtolower($book->publisher) }}">
                     <!-- Book Cover -->
                     <div class="w-24 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
