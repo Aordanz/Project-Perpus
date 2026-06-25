@@ -69,15 +69,20 @@ class DatabaseSeeder extends Seeder
             [
                 'title' => 'Orang-orang yang disayangi Allah',
                 'author' => 'Ali Akbar',
-                'publisher' => 'Erlangga',
-                'subject' => 'Islam, Karakter Islami, Keagamaan',
-                'publish_year' => 2019,
-                'isbn' => '978-602-241-112-3',
-                'classification' => '297.313 Ali o',
+                'publisher' => 'Pustaka Al-Kautsar',
+                'subject' => 'FAITH AND REASON-ISLAM',
+                'publish_year' => 2005,
+                'isbn' => '979-592-324-2',
+                'classification' => '297.313',
+                'call_number' => '297.313 Ali o',
                 'category' => 'FAITH AND REASON ISLAM',
                 'language' => 'Indonesia',
-                'physical_description' => 'xvi, 210 hlm. : ilus. ; 21 cm.',
-                'type' => 'buku'
+                'physical_description' => 'xx, 368 p. : ilus. ; 23 cm',
+                'type' => 'buku',
+                'publication_city' => 'Jakarta',
+                'edition' => '',
+                'general_note' => '',
+                'golongan' => '',
             ],
             [
                 'title' => 'Elements of chemical reaction engineering. 7th Ed.',
@@ -329,6 +334,15 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($booksData as $index => $bData) {
+            // Fallback for call_number if not set
+            if (!isset($bData['call_number'])) {
+                $bData['call_number'] = $bData['classification'] ?? null;
+                if (isset($bData['classification'])) {
+                    preg_match('/^[0-9.]+/', $bData['classification'], $matches);
+                    $bData['classification'] = $matches[0] ?? $bData['classification'];
+                }
+            }
+
             $book = Book::create($bData);
 
             // 5. Create 2-5 Physical Copy Items for each Book, scattered in different Locations
@@ -362,7 +376,7 @@ class DatabaseSeeder extends Seeder
             }
 
             // Let's create copies
-            $numCopies = rand(2, 4);
+            $numCopies = ($index === 0) ? 1 : rand(2, 4);
             for ($c = 1; $c <= $numCopies; $c++) {
                 // All copies of a book are stored at its primary location
                 $locObj = $locations[$primaryLocCode];
@@ -370,9 +384,9 @@ class DatabaseSeeder extends Seeder
                 // Realistic barcode: e.g. 1020210001
                 $barcode = '10' . ($book->publish_year) . str_pad($index + 1, 3, '0', STR_PAD_LEFT) . $c;
                 // Realistic call number: e.g. 340.1 Kan p c.1
-                $callNumber = $book->classification . ' c.' . $c;
+                $callNumber = ($index === 0) ? $book->call_number : $book->call_number . ' c.' . $c;
                 // Status: 80% Tersedia, 20% Dipinjam
-                $status = (rand(1, 10) <= 8) ? 'Tersedia' : 'Dipinjam';
+                $status = ($index === 0) ? 'Tersedia' : ((rand(1, 10) <= 8) ? 'Tersedia' : 'Dipinjam');
 
                 Item::create([
                     'book_id' => $book->id,
