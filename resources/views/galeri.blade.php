@@ -320,32 +320,5 @@
 
     @include('partials.footer')
 
-    <!-- Live Search Logic -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('live-search-input');
-            const bookCards = document.querySelectorAll('.book-card');
-
-            if(searchInput && bookCards.length > 0) {
-                searchInput.addEventListener('input', function(e) {
-                    const keyword = e.target.value.toLowerCase().trim();
-
-                    bookCards.forEach(card => {
-                        const title = card.getAttribute('data-title') || '';
-                        const author = card.getAttribute('data-author') || '';
-                        const publisher = card.getAttribute('data-publisher') || '';
-
-                        // If any of the data matches the keyword, show it, otherwise hide it.
-                        if (title.includes(keyword) || author.includes(keyword) || publisher.includes(keyword)) {
-                            card.classList.remove('!hidden');
-                        } else {
-                            card.classList.add('!hidden');
-                        }
-                    });
-                });
-            }
-        });
-    </script>
-
 </body>
 </html>
