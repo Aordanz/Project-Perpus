@@ -140,7 +140,7 @@
                         @if($availableCopies > 0)
                             <div class="inline-flex items-center gap-1.5 bg-green-50 text-green-700 font-bold px-4 py-1.5 rounded-full border border-green-200/50 text-xs">
                                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                                {{ $availableCopies }} {{ __('dari') }} {{ $totalCopies }} {{ __('Salinan Tersedia') }}
+                                {{ $availableCopies }} {{ __('dari') }} {{ $totalCopies }} {{ __('Eksemplar') }}
                             </div>
                         @else
                             <div class="inline-flex items-center gap-1.5 bg-red-50 text-red-700 font-bold px-4 py-1.5 rounded-full border border-red-200/50 text-xs">

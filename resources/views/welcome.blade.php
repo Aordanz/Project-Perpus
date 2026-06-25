@@ -225,7 +225,7 @@
             <!-- Search Area -->
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-6 w-full mt-4">
                 <!-- Search Bar -->
-                <form action="{{ route('search') }}" method="GET" class="max-w-3xl mx-auto flex flex-col md:flex-row gap-3 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-xl">
+                <form id="main-search-form" action="{{ route('search') }}" method="GET" class="max-w-3xl mx-auto flex flex-col md:flex-row gap-3 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-xl">
                     <div class="flex-grow relative flex items-center bg-white rounded-xl border border-transparent overflow-hidden focus-within:ring-2 focus-within:ring-[#106c38]/20 transition-all">
                         <div class="absolute left-4 text-slate-400">
                             <i class="ph ph-magnifying-glass text-xl"></i>
@@ -872,6 +872,58 @@
                     loadLocationResults(searchUrl);
                 });
             });
+
+            // Handle main search form submission to open results popup on homepage
+            const mainSearchForm = document.getElementById('main-search-form');
+            if (mainSearchForm) {
+                mainSearchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation(); // Prevents app.js from intercepting the form submission
+                    
+                    const qInput = this.querySelector('input[name="q"]');
+                    const queryVal = qInput ? qInput.value.trim() : '';
+                    if (queryVal === '') return; // Don't search if empty
+
+                    // Set modal info
+                    if (modalHasilTitle) modalHasilTitle.innerText = 'Hasil Pencarian: "' + queryVal + '"';
+                    if (modalHasilIcon) modalHasilIcon.className = 'ph ph-magnifying-glass text-2xl';
+
+                    // Reset search state
+                    allCards = [];
+                    filteredCards = [];
+                    currentPage = 1;
+                    perPage = 10;
+                    if (perPageSelect) {
+                        perPageSelect.value = "10";
+                        const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
+                        modalDropdownOptions.forEach(o => {
+                            const val = o.getAttribute('data-value');
+                            const check = o.querySelector('.modal-active-check');
+                            if (val === "10") {
+                                o.classList.remove('text-slate-600', 'font-semibold');
+                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                if (check) check.classList.remove('hidden');
+                            } else {
+                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                o.classList.add('text-slate-600', 'font-semibold');
+                                if (check) check.classList.add('hidden');
+                            }
+                        });
+                    }
+                    if (searchInput) searchInput.value = '';
+                    if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
+
+                    openModalHasil();
+                    
+                    // Construct search URL
+                    const searchUrl = new URL(this.action, window.location.origin);
+                    searchUrl.searchParams.set('q', queryVal);
+                    
+                    loadLocationResults(searchUrl.toString());
+                });
+            }
 
             function loadLocationResults(url) {
                 const loading = document.getElementById('modal-hasil-loading');

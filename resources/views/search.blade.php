@@ -211,7 +211,7 @@
                                 @if($availableCopies > 0)
                                     <span class="inline-flex items-center gap-1 bg-green-50 text-green-700 font-bold px-2.5 py-0.5 rounded-full border border-green-200/50">
                                         <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                        {{ $availableCopies }} / {{ $totalCopies }} {{ __('Salinan Tersedia') }}
+                                        {{ $availableCopies }} / {{ $totalCopies }} {{ __('Eksemplar') }}
                                     </span>
                                 @else
                                     <span class="inline-flex items-center gap-1 bg-red-50 text-red-700 font-bold px-2.5 py-0.5 rounded-full border border-red-200/50">
