@@ -35,6 +35,11 @@ class AuthController extends Controller
         ]);
 
         $role = $credentials['role'];
+        if ($role === 'anggota') {
+            return back()->withErrors([
+                'email' => 'Login Anggota belum bisa dilakukan. Akun Anda harus diurus terlebih dahulu ke pihak perpustakaan.',
+            ])->withInput($request->only('email', 'role'));
+        }
         unset($credentials['role']);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {

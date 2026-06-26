@@ -22,14 +22,14 @@
             background-color: #f8fafc;
         }
         .admin-nav {
-            background: #064e3b;
-            border-bottom: 2px solid #eab308;
+            background: #106c38;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
         .bg-usu-green {
-            background-color: #064e3b;
+            background-color: #106c38;
         }
         .text-usu-green {
-            color: #064e3b;
+            color: #106c38;
         }
         .book-card {
             transition: all 0.3s ease;
@@ -40,48 +40,13 @@
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="text-slate-800 antialiased min-h-screen bg-slate-50">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        @include('partials.admin_sidebar')
 
-    <!-- Top Admin Navigation Bar -->
-    <nav class="admin-nav py-4 px-6 text-white sticky top-0 z-50 shadow-md">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('admin.index') }}" class="flex items-center gap-3 hover:opacity-95 transition">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="h-10 w-auto bg-white rounded-full p-0.5 border border-yellow-400">
-                    <div class="flex flex-col">
-                        <span class="font-extrabold text-sm tracking-wide uppercase font-sans">PORTAL ADMINISTRASI</span>
-                        <span class="text-xs font-semibold text-yellow-350 tracking-wider">Perpustakaan Universitas Sumatera Utara</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="hidden md:flex items-center gap-8">
-                <a href="{{ route('admin.index') }}" class="text-white hover:text-yellow-200 transition py-1 text-sm font-semibold">Dashboard</a>
-                <a href="{{ route('admin.galeri') }}" class="{{ request()->routeIs('admin.galeri') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Galeri</a>
-                <a href="{{ route('admin.pesan') }}" class="{{ request()->routeIs('admin.pesan') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Pesan</a>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <div class="hidden sm:flex flex-col text-right">
-                    <span class="font-bold text-xs">{{ Auth::user()->name ?? 'Admin Perpustakaan' }}</span>
-                    <span class="text-[10px] text-yellow-400 font-semibold uppercase tracking-wider">Pustakawan</span>
-                </div>
-                
-                <div class="w-px h-8 bg-white/20 hidden sm:block"></div>
-
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="bg-red-600/90 hover:bg-red-700 text-white font-bold text-xs px-4.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer border-none shadow-sm">
-                        <i class="ph ph-sign-out text-base"></i>
-                        <span>Keluar</span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Admin Container -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+        <!-- Main Content Area -->
+        <div class="flex-grow flex flex-col min-w-0">
+            <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
         
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
             <div>
@@ -122,12 +87,12 @@
                         
                         <!-- Overlay Actions -->
                         <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-                            <a href="{{ route('books.show', $book->id) }}" target="_blank" class="bg-white/20 hover:bg-white text-white hover:text-slate-900 text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
+                            <a href="{{ route('books.show', $book->id) }}" class="bg-white/20 hover:bg-white text-white hover:text-slate-900 text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
                                 <i class="ph ph-eye"></i> Detail
                             </a>
-                            <a href="{{ route('admin.books.edit', $book->id) }}" class="bg-yellow-500/80 hover:bg-yellow-500 text-white text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
-                                <i class="ph ph-pencil-simple"></i> Edit
-                            </a>
+                             <a href="{{ route('admin.books.edit', $book->id) }}" class="bg-blue-600/80 hover:bg-blue-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
+                                 <i class="ph ph-pencil-simple"></i> Edit
+                             </a>
                         </div>
 
                         <!-- Status Badge -->
@@ -165,15 +130,17 @@
             {{ $books->links() }}
         </div>
 
-    </main>
+            </main>
 
-    <!-- Footer -->
-    <footer class="bg-usu-green text-slate-100 py-6 mt-auto border-t border-yellow-450 flex-shrink-0 text-center text-xs font-medium">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>&copy; {{ date('Y') }} Universitas Sumatera Utara | OPAC Admin. All rights reserved.</p>
-            <p class="text-yellow-400">Universitas Sumatera Utara Library</p>
+            <!-- Footer -->
+            <footer class="bg-[#106c38] text-white/90 py-5 border-t border-white/15 text-center text-xs font-medium mt-auto">
+                <div class="w-full px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p>&copy; {{ date('Y') }} Universitas Sumatera Utara | OPAC Admin. All rights reserved.</p>
+                    <p class="text-white/70">Universitas Sumatera Utara Library</p>
+                </div>
+            </footer>
         </div>
-    </footer>
+    </div>
 
 </body>
 </html>
