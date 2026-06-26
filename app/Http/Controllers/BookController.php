@@ -139,7 +139,7 @@ class BookController extends Controller
             $this->applyAdvancedSearch($query, $request->inKlasifikasi, ['classification']);
         }
         if ($request->filled('inJenis')) {
-            $query->where('type', $request->inJenis);
+            $query->where('jenis', $request->inJenis);
         }
 
         // Barcode or Location filtering (relates to items)

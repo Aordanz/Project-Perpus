@@ -60,70 +60,9 @@
 
         <!-- Helper Functions and Subject Mapping -->
         @php
-            $getBigCategory = function($subj) {
-                $lower = strtolower(trim($subj));
-                
-                // Agama
-                if (str_contains($lower, 'religion') || str_contains($lower, 'islam') || str_contains($lower, 'faith') || str_contains($lower, 'agama')) {
-                    return 'Agama';
-                }
-                
-                // Kesehatan & Kedokteran
-                if (
-                    str_contains($lower, 'medicine') || 
-                    str_contains($lower, 'nursing') || 
-                    str_contains($lower, 'public health') || 
-                    str_contains($lower, 'pharmacy') || 
-                    str_contains($lower, 'dentistry') ||
-                    str_contains($lower, 'kedokteran') ||
-                    str_contains($lower, 'keperawatan') ||
-                    str_contains($lower, 'kesehatan') ||
-                    str_contains($lower, 'farmasi')
-                ) {
-                    return 'Kesehatan & Kedokteran';
-                }
-                
-                // Sains & Teknologi
-                if (
-                    str_contains($lower, 'engineering') || 
-                    str_contains($lower, 'chemical') || 
-                    str_contains($lower, 'mathematics') || 
-                    str_contains($lower, 'biology') || 
-                    str_contains($lower, 'computer') || 
-                    str_contains($lower, 'forestry') || 
-                    str_contains($lower, 'agriculture') ||
-                    str_contains($lower, 'teknik') ||
-                    str_contains($lower, 'matematika') ||
-                    str_contains($lower, 'biologi') ||
-                    str_contains($lower, 'komputer') ||
-                    str_contains($lower, 'kehutanan') ||
-                    str_contains($lower, 'pertanian')
-                ) {
-                    return 'Sains & Teknologi';
-                }
-                
-                // Sosial & Humaniora
-                if (
-                    str_contains($lower, 'social') || 
-                    str_contains($lower, 'economics') || 
-                    str_contains($lower, 'management') || 
-                    str_contains($lower, 'law') || 
-                    str_contains($lower, 'wisdom') ||
-                    str_contains($lower, 'ekonomi') ||
-                    str_contains($lower, 'manajemen') ||
-                    str_contains($lower, 'hukum') ||
-                    str_contains($lower, 'sosial') ||
-                    str_contains($lower, 'kearifan')
-                ) {
-                    return 'Sosial & Humaniora';
-                }
-                
-                return 'Umum';
-            };
-
             // Dynamically gather only the BIG categories that exist in the loaded books
-            $existingBigCategories = $latestBooks->map(function($book) use ($getBigCategory) {
-                return $getBigCategory($book->category ?: ($book->subject ?: 'General'));
+            $existingBigCategories = $latestBooks->map(function($book) {
+                return $book->category ?: 'Umum';
             })->unique()->filter()->values();
         @endphp
 
@@ -171,8 +110,7 @@
                     $totalCopies = $book->items->count();
                     $availableCopies = $book->items->where('status', 'Tersedia')->count();
                     
-                    $dbSubject = $book->category ?: ($book->subject ?: 'General');
-                    $bigCategoryName = $getBigCategory($dbSubject);
+                    $bigCategoryName = $book->category ?: 'Umum';
                     $subjValue = strtolower(trim($bigCategoryName));
                 @endphp
                 <div class="result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-4 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
@@ -198,7 +136,7 @@
                             </div>
                         @endif
                         <span class="absolute top-2 left-2 bg-[#106c38] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
-                            {{ strtoupper($book->type ?: 'buku') }}
+                            {{ strtoupper($book->jenis ?: 'buku') }}
                         </span>
                     </div>
 

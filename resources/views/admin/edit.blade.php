@@ -180,9 +180,19 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col gap-1">
-                            <label class="field-label">Subyek Utama</label>
-                            <input type="text" name="subject" value="{{ old('subject', $book->subject) }}" class="field-input" placeholder="e.g. Komputer & Pemrograman">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <label class="field-label">Subyek Utama</label>
+                                <input type="text" name="subject" value="{{ old('subject', $book->subject) }}" class="field-input" placeholder="e.g. Komputer & Pemrograman">
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="field-label">Spesifikasi Buku</label>
+                                <select name="category" class="field-input appearance-none cursor-pointer">
+                                    @foreach(['Sains & Teknologi', 'Sosial & Humaniora', 'Kesehatan & Kedokteran', 'Agama', 'Umum'] as $cat)
+                                        <option value="{{ $cat }}" {{ old('category', $book->category) == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -192,9 +202,9 @@
                             </div>
                             <div class="flex flex-col gap-1">
                                 <label class="field-label">Jenis Koleksi</label>
-                                <select name="type" class="field-input appearance-none cursor-pointer">
+                                <select name="jenis" class="field-input appearance-none cursor-pointer">
                                     @foreach(['buku' => 'Buku', 'jurnal' => 'Jurnal', 'majalah' => 'Majalah', 'skripsi' => 'Skripsi/Tesis'] as $val => $label)
-                                        <option value="{{ $val }}" {{ old('type', $book->type) == $val ? 'selected' : '' }}>{{ $label }}</option>
+                                        <option value="{{ $val }}" {{ old('jenis', $book->jenis) == $val ? 'selected' : '' }}>{{ $label }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -238,13 +248,12 @@
                                         </label>
                                     </div>
                                     <input type="hidden" name="items[{{ $item->barcode }}][barcode]" value="{{ $item->barcode }}">
-                                    <div class="grid grid-cols-2 gap-3">
+                                    <div class="grid grid-cols-3 gap-3">
                                         <div class="flex flex-col gap-1">
-                                            <label class="text-[10px] font-bold text-slate-400">Lokasi Rak</label>
-                                            <select name="items[{{ $item->barcode }}][location_id]" class="field-input appearance-none cursor-pointer text-xs">
-                                                @foreach($locations as $loc)
-                                                    <option value="{{ $loc->id }}" {{ $item->location_id == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
-                                                @endforeach
+                                            <label class="text-[10px] font-bold text-slate-400">Tipe</label>
+                                            <select name="items[{{ $item->barcode }}][type]" class="field-input appearance-none cursor-pointer text-xs">
+                                                <option value="STD" {{ $item->type == 'STD' ? 'selected' : '' }}>STD (Sirkulasi)</option>
+                                                <option value="KPS" {{ $item->type == 'KPS' ? 'selected' : '' }}>KPS (Kampus)</option>
                                             </select>
                                         </div>
                                         <div class="flex flex-col gap-1">
@@ -252,6 +261,14 @@
                                             <select name="items[{{ $item->barcode }}][status]" class="field-input appearance-none cursor-pointer text-xs">
                                                 <option value="Tersedia" {{ $item->status == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
                                                 <option value="Dipinjam" {{ $item->status == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+                                            </select>
+                                        </div>
+                                        <div class="flex flex-col gap-1">
+                                            <label class="text-[10px] font-bold text-slate-400">Lokasi Rak</label>
+                                            <select name="items[{{ $item->barcode }}][location_id]" class="field-input appearance-none cursor-pointer text-xs">
+                                                @foreach($locations as $loc)
+                                                    <option value="{{ $loc->id }}" {{ $item->location_id == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -388,13 +405,21 @@
                     <i class="ph ph-x-circle text-base"></i>
                 </button>
                 <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">+ Eksemplar Baru</p>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <div class="flex flex-col gap-1">
+                <div class="grid grid-cols-3 gap-2 mb-2">
+                    <div class="flex flex-col gap-1 col-span-1">
                         <label class="text-[10px] font-bold text-slate-400">Barcode *</label>
                         <input type="text" name="new_items[${idx}][barcode]" placeholder="e.g. L009876"
                             class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#064e3b] bg-white">
                     </div>
-                    <div class="flex flex-col gap-1">
+                    <div class="flex flex-col gap-1 col-span-1">
+                        <label class="text-[10px] font-bold text-slate-400">Tipe *</label>
+                        <select name="new_items[${idx}][type]"
+                            class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#064e3b] appearance-none cursor-pointer bg-white">
+                            <option value="STD">STD (Sirkulasi)</option>
+                            <option value="KPS">KPS (Kampus)</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1 col-span-1">
                         <label class="text-[10px] font-bold text-slate-400">Status</label>
                         <select name="new_items[${idx}][status]"
                             class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#064e3b] appearance-none cursor-pointer bg-white">

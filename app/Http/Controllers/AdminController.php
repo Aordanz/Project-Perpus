@@ -67,7 +67,8 @@ class AdminController extends Controller
             'golongan'             => 'nullable|string|max:255',
             'subject'              => 'nullable|string|max:255',
             'language'             => 'nullable|string|max:255',
-            'type'                 => 'nullable|string|max:255',
+            'jenis'                => 'nullable|string|max:255',
+            'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
             'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
@@ -75,10 +76,12 @@ class AdminController extends Controller
             'items.*.barcode'     => 'required|string|unique:items,barcode|max:255',
             'items.*.location_id' => 'required|exists:locations,id',
             'items.*.status'      => 'required|string|in:Tersedia,Dipinjam',
+            'items.*.type'        => 'required|string|in:STD,KPS',
         ], [
             'items.*.barcode.unique'      => 'Barcode :input sudah digunakan oleh buku lain.',
             'items.*.barcode.required'    => 'Barcode wajib diisi.',
             'items.*.location_id.required'=> 'Lokasi rak wajib dipilih.',
+            'items.*.type.required'       => 'Tipe eksemplar wajib dipilih.',
         ]);
 
         try {
@@ -87,15 +90,16 @@ class AdminController extends Controller
             $bookData = $request->only([
                 'title', 'author', 'publisher', 'publication_city', 'edition',
                 'publish_year', 'isbn', 'physical_description', 'classification',
-                'golongan', 'subject', 'language', 'type', 'general_note'
+                'golongan', 'subject', 'language', 'jenis', 'category', 'general_note'
             ]);
 
             // Build call number from classification + author + title if not provided
             $bookData['call_number'] = $request->input('call_number')
                 ?: (trim($request->input('classification') . ' ' . substr($request->input('author'), 0, 3) . ' ' . strtolower(substr($request->input('title'), 0, 1))));
 
-            // Set category to subject value for search consistency
-            $bookData['category'] = $request->input('subject') ?: 'Umum';
+            if (!$request->filled('category')) {
+                $bookData['category'] = 'Umum';
+            }
 
             // Handle cover image file upload
             if ($request->hasFile('cover_image')) {
@@ -117,6 +121,7 @@ class AdminController extends Controller
                         'location_id' => $itemData['location_id'],
                         'call_number' => $book->call_number,
                         'status'      => $itemData['status'],
+                        'type'        => $itemData['type'] ?? 'STD',
                     ]);
                 }
             }
@@ -163,7 +168,8 @@ class AdminController extends Controller
             'golongan'             => 'nullable|string|max:255',
             'subject'              => 'nullable|string|max:255',
             'language'             => 'nullable|string|max:255',
-            'type'                 => 'nullable|string|max:255',
+            'jenis'                => 'nullable|string|max:255',
+            'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
             'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
@@ -171,11 +177,13 @@ class AdminController extends Controller
             'items.*.barcode'      => 'required|string|max:255',
             'items.*.location_id'  => 'required|exists:locations,id',
             'items.*.status'       => 'required|string|in:Tersedia,Dipinjam',
+            'items.*.type'         => 'required|string|in:STD,KPS',
 
             // New items to add
             'new_items.*.barcode'      => 'nullable|string|unique:items,barcode|max:255',
             'new_items.*.location_id'  => 'nullable|exists:locations,id',
             'new_items.*.status'       => 'nullable|string|in:Tersedia,Dipinjam',
+            'new_items.*.type'         => 'nullable|string|in:STD,KPS',
         ]);
 
         try {
@@ -184,10 +192,12 @@ class AdminController extends Controller
             $bookData = $request->only([
                 'title', 'author', 'publisher', 'publication_city', 'edition',
                 'publish_year', 'isbn', 'physical_description', 'classification',
-                'golongan', 'subject', 'language', 'type', 'general_note', 'call_number'
+                'golongan', 'subject', 'language', 'jenis', 'category', 'general_note', 'call_number'
             ]);
 
-            $bookData['category'] = $request->input('subject') ?: 'Umum';
+            if (!$request->filled('category')) {
+                $bookData['category'] = 'Umum';
+            }
 
             // Handle cover image upload (replace old one)
             if ($request->hasFile('cover_image')) {
@@ -209,6 +219,7 @@ class AdminController extends Controller
                     Item::where('barcode', $barcode)->update([
                         'location_id' => $itemData['location_id'],
                         'status'      => $itemData['status'],
+                        'type'        => $itemData['type'] ?? 'STD',
                     ]);
                 }
             }
@@ -228,6 +239,7 @@ class AdminController extends Controller
                             'location_id' => $newItem['location_id'],
                             'call_number' => $book->call_number,
                             'status'      => $newItem['status'] ?? 'Tersedia',
+                            'type'        => $newItem['type'] ?? 'STD',
                         ]);
                     }
                 }
