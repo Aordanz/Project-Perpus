@@ -56,33 +56,31 @@
             pointer-events: auto;
         }
 
-        /* Mobile positions */
+        /* Mobile positions (hidden by default unless active) */
         .carousel-slide.prev {
-            opacity: 0.8;
-            transform: translate(-210%, -50%) scale(0.8);
+            opacity: 0;
+            transform: translate(-120%, -50%) scale(0.7);
             z-index: 20;
-            pointer-events: auto;
-            cursor: pointer;
+            pointer-events: none;
         }
 
         .carousel-slide.next {
-            opacity: 0.8;
-            transform: translate(110%, -50%) scale(0.8);
+            opacity: 0;
+            transform: translate(20%, -50%) scale(0.7);
             z-index: 20;
-            pointer-events: auto;
-            cursor: pointer;
+            pointer-events: none;
         }
 
         .carousel-slide.hidden-left {
             opacity: 0;
-            transform: translate(-300%, -50%) scale(0.5);
+            transform: translate(-200%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
 
         .carousel-slide.hidden-right {
             opacity: 0;
-            transform: translate(200%, -50%) scale(0.5);
+            transform: translate(100%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
@@ -96,11 +94,15 @@
             .carousel-slide.prev {
                 opacity: 0.85;
                 transform: translate(-215%, -50%) scale(0.8);
+                pointer-events: auto;
+                cursor: pointer;
             }
 
             .carousel-slide.next {
                 opacity: 0.85;
                 transform: translate(115%, -50%) scale(0.8);
+                pointer-events: auto;
+                cursor: pointer;
             }
 
             .carousel-slide.hidden-left {
@@ -254,7 +256,7 @@
                 <!-- Carousel Area -->
                 <div class="relative w-full h-[340px] sm:h-[390px] md:h-[420px] flex items-center justify-center overflow-hidden">
                     <!-- Left Navigation Button -->
-                    <button id="prev-btn-koleksi" class="absolute left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-10 h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full flex items-center justify-center transition-all cursor-pointer">
+                    <button id="prev-btn-koleksi" class="absolute bottom-3 left-[calc(50%-30px)] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-9 h-9 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full flex items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-left text-xl font-bold"></i>
                     </button>
 
@@ -330,7 +332,7 @@
                     </div>
 
                     <!-- Right Navigation Button -->
-                    <button id="next-btn-koleksi" class="absolute right-2 sm:right-6 md:left-auto md:right-10 lg:right-12 xl:right-16 z-40 w-10 h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full flex items-center justify-center transition-all cursor-pointer">
+                    <button id="next-btn-koleksi" class="absolute bottom-3 right-[calc(50%-30px)] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-9 h-9 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full flex items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-right text-xl font-bold"></i>
                     </button>
                 </div>
@@ -340,15 +342,15 @@
 
     <!-- Statistics Section (Marquee) -->
     <div id="statistics-section" class="pt-6 pb-6 w-full overflow-hidden bg-[#f8fafc]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 relative flex flex-col items-center justify-center">
-            <div class="text-center">
-                <h2 class="text-3xl font-bold text-slate-800 mb-3">{{ __('Jumlah Judul Buku Berdasarkan Lokasi') }}</h2>
-                <div class="w-24 h-1 bg-[#106c38] mx-auto rounded-full"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-10 relative flex items-center justify-between">
+            <div>
+                <h2 class="text-lg sm:text-2xl md:text-3xl font-bold text-slate-800 mb-1 sm:mb-3">{{ __('Jumlah Judul Buku Berdasarkan Lokasi') }}</h2>
+                <div class="w-16 sm:w-24 h-1 bg-[#106c38] rounded-full"></div>
             </div>
-            <div class="mt-5 sm:mt-0 sm:absolute sm:right-8 sm:top-0 sm:bottom-0 flex items-center justify-center">
-                <button id="btn-toggle-locations" class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-[#106c38] px-6 py-2.5 rounded-full font-bold text-sm tracking-wider uppercase border-2 border-[#106c38]/20 hover:border-[#106c38] transition shadow-sm focus:outline-none cursor-pointer">
+            <div class="flex-shrink-0 ml-3">
+                <button id="btn-toggle-locations" class="inline-flex items-center gap-1 sm:gap-2 bg-white hover:bg-slate-50 text-[#106c38] px-3 sm:px-6 py-1.5 sm:py-2.5 rounded-full font-bold text-[10px] sm:text-sm tracking-wider uppercase border-2 border-[#106c38]/20 hover:border-[#106c38] transition shadow-sm focus:outline-none cursor-pointer">
                     <span id="text-toggle-locations">{{ __('Lihat Semua') }}</span> 
-                    <i class="ph ph-caret-down text-lg transition-transform duration-300" id="icon-toggle-locations"></i>
+                    <i class="ph ph-caret-down text-sm sm:text-lg transition-transform duration-300" id="icon-toggle-locations"></i>
                 </button>
             </div>
         </div>
@@ -362,7 +364,7 @@
                 <!-- Original Set -->
                 <div class="flex gap-6 shrink-0">
                     @foreach($locations as $stat)
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[280px] shrink-0 h-[100px]">
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
                         
                         <!-- Orange glow at bottom right -->
                         <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
@@ -373,7 +375,7 @@
                         </div>
                         
                         <div class="text-[#064e3b] z-10 opacity-90">
-                            <i class="ph {{ $stat->icon }} text-[42px]"></i>
+                            <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
                         </div>
                     </a>
                     @endforeach
@@ -381,7 +383,7 @@
                 <!-- Duplicated Set for Loop -->
                 <div class="flex gap-6 shrink-0">
                     @foreach($locations as $stat)
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[280px] shrink-0 h-[100px]">
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
                         
                         <!-- Orange glow at bottom right -->
                         <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
@@ -392,7 +394,7 @@
                         </div>
                         
                         <div class="text-[#064e3b] z-10 opacity-90">
-                            <i class="ph {{ $stat->icon }} text-[42px]"></i>
+                            <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
                         </div>
                     </a>
                     @endforeach
@@ -400,22 +402,21 @@
             </div>
         </div>
 
-        <!-- Expanded Grid View (Hidden by default) -->
         <div id="expanded-locations-grid" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hidden transition-all duration-500 opacity-0 transform -translate-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 pt-2">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 pt-2">
                 @foreach($locations as $stat)
-                <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 h-[100px] w-full">
+                <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-3 sm:p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 h-[75px] sm:h-[100px] w-full">
                     
                     <!-- Orange glow at bottom right -->
                     <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
 
                     <div class="flex flex-col z-10 max-w-[75%]">
-                        <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                        <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
+                        <h3 class="text-lg sm:text-[26px] font-bold text-[#064e3b] mb-0.5 sm:mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                        <p class="text-[10px] sm:text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
                     </div>
                     
                     <div class="text-[#064e3b] z-10 opacity-90">
-                        <i class="ph {{ $stat->icon }} text-[42px]"></i>
+                        <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
                     </div>
                 </a>
                 @endforeach
