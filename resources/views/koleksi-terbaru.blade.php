@@ -88,11 +88,19 @@
                 <button data-filter="available" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
                     {{ __('Tersedia Sekarang') }}
                 </button>
-                @foreach($existingBigCategories as $cat)
-                    <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
+                @foreach($existingBigCategories as $index => $cat)
+                    <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
+                        class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer {{ $index >= 3 ? 'extra-chip' : '' }}"
+                        style="{{ $index >= 3 ? 'display: none;' : '' }}">
                         {{ __($cat) }}
                     </button>
                 @endforeach
+                @if(count($existingBigCategories) > 3)
+                    <button id="toggle-chips-btn" class="px-4 py-2 text-xs font-bold rounded-full transition-all border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 whitespace-nowrap cursor-pointer flex items-center gap-1 select-none">
+                        <span id="toggle-chips-text">{{ __('Tampilkan Selengkapnya') }}</span>
+                        <i id="toggle-chips-icon" class="ph ph-caret-down text-sm transition-transform duration-200"></i>
+                    </button>
+                @endif
             </div>
         </div>
 
@@ -113,7 +121,7 @@
                     $bigCategoryName = $book->category ?: 'Umum';
                     $subjValue = strtolower(trim($bigCategoryName));
                 @endphp
-                <div class="result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-4 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
+                <div class="result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
                      data-title="{{ strtolower($book->title) }}" 
                      data-author="{{ strtolower($book->author) }}" 
                      data-publisher="{{ strtolower($book->publisher) }}" 
@@ -121,12 +129,12 @@
                      data-available="{{ $availableCopies > 0 ? 'true' : 'false' }}">
                     
                     <!-- Card Numbering Index -->
-                    <div class="flex-shrink-0 text-xl sm:text-2xl font-black text-slate-200 group-hover:text-[#106c38]/30 transition-colors select-none w-8 text-center pt-2 sm:pt-4">
+                    <div class="flex-shrink-0 text-xl sm:text-2xl font-black text-slate-200 group-hover:text-[#106c38]/30 transition-colors select-none w-8 text-center pt-2 sm:pt-4 hidden sm:block">
                         {{ sprintf('%02d', $loop->iteration) }}
                     </div>
 
                     <!-- Book Cover -->
-                    <div class="w-24 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
+                    <div class="w-20 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
                             <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                         @else
@@ -510,6 +518,34 @@
                         
                         dropdownMenu.classList.add('hidden');
                     });
+                });
+            }
+
+            // Toggle chips toggle button functionality
+            const toggleChipsBtn = document.getElementById('toggle-chips-btn');
+            const extraChips = document.querySelectorAll('.extra-chip');
+            const toggleChipsText = document.getElementById('toggle-chips-text');
+            const toggleChipsIcon = document.getElementById('toggle-chips-icon');
+
+            if (toggleChipsBtn) {
+                toggleChipsBtn.addEventListener('click', () => {
+                    const isHidden = Array.from(extraChips).some(chip => chip.style.display === 'none');
+                    extraChips.forEach(chip => {
+                        if (isHidden) {
+                            chip.style.display = 'inline-block';
+                        } else {
+                            chip.style.display = 'none';
+                        }
+                    });
+                    if (isHidden) {
+                        toggleChipsText.textContent = "{{ __('Sembunyikan') }}";
+                        toggleChipsIcon.classList.remove('ph-caret-down');
+                        toggleChipsIcon.classList.add('ph-caret-up');
+                    } else {
+                        toggleChipsText.textContent = "{{ __('Tampilkan Selengkapnya') }}";
+                        toggleChipsIcon.classList.remove('ph-caret-up');
+                        toggleChipsIcon.classList.add('ph-caret-down');
+                    }
                 });
             }
 
