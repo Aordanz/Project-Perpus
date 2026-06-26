@@ -46,6 +46,12 @@
                     </div>
                 </a>
             </div>
+            
+            <div class="hidden md:flex items-center gap-8">
+                <a href="{{ route('admin.index') }}" class="{{ request()->routeIs('admin.index') || request()->routeIs('admin.books.edit') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Dashboard</a>
+                <a href="{{ route('admin.galeri') }}" class="{{ request()->routeIs('admin.galeri') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Galeri</a>
+                <a href="{{ route('admin.pesan') }}" class="{{ request()->routeIs('admin.pesan') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Pesan</a>
+            </div>
             <div class="flex items-center gap-4">
                 <div class="hidden sm:flex flex-col text-right">
                     <span class="font-bold text-xs">{{ Auth::user()->name ?? 'Admin Perpustakaan' }}</span>

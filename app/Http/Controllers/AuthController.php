@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -50,6 +51,19 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
+            // Store credentials in cookies for form auto-fill if remember is checked
+            if ($request->boolean('remember')) {
+                Cookie::queue('saved_email', $credentials['email'], 60 * 24 * 30); // 30 days
+                Cookie::queue('saved_password', $credentials['password'], 60 * 24 * 30);
+                Cookie::queue('remember_role', $role, 60 * 24 * 30);
+                Cookie::queue('remember_checked', 'true', 60 * 24 * 30);
+            } else {
+                Cookie::queue(Cookie::forget('saved_email'));
+                Cookie::queue(Cookie::forget('saved_password'));
+                Cookie::queue(Cookie::forget('remember_role'));
+                Cookie::queue(Cookie::forget('remember_checked'));
+            }
+
             $roleText = $role === 'pustakawan' ? 'Pustakawan' : 'Anggota';
             $redirectRoute = $role === 'pustakawan' ? 'admin.index' : 'home';
             return redirect()->route($redirectRoute)->with('success', "Selamat datang kembali, {$user->name}! Anda masuk sebagai {$roleText}.");
@@ -65,10 +79,16 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $userRole = Auth::check() ? Auth::user()->role : null;
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        if ($userRole === 'pustakawan') {
+            return redirect()->route('login')->with('success', 'Anda telah berhasil keluar dari sistem administrasi.');
+        }
 
         return redirect()->route('home')->with('success', 'Anda telah berhasil keluar dari sistem.');
     }

@@ -133,7 +133,15 @@
                     <p class="text-slate-500">{{ __('Isi formulir di bawah ini dan tim kami akan merespons secepat mungkin.') }}</p>
                 </div>
 
-                <form action="#" method="POST" class="space-y-6 flex flex-col flex-grow" onsubmit="event.preventDefault(); alert('Pesan Anda telah berhasil dikirim!');">
+                @if (session('success'))
+                    <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl flex gap-3 text-sm font-medium shadow-sm">
+                        <i class="ph ph-check-circle text-xl flex-shrink-0"></i>
+                        <div class="leading-normal">{{ session('success') }}</div>
+                    </div>
+                @endif
+
+                <form action="{{ route('kontak.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 flex flex-col flex-grow">
+                    @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Nama -->
                         <div class="space-y-2">
@@ -142,7 +150,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                     <i class="ph ph-user text-lg"></i>
                                 </div>
-                                <input type="text" required placeholder="{{ __('Masukkan nama Anda') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
+                                <input type="text" name="name" required placeholder="{{ __('Masukkan nama Anda') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
                             </div>
                         </div>
                         
@@ -153,7 +161,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                     <i class="ph ph-envelope text-lg"></i>
                                 </div>
-                                <input type="email" required placeholder="{{ __('contoh@email.com') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
+                                <input type="email" name="email" required placeholder="{{ __('contoh@email.com') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
                             </div>
                         </div>
                     </div>
@@ -165,14 +173,24 @@
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                 <i class="ph ph-text-aa text-lg"></i>
                             </div>
-                            <input type="text" required placeholder="{{ __('Apa yang ingin Anda tanyakan?') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
+                            <input type="text" name="subject" required placeholder="{{ __('Apa yang ingin Anda tanyakan?') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
                         </div>
                     </div>
 
                     <!-- Pesan -->
                     <div class="space-y-2 flex-grow flex flex-col">
                         <label class="text-sm font-bold text-slate-600">{{ __('Pesan Anda') }}</label>
-                        <textarea required placeholder="{{ __('Tuliskan detail pertanyaan atau keluhan Anda di sini...') }}" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 resize-none flex-grow min-h-[150px]"></textarea>
+                        <textarea name="message" required placeholder="{{ __('Tuliskan detail pertanyaan atau keluhan Anda di sini...') }}" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 resize-none flex-grow min-h-[150px]"></textarea>
+                    </div>
+
+                    <!-- Lampiran Gambar -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-slate-600">{{ __('Lampiran Gambar (Opsional, Maks 3)') }}</label>
+                        <input type="file" name="attachments[]" id="attachments" accept="image/*" multiple class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-[#106c38] hover:file:bg-green-100 cursor-pointer w-full">
+                        <div id="attachment-bubbles" class="flex flex-wrap gap-2 mt-3 empty:hidden"></div>
+                        @error('attachments.*')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Tombol Kirim -->
@@ -189,5 +207,68 @@
 
     @include('partials.footer')
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('attachments');
+            const bubblesContainer = document.getElementById('attachment-bubbles');
+            
+            // Menggunakan DataTransfer untuk memanipulasi file yang dipilih (bisa dihapus)
+            let dt = new DataTransfer();
+
+            fileInput.addEventListener('change', function(e) {
+                const newFiles = Array.from(fileInput.files);
+                
+                // Tambahkan file baru ke DataTransfer (maks 3 total)
+                newFiles.forEach(file => {
+                    if (dt.items.length < 3) {
+                        dt.items.add(file);
+                    } else {
+                        alert('Maksimal hanya 3 gambar yang dapat dilampirkan.');
+                    }
+                });
+
+                // Update input file dengan isi dt yang baru
+                fileInput.files = dt.files;
+                renderBubbles();
+            });
+
+            function renderBubbles() {
+                bubblesContainer.innerHTML = '';
+                
+                Array.from(dt.files).forEach((file, index) => {
+                    const bubble = document.createElement('div');
+                    bubble.className = "inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 border border-green-200 text-[#106c38] rounded-full text-xs font-semibold shadow-sm";
+                    
+                    const fileName = document.createElement('span');
+                    fileName.className = "truncate max-w-[150px]";
+                    fileName.textContent = file.name;
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = "button";
+                    removeBtn.className = "hover:text-red-500 transition-colors ml-1 focus:outline-none";
+                    removeBtn.innerHTML = '<i class="ph ph-x-circle text-base"></i>';
+                    removeBtn.onclick = function() {
+                        removeFile(index);
+                    };
+                    
+                    bubble.appendChild(fileName);
+                    bubble.appendChild(removeBtn);
+                    bubblesContainer.appendChild(bubble);
+                });
+            }
+
+            function removeFile(indexToRemove) {
+                const newDt = new DataTransfer();
+                Array.from(dt.files).forEach((file, index) => {
+                    if (index !== indexToRemove) {
+                        newDt.items.add(file);
+                    }
+                });
+                dt = newDt;
+                fileInput.files = dt.files;
+                renderBubbles();
+            }
+        });
+    </script>
 </body>
 </html>
