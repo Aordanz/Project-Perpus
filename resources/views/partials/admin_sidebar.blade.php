@@ -58,21 +58,13 @@
             <span>Pesan</span>
         </a>
 
-        <!-- Divider -->
-        <div class="border-t border-white/10 my-4"></div>
-
-        <a href="{{ route('home') }}" 
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-green-100 hover:bg-white/5 hover:text-white transition">
-            <i class="ph ph-arrow-square-out text-lg"></i>
-            <span>Beranda OPAC</span>
-        </a>
     </nav>
 
     <!-- Footer Action -->
-    <div class="p-4 border-t border-white/10 mt-auto">
+    <div class="p-4 pb-8 border-t border-white/10 mt-auto">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="w-full bg-red-650 hover:bg-red-750 text-white font-bold text-xs px-4 py-3 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer border-none shadow-sm">
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-3 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer border-none shadow-sm">
                 <i class="ph ph-sign-out text-base"></i>
                 <span>Keluar</span>
             </button>

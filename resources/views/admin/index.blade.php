@@ -79,13 +79,6 @@
                 </h1>
                 <p class="text-slate-500 text-xs sm:text-sm mt-1">Selamat bekerja! Di sini Anda dapat memantau data sirkulasi dan menambahkan koleksi buku baru secara rinci.</p>
             </div>
-            
-            <div class="flex gap-2">
-                <a href="{{ route('home') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
-                    <i class="ph ph-arrow-square-out text-base"></i>
-                    <span>Lihat Halaman OPAC</span>
-                </a>
-            </div>
         </div>
 
         <!-- Success & Error Alerts -->
