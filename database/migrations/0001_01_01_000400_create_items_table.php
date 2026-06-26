@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('location_id')->constrained('locations')->onDelete('cascade');
             $table->string('call_number');
             $table->string('status')->default('Tersedia');
+            $table->string('type')->default('STD');
             $table->timestamps();
         });
     }

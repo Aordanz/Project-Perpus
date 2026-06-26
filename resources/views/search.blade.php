@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hasil Pencarian - OPAC USU Library</title>
+    <title>{{ __('Hasil Pencarian') }} - OPAC USU Library</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,10 +39,8 @@
             background-color: #047857 !important;
         }
         .glass-nav {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            background: #106c38;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .result-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -58,31 +56,34 @@
 
     <!-- Header Navigation -->
     <nav class="glass-nav sticky top-0 z-40 w-full transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo & Brand -->
-                <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-0.5 shadow-sm border border-slate-200 overflow-hidden">
-                        <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="w-full h-full rounded-full object-cover">
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-slate-800 tracking-wide leading-tight group-hover:text-[#106c38] transition">OPAC USU</span>
-                        <span class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">Library Catalogue</span>
-                    </div>
-                </a>
-
-                <!-- Back to Home Link -->
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('home') }}" class="text-[#106c38] hover:text-green-800 transition text-sm font-semibold flex items-center gap-1">
-                        <i class="ph ph-arrow-left"></i> Kembali ke Beranda
+                <div class="flex items-center gap-6">
+                <!-- USU Logo & Name -->
+                    <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+                        <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
+                        <div class="flex flex-col hidden sm:flex">
+                            <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas') }}</span>
+                            <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Sumatera Utara') }}</span>
+                        </div>
                     </a>
                 </div>
+                
+                <div></div> <!-- Empty right section -->
             </div>
         </div>
     </nav>
 
     <!-- Main Content Area -->
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Back to Home Link (Below Navbar) -->
+        <div class="mb-6">
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-[#106c38] hover:text-[#064e3b] transition text-sm font-bold bg-[#106c38]/5 hover:bg-[#106c38]/10 px-4 py-2 rounded-lg border border-[#106c38]/10">
+                <i class="ph ph-arrow-left"></i> {{ __('Kembali ke Beranda') }}
+            </a>
+        </div>
         
         <!-- Search Header Banner with Background Image -->
         <div class="relative bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 sm:p-10 mb-8 overflow-hidden text-white shadow-lg">
@@ -90,8 +91,8 @@
             <div class="absolute inset-0 z-0 bg-cover bg-center mix-blend-multiply opacity-35" style="background-image: url('{{ asset('kolam_perpustakaan.jpg') }}');"></div>
             
             <div class="relative z-10">
-                <h1 class="text-2xl sm:text-3xl font-bold mb-2">Hasil Pencarian Katalog</h1>
-                <p class="text-sm text-green-100/90 mb-6 max-w-xl">Jelajahi dan temukan koleksi buku referensi, jurnal, atau skripsi untuk kebutuhan riset Anda.</p>
+                <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ __('Hasil Pencarian Katalog') }}</h1>
+                <p class="text-sm text-green-100/90 mb-6 max-w-xl">{{ __('Jelajahi dan temukan koleksi buku referensi, jurnal, atau skripsi untuk kebutuhan riset Anda.') }}</p>
                 
                 <!-- Search Bar -->
                 <form action="{{ route('search') }}" method="GET" class="flex flex-col md:flex-row gap-3 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20">
@@ -99,14 +100,14 @@
                         <div class="absolute left-4 text-slate-400">
                             <i class="ph ph-magnifying-glass text-xl"></i>
                         </div>
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari buku, jurnal, penulis, atau kata kunci..." class="w-full pl-11 pr-4 py-3 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm font-medium">
+                        <input type="text" id="live-search-input" name="q" value="{{ request('q') }}" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full pl-11 pr-4 py-3 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm font-medium">
                     </div>
                     <div class="flex gap-2">
                         <button type="submit" class="btn-cari bg-[#106c38] hover:bg-green-800 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
-                            <i class="ph ph-magnifying-glass"></i> Cari
+                            <i class="ph ph-magnifying-glass"></i> {{ __('Cari') }}
                         </button>
                         <button type="button" id="open-modal-pencarian-spesifik" class="btn-spesifik bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-5 py-3 rounded-xl transition border border-emerald-500/35 flex items-center justify-center gap-1.5 cursor-pointer">
-                            <i class="ph ph-sliders-horizontal"></i> Spesifik
+                            <i class="ph ph-sliders-horizontal"></i> {{ __('Spesifik') }}
                         </button>
                     </div>
                 </form>
@@ -123,16 +124,16 @@
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">
                 @if($hasFilters)
-                    Hasil Pencarian ({{ $books->total() }} Koleksi Ditemukan)
+                    {{ __('Hasil Pencarian') }} ({{ $books->total() }} {{ __('Koleksi Ditemukan') }})
                 @else
-                    Semua Koleksi ({{ $books->total() }} Koleksi)
+                    {{ __('Semua Koleksi') }} ({{ $books->total() }} {{ __('Koleksi') }})
                 @endif
             </h2>
             
             <!-- Clear Filters -->
             @if($hasFilters)
                 <a href="{{ route('search') }}" class="text-xs font-bold text-red-600 hover:text-red-800 transition flex items-center gap-1">
-                    <i class="ph ph-trash"></i> Bersihkan Filter
+                    <i class="ph ph-trash"></i> {{ __('Bersihkan Filter') }}
                 </a>
             @endif
         </div>
@@ -140,7 +141,10 @@
         <!-- Results List -->
         <div class="space-y-4 mb-8">
             @forelse($books as $book)
-                <div class="result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-5 sm:gap-6 items-start shadow-sm">
+                <div class="book-card result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-5 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
+                     data-title="{{ strtolower($book->title) }}" 
+                     data-author="{{ strtolower($book->author) }}" 
+                     data-publisher="{{ strtolower($book->publisher) }}">
                     <!-- Book Cover -->
                     <div class="w-24 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
@@ -152,7 +156,7 @@
                             </div>
                         @endif
                         <span class="absolute top-2 left-2 bg-[#106c38] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
-                            {{ strtoupper($book->type) }}
+                            {{ strtoupper(__($book->jenis)) }}
                         </span>
                     </div>
 
@@ -161,7 +165,7 @@
                         <div class="mb-2">
                             <!-- Category Badge -->
                             <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[9px] font-bold px-2 py-0.5 rounded-full mb-1 tracking-wider uppercase">
-                                {{ $book->category ?: 'GENERAL' }}
+                                {{ __($book->category ?: 'Umum') }}
                             </span>
                             <h3 class="text-base sm:text-lg font-bold text-slate-800 hover:text-[#106c38] hover:underline transition leading-snug">
                                 <a href="{{ route('books.show', $book->id) }}">{{ $book->title }}</a>
@@ -172,19 +176,19 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 mb-4 text-xs font-medium text-slate-500">
                             <div class="flex items-center gap-1.5">
                                 <i class="ph ph-user text-sm text-slate-400"></i>
-                                <span>Pengarang: <strong class="text-slate-700">{{ $book->author }}</strong></span>
+                                <span>{{ __('Pengarang:') }} <strong class="text-slate-700">{{ $book->author }}</strong></span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="ph ph-hash text-sm text-slate-400"></i>
-                                <span>No. Klasifikasi: <strong class="text-slate-700">{{ $book->classification }}</strong></span>
+                                <span>{{ __('No. Klasifikasi:') }} <strong class="text-slate-700">{{ $book->classification }}</strong></span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="ph ph-buildings text-sm text-slate-400"></i>
-                                <span>Penerbit: <strong class="text-slate-700">{{ $book->publisher ?: '-' }}</strong></span>
+                                <span>{{ __('Penerbit:') }} <strong class="text-slate-700">{{ $book->publisher ?: '-' }}</strong></span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="ph ph-calendar text-sm text-slate-400"></i>
-                                <span>Tahun Terbit: <strong class="text-slate-700">{{ $book->publish_year ?: '-' }}</strong></span>
+                                <span>{{ __('Tahun Terbit:') }} <strong class="text-slate-700">{{ $book->publish_year ?: '-' }}</strong></span>
                             </div>
                         </div>
 
@@ -193,11 +197,11 @@
                             <div class="flex items-center gap-1.5 text-slate-400">
                                 <i class="ph ph-map-pin text-sm text-[#106c38]"></i>
                                 <span class="font-medium text-slate-500">
-                                    Penyimpanan: 
+                                    {{ __('Penyimpanan:') }} 
                                     @php
-                                        $locNames = $book->items->map(function($i) { return $i->location->name; })->unique();
+                                        $locNames = $book->items->map(function($i) { return __($i->location->name); })->unique();
                                     @endphp
-                                    <strong class="text-slate-700">{{ $locNames->implode(', ') ?: 'Tidak ditentukan' }}</strong>
+                                    <strong class="text-slate-700">{{ $locNames->implode(', ') ?: __('Tidak ditentukan') }}</strong>
                                 </span>
                             </div>
                             
@@ -210,12 +214,12 @@
                                 @if($availableCopies > 0)
                                     <span class="inline-flex items-center gap-1 bg-green-50 text-green-700 font-bold px-2.5 py-0.5 rounded-full border border-green-200/50">
                                         <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                        {{ $availableCopies }} / {{ $totalCopies }} Salinan Tersedia
+                                        {{ $availableCopies }} / {{ $totalCopies }} {{ __('Eksemplar') }}
                                     </span>
                                 @else
                                     <span class="inline-flex items-center gap-1 bg-red-50 text-red-700 font-bold px-2.5 py-0.5 rounded-full border border-red-200/50">
                                         <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                                        Semua Salinan Dipinjam
+                                        {{ __('Semua Salinan Dipinjam') }}
                                     </span>
                                 @endif
                             </div>
@@ -227,12 +231,12 @@
                     <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
                         <i class="ph ph-warning-circle"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-1">Koleksi Tidak Ditemukan</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-1">{{ __('Koleksi Tidak Ditemukan') }}</h3>
                     <p class="text-sm text-slate-500 max-w-md mx-auto mb-6">
-                        Maaf, kami tidak dapat menemukan buku atau referensi yang Anda cari. Coba ubah kata kunci Anda atau gunakan pencarian spesifik.
+                        {{ __('Maaf, kami tidak dapat menemukan buku atau referensi yang Anda cari. Coba ubah kata kunci Anda atau gunakan pencarian spesifik.') }}
                     </p>
                     <button id="open-modal-pencarian-spesifik-empty" class="bg-[#106c38] hover:bg-green-800 text-white font-semibold text-sm px-6 py-3 rounded-2xl transition shadow-md shadow-green-950/10 flex items-center gap-1.5 mx-auto">
-                        <i class="ph ph-sliders-horizontal"></i> Buka Pencarian Spesifik
+                        <i class="ph ph-sliders-horizontal"></i> {{ __('Buka Pencarian Spesifik') }}
                     </button>
                 </div>
             @endforelse
@@ -245,23 +249,7 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-br from-[#064e3b] to-[#022c22] border-t-4 border-[#106c38] py-10 text-white mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-0.5 overflow-hidden">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="w-full h-full rounded-full object-cover">
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-bold text-base tracking-wide">Universitas Sumatera Utara</span>
-                    <span class="text-xs text-green-200">Online Public Access Catalog © 2026</span>
-                </div>
-            </div>
-            <p class="text-xs text-green-100/60 max-w-md text-center sm:text-right">
-                Perpustakaan Universitas Sumatera Utara. Jl. Perpustakaan No. 1, Kampus Padang Bulan, Medan, Sumatera Utara.
-            </p>
-        </div>
-    </footer>
+    @include('partials.footer')
 
     <!-- Advanced Search Modal -->
     <div id="modal-pencarian-spesifik" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
@@ -273,8 +261,8 @@
                         <i class="ph ph-graduation-cap"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg md:text-xl font-bold tracking-wide">Pencarian Spesifik</h3>
-                        <p class="text-xs text-green-100/90 font-medium font-sans">Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!</p>
+                        <h3 class="text-lg md:text-xl font-bold tracking-wide">{{ __('Pencarian Spesifik') }}</h3>
+                        <p class="text-xs text-green-100/90 font-medium font-sans">{{ __('Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!') }}</p>
                     </div>
                 </div>
                 <button id="close-modal-pencarian-spesifik" class="absolute top-6 right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-2 rounded-xl flex items-center justify-center">
@@ -287,49 +275,49 @@
                 <!-- Section 1: Detail Bibliografi -->
                 <div class="space-y-4">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <i class="ph ph-info text-sm text-[#106c38]"></i> Detail Bibliografi
+                        <i class="ph ph-info text-sm text-[#106c38]"></i> {{ __('Detail Bibliografi') }}
                     </h4>
                     
                     <!-- Judul -->
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-xs font-semibold text-slate-500 pl-1">Judul</label>
+                        <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Judul') }}</label>
                         <div class="relative flex items-center">
                             <div class="absolute left-4 text-slate-400">
                                 <i class="ph ph-book-open text-xl"></i>
                             </div>
-                            <input type="text" name="inJudul" placeholder="e.g. Metode Penelitian Hukum" value="{{ request('inJudul') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                            <input type="text" name="inJudul" placeholder="{{ __('e.g. Metode Penelitian Hukum') }}" value="{{ request('inJudul') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
                     <!-- Pengarang -->
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-xs font-semibold text-slate-500 pl-1">Pengarang</label>
+                        <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Pengarang') }}</label>
                         <div class="relative flex items-center">
                             <div class="absolute left-4 text-slate-400">
                                 <i class="ph ph-user text-xl"></i>
                             </div>
-                            <input type="text" name="inPengarang1" placeholder="e.g. Prof. Soerjono Soekanto" value="{{ request('inPengarang1') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                            <input type="text" name="inPengarang1" placeholder="{{ __('e.g. Prof. Soerjono Soekanto') }}" value="{{ request('inPengarang1') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                         </div>
                     </div>
                     
                     <!-- Penerbit & Subyek -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">Penerbit</label>
+                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Penerbit') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-buildings text-xl"></i>
                                 </div>
-                                <input type="text" name="inPenerbit" placeholder="e.g. Rajawali Pers" value="{{ request('inPenerbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inPenerbit" placeholder="{{ __('e.g. Rajawali Pers') }}" value="{{ request('inPenerbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">Subyek</label>
+                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Subyek') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-tag text-xl"></i>
                                 </div>
-                                <input type="text" name="inSubyek" placeholder="e.g. Hukum Perdata" value="{{ request('inSubyek') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inSubyek" placeholder="{{ __('e.g. Hukum Perdata') }}" value="{{ request('inSubyek') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>
@@ -337,21 +325,21 @@
                     <!-- Tahun Terbit & ISBN -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">Tahun Terbit</label>
+                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Tahun Terbit') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-calendar text-xl"></i>
                                 </div>
-                                <input type="text" name="intahunterbit" placeholder="e.g. 2023" value="{{ request('intahunterbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="intahunterbit" placeholder="{{ __('e.g. 2023') }}" value="{{ request('intahunterbit') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">ISBN</label>
+                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('ISBN') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-barcode text-xl"></i>
                                 </div>
-                                <input type="text" name="inisbn" placeholder="e.g. 978-602-8512-30-4" value="{{ request('inisbn') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inisbn" placeholder="{{ __('e.g. 978-602-8512-30-4') }}" value="{{ request('inisbn') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>
@@ -359,21 +347,21 @@
                     <!-- No. Klasifikasi & Barcode -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">No. Klasifikasi</label>
+                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('No. Klasifikasi') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-hash text-xl"></i>
                                 </div>
-                                <input type="text" name="inKlasifikasi" placeholder="e.g. 340" value="{{ request('inKlasifikasi') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inKlasifikasi" placeholder="{{ __('e.g. 340') }}" value="{{ request('inKlasifikasi') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">Barcode</label>
+                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Barcode') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-qr-code text-xl"></i>
                                 </div>
-                                <input type="text" name="inbarcode" placeholder="e.g. 120930193" value="{{ request('inbarcode') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
+                                <input type="text" name="inbarcode" placeholder="{{ __('e.g. 120930193') }}" value="{{ request('inbarcode') }}" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 font-medium text-sm">
                             </div>
                         </div>
                     </div>
@@ -382,21 +370,21 @@
                 <!-- Section 2: Filter Pencarian -->
                 <div class="space-y-4 pt-2 border-t border-slate-100">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <i class="ph ph-sliders-horizontal text-sm text-[#106c38]"></i> Lokasi & Jenis Koleksi
+                        <i class="ph ph-sliders-horizontal text-sm text-[#106c38]"></i> {{ __('Lokasi & Jenis Koleksi') }}
                     </h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Semua Lokasi -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">Lokasi</label>
+                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Lokasi') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-map-pin text-xl"></i>
                                 </div>
                                 <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                    <option value="">Semua Lokasi</option>
+                                    <option value="">{{ __('Semua Lokasi') }}</option>
                                     @foreach($locations as $loc)
-                                        <option value="{{ $loc->code }}" {{ request('inLokasi') == $loc->code ? 'selected' : '' }}>{{ $loc->name }}</option>
+                                        <option value="{{ $loc->code }}" {{ request('inLokasi') == $loc->code ? 'selected' : '' }}>{{ __($loc->name) }}</option>
                                     @endforeach
                                 </select>
                                 <div class="absolute right-4 pointer-events-none text-slate-400">
@@ -407,18 +395,18 @@
                         
                         <!-- Semua Jenis -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">Jenis Koleksi</label>
+                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Jenis Koleksi') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-file-text text-xl"></i>
                                 </div>
                                 <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                    <option value="">Semua Jenis</option>
-                                    <option value="buku" {{ request('inJenis') == 'buku' ? 'selected' : '' }}>Buku</option>
-                                    <option value="jurnal" {{ request('inJenis') == 'jurnal' ? 'selected' : '' }}>Jurnal</option>
-                                    <option value="majalah" {{ request('inJenis') == 'majalah' ? 'selected' : '' }}>Majalah</option>
-                                    <option value="skripsi" {{ request('inJenis') == 'skripsi' ? 'selected' : '' }}>Skripsi/Tesis/Disertasi</option>
-                                    <option value="laporan_penelitian" {{ request('inJenis') == 'laporan_penelitian' ? 'selected' : '' }}>Laporan Penelitian</option>
+                                    <option value="">{{ __('Semua Jenis') }}</option>
+                                    <option value="buku" {{ request('inJenis') == 'buku' ? 'selected' : '' }}>{{ __('Buku') }}</option>
+                                    <option value="jurnal" {{ request('inJenis') == 'jurnal' ? 'selected' : '' }}>{{ __('Jurnal') }}</option>
+                                    <option value="majalah" {{ request('inJenis') == 'majalah' ? 'selected' : '' }}>{{ __('Majalah') }}</option>
+                                    <option value="skripsi" {{ request('inJenis') == 'skripsi' ? 'selected' : '' }}>{{ __('Skripsi/Tesis/Disertasi') }}</option>
+                                    <option value="laporan_penelitian" {{ request('inJenis') == 'laporan_penelitian' ? 'selected' : '' }}>{{ __('Laporan Penelitian') }}</option>
                                 </select>
                                 <div class="absolute right-4 pointer-events-none text-slate-400">
                                     <i class="ph ph-caret-down text-sm"></i>
@@ -431,7 +419,7 @@
                 <!-- Cari Button -->
                 <div class="flex justify-center pt-4">
                     <button type="submit" class="bg-[#106c38] hover:bg-green-800 text-white px-12 py-4 rounded-full font-bold text-sm tracking-wider uppercase transition-all shadow-lg shadow-green-950/20 hover:shadow-green-900/40 hover:-translate-y-0.5 focus:outline-none flex items-center gap-2">
-                        <i class="ph ph-magnifying-glass text-lg"></i> Cari Koleksi
+                        <i class="ph ph-magnifying-glass text-lg"></i> {{ __('Cari Koleksi') }}
                     </button>
                 </div>
             </form>

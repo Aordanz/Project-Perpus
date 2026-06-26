@@ -20,11 +20,16 @@ return new class extends Migration
             $table->integer('publish_year')->nullable();
             $table->string('isbn')->nullable();
             $table->string('classification')->nullable();
-            $table->string('category')->nullable();
+            $table->string('call_number')->nullable();
+            $table->string('category')->default('Umum');
             $table->string('language')->default('Indonesia');
             $table->string('physical_description')->nullable();
             $table->string('cover_image')->nullable();
-            $table->string('type')->default('buku');
+            $table->string('jenis')->default('buku');
+            $table->string('publication_city')->nullable();
+            $table->string('edition')->nullable();
+            $table->text('general_note')->nullable();
+            $table->string('golongan')->nullable();
             $table->timestamps();
         });
     }
