@@ -101,7 +101,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2020,
                 'isbn' => '978-013-388-751-9',
                 'classification' => '660.2 Ele',
-                'category' => 'Sains & Teknologi',
+                'category' => 'Teknik',
                 'language' => 'Inggris',
                 'physical_description' => 'xxviii, 980 p. : ill. ; 26 cm.',
                 'jenis' => 'buku'
@@ -127,7 +127,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2018,
                 'isbn' => '978-979-407-154-9',
                 'classification' => '340.1 Kan p',
-                'category' => 'Sosial & Humaniora',
+                'category' => 'Hukum',
                 'language' => 'Indonesia',
                 'physical_description' => 'x, 480 hlm. ; 21 cm.',
                 'jenis' => 'buku'
@@ -140,7 +140,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2020,
                 'isbn' => '978-979-061-912-8',
                 'classification' => '658.403 8 Lau s',
-                'category' => 'Sosial & Humaniora',
+                'category' => 'Komputer & Informatika',
                 'language' => 'Indonesia',
                 'physical_description' => 'xxiv, 520 hlm. : ilus. ; 26 cm.',
                 'jenis' => 'buku'
@@ -153,7 +153,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2022,
                 'isbn' => '978-979-421-042-0',
                 'classification' => '340.072 Soe m',
-                'category' => 'Sosial & Humaniora',
+                'category' => 'Hukum',
                 'language' => 'Indonesia',
                 'physical_description' => 'xii, 192 hlm. ; 21 cm.',
                 'jenis' => 'buku'
@@ -166,7 +166,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2017,
                 'isbn' => '978-979-015-821-4',
                 'classification' => '515 Var k',
-                'category' => 'Sains & Teknologi',
+                'category' => 'Matematika & IPA',
                 'language' => 'Indonesia',
                 'physical_description' => 'xiv, 410 hlm. : ilus. ; 25 cm.',
                 'jenis' => 'buku'
@@ -192,7 +192,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2021,
                 'isbn' => '978-623-01-0125-9',
                 'classification' => '004 Kad p',
-                'category' => 'Sains & Teknologi',
+                'category' => 'Komputer & Informatika',
                 'language' => 'Indonesia',
                 'physical_description' => 'x, 390 hlm. : ilus. ; 23 cm.',
                 'jenis' => 'buku'
@@ -205,7 +205,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2023,
                 'isbn' => '978-623-7131-75-5',
                 'classification' => '005.133 Mun s',
-                'category' => 'Sains & Teknologi',
+                'category' => 'Komputer & Informatika',
                 'language' => 'Indonesia',
                 'physical_description' => 'viii, 320 hlm. ; 24 cm.',
                 'jenis' => 'buku'
@@ -218,7 +218,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2018,
                 'isbn' => '978-979-421-021-5',
                 'classification' => '302.5 Kar p',
-                'category' => 'Sosial & Humaniora',
+                'category' => 'Sastra & Bahasa',
                 'language' => 'Indonesia',
                 'physical_description' => 'xvi, 280 hlm. ; 21 cm.',
                 'jenis' => 'buku'
@@ -231,7 +231,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2019,
                 'isbn' => '978-979-421-413-8',
                 'classification' => '339 Suk m',
-                'category' => 'Sosial & Humaniora',
+                'category' => 'Ekonomi & Bisnis',
                 'language' => 'Indonesia',
                 'physical_description' => 'xii, 450 hlm. ; 24 cm.',
                 'jenis' => 'buku'
@@ -270,7 +270,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2018,
                 'isbn' => '978-979-518-888-0',
                 'classification' => '614 Not i',
-                'category' => 'Kesehatan & Kedokteran',
+                'category' => 'Seni & Desain',
                 'language' => 'Indonesia',
                 'physical_description' => 'viii, 340 hlm. ; 21 cm.',
                 'jenis' => 'buku'
@@ -283,7 +283,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2019,
                 'isbn' => '978-979-044-998-5',
                 'classification' => '615.1 Kat f',
-                'category' => 'Kesehatan & Kedokteran',
+                'category' => 'Umum',
                 'language' => 'Indonesia',
                 'physical_description' => 'xxx, 1250 hlm. : ilus. ; 28 cm.',
                 'jenis' => 'buku'
@@ -296,7 +296,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2017,
                 'isbn' => '978-602-444-012-4',
                 'classification' => '634.9 Ind d',
-                'category' => 'Sains & Teknologi',
+                'category' => 'Pertanian & Kehutanan',
                 'language' => 'Indonesia',
                 'physical_description' => 'xii, 290 hlm. ; 23 cm.',
                 'jenis' => 'buku'
@@ -309,7 +309,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 1952,
                 'isbn' => 'N/A - Arsip Pustaka',
                 'classification' => '959.81 Har s',
-                'category' => 'Sosial & Humaniora',
+                'category' => 'Sejarah & Geografi',
                 'language' => 'Indonesia',
                 'physical_description' => 'x, 150 hlm. ; 18 cm.',
                 'jenis' => 'buku'
@@ -322,7 +322,7 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2021,
                 'isbn' => '978-623-256-421-2',
                 'classification' => '630 Lim p',
-                'category' => 'Sains & Teknologi',
+                'category' => 'Pertanian & Kehutanan',
                 'language' => 'Indonesia',
                 'physical_description' => 'xiv, 220 hlm. ; 23 cm.',
                 'jenis' => 'buku'
