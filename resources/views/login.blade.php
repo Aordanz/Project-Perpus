@@ -31,6 +31,19 @@
             transform: translateY(-4px);
             box-shadow: 0 12px 20px -8px rgba(16, 108, 56, 0.25), 0 4px 6px -2px rgba(16, 108, 56, 0.15);
         }
+        
+        /* Hide default browser eye icon for password inputs */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
+        }
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+            visibility: hidden;
+            display: none !important;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+        }
     </style>
 </head>
 <body class="text-slate-800 antialiased bg-slate-50 min-h-screen flex items-center justify-center p-4 md:p-0">
@@ -48,7 +61,7 @@
 
             <div class="relative z-10">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 hover:opacity-90 transition">
-                    <img src="{{ asset('logo-usu.png') }}" alt="USU Logo" class="h-10 w-auto bg-white rounded-full p-0.5">
+                    <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-10 w-10 object-cover bg-white rounded-full p-0.5">
                     <div class="flex flex-col">
                         <span class="font-bold tracking-tight text-white leading-none text-xs uppercase">Perpustakaan</span>
                         <span class="font-bold tracking-tight text-white leading-none text-sm uppercase">USU OPAC</span>
@@ -161,7 +174,14 @@
 
                 <form id="login-form" action="{{ route('login.post') }}" method="POST" class="space-y-4">
                     @csrf
-                    <input type="hidden" name="role" id="input-role" value="{{ $selectedRole ?? '' }}">
+                    @php
+                        $savedEmail = request()->cookie('saved_email') ?: old('email');
+                        $savedPassword = request()->cookie('saved_password') ?: '';
+                        $rememberChecked = request()->cookie('remember_checked') === 'true' ? 'checked' : '';
+                        $savedRole = request()->cookie('remember_role') ?: '';
+                        $roleToUse = $selectedRole ?? $savedRole;
+                    @endphp
+                    <input type="hidden" name="role" id="input-role" value="{{ $roleToUse }}">
 
                     <!-- Email Input -->
                     <div>
@@ -170,7 +190,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <i class="ph ph-envelope text-lg" id="icon-email"></i>
                             </div>
-                            <input type="email" name="email" id="email" value="{{ old('email') }}" required placeholder="nama@usu.ac.id" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
+                            <input type="email" name="email" id="email" value="{{ $savedEmail }}" autocomplete="email" required placeholder="nama@usu.ac.id" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
                         </div>
                     </div>
 
@@ -184,16 +204,16 @@
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <i class="ph ph-lock text-lg"></i>
                             </div>
-                            <input type="password" name="password" id="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
+                            <input type="password" name="password" id="password" value="{{ $savedPassword }}" autocomplete="current-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
                             <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 bg-transparent border-none cursor-pointer">
-                                <i class="ph ph-eye text-lg" id="icon-toggle-password"></i>
+                                <i class="ph ph-eye-slash text-lg" id="icon-toggle-password"></i>
                             </button>
                         </div>
                     </div>
 
                     <!-- Remember Me -->
                     <div class="flex items-center">
-                        <input type="checkbox" name="remember" id="remember" class="w-4.5 h-4.5 rounded border-slate-300 text-[#106c38] focus:ring-[#106c38]">
+                        <input type="checkbox" name="remember" id="remember" {{ $rememberChecked }} class="w-4.5 h-4.5 rounded border-slate-300 text-[#106c38] focus:ring-[#106c38]">
                         <label for="remember" class="ml-2 text-xs text-slate-500 font-medium select-none cursor-pointer">Ingat saya di perangkat ini</label>
                     </div>
 
@@ -254,10 +274,10 @@
             const icon = document.getElementById('icon-toggle-password');
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                icon.className = 'ph ph-eye-slash text-lg';
+                icon.className = 'ph ph-eye text-lg';
             } else {
                 passwordInput.type = 'password';
-                icon.className = 'ph ph-eye text-lg';
+                icon.className = 'ph ph-eye-slash text-lg';
             }
         }
 

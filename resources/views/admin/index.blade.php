@@ -77,6 +77,12 @@
                 </a>
             </div>
 
+            <div class="hidden md:flex items-center gap-8">
+                <a href="{{ route('admin.index') }}" class="{{ request()->routeIs('admin.index') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Dashboard</a>
+                <a href="{{ route('admin.galeri') }}" class="{{ request()->routeIs('admin.galeri') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Galeri</a>
+                <a href="{{ route('admin.pesan') }}" class="{{ request()->routeIs('admin.pesan') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Pesan</a>
+            </div>
+
             <div class="flex items-center gap-4">
                 <div class="hidden sm:flex flex-col text-right">
                     <span class="font-bold text-xs">{{ Auth::user()->name ?? 'Admin Perpustakaan' }}</span>
@@ -191,10 +197,10 @@
         </div>
 
         <!-- Split Content Area -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="flex flex-col gap-8 items-start w-full">
             
             <!-- Left Side: Book Database List (8 columns) -->
-            <div class="lg:col-span-7 flex flex-col gap-6">
+            <div class="w-full flex flex-col gap-6">
                 
                 <!-- Book List Panel -->
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex flex-col gap-6">
@@ -207,18 +213,23 @@
                             <p class="text-slate-500 text-xs mt-0.5">Menampilkan seluruh buku yang ada di database beserta salinan fisiknya.</p>
                         </div>
                         
-                        <!-- Search Box inside Card -->
-                        <form action="{{ route('admin.index') }}" method="GET" class="w-full sm:w-64 relative flex items-center">
-                            <div class="absolute left-3.5 text-slate-400">
-                                <i class="ph ph-magnifying-glass text-lg"></i>
-                            </div>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul, penulis..." class="w-full pl-10 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white text-xs outline-none transition focus:border-usu-green focus:ring-4 focus:ring-[#106c38]/10 font-medium">
-                            @if(request('search'))
-                                <a href="{{ route('admin.index') }}" class="absolute right-3.5 text-slate-400 hover:text-slate-600">
-                                    <i class="ph ph-x-circle text-base"></i>
-                                </a>
-                            @endif
-                        </form>
+                        <!-- Search Box inside Card & Button -->
+                        <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                            <form action="{{ route('admin.index') }}" method="GET" class="w-full sm:w-64 relative flex items-center">
+                                <div class="absolute left-3.5 text-slate-400">
+                                    <i class="ph ph-magnifying-glass text-lg"></i>
+                                </div>
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul, penulis..." class="w-full pl-10 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white text-xs outline-none transition focus:border-usu-green focus:ring-4 focus:ring-[#106c38]/10 font-medium">
+                                @if(request('search'))
+                                    <a href="{{ route('admin.index') }}" class="absolute right-3.5 text-slate-400 hover:text-slate-600">
+                                        <i class="ph ph-x-circle text-base"></i>
+                                    </a>
+                                @endif
+                            </form>
+                            <button type="button" onclick="openAddBookModal()" class="w-full sm:w-auto bg-[#106c38] hover:bg-green-800 text-white font-bold py-2 px-4 rounded-xl transition flex items-center justify-center gap-2 text-xs shadow-sm border-none cursor-pointer whitespace-nowrap">
+                                <i class="ph ph-plus-circle text-base"></i> Tambah Koleksi Baru
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Books Table -->
@@ -311,22 +322,31 @@
                 </div>
             </div>
 
-            <!-- Right Side: Input New Book Form (5 columns) -->
-            <div class="lg:col-span-5">
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex flex-col gap-6 sticky top-24">
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="ph ph-plus-circle text-usu-green"></i>
-                            <span>Tambah Koleksi Buku Baru</span>
-                        </h2>
-                        <p class="text-slate-500 text-xs mt-0.5">Isi seluruh informasi bibliografi secara rinci untuk menyimpannya ke database.</p>
+            <!-- Modal: Tambah Koleksi Buku Baru -->
+            <div id="addBookModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+                <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeAddBookModal()"></div>
+                
+                <div class="bg-white rounded-3xl w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col shadow-2xl relative z-10 transform scale-95 transition-transform duration-300 overflow-hidden" id="addBookModalContent">
+                    
+                    <!-- Modal Header -->
+                    <div class="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                <i class="ph ph-plus-circle text-usu-green"></i>
+                                <span>Tambah Koleksi Buku Baru</span>
+                            </h2>
+                            <p class="text-slate-500 text-[10px] sm:text-xs mt-0.5">Isi seluruh informasi bibliografi secara rinci untuk menyimpannya ke database.</p>
+                        </div>
+                        <button type="button" onclick="closeAddBookModal()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-500 transition cursor-pointer border-none">
+                            <i class="ph ph-x text-lg"></i>
+                        </button>
                     </div>
 
-                    <form action="{{ route('admin.books.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        @csrf
-                        
-                        <!-- Scrollable form inputs container -->
-                        <div class="max-h-[58vh] overflow-y-auto pr-2 space-y-4 form-container">
+                    <!-- Scrollable Modal Body -->
+                    <div class="overflow-y-auto p-5">
+                        <form action="{{ route('admin.books.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                            @csrf
+                            <div class="space-y-4 form-container">
                             
                             <!-- Field group: Informasi Utama -->
                             <div class="p-4 bg-slate-50/50 rounded-2xl border border-slate-200/40 space-y-3">
@@ -446,8 +466,12 @@
                                 </div>
 
                                 <div class="flex flex-col gap-1">
-                                    <label class="text-[11px] font-bold text-slate-500">Unggah Gambar Sampul</label>
-                                    <input type="file" name="cover_image" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-usu-green hover:file:bg-green-100 cursor-pointer w-full">
+                                    <label class="text-[11px] font-bold text-slate-500">Unggah Gambar (Maks 5, Utama & Tambahan)</label>
+                                    <input type="file" name="images[]" id="images-input" multiple accept="image/*" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-usu-green hover:file:bg-green-100 cursor-pointer w-full">
+                                    <p class="text-[10px] text-slate-400" id="images-helper">Gambar pertama yang Anda pilih akan menjadi sampul utama.</p>
+                                    
+                                    <!-- Bubble Container -->
+                                    <div id="image-bubbles-container" class="flex flex-wrap gap-2 mt-2 empty:hidden"></div>
                                 </div>
                             </div>
 
@@ -494,16 +518,14 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
                             </div>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" class="w-full bg-gradient-to-r from-[#064e3b] to-[#106c38] hover:from-[#053c2e] hover:to-[#0b4d27] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-green-950/15 border-none mt-2">
-                            <i class="ph ph-floppy-disk text-base"></i>
-                            <span>Simpan Buku & Eksemplar</span>
-                        </button>
-                    </form>
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full bg-gradient-to-r from-[#064e3b] to-[#106c38] hover:from-[#053c2e] hover:to-[#0b4d27] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-green-950/15 border-none mt-2">
+                                <i class="ph ph-floppy-disk text-base"></i>
+                                <span>Simpan Buku & Eksemplar</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -519,8 +541,35 @@
         </div>
     </footer>
 
-    <!-- Script to dynamically add book copy items rows in form -->
     <script>
+        // Modal Control Functions
+        const addBookModal = document.getElementById('addBookModal');
+        const addBookModalContent = document.getElementById('addBookModalContent');
+
+        function openAddBookModal() {
+            addBookModal.classList.remove('hidden');
+            // Small delay to allow display block to apply before transition
+            setTimeout(() => {
+                addBookModal.classList.remove('opacity-0');
+                addBookModalContent.classList.remove('scale-95');
+                addBookModalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeAddBookModal() {
+            addBookModal.classList.add('opacity-0');
+            addBookModalContent.classList.remove('scale-100');
+            addBookModalContent.classList.add('scale-95');
+            setTimeout(() => {
+                addBookModal.classList.add('hidden');
+            }, 300); // Wait for transition
+        }
+
+        // Open modal if there are validation errors
+        @if ($errors->any())
+            openAddBookModal();
+        @endif
+
         document.addEventListener('DOMContentLoaded', () => {
             const btnAddRow = document.getElementById('btn-add-item-row');
             const container = document.getElementById('items-rows-container');
@@ -575,6 +624,73 @@
                     container.appendChild(newRow);
                     rowIndex++;
                 });
+            }
+
+            // Handle multiple image preview bubbles
+            const imagesInput = document.getElementById('images-input');
+            const bubblesContainer = document.getElementById('image-bubbles-container');
+            let selectedFiles = [];
+
+            if (imagesInput && bubblesContainer) {
+                imagesInput.addEventListener('change', function(e) {
+                    // Get all newly selected files
+                    const newFiles = Array.from(e.target.files);
+                    
+                    // Add to our tracked array (up to 5 total)
+                    for (let file of newFiles) {
+                        // Check if file is already in array to prevent duplicates on re-selection
+                        if (selectedFiles.length < 5 && !selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                            selectedFiles.push(file);
+                        }
+                    }
+                    
+                    updateBubblesUI();
+                    syncInputFiles();
+                });
+            }
+
+            // Make removeFile function globally accessible
+            window.removeFile = function(index) {
+                selectedFiles.splice(index, 1);
+                updateBubblesUI();
+                syncInputFiles();
+            };
+
+            function updateBubblesUI() {
+                bubblesContainer.innerHTML = '';
+                selectedFiles.forEach((file, index) => {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'flex items-center gap-1.5 bg-green-50 border border-green-200 text-usu-green px-2 py-1 rounded-lg text-[10px] font-semibold';
+                    
+                    // Truncate filename if too long
+                    let displayTitle = file.name;
+                    if (displayTitle.length > 20) {
+                        const extIndex = displayTitle.lastIndexOf('.');
+                        if (extIndex > -1) {
+                            displayTitle = displayTitle.substring(0, 10) + '...' + displayTitle.substring(extIndex);
+                        } else {
+                            displayTitle = displayTitle.substring(0, 15) + '...';
+                        }
+                    }
+
+                    bubble.innerHTML = `
+                        <i class="ph ph-image"></i>
+                        <span title="${file.name}">${index === 0 ? '[Sampul] ' : ''}${displayTitle}</span>
+                        <button type="button" onclick="removeFile(${index})" class="ml-1 text-green-600 hover:text-red-500 bg-transparent border-none p-0 cursor-pointer flex items-center justify-center transition">
+                            <i class="ph ph-x-circle text-[14px]"></i>
+                        </button>
+                    `;
+                    bubblesContainer.appendChild(bubble);
+                });
+            }
+
+            function syncInputFiles() {
+                // Using DataTransfer to create a new FileList object
+                const dataTransfer = new DataTransfer();
+                selectedFiles.forEach(file => {
+                    dataTransfer.items.add(file);
+                });
+                imagesInput.files = dataTransfer.files;
             }
         });
     </script>

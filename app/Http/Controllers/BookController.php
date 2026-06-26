@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Location;
 use App\Models\University;
+use App\Models\Message;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -220,5 +221,36 @@ class BookController extends Controller
         $perPage = $request->input('per', 24);
         $books = $query->paginate($perPage)->withQueryString();
         return view('galeri', compact('books', 'perPage'));
+    }
+
+    /**
+     * Store a new contact message.
+     */
+    public function storeContact(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+            'attachments' => 'nullable|array|max:3',
+            'attachments.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ]);
+
+        $data = $request->only(['name', 'email', 'subject', 'message']);
+        
+        $attachmentsPath = [];
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $filename = time() . '_' . uniqid() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+                $file->move(public_path('contacts'), $filename);
+                $attachmentsPath[] = $filename;
+            }
+        }
+        $data['attachments'] = $attachmentsPath;
+
+        Message::create($data);
+
+        return back()->with('success', 'Pesan Anda telah berhasil dikirim! Tim kami akan merespons secepat mungkin.');
     }
 }

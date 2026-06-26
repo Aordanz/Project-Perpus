@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Location;
 use App\Models\Item;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -50,6 +51,33 @@ class AdminController extends Controller
     }
 
     /**
+     * Show the admin gallery to monitor books.
+     */
+    public function galeri(Request $request)
+    {
+        $query = Book::with(['items'])->latest();
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('title', 'like', "%{$search}%")
+                  ->orWhere('author', 'like', "%{$search}%");
+        }
+
+        $books = $query->paginate(24)->withQueryString();
+        
+        return view('admin.galeri', compact('books'));
+    }
+
+    /**
+     * Show the messages from the contact page.
+     */
+    public function pesan(Request $request)
+    {
+        $messages = Message::latest()->paginate(10);
+        return view('admin.pesan', compact('messages'));
+    }
+
+    /**
      * Store a new book along with its physical copies (items).
      */
     public function store(Request $request)
@@ -70,7 +98,8 @@ class AdminController extends Controller
             'jenis'                => 'nullable|string|max:255',
             'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
-            'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images'               => 'nullable|array|max:5',
+            'images.*'             => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
             // Validation for dynamic items
             'items.*.barcode'     => 'required|string|unique:items,barcode|max:255',
@@ -82,6 +111,7 @@ class AdminController extends Controller
             'items.*.barcode.required'    => 'Barcode wajib diisi.',
             'items.*.location_id.required'=> 'Lokasi rak wajib dipilih.',
             'items.*.type.required'       => 'Tipe eksemplar wajib dipilih.',
+            'images.max'                  => 'Maksimal 5 gambar yang dapat diunggah sekaligus.'
         ]);
 
         try {
@@ -101,16 +131,33 @@ class AdminController extends Controller
                 $bookData['category'] = 'Umum';
             }
 
-            // Handle cover image file upload
-            if ($request->hasFile('cover_image')) {
-                $image = $request->file('cover_image');
-                $name  = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
-                $image->move(public_path('covers'), $name);
-                $bookData['cover_image'] = $name;
-            }
+            // Handle multiple image file upload
+            if ($request->hasFile('images')) {
+                $images = $request->file('images');
+                
+                // First image is the main cover
+                $mainImage = $images[0];
+                $mainName  = time() . '_0_' . preg_replace('/\s+/', '_', $mainImage->getClientOriginalName());
+                $mainImage->move(public_path('covers'), $mainName);
+                $bookData['cover_image'] = $mainName;
 
-            // Save the book
-            $book = Book::create($bookData);
+                // Save the book
+                $book = Book::create($bookData);
+
+                // Save the rest as additional images
+                for ($i = 1; $i < count($images); $i++) {
+                    $img = $images[$i];
+                    $imgName = time() . '_' . $i . '_' . preg_replace('/\s+/', '_', $img->getClientOriginalName());
+                    $img->move(public_path('covers'), $imgName);
+                    
+                    $book->images()->create([
+                        'image_path' => $imgName,
+                    ]);
+                }
+            } else {
+                // Save the book without cover
+                $book = Book::create($bookData);
+            }
 
             // Add copies/items if provided
             if ($request->has('items')) {
