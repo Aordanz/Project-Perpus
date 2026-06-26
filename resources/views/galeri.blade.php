@@ -85,25 +85,71 @@
                 </a>
                 
                 @php
-                    $categories = [
-                        ['name' => 'Umum', 'icon' => 'ph-books'],
-                        ['name' => 'Agama', 'icon' => 'ph-mosque'],
-                        ['name' => 'Kesehatan & Kedokteran', 'icon' => 'ph-stethoscope'],
-                        ['name' => 'Sains & Teknologi', 'icon' => 'ph-rocket'],
-                        ['name' => 'Sosial & Humaniora', 'icon' => 'ph-users-three']
+                    // Get unique categories from books table dynamically
+                    $dbCategories = \App\Models\Book::select('category')->distinct()->whereNotNull('category')->pluck('category')->toArray();
+                    
+                    // Sort categories according to our preferred order
+                    $preferredOrder = [
+                        'Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora',
+                        'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik',
+                        'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'
                     ];
+                    
+                    // Icon mapping
+                    $iconMap = [
+                        'Umum' => 'ph-books',
+                        'Agama' => 'ph-mosque',
+                        'Kesehatan & Kedokteran' => 'ph-stethoscope',
+                        'Sains & Teknologi' => 'ph-rocket',
+                        'Sosial & Humaniora' => 'ph-users-three',
+                        'Hukum' => 'ph-scales',
+                        'Ekonomi & Bisnis' => 'ph-chart-line-up',
+                        'Pertanian & Kehutanan' => 'ph-tree',
+                        'Matematika & IPA' => 'ph-calculator',
+                        'Teknik' => 'ph-wrench',
+                        'Sastra & Bahasa' => 'ph-translate',
+                        'Komputer & Informatika' => 'ph-desktop',
+                        'Seni & Desain' => 'ph-palette',
+                        'Sejarah & Geografi' => 'ph-globe',
+                    ];
+                    
+                    // Sort dbCategories based on preferredOrder
+                    usort($dbCategories, function($a, $b) use ($preferredOrder) {
+                        $posA = array_search($a, $preferredOrder);
+                        $posB = array_search($b, $preferredOrder);
+                        if ($posA === false) return 1;
+                        if ($posB === false) return -1;
+                        return $posA - $posB;
+                    });
+
+                    $categories = [];
+                    foreach ($dbCategories as $catName) {
+                        $categories[] = [
+                            'name' => $catName,
+                            'icon' => $iconMap[$catName] ?? 'ph-books'
+                        ];
+                    }
+
                     $activeCategory = request('category');
                 @endphp
 
-                @foreach($categories as $cat)
+                @foreach($categories as $index => $cat)
                     @php
                         $isActive = $activeCategory === $cat['name'];
                     @endphp
                     <a href="{{ route('galeri', ['category' => $cat['name'], 'q' => request('q')]) }}" 
-                       class="category-bubble inline-flex items-center gap-2 px-4 py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-sm shadow-sm">
+                       class="category-bubble inline-flex items-center gap-2 px-4 py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold active-category-bubble' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-sm shadow-sm {{ $index >= 6 ? 'extra-category' : '' }}"
+                       style="{{ $index >= 6 && !$isActive ? 'display: none;' : '' }}">
                         <i class="ph {{ $cat['icon'] }} text-lg"></i> {{ __($cat['name']) }}
                     </a>
                 @endforeach
+
+                @if(count($categories) > 6)
+                    <button id="toggle-categories-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 bg-white text-slate-500 font-medium hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 transition-colors text-sm shadow-sm cursor-pointer select-none">
+                        <span id="toggle-categories-text">{{ __('Tampilkan Selengkapnya') }}</span>
+                        <i id="toggle-categories-icon" class="ph ph-caret-down text-base transition-transform duration-200"></i>
+                    </button>
+                @endif
             </div>
         </div>
 
@@ -272,6 +318,43 @@
     </div>
 
     @include('partials.footer')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggle-categories-btn');
+            const toggleText = document.getElementById('toggle-categories-text');
+            const toggleIcon = document.getElementById('toggle-categories-icon');
+            const extraCategories = document.querySelectorAll('.extra-category');
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const isCollapsed = Array.from(extraCategories).some(el => el.style.display === 'none');
+                    
+                    extraCategories.forEach(el => {
+                        if (isCollapsed) {
+                            el.style.display = 'inline-flex';
+                        } else {
+                            if (el.classList.contains('active-category-bubble')) {
+                                el.style.display = 'inline-flex';
+                            } else {
+                                el.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    if (isCollapsed) {
+                        toggleText.textContent = '{{ __("Sembunyikan") }}';
+                        toggleIcon.classList.remove('ph-caret-down');
+                        toggleIcon.classList.add('ph-caret-up');
+                    } else {
+                        toggleText.textContent = '{{ __("Tampilkan Selengkapnya") }}';
+                        toggleIcon.classList.remove('ph-caret-up');
+                        toggleIcon.classList.add('ph-caret-down');
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>
