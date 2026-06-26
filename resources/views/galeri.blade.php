@@ -88,71 +88,24 @@
                     $categories = [
                         ['name' => 'Umum', 'icon' => 'ph-books'],
                         ['name' => 'Agama', 'icon' => 'ph-mosque'],
-                        ['name' => 'Hukum', 'icon' => 'ph-scales'],
                         ['name' => 'Kesehatan & Kedokteran', 'icon' => 'ph-stethoscope'],
                         ['name' => 'Sains & Teknologi', 'icon' => 'ph-rocket'],
-                        ['name' => 'Sosial & Humaniora', 'icon' => 'ph-users-three'],
-                        ['name' => 'Sejarah', 'icon' => 'ph-hourglass'],
-                        ['name' => 'Ekonomi & Bisnis', 'icon' => 'ph-chart-line-up'],
-                        ['name' => 'Sastra & Bahasa', 'icon' => 'ph-translate'],
-                        ['name' => 'Kesenian', 'icon' => 'ph-palette'],
-                        ['name' => 'Komputer & IT', 'icon' => 'ph-desktop'],
-                        ['name' => 'Filsafat', 'icon' => 'ph-brain'],
-                        ['name' => 'Geografi', 'icon' => 'ph-globe']
+                        ['name' => 'Sosial & Humaniora', 'icon' => 'ph-users-three']
                     ];
                     $activeCategory = request('category');
-                    $activeIndex = array_search($activeCategory, array_column($categories, 'name'));
-                    $isExpanded = $activeIndex !== false && $activeIndex >= 5;
                 @endphp
 
-                @foreach($categories as $index => $cat)
+                @foreach($categories as $cat)
                     @php
                         $isActive = $activeCategory === $cat['name'];
-                        $isExtra = $index >= 5;
-                        $isHidden = $isExtra && !$isExpanded;
                     @endphp
                     <a href="{{ route('galeri', ['category' => $cat['name'], 'q' => request('q')]) }}" 
-                       style="{{ $isHidden ? 'display: none;' : '' }}"
-                       class="{{ $isExtra ? 'extra-category-bubble' : '' }} category-bubble inline-flex items-center gap-2 px-4 py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-sm shadow-sm">
+                       class="category-bubble inline-flex items-center gap-2 px-4 py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-sm shadow-sm">
                         <i class="ph {{ $cat['icon'] }} text-lg"></i> {{ __($cat['name']) }}
                     </a>
                 @endforeach
-
-                <!-- Button Lihat Lebih Banyak -->
-                <button id="toggle-categories-btn" onclick="toggleCategories()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-slate-50 border-slate-200 text-slate-600 font-medium hover:bg-slate-100 hover:text-slate-800 transition-colors text-sm shadow-sm cursor-pointer">
-                    <i id="toggle-icon" class="ph {{ $isExpanded ? 'ph-caret-up' : 'ph-caret-down' }} text-lg"></i> 
-                    <span id="toggle-text">{{ $isExpanded ? __('Sembunyikan') : __('Kategori Lainnya') }}</span>
-                </button>
             </div>
         </div>
-
-        <script>
-            let isExpanded = {{ $isExpanded ? 'true' : 'false' }};
-            
-            function toggleCategories() {
-                const extraBubbles = document.querySelectorAll('.extra-category-bubble');
-                const btnText = document.getElementById('toggle-text');
-                const btnIcon = document.getElementById('toggle-icon');
-
-                isExpanded = !isExpanded;
-
-                if (isExpanded) {
-                    // Show them
-                    extraBubbles.forEach(el => {
-                        el.style.display = 'inline-flex';
-                    });
-                    btnText.innerText = '{{ __("Sembunyikan") }}';
-                    btnIcon.classList.replace('ph-caret-down', 'ph-caret-up');
-                } else {
-                    // Hide them
-                    extraBubbles.forEach(el => {
-                        el.style.display = 'none';
-                    });
-                    btnText.innerText = '{{ __("Kategori Lainnya") }}';
-                    btnIcon.classList.replace('ph-caret-up', 'ph-caret-down');
-                }
-            }
-        </script>
 
         @if($books->isEmpty())
             <div class="bg-white rounded-2xl p-12 text-center shadow-sm border border-slate-100 mt-4">
@@ -184,7 +137,7 @@
                             
                             <!-- Top Left Badge (Type) -->
                             <div class="absolute top-0 left-0 bg-[#ef4444] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-br-lg shadow-sm">
-                                {{ strtoupper(__($book->type)) }}
+                                {{ strtoupper(__($book->jenis)) }}
                             </div>
 
                             <!-- Category Badge on bottom left -->

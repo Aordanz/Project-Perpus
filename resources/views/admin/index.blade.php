@@ -395,9 +395,21 @@
                                     </div>
                                 </div>
 
-                                <div class="flex flex-col gap-1">
-                                    <label class="text-[11px] font-bold text-slate-500">Subyek Utama</label>
-                                    <input type="text" name="subject" value="{{ old('subject') }}" placeholder="e.g. Komputer & Pemrograman" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-usu-green transition-all">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-[11px] font-bold text-slate-500">Subyek Utama</label>
+                                        <input type="text" name="subject" value="{{ old('subject') }}" placeholder="e.g. Komputer & Pemrograman" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-usu-green transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-[11px] font-bold text-slate-500">Spesifikasi Buku</label>
+                                        <select name="category" class="w-full px-2 py-2 bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-usu-green transition-all appearance-none cursor-pointer">
+                                            <option value="Sains & Teknologi" {{ old('category') == 'Sains & Teknologi' ? 'selected' : '' }}>Sains & Teknologi</option>
+                                            <option value="Sosial & Humaniora" {{ old('category') == 'Sosial & Humaniora' ? 'selected' : '' }}>Sosial & Humaniora</option>
+                                            <option value="Kesehatan & Kedokteran" {{ old('category') == 'Kesehatan & Kedokteran' ? 'selected' : '' }}>Kesehatan & Kedokteran</option>
+                                            <option value="Agama" {{ old('category') == 'Agama' ? 'selected' : '' }}>Agama</option>
+                                            <option value="Umum" {{ old('category', 'Umum') == 'Umum' ? 'selected' : '' }}>Umum</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-3">
@@ -407,11 +419,11 @@
                                     </div>
                                     <div class="flex flex-col gap-1">
                                         <label class="text-[11px] font-bold text-slate-500">Jenis Koleksi</label>
-                                        <select name="type" class="w-full px-2 py-2 bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-usu-green transition-all appearance-none cursor-pointer">
-                                            <option value="buku" {{ old('type') == 'buku' ? 'selected' : '' }}>Buku</option>
-                                            <option value="jurnal" {{ old('type') == 'jurnal' ? 'selected' : '' }}>Jurnal</option>
-                                            <option value="majalah" {{ old('type') == 'majalah' ? 'selected' : '' }}>Majalah</option>
-                                            <option value="skripsi" {{ old('type') == 'skripsi' ? 'selected' : '' }}>Skripsi/Tesis</option>
+                                        <select name="jenis" class="w-full px-2 py-2 bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-usu-green transition-all appearance-none cursor-pointer">
+                                            <option value="buku" {{ old('jenis') == 'buku' ? 'selected' : '' }}>Buku</option>
+                                            <option value="jurnal" {{ old('jenis') == 'jurnal' ? 'selected' : '' }}>Jurnal</option>
+                                            <option value="majalah" {{ old('jenis') == 'majalah' ? 'selected' : '' }}>Majalah</option>
+                                            <option value="skripsi" {{ old('jenis') == 'skripsi' ? 'selected' : '' }}>Skripsi/Tesis</option>
                                         </select>
                                     </div>
                                 </div>
@@ -453,12 +465,19 @@
                                 <div id="items-rows-container" class="space-y-3">
                                     <!-- Row template (will be appended dynamically) -->
                                     <div class="item-row p-3 bg-white border border-slate-200 rounded-xl flex flex-col gap-2.5 relative">
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <div class="flex flex-col gap-1">
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <div class="flex flex-col gap-1 col-span-1">
                                                 <label class="text-[10px] font-bold text-slate-400">Barcode <span class="text-red-500">*</span></label>
                                                 <input type="text" name="items[0][barcode]" required placeholder="e.g. L0012903" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green">
                                             </div>
-                                            <div class="flex flex-col gap-1">
+                                            <div class="flex flex-col gap-1 col-span-1">
+                                                <label class="text-[10px] font-bold text-slate-400">Tipe <span class="text-red-500">*</span></label>
+                                                <select name="items[0][type]" required class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green appearance-none cursor-pointer">
+                                                    <option value="STD">STD (Sirkulasi)</option>
+                                                    <option value="KPS">KPS (Kampus)</option>
+                                                </select>
+                                            </div>
+                                            <div class="flex flex-col gap-1 col-span-1">
                                                 <label class="text-[10px] font-bold text-slate-400">Status <span class="text-red-500">*</span></label>
                                                 <select name="items[0][status]" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green appearance-none cursor-pointer">
                                                     <option value="Tersedia">Tersedia</option>
@@ -517,12 +536,19 @@
                         <button type="button" class="btn-remove-row absolute top-2 right-2 text-slate-400 hover:text-red-500 bg-transparent border-none cursor-pointer text-sm">
                             <i class="ph ph-trash-simple text-base"></i>
                         </button>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="flex flex-col gap-1">
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="flex flex-col gap-1 col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400">Barcode <span class="text-red-500">*</span></label>
                                 <input type="text" name="items[${rowIndex}][barcode]" required placeholder="e.g. L0012903" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green">
                             </div>
-                            <div class="flex flex-col gap-1">
+                            <div class="flex flex-col gap-1 col-span-1">
+                                <label class="text-[10px] font-bold text-slate-400">Tipe <span class="text-red-500">*</span></label>
+                                <select name="items[${rowIndex}][type]" required class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green appearance-none cursor-pointer">
+                                    <option value="STD">STD (Sirkulasi)</option>
+                                    <option value="KPS">KPS (Kampus)</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1 col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400">Status <span class="text-red-500">*</span></label>
                                 <select name="items[${rowIndex}][status]" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] appearance-none cursor-pointer">
                                     <option value="Tersedia">Tersedia</option>

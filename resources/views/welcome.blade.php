@@ -260,18 +260,8 @@
 
                     <!-- Slides Track -->
                     <div id="carousel-koleksi-track" class="relative w-full h-full flex items-center justify-center">
-                        @php
-                            $getBigCategoryWelcome = function($subj) {
-                                $lower = strtolower(trim($subj));
-                                if (str_contains($lower, 'religion') || str_contains($lower, 'islam') || str_contains($lower, 'faith') || str_contains($lower, 'agama')) return 'Agama';
-                                if (str_contains($lower, 'medicine') || str_contains($lower, 'nursing') || str_contains($lower, 'pharmacy') || str_contains($lower, 'dentistry') || str_contains($lower, 'kedokteran') || str_contains($lower, 'keperawatan') || str_contains($lower, 'kesehatan') || str_contains($lower, 'farmasi') || str_contains($lower, 'public health')) return 'Kesehatan & Kedokteran';
-                                if (str_contains($lower, 'engineering') || str_contains($lower, 'chemical') || str_contains($lower, 'mathematics') || str_contains($lower, 'biology') || str_contains($lower, 'computer') || str_contains($lower, 'forestry') || str_contains($lower, 'agriculture') || str_contains($lower, 'teknik') || str_contains($lower, 'matematika') || str_contains($lower, 'biologi') || str_contains($lower, 'komputer') || str_contains($lower, 'kehutanan') || str_contains($lower, 'pertanian')) return 'Sains & Teknologi';
-                                if (str_contains($lower, 'social') || str_contains($lower, 'economics') || str_contains($lower, 'management') || str_contains($lower, 'law') || str_contains($lower, 'ekonomi') || str_contains($lower, 'manajemen') || str_contains($lower, 'hukum') || str_contains($lower, 'sosial') || str_contains($lower, 'kearifan') || str_contains($lower, 'wisdom')) return 'Sosial & Humaniora';
-                                return 'Umum';
-                            };
-                        @endphp
                         @foreach ($latestBooks as $index => $book)
-                        @php $bigCat = $getBigCategoryWelcome($book->category ?: ($book->subject ?: 'General')); @endphp
+                        @php $bigCat = $book->category ?: 'Umum'; @endphp
                         <div class="book-card carousel-slide absolute transition-all duration-500 ease-in-out opacity-0 pointer-events-none" data-index="{{ $index }}"
                              data-title="{{ strtolower($book->title) }}" 
                              data-author="{{ strtolower($book->author) }}" 

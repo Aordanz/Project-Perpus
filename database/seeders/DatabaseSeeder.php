@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin Perpustakaan USU',
             'email' => 'admin@usu.ac.id',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('Admin@12345'), // Kept standard credentials from history
             'role' => 'pustakawan',
         ]);
 
@@ -73,7 +73,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // 4. Create 20 Realistic Books
+        // 4. Create 20 Realistic Books with localized 5 category names (Spesifikasi Buku)
         $booksData = [
             [
                 'title' => 'Orang-orang yang disayangi Allah',
@@ -84,10 +84,10 @@ class DatabaseSeeder extends Seeder
                 'isbn' => '979-592-324-2',
                 'classification' => '297.313',
                 'call_number' => '297.313 Ali o',
-                'category' => 'FAITH AND REASON ISLAM',
+                'category' => 'Agama',
                 'language' => 'Indonesia',
                 'physical_description' => 'xx, 368 p. : ilus. ; 23 cm',
-                'type' => 'buku',
+                'jenis' => 'buku',
                 'publication_city' => 'Jakarta',
                 'edition' => '',
                 'general_note' => '',
@@ -101,10 +101,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2020,
                 'isbn' => '978-013-388-751-9',
                 'classification' => '660.2 Ele',
-                'category' => 'CHEMICAL ENGINEERING',
+                'category' => 'Sains & Teknologi',
                 'language' => 'Inggris',
                 'physical_description' => 'xxviii, 980 p. : ill. ; 26 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Membangun jembatan menuju kemandirian penyandang disabilitas',
@@ -114,10 +114,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2021,
                 'isbn' => '978-602-06-4921-5',
                 'classification' => '305.908 Sir m',
-                'category' => 'SOCIAL SCIENCE',
+                'category' => 'Sosial & Humaniora',
                 'language' => 'Indonesia',
                 'physical_description' => 'xx, 185 hlm. ; 23 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Pengantar Ilmu Hukum dan Tata Hukum Indonesia',
@@ -127,10 +127,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2018,
                 'isbn' => '978-979-407-154-9',
                 'classification' => '340.1 Kan p',
-                'category' => 'LAW',
+                'category' => 'Sosial & Humaniora',
                 'language' => 'Indonesia',
                 'physical_description' => 'x, 480 hlm. ; 21 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Sistem Informasi Manajemen: Mengelola Perusahaan Digital',
@@ -140,10 +140,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2020,
                 'isbn' => '978-979-061-912-8',
                 'classification' => '658.403 8 Lau s',
-                'category' => 'MANAGEMENT',
+                'category' => 'Sosial & Humaniora',
                 'language' => 'Indonesia',
                 'physical_description' => 'xxiv, 520 hlm. : ilus. ; 26 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Metode Penelitian Hukum: Normatif dan Empiris',
@@ -153,10 +153,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2022,
                 'isbn' => '978-979-421-042-0',
                 'classification' => '340.072 Soe m',
-                'category' => 'LAW',
+                'category' => 'Sosial & Humaniora',
                 'language' => 'Indonesia',
                 'physical_description' => 'xii, 192 hlm. ; 21 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Kalkulus Purcell Edisi 9 Jilid 1',
@@ -166,10 +166,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2017,
                 'isbn' => '978-979-015-821-4',
                 'classification' => '515 Var k',
-                'category' => 'MATHEMATICS',
+                'category' => 'Sains & Teknologi',
                 'language' => 'Indonesia',
                 'physical_description' => 'xiv, 410 hlm. : ilus. ; 25 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Prinsip-Prinsip Biokimia (Lehninger Principles of Biochemistry)',
@@ -179,10 +179,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2019,
                 'isbn' => '978-146-412-611-6',
                 'classification' => '572 Nel p',
-                'category' => 'BIOLOGY',
+                'category' => 'Sains & Teknologi',
                 'language' => 'Indonesia',
                 'physical_description' => 'xxx, 1100 hlm. : ilus. ; 28 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Pengantar Teknologi Informasi Modern',
@@ -192,10 +192,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2021,
                 'isbn' => '978-623-01-0125-9',
                 'classification' => '004 Kad p',
-                'category' => 'COMPUTER SCIENCE',
+                'category' => 'Sains & Teknologi',
                 'language' => 'Indonesia',
                 'physical_description' => 'x, 390 hlm. : ilus. ; 23 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Struktur Data dan Algoritma dengan Python',
@@ -205,10 +205,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2023,
                 'isbn' => '978-623-7131-75-5',
                 'classification' => '005.133 Mun s',
-                'category' => 'COMPUTER SCIENCE',
+                'category' => 'Sains & Teknologi',
                 'language' => 'Indonesia',
                 'physical_description' => 'viii, 320 hlm. ; 24 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Patologi Sosial 1: Masalah Sosial dan Penyimpangan',
@@ -218,10 +218,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2018,
                 'isbn' => '978-979-421-021-5',
                 'classification' => '302.5 Kar p',
-                'category' => 'SOCIAL SCIENCE',
+                'category' => 'Sosial & Humaniora',
                 'language' => 'Indonesia',
                 'physical_description' => 'xvi, 280 hlm. ; 21 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Makroekonomi Teori Pengantar Edisi Ketiga',
@@ -231,10 +231,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2019,
                 'isbn' => '978-979-421-413-8',
                 'classification' => '339 Suk m',
-                'category' => 'ECONOMICS',
+                'category' => 'Sosial & Humaniora',
                 'language' => 'Indonesia',
                 'physical_description' => 'xii, 450 hlm. ; 24 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Buku Ajar Fisiologi Kedokteran Guyton and Hall',
@@ -244,10 +244,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2021,
                 'isbn' => '978-981-486-538-8',
                 'classification' => '612 Hal b',
-                'category' => 'MEDICINE',
+                'category' => 'Kesehatan & Kedokteran',
                 'language' => 'Indonesia',
                 'physical_description' => 'xxvi, 1020 hlm. : ilus. ; 28 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Asuhan Keperawatan Jiwa dengan Pendekatan Klinis',
@@ -257,10 +257,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2020,
                 'isbn' => '978-979-044-901-5',
                 'classification' => '610.736 Kel a',
-                'category' => 'NURSING',
+                'category' => 'Kesehatan & Kedokteran',
                 'language' => 'Indonesia',
                 'physical_description' => 'x, 240 hlm. ; 23 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Ilmu Kesehatan Masyarakat: Teori dan Aplikasi',
@@ -270,10 +270,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2018,
                 'isbn' => '978-979-518-888-0',
                 'classification' => '614 Not i',
-                'category' => 'PUBLIC HEALTH',
+                'category' => 'Kesehatan & Kedokteran',
                 'language' => 'Indonesia',
                 'physical_description' => 'viii, 340 hlm. ; 21 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Farmakologi Dasar dan Klinik Edisi 14',
@@ -283,10 +283,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2019,
                 'isbn' => '978-979-044-998-5',
                 'classification' => '615.1 Kat f',
-                'category' => 'PHARMACY',
+                'category' => 'Kesehatan & Kedokteran',
                 'language' => 'Indonesia',
                 'physical_description' => 'xxx, 1250 hlm. : ilus. ; 28 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Dasar-Dasar Kehutanan Tropis',
@@ -296,10 +296,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2017,
                 'isbn' => '978-602-444-012-4',
                 'classification' => '634.9 Ind d',
-                'category' => 'FORESTRY',
+                'category' => 'Sains & Teknologi',
                 'language' => 'Indonesia',
                 'physical_description' => 'xii, 290 hlm. ; 23 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Koleksi Emas Parada Harahap: Sejarah Pers Sumatera',
@@ -309,10 +309,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 1952,
                 'isbn' => 'N/A - Arsip Pustaka',
                 'classification' => '959.81 Har s',
-                'category' => 'LOCAL WISDOM',
+                'category' => 'Sosial & Humaniora',
                 'language' => 'Indonesia',
                 'physical_description' => 'x, 150 hlm. ; 18 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Pertanian Berkelanjutan di Lahan Kering Tropis',
@@ -322,10 +322,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2021,
                 'isbn' => '978-623-256-421-2',
                 'classification' => '630 Lim p',
-                'category' => 'AGRICULTURE',
+                'category' => 'Sains & Teknologi',
                 'language' => 'Indonesia',
                 'physical_description' => 'xiv, 220 hlm. ; 23 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
             [
                 'title' => 'Konservasi Gigi Terpadu: Teori dan Aplikasi Praktis',
@@ -335,10 +335,10 @@ class DatabaseSeeder extends Seeder
                 'publish_year' => 2018,
                 'isbn' => '978-979-044-885-8',
                 'classification' => '617.6 Tar k',
-                'category' => 'DENTISTRY',
+                'category' => 'Kesehatan & Kedokteran',
                 'language' => 'Indonesia',
                 'physical_description' => 'viii, 180 hlm. : ilus. ; 21 cm.',
-                'type' => 'buku'
+                'jenis' => 'buku'
             ],
         ];
 
@@ -355,32 +355,33 @@ class DatabaseSeeder extends Seeder
             $book = Book::create($bData);
 
             // 5. Create 2-5 Physical Copy Items for each Book, scattered in different Locations
-            // Assign specific location based on category, or fallback to perpustakaan_pusat
+            // Assign specific location based on subject
             $primaryLocCode = 'perpustakaan_pusat';
-            $categoryLower = strtolower($bData['category']);
-            if (str_contains($categoryLower, 'law')) {
+            $subjectLower = strtolower($bData['subject'] ?? '');
+            
+            if (str_contains($subjectLower, 'law') || str_contains($subjectLower, 'hukum')) {
                 $primaryLocCode = 'hukum';
-            } elseif (str_contains($categoryLower, 'social')) {
+            } elseif (str_contains($subjectLower, 'social') || str_contains($subjectLower, 'sosiologi') || str_contains($subjectLower, 'masyarakat') || str_contains($subjectLower, 'disabilitas')) {
                 $primaryLocCode = 'isip';
-            } elseif (str_contains($categoryLower, 'management') || str_contains($categoryLower, 'economic')) {
+            } elseif (str_contains($subjectLower, 'management') || str_contains($subjectLower, 'economic') || str_contains($subjectLower, 'bisnis') || str_contains($subjectLower, 'manajemen')) {
                 $primaryLocCode = 'ekonomi';
-            } elseif (str_contains($categoryLower, 'computer') || str_contains($categoryLower, 'math') || str_contains($categoryLower, 'biology')) {
+            } elseif (str_contains($subjectLower, 'computer') || str_contains($subjectLower, 'math') || str_contains($subjectLower, 'biology') || str_contains($subjectLower, 'matematika') || str_contains($subjectLower, 'biologi') || str_contains($subjectLower, 'biokimia') || str_contains($subjectLower, 'kalkulus') || str_contains($subjectLower, 'pemrograman') || str_contains($subjectLower, 'teknologi informasi')) {
                 $primaryLocCode = 'mipa';
-            } elseif (str_contains($categoryLower, 'medicine')) {
+            } elseif (str_contains($subjectLower, 'medicine') || str_contains($subjectLower, 'fisiologi') || str_contains($subjectLower, 'kedokteran')) {
                 $primaryLocCode = 'kedokteran';
-            } elseif (str_contains($categoryLower, 'nursing')) {
+            } elseif (str_contains($subjectLower, 'nursing') || str_contains($subjectLower, 'keperawatan')) {
                 $primaryLocCode = 'keperawatan';
-            } elseif (str_contains($categoryLower, 'public health')) {
+            } elseif (str_contains($subjectLower, 'public health') || str_contains($subjectLower, 'kesehatan masyarakat')) {
                 $primaryLocCode = 'kesehatan_masyarakat';
-            } elseif (str_contains($categoryLower, 'pharmacy')) {
+            } elseif (str_contains($subjectLower, 'pharmacy') || str_contains($subjectLower, 'farmasi') || str_contains($subjectLower, 'farmakologi')) {
                 $primaryLocCode = 'farmasi';
-            } elseif (str_contains($categoryLower, 'forestry')) {
+            } elseif (str_contains($subjectLower, 'forestry') || str_contains($subjectLower, 'kehutanan')) {
                 $primaryLocCode = 'kehutanan';
-            } elseif (str_contains($categoryLower, 'wisdom') || str_contains($categoryLower, 'local')) {
+            } elseif (str_contains($subjectLower, 'wisdom') || str_contains($subjectLower, 'local') || str_contains($subjectLower, 'kearifan') || str_contains($subjectLower, 'sejarah pers')) {
                 $primaryLocCode = 'local_wisdom';
-            } elseif (str_contains($categoryLower, 'agriculture')) {
+            } elseif (str_contains($subjectLower, 'agriculture') || str_contains($subjectLower, 'pertanian') || str_contains($subjectLower, 'agronomi')) {
                 $primaryLocCode = 'pertanian';
-            } elseif (str_contains($categoryLower, 'dentistry')) {
+            } elseif (str_contains($subjectLower, 'dentistry') || str_contains($subjectLower, 'konservasi gigi') || str_contains($subjectLower, 'gigi')) {
                 $primaryLocCode = 'kedokteran_gigi';
             }
 
@@ -396,6 +397,8 @@ class DatabaseSeeder extends Seeder
                 $callNumber = ($index === 0) ? $book->call_number : $book->call_number . ' c.' . $c;
                 // Status: 80% Tersedia, 20% Dipinjam
                 $status = ($index === 0) ? 'Tersedia' : ((rand(1, 10) <= 8) ? 'Tersedia' : 'Dipinjam');
+                // Copy Type: 85% STD (Standard), 15% KPS (Kampus Reference)
+                $copyType = ($index === 0) ? 'STD' : ((rand(1, 10) <= 8) ? 'STD' : 'KPS');
 
                 Item::create([
                     'book_id' => $book->id,
@@ -403,6 +406,7 @@ class DatabaseSeeder extends Seeder
                     'barcode' => $barcode,
                     'call_number' => $callNumber,
                     'status' => $status,
+                    'type' => $copyType,
                 ]);
             }
         }
