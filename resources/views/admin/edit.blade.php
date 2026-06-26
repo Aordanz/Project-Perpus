@@ -323,7 +323,39 @@
                             </div>
                         @endif
 
+                        <!-- Additional Images Section -->
                         <hr class="border-slate-100">
+                        <div class="section-title text-xs"><i class="ph ph-images"></i> Gambar Tambahan</div>
+
+                        @if($book->images && $book->images->count() > 0)
+                            <div class="grid grid-cols-3 gap-2 my-2">
+                                @foreach($book->images as $img)
+                                    <div class="relative group aspect-square rounded-xl border border-slate-200 overflow-hidden bg-slate-50">
+                                        <img src="{{ asset('covers/' . $img->image_path) }}" class="w-full h-full object-cover">
+                                        <label class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white text-[9px] font-bold cursor-pointer gap-1">
+                                            <input type="checkbox" name="delete_additional_images[]" value="{{ $img->id }}" class="rounded text-red-500 focus:ring-red-500 w-3 h-3">
+                                            <span>Hapus</span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-[10px] text-slate-400 my-2 text-center" id="no-additional-images-text">Belum ada gambar tambahan.</p>
+                        @endif
+
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[11px] font-bold text-slate-500">Tambah Gambar Tambahan</label>
+                            <input type="file" name="additional_images[]" id="additional-images-input" multiple accept="image/*"
+                                class="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-green-50 file:text-[#064e3b] hover:file:bg-green-100 cursor-pointer w-full"
+                                {{ !$book->cover_image ? 'disabled' : '' }}>
+                            @if(!$book->cover_image)
+                                <p class="text-[10px] text-red-500 font-semibold mt-1" id="additional-images-warning">
+                                    Unggah sampul default terlebih dahulu.
+                                </p>
+                            @else
+                                <p class="text-[10px] text-slate-400 mt-1" id="additional-images-warning">Bisa memilih lebih dari 1 gambar sekaligus.</p>
+                            @endif
+                        </div>
 
                         <!-- Submit Button -->
                         <button type="submit" class="w-full bg-gradient-to-r from-[#064e3b] to-[#106c38] hover:from-[#053c2e] hover:to-[#0b4d27] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-md border-none">
@@ -371,6 +403,17 @@
                     img.className = 'w-full h-full object-cover';
                     if(headerIcon) headerIcon.remove();
                     wrap.appendChild(img);
+                }
+
+                // Enable additional images input if disabled
+                const addInput = document.getElementById('additional-images-input');
+                if (addInput) {
+                    addInput.removeAttribute('disabled');
+                }
+                const addWarning = document.getElementById('additional-images-warning');
+                if (addWarning) {
+                    addWarning.innerText = 'Bisa memilih lebih dari 1 gambar sekaligus.';
+                    addWarning.className = 'text-[10px] text-slate-400 mt-1';
                 }
             };
             reader.readAsDataURL(file);
