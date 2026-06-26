@@ -11,9 +11,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .admin-nav { background: #064e3b; border-bottom: 2px solid #eab308; }
-        .text-usu-green { color: #064e3b; }
-        .bg-usu-green { background-color: #064e3b; }
+        .admin-nav { background: #106c38; border-bottom: 1px solid rgba(255, 255, 255, 0.15); }
+        .text-usu-green { color: #106c38; }
+        .bg-usu-green { background-color: #106c38; }
         .field-label { @apply block text-[11px] font-bold text-slate-500 mb-1; }
         .field-input {
             width: 100%;
@@ -25,55 +25,25 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .field-input:focus { border-color: #064e3b; }
+        .field-input:focus { border-color: #106c38; }
         .item-row-existing { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 0.75rem; position: relative; }
         .item-row-new { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 0.75rem; padding: 0.75rem; position: relative; padding-top: 1.75rem; }
         .section-card { background: white; border: 1px solid #f1f5f9; border-radius: 1.5rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
         .section-title { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 4px; margin-bottom: 0.75rem; }
     </style>
 </head>
-<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="text-slate-800 antialiased min-h-screen bg-slate-50">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        @include('partials.admin_sidebar')
 
-    <!-- Navbar -->
-    <nav class="admin-nav py-4 px-6 text-white sticky top-0 z-50 shadow-md">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('admin.index') }}" class="flex items-center gap-3 hover:opacity-95 transition">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="Logo USU" class="h-10 w-auto bg-white rounded-full p-0.5 border border-yellow-400">
-                    <div class="flex flex-col">
-                        <span class="font-extrabold text-sm tracking-wide uppercase">PORTAL ADMINISTRASI</span>
-                        <span class="text-xs font-semibold text-yellow-300 tracking-wider">Perpustakaan Universitas Sumatera Utara</span>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="hidden md:flex items-center gap-8">
-                <a href="{{ route('admin.index') }}" class="{{ request()->routeIs('admin.index') || request()->routeIs('admin.books.edit') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Dashboard</a>
-                <a href="{{ route('admin.galeri') }}" class="{{ request()->routeIs('admin.galeri') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Galeri</a>
-                <a href="{{ route('admin.pesan') }}" class="{{ request()->routeIs('admin.pesan') ? 'text-yellow-400 font-bold border-b-2 border-yellow-400' : 'text-white hover:text-yellow-200' }} transition py-1 text-sm font-semibold">Pesan</a>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="hidden sm:flex flex-col text-right">
-                    <span class="font-bold text-xs">{{ Auth::user()->name ?? 'Admin Perpustakaan' }}</span>
-                    <span class="text-[10px] text-yellow-400 font-semibold uppercase tracking-wider">Pustakawan</span>
-                </div>
-                <div class="w-px h-8 bg-white/20 hidden sm:block"></div>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="bg-red-600/90 hover:bg-red-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer border-none shadow-sm">
-                        <i class="ph ph-sign-out text-base"></i> Keluar
-                    </button>
-                </form>
-            </div>
-        </div>
-    </nav>
-
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+        <!-- Main Content Area -->
+        <div class="flex-grow flex flex-col min-w-0">
+            <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
 
         <!-- Breadcrumb -->
         <div class="flex items-center gap-2 text-sm text-slate-500">
-            <a href="{{ route('admin.index') }}" class="hover:text-usu-green transition font-semibold flex items-center gap-1">
-                <i class="ph ph-layout text-base"></i> Dashboard
+            <a href="{{ route('admin.koleksi-buku') }}" class="hover:text-usu-green transition font-semibold flex items-center gap-1">
+                <i class="ph ph-books text-base"></i> Koleksi Buku
             </a>
             <i class="ph ph-caret-right text-xs text-slate-400"></i>
             <span class="text-slate-800 font-bold">Edit Buku</span>
@@ -91,12 +61,12 @@
                     @endif
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-[#064e3b] uppercase tracking-wider mb-1">Mengedit Buku</p>
+                    <p class="text-xs font-bold text-[#106c38] uppercase tracking-wider mb-1">Mengedit Buku</p>
                     <h1 class="text-xl font-black text-slate-800 leading-tight">{{ $book->title }}</h1>
                     <p class="text-sm text-slate-500 mt-0.5">oleh <span class="font-semibold text-slate-700">{{ $book->author }}</span></p>
                 </div>
             </div>
-            <a href="{{ route('admin.index') }}" class="flex-shrink-0 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
+            <a href="{{ route('admin.koleksi-buku') }}" class="flex-shrink-0 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
                 <i class="ph ph-arrow-left text-base"></i> Kembali
             </a>
         </div>
@@ -236,7 +206,7 @@
                     <div class="section-card space-y-4">
                         <div class="flex items-center justify-between">
                             <div class="section-title mb-0"><i class="ph ph-list-checks"></i> Eksemplar Fisik (Salinan)</div>
-                            <button type="button" id="btn-add-new-item" class="text-[10px] bg-[#064e3b] hover:bg-green-900 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer border-none">
+                            <button type="button" id="btn-add-new-item" class="text-[10px] bg-[#106c38] hover:bg-green-800 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer border-none">
                                 <i class="ph ph-plus"></i> Tambah Eksemplar
                             </button>
                         </div>
@@ -254,19 +224,12 @@
                                         </label>
                                     </div>
                                     <input type="hidden" name="items[{{ $item->barcode }}][barcode]" value="{{ $item->barcode }}">
-                                    <div class="grid grid-cols-3 gap-3">
+                                    <div class="grid grid-cols-2 gap-3">
                                         <div class="flex flex-col gap-1">
                                             <label class="text-[10px] font-bold text-slate-400">Tipe</label>
                                             <select name="items[{{ $item->barcode }}][type]" class="field-input appearance-none cursor-pointer text-xs">
                                                 <option value="STD" {{ $item->type == 'STD' ? 'selected' : '' }}>STD (Sirkulasi)</option>
                                                 <option value="KPS" {{ $item->type == 'KPS' ? 'selected' : '' }}>KPS (Kampus)</option>
-                                            </select>
-                                        </div>
-                                        <div class="flex flex-col gap-1">
-                                            <label class="text-[10px] font-bold text-slate-400">Status</label>
-                                            <select name="items[{{ $item->barcode }}][status]" class="field-input appearance-none cursor-pointer text-xs">
-                                                <option value="Tersedia" {{ $item->status == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
-                                                <option value="Dipinjam" {{ $item->status == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
                                             </select>
                                         </div>
                                         <div class="flex flex-col gap-1">
@@ -296,6 +259,8 @@
                     <div class="section-card flex flex-col gap-4 sticky top-24">
                         <div class="section-title"><i class="ph ph-image"></i> Sampul Buku</div>
 
+                        <input type="hidden" name="delete_cover" id="delete-cover-input" value="0">
+
                         <!-- Current Cover Preview -->
                         <div class="w-full aspect-[2/3] bg-slate-100 rounded-2xl border-2 border-dashed border-slate-300 overflow-hidden flex items-center justify-center relative" id="cover-drop-area">
                             @if($book->cover_image)
@@ -318,11 +283,14 @@
                         <div class="flex flex-col gap-1">
                             <label class="text-[11px] font-bold text-slate-500">Ganti Gambar Sampul</label>
                             <input type="file" name="cover_image" id="cover-input" accept="image/*"
-                                class="text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-[#064e3b] hover:file:bg-green-100 cursor-pointer w-full">
+                                class="text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-[#106c38] hover:file:bg-green-100 cursor-pointer w-full">
                             <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, GIF. Maks 2MB.<br>Kosongkan jika tidak ingin mengganti.</p>
                         </div>
 
                         @if($book->cover_image)
+                            <button type="button" id="btn-delete-cover" class="bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold py-2 px-3 rounded-xl border border-red-200 transition flex items-center justify-center gap-1 cursor-pointer w-full">
+                                <i class="ph ph-trash"></i> Hapus Sampul Saat Ini
+                            </button>
                             <div class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 rounded-xl p-3 border border-slate-200">
                                 <i class="ph ph-check-circle text-green-600"></i>
                                 <span>Sampul saat ini: <span class="font-mono text-slate-700 text-[10px]">{{ $book->cover_image }}</span></span>
@@ -352,8 +320,12 @@
                         <div class="flex flex-col gap-1">
                             <label class="text-[11px] font-bold text-slate-500">Tambah Gambar Tambahan</label>
                             <input type="file" name="additional_images[]" id="additional-images-input" multiple accept="image/*"
-                                class="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-green-50 file:text-[#064e3b] hover:file:bg-green-100 cursor-pointer w-full"
+                                class="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-green-50 file:text-[#106c38] hover:file:bg-green-100 cursor-pointer w-full"
                                 {{ !$book->cover_image ? 'disabled' : '' }}>
+                            
+                            <!-- Preview Bubbles for new additional images -->
+                            <div id="additional-image-bubbles-container" class="flex flex-wrap gap-2 mt-2 empty:hidden"></div>
+                            
                             @if(!$book->cover_image)
                                 <p class="text-[10px] text-red-500 font-semibold mt-1" id="additional-images-warning">
                                     Unggah sampul default terlebih dahulu.
@@ -364,7 +336,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="w-full bg-gradient-to-r from-[#064e3b] to-[#106c38] hover:from-[#053c2e] hover:to-[#0b4d27] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-md border-none">
+                        <button type="submit" class="w-full bg-[#106c38] hover:bg-green-800 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-md border-none">
                             <i class="ph ph-floppy-disk text-lg"></i>
                             <span>Simpan Perubahan</span>
                         </button>
@@ -376,16 +348,63 @@
                 </div>
             </div>
         </form>
+
+        <!-- Custom Toast Notification Container -->
+        <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-3 pointer-events-none items-center"></div>
+
     </main>
 
-    <footer class="bg-[#064e3b] text-slate-100 py-5 mt-10 border-t border-yellow-600/30 text-center text-xs font-medium">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>&copy; 2026 Universitas Sumatera Utara | OPAC Admin.</p>
-            <p class="text-yellow-400">Universitas Sumatera Utara Library</p>
+            </main>
+
+            <!-- Footer -->
+            <footer class="bg-[#106c38] text-white/90 py-5 border-t border-white/15 text-center text-xs font-medium mt-auto">
+                <div class="w-full px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <p>&copy; 2026 Universitas Sumatera Utara | OPAC Admin.</p>
+                    <p class="text-white/70">Universitas Sumatera Utara Library</p>
+                </div>
+            </footer>
         </div>
-    </footer>
+    </div>
 
     <script>
+        // Custom Toast Function
+        function showToast(message, type = 'error') {
+            const toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) return;
+            const toast = document.createElement('div');
+            toast.className = `max-w-xs w-full bg-white border ${type === 'error' ? 'border-rose-200' : 'border-green-200'} rounded-2xl shadow-xl flex items-center p-4 gap-3 transform transition-all duration-300 -translate-y-full opacity-0 pointer-events-auto`;
+            
+            const icon = type === 'error' 
+                ? '<div class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center flex-shrink-0"><i class="ph ph-warning-circle text-xl"></i></div>'
+                : '<div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0"><i class="ph ph-check-circle text-xl"></i></div>';
+            
+            toast.innerHTML = `
+                ${icon}
+                <div class="flex-grow">
+                    <p class="text-sm font-semibold text-slate-800">${type === 'error' ? 'Peringatan' : 'Berhasil'}</p>
+                    <p class="text-xs text-slate-500 leading-snug">${message}</p>
+                </div>
+                <button type="button" class="text-slate-400 hover:text-slate-600 bg-transparent border-none p-0 transition focus:outline-none cursor-pointer" onclick="this.parentElement.remove()">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('-translate-y-full', 'opacity-0');
+                toast.classList.add('translate-y-0');
+            });
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0');
+                toast.classList.add('-translate-y-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         // Live cover image preview
         document.getElementById('cover-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -454,33 +473,25 @@
                     <i class="ph ph-x-circle text-base"></i>
                 </button>
                 <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">+ Eksemplar Baru</p>
-                <div class="grid grid-cols-3 gap-2 mb-2">
+                <div class="grid grid-cols-2 gap-2 mb-2">
                     <div class="flex flex-col gap-1 col-span-1">
                         <label class="text-[10px] font-bold text-slate-400">Barcode *</label>
                         <input type="text" name="new_items[${idx}][barcode]" placeholder="e.g. L009876"
-                            class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#064e3b] bg-white">
+                            class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] bg-white">
                     </div>
                     <div class="flex flex-col gap-1 col-span-1">
                         <label class="text-[10px] font-bold text-slate-400">Tipe *</label>
                         <select name="new_items[${idx}][type]"
-                            class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#064e3b] appearance-none cursor-pointer bg-white">
+                            class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] appearance-none cursor-pointer bg-white">
                             <option value="STD">STD (Sirkulasi)</option>
                             <option value="KPS">KPS (Kampus)</option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col gap-1 col-span-1">
-                        <label class="text-[10px] font-bold text-slate-400">Status</label>
-                        <select name="new_items[${idx}][status]"
-                            class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#064e3b] appearance-none cursor-pointer bg-white">
-                            <option value="Tersedia">Tersedia</option>
-                            <option value="Dipinjam">Dipinjam</option>
                         </select>
                     </div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="text-[10px] font-bold text-slate-400">Lokasi Rak *</label>
                     <select name="new_items[${idx}][location_id]"
-                        class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#064e3b] appearance-none cursor-pointer bg-white">
+                        class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] appearance-none cursor-pointer bg-white">
                         ${locationOptions}
                     </select>
                 </div>
@@ -488,6 +499,121 @@
             container.appendChild(row);
             row.querySelector('input[type="text"]').focus();
         });
+
+        // Cover deletion logic
+        const btnDeleteCover = document.getElementById('btn-delete-cover');
+        const deleteCoverInput = document.getElementById('delete-cover-input');
+        if (btnDeleteCover && deleteCoverInput) {
+            btnDeleteCover.addEventListener('click', () => {
+                if (confirm('Apakah Anda yakin ingin menghapus sampul buku ini?')) {
+                    deleteCoverInput.value = '1';
+                    
+                    const preview = document.getElementById('cover-large-preview');
+                    if (preview) {
+                        preview.src = '';
+                        preview.classList.add('hidden');
+                    }
+                    const placeholder = document.getElementById('cover-placeholder');
+                    if (placeholder) {
+                        placeholder.classList.remove('hidden');
+                    }
+                    
+                    const currentCoverWrap = btnDeleteCover.nextElementSibling;
+                    if (currentCoverWrap) {
+                        currentCoverWrap.remove();
+                    }
+                    
+                    btnDeleteCover.classList.add('hidden');
+                    
+                    const addInput = document.getElementById('additional-images-input');
+                    if (addInput) {
+                        addInput.setAttribute('disabled', 'true');
+                    }
+                    const addWarning = document.getElementById('additional-images-warning');
+                    if (addWarning) {
+                        addWarning.innerText = 'Unggah sampul default terlebih dahulu.';
+                        addWarning.className = 'text-[10px] text-red-500 font-semibold mt-1';
+                    }
+                }
+            });
+        }
+
+        // Reset delete_cover if new file is selected
+        document.getElementById('cover-input').addEventListener('change', () => {
+            if (deleteCoverInput) {
+                deleteCoverInput.value = '0';
+            }
+            if (btnDeleteCover) {
+                btnDeleteCover.classList.add('hidden');
+            }
+        });
+
+        // Handle new additional images preview bubbles
+        const addImagesInput = document.getElementById('additional-images-input');
+        const addBubblesContainer = document.getElementById('additional-image-bubbles-container');
+        let selectedAddFiles = [];
+
+        if (addImagesInput && addBubblesContainer) {
+            addImagesInput.addEventListener('change', function(e) {
+                const newFiles = Array.from(e.target.files);
+                let overLimit = false;
+                for (let file of newFiles) {
+                    if (selectedAddFiles.length < 15) {
+                        if (!selectedAddFiles.some(f => f.name === file.name && f.size === file.size)) {
+                            selectedAddFiles.push(file);
+                        }
+                    } else {
+                        overLimit = true;
+                    }
+                }
+                if (overLimit) {
+                    showToast('Maksimal hanya 15 gambar yang dapat dilampirkan.', 'error');
+                }
+                updateAddBubblesUI();
+                syncAddInputFiles();
+            });
+        }
+
+        window.removeAddFile = function(index) {
+            selectedAddFiles.splice(index, 1);
+            updateAddBubblesUI();
+            syncAddInputFiles();
+        };
+
+        function updateAddBubblesUI() {
+            addBubblesContainer.innerHTML = '';
+            selectedAddFiles.forEach((file, index) => {
+                const bubble = document.createElement('div');
+                bubble.className = 'flex items-center gap-1.5 bg-green-50 border border-green-200 text-[#106c38] px-2 py-1 rounded-lg text-[10px] font-semibold mt-2';
+                
+                let displayTitle = file.name;
+                if (displayTitle.length > 20) {
+                    const extIndex = displayTitle.lastIndexOf('.');
+                    if (extIndex > -1) {
+                        displayTitle = displayTitle.substring(0, 10) + '...' + displayTitle.substring(extIndex);
+                    } else {
+                        displayTitle = displayTitle.substring(0, 15) + '...';
+                    }
+                }
+
+                bubble.innerHTML = `
+                    <i class="ph ph-image"></i>
+                    <span title="${file.name}">${displayTitle}</span>
+                    <button type="button" onclick="removeAddFile(${index})" class="ml-1 text-green-700 hover:text-red-500 bg-transparent border-none p-0 cursor-pointer flex items-center justify-center transition">
+                        <i class="ph ph-x-circle text-[14px]"></i>
+                    </button>
+                `;
+                addBubblesContainer.appendChild(bubble);
+            });
+        }
+
+        function syncAddInputFiles() {
+            const dataTransfer = new DataTransfer();
+            selectedAddFiles.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+            addImagesInput.files = dataTransfer.files;
+        }
     </script>
 </body>
 </html>

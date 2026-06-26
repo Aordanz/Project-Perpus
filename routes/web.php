@@ -21,6 +21,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/kontak', [BookController::class, 'storeContact'])->name('kontak.store');
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+Route::get('/admin/koleksi-buku', [AdminController::class, 'koleksiBuku'])->name('admin.koleksi-buku');
 Route::get('/admin/galeri', [AdminController::class, 'galeri'])->name('admin.galeri');
 Route::get('/admin/pesan', [AdminController::class, 'pesan'])->name('admin.pesan');
 Route::post('/admin/books', [AdminController::class, 'store'])->name('admin.books.store');

@@ -9,20 +9,47 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class AdminController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class AdminController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(function ($request, $next) {
+                if (!auth()->check() || auth()->user()->role !== 'pustakawan') {
+                    return redirect()->route('login')->withErrors(['email' => 'Silakan masuk sebagai Pustakawan terlebih dahulu.']);
+                }
+                return $next($request);
+            }),
+        ];
+    }
     /**
      * Show the admin dashboard and book list.
      */
     public function index(Request $request)
     {
-        // 1. Calculate dashboard statistics
+        // Calculate dashboard statistics
         $totalBooks = Book::count();
         $totalItems = Item::count();
         $availableItems = Item::where('status', 'Tersedia')->count();
         $borrowedItems = $totalItems - $availableItems;
 
-        // 2. Query books with search
+        return view('admin.index', compact(
+            'totalBooks',
+            'totalItems',
+            'availableItems',
+            'borrowedItems'
+        ));
+    }
+
+    /**
+     * Show the admin book collection page.
+     */
+    public function koleksiBuku(Request $request)
+    {
+        // Query books with search
         $query = Book::with(['items.location'])->latest();
 
         if ($request->filled('search')) {
@@ -37,17 +64,14 @@ class AdminController extends Controller
 
         $books = $query->paginate(10)->withQueryString();
 
-        // 3. Get locations for the copies form dropdown
+        // Get locations for the copies form dropdown
         $locations = Location::all();
 
-        return view('admin.index', compact(
-            'totalBooks',
-            'totalItems',
-            'availableItems',
-            'borrowedItems',
-            'books',
-            'locations'
-        ));
+        if ($request->ajax()) {
+            return view('admin.partials.books_table', compact('books'));
+        }
+
+        return view('admin.koleksi_buku', compact('books', 'locations'));
     }
 
     /**
@@ -98,20 +122,19 @@ class AdminController extends Controller
             'jenis'                => 'nullable|string|max:255',
             'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
-            'images'               => 'nullable|array|max:5',
+            'images'               => 'nullable|array|max:15',
             'images.*'             => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
             // Validation for dynamic items
             'items.*.barcode'     => 'required|string|unique:items,barcode|max:255',
             'items.*.location_id' => 'required|exists:locations,id',
-            'items.*.status'      => 'required|string|in:Tersedia,Dipinjam',
             'items.*.type'        => 'required|string|in:STD,KPS',
         ], [
             'items.*.barcode.unique'      => 'Barcode :input sudah digunakan oleh buku lain.',
             'items.*.barcode.required'    => 'Barcode wajib diisi.',
             'items.*.location_id.required'=> 'Lokasi rak wajib dipilih.',
             'items.*.type.required'       => 'Tipe eksemplar wajib dipilih.',
-            'images.max'                  => 'Maksimal 5 gambar yang dapat diunggah sekaligus.'
+            'images.max'                  => 'Maksimal 15 gambar yang dapat diunggah sekaligus.'
         ]);
 
         try {
@@ -167,7 +190,7 @@ class AdminController extends Controller
                         'book_id'     => $book->id,
                         'location_id' => $itemData['location_id'],
                         'call_number' => $book->call_number,
-                        'status'      => $itemData['status'],
+                        'status'      => 'Tersedia',
                         'type'        => $itemData['type'] ?? 'STD',
                     ]);
                 }
@@ -219,19 +242,18 @@ class AdminController extends Controller
             'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
             'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'delete_cover'         => 'nullable|boolean',
             'additional_images.*'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'delete_additional_images.*' => 'nullable|integer|exists:book_images,id',
 
             // Existing items update
             'items.*.barcode'      => 'required|string|max:255',
             'items.*.location_id'  => 'required|exists:locations,id',
-            'items.*.status'       => 'required|string|in:Tersedia,Dipinjam',
             'items.*.type'         => 'required|string|in:STD,KPS',
 
             // New items to add
             'new_items.*.barcode'      => 'nullable|string|unique:items,barcode|max:255',
             'new_items.*.location_id'  => 'nullable|exists:locations,id',
-            'new_items.*.status'       => 'nullable|string|in:Tersedia,Dipinjam',
             'new_items.*.type'         => 'nullable|string|in:STD,KPS',
         ]);
 
@@ -246,6 +268,14 @@ class AdminController extends Controller
 
             if (!$request->filled('category')) {
                 $bookData['category'] = 'Umum';
+            }
+
+            // Handle deleting the cover image
+            if ($request->boolean('delete_cover')) {
+                if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
+                    @unlink(public_path('covers/' . $book->cover_image));
+                }
+                $bookData['cover_image'] = null;
             }
 
             // Handle cover image upload (replace old one)
@@ -265,11 +295,14 @@ class AdminController extends Controller
             // Update existing items - Cast barcode to string to avoid truncated incorrect double error in MySQL
             if ($request->has('items')) {
                 foreach ($request->items as $barcode => $itemData) {
-                    Item::where('barcode', (string) $barcode)->update([
+                    $updateData = [
                         'location_id' => $itemData['location_id'],
-                        'status'      => $itemData['status'],
                         'type'        => $itemData['type'] ?? 'STD',
-                    ]);
+                    ];
+                    if (isset($itemData['status'])) {
+                        $updateData['status'] = $itemData['status'];
+                    }
+                    Item::where('barcode', (string) $barcode)->update($updateData);
                 }
             }
 
@@ -287,7 +320,7 @@ class AdminController extends Controller
                             'book_id'     => $book->id,
                             'location_id' => $newItem['location_id'],
                             'call_number' => $book->call_number,
-                            'status'      => $newItem['status'] ?? 'Tersedia',
+                            'status'      => 'Tersedia',
                             'type'        => $newItem['type'] ?? 'STD',
                         ]);
                     }
@@ -307,7 +340,8 @@ class AdminController extends Controller
 
             // Upload new additional images (only if book has a cover or a new cover is uploaded)
             if ($request->hasFile('additional_images')) {
-                if (!$book->cover_image && !$request->hasFile('cover_image')) {
+                $hasCover = ($book->cover_image && !$request->boolean('delete_cover')) || $request->hasFile('cover_image');
+                if (!$hasCover) {
                     throw new \Exception('Unggah sampul default terlebih dahulu sebelum menambahkan gambar tambahan.');
                 }
                 foreach ($request->file('additional_images') as $file) {
