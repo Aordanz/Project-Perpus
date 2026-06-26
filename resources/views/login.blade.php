@@ -172,6 +172,15 @@
                     </div>
                 @endif
 
+                <!-- Anggota Alert Banner -->
+                <div id="anggota-warning-banner" class="hidden mb-5 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3 text-amber-800">
+                    <i class="ph ph-warning-circle text-2xl flex-shrink-0 text-amber-600"></i>
+                    <div class="text-xs leading-normal">
+                        <p class="font-bold mb-1">Pemberitahuan</p>
+                        <p>Login Anggota belum bisa digunakan. Silakan hubungi admin/pustakawan terlebih dahulu untuk mengurus aktivasi akun Anda.</p>
+                    </div>
+                </div>
+
                 <form id="login-form" action="{{ route('login.post') }}" method="POST" class="space-y-4">
                     @csrf
                     @php
@@ -218,7 +227,7 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="w-full bg-gradient-to-r from-[#106c38] to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-xl py-3 font-semibold text-sm transition-all shadow-md shadow-green-700/20 hover:shadow-lg hover:shadow-green-700/30 flex items-center justify-center gap-1.5 cursor-pointer mt-6 border-none">
+                    <button type="submit" id="btn-login-submit" class="w-full bg-gradient-to-r from-[#106c38] to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-xl py-3 font-semibold text-sm transition-all shadow-md shadow-green-700/20 hover:shadow-lg hover:shadow-green-700/30 flex items-center justify-center gap-1.5 cursor-pointer mt-6 border-none">
                         Masuk Sistem <i class="ph ph-arrow-right"></i>
                     </button>
                 </form>
@@ -237,6 +246,8 @@
         const labelEmail = document.getElementById('label-email');
         const emailInput = document.getElementById('email');
         const iconEmail = document.getElementById('icon-email');
+        const warningBanner = document.getElementById('anggota-warning-banner');
+        const submitBtn = document.getElementById('btn-login-submit');
 
         function selectRole(role) {
             inputRole.value = role;
@@ -249,6 +260,12 @@
                 emailInput.placeholder = "admin@usu.ac.id";
                 emailInput.type = "email";
                 iconEmail.className = "ph ph-envelope text-lg";
+
+                if (warningBanner) warningBanner.classList.add('hidden');
+                if (submitBtn) {
+                    submitBtn.removeAttribute('disabled');
+                    submitBtn.className = "w-full bg-gradient-to-r from-[#106c38] to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-xl py-3 font-semibold text-sm transition-all shadow-md shadow-green-700/20 hover:shadow-lg hover:shadow-green-700/30 flex items-center justify-center gap-1.5 cursor-pointer mt-6 border-none";
+                }
             } else {
                 formRoleBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 bg-emerald-50 text-emerald-700";
                 formRoleBadge.innerHTML = '<i class="ph ph-identification-card"></i> Anggota';
@@ -257,6 +274,12 @@
                 emailInput.placeholder = "anggota@usu.ac.id";
                 emailInput.type = "text";
                 iconEmail.className = "ph ph-identification-card text-lg";
+
+                if (warningBanner) warningBanner.classList.remove('hidden');
+                if (submitBtn) {
+                    submitBtn.setAttribute('disabled', 'true');
+                    submitBtn.className = "w-full bg-slate-300 text-slate-500 rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-1.5 cursor-not-allowed mt-6 border-none";
+                }
             }
 
             sectionRoleSelect.classList.add('hidden');
