@@ -25,4 +25,12 @@ class Book extends Model
     {
         return $this->hasManyThrough(Location::class, Item::class, 'book_id', 'id', 'id', 'location_id');
     }
+
+    /**
+     * Get the additional images of the book.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(BookImage::class);
+    }
 }

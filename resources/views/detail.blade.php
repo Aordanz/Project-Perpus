@@ -58,16 +58,55 @@
             <div class="md:col-span-1 space-y-6">
                 <!-- Book Cover Card -->
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 flex flex-col items-center shadow-sm">
-                    <div class="w-48 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow mb-6 relative">
-                        @if($book->cover_image)
-                            <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
+                    @php
+                        $allImages = [];
+                        if ($book->cover_image) {
+                            $allImages[] = asset('covers/' . $book->cover_image);
+                        }
+                        if ($book->images) {
+                            foreach ($book->images as $img) {
+                                $allImages[] = asset('covers/' . $img->image_path);
+                            }
+                        }
+                    @endphp
+
+                    <div class="w-48 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow mb-6 relative group select-none">
+                        @if(count($allImages) > 0)
+                            <!-- Slideshow wrapper -->
+                            <div class="w-full h-full relative shadow-inner {{ count($allImages) > 1 ? 'cursor-pointer' : '' }}" id="book-slideshow">
+                                @foreach($allImages as $index => $imgUrl)
+                                    <img src="{{ $imgUrl }}" 
+                                         alt="Cover {{ $index + 1 }}" 
+                                         class="slideshow-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
+                                         data-slide-index="{{ $index }}">
+                                @endforeach
+                            </div>
+
+                            @if(count($allImages) > 1)
+                                <!-- Navigation buttons -->
+                                <button type="button" id="btn-slide-prev" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white w-7 h-7 rounded-full flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-20 cursor-pointer border-none text-xs">
+                                    <i class="ph ph-caret-left-bold"></i>
+                                </button>
+                                <button type="button" id="btn-slide-next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white w-7 h-7 rounded-full flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-20 cursor-pointer border-none text-xs">
+                                    <i class="ph ph-caret-right-bold"></i>
+                                </button>
+
+                                <!-- Navigation dots indicator -->
+                                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-black/30 px-2 py-1 rounded-full backdrop-blur-[2px]">
+                                    @foreach($allImages as $index => $_)
+                                        <span class="slide-dot w-1.5 h-1.5 rounded-full bg-white/50 transition cursor-pointer {{ $index === 0 ? '!bg-white scale-110' : '' }}"
+                                              data-dot-index="{{ $index }}"></span>
+                                    @endforeach
+                                </div>
+                            @endif
                         @else
                             <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4">
                                 <i class="ph ph-book-open text-6xl mb-3"></i>
                                 <span class="text-xs font-bold text-center leading-normal">{{ __('NO COVER IMAGE') }}</span>
                             </div>
                         @endif
-                        <span class="absolute top-3 left-3 bg-[#106c38] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
+
+                        <span class="absolute top-3 left-3 bg-[#106c38] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow z-20">
                             {{ strtoupper(__($book->jenis)) }}
                         </span>
                     </div>
@@ -278,6 +317,112 @@
                 btnBibliografi.className = activeClass;
             }
         }
+
+        // Interactive Slideshow/Carousel for Book Cover Images
+        document.addEventListener('DOMContentLoaded', () => {
+            const slideshow = document.getElementById('book-slideshow');
+            if (!slideshow) return;
+
+            const slides = document.querySelectorAll('.slideshow-slide');
+            const dots = document.querySelectorAll('.slide-dot');
+            const btnPrev = document.getElementById('btn-slide-prev');
+            const btnNext = document.getElementById('btn-slide-next');
+            
+            const totalSlides = slides.length;
+            if (totalSlides <= 1) {
+                // If only 1 image (or none), do absolutely nothing. No autoplay, no events.
+                return;
+            }
+
+            let currentIdx = 0;
+            let slideInterval;
+
+            function showSlide(index) {
+                // Handle index wrapping
+                if (index >= totalSlides) {
+                    currentIdx = 0;
+                } else if (index < 0) {
+                    currentIdx = totalSlides - 1;
+                } else {
+                    currentIdx = index;
+                }
+
+                // Update slides opacity & z-index
+                slides.forEach((slide, i) => {
+                    if (i === currentIdx) {
+                        slide.classList.remove('opacity-0', 'z-0');
+                        slide.classList.add('opacity-100', 'z-10');
+                    } else {
+                        slide.classList.remove('opacity-100', 'z-10');
+                        slide.classList.add('opacity-0', 'z-0');
+                    }
+                });
+
+                // Update dots active status
+                dots.forEach((dot, i) => {
+                    if (i === currentIdx) {
+                        dot.classList.add('!bg-white', 'scale-110');
+                    } else {
+                        dot.classList.remove('!bg-white', 'scale-110');
+                    }
+                });
+            }
+
+            function nextSlide() {
+                showSlide(currentIdx + 1);
+            }
+
+            function prevSlide() {
+                showSlide(currentIdx - 1);
+            }
+
+            function startAutoPlay() {
+                stopAutoPlay(); // Prevent duplicates
+                slideInterval = setInterval(nextSlide, 3500); // 3.5 seconds
+            }
+
+            function stopAutoPlay() {
+                if (slideInterval) {
+                    clearInterval(slideInterval);
+                }
+            }
+
+            // Click on image container to advance to next slide
+            slideshow.addEventListener('click', () => {
+                nextSlide();
+                startAutoPlay(); // Restart timer
+            });
+
+            // Nav buttons
+            if (btnNext) {
+                btnNext.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    nextSlide();
+                    startAutoPlay();
+                });
+            }
+
+            if (btnPrev) {
+                btnPrev.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    prevSlide();
+                    startAutoPlay();
+                });
+            }
+
+            // Dot indicators click
+            dots.forEach((dot) => {
+                dot.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const index = parseInt(dot.getAttribute('data-dot-index'));
+                    showSlide(index);
+                    startAutoPlay();
+                });
+            });
+
+            // Auto-rotate
+            startAutoPlay();
+        });
     </script>
 
     @include('partials.footer')

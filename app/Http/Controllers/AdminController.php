@@ -142,7 +142,7 @@ class AdminController extends Controller
      */
     public function edit($id)
     {
-        $book      = Book::with(['items.location'])->findOrFail($id);
+        $book      = Book::with(['items.location', 'images'])->findOrFail($id);
         $locations = Location::all();
 
         return view('admin.edit', compact('book', 'locations'));
@@ -172,6 +172,8 @@ class AdminController extends Controller
             'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
             'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'additional_images.*'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'delete_additional_images.*' => 'nullable|integer|exists:book_images,id',
 
             // Existing items update
             'items.*.barcode'      => 'required|string|max:255',
@@ -213,10 +215,10 @@ class AdminController extends Controller
 
             $book->update($bookData);
 
-            // Update existing items
+            // Update existing items - Cast barcode to string to avoid truncated incorrect double error in MySQL
             if ($request->has('items')) {
                 foreach ($request->items as $barcode => $itemData) {
-                    Item::where('barcode', $barcode)->update([
+                    Item::where('barcode', (string) $barcode)->update([
                         'location_id' => $itemData['location_id'],
                         'status'      => $itemData['status'],
                         'type'        => $itemData['type'] ?? 'STD',
@@ -242,6 +244,31 @@ class AdminController extends Controller
                             'type'        => $newItem['type'] ?? 'STD',
                         ]);
                     }
+                }
+            }
+
+            // Delete selected additional images
+            if ($request->has('delete_additional_images')) {
+                $imagesToDelete = \App\Models\BookImage::whereIn('id', $request->delete_additional_images)->get();
+                foreach ($imagesToDelete as $img) {
+                    if (file_exists(public_path('covers/' . $img->image_path))) {
+                        @unlink(public_path('covers/' . $img->image_path));
+                    }
+                    $img->delete();
+                }
+            }
+
+            // Upload new additional images (only if book has a cover or a new cover is uploaded)
+            if ($request->hasFile('additional_images')) {
+                if (!$book->cover_image && !$request->hasFile('cover_image')) {
+                    throw new \Exception('Unggah sampul default terlebih dahulu sebelum menambahkan gambar tambahan.');
+                }
+                foreach ($request->file('additional_images') as $file) {
+                    $name = time() . '_' . uniqid() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+                    $file->move(public_path('covers'), $name);
+                    $book->images()->create([
+                        'image_path' => $name,
+                     ]);
                 }
             }
 

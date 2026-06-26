@@ -55,6 +55,23 @@
                         <a href="{{ url('/lang/en') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition {{ session('locale') === 'en' ? 'font-bold bg-green-50 text-[#106c38]' : '' }}">English</a>
                     </div>
                 </div>
+
+                <!-- Auth Buttons -->
+                @auth
+                    <div class="flex items-center gap-3">
+                        @if(auth()->user()->role === 'pustakawan')
+                            <a href="{{ route('admin.index') }}" class="text-green-100 font-bold hover:text-white transition flex items-center gap-1.5">
+                                <i class="ph ph-layout-bold text-lg"></i> {{ __('Dashboard') }}
+                            </a>
+                        @endif
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="bg-red-700/10 hover:bg-red-700/20 text-red-200 hover:text-white font-bold px-3 py-1.5 rounded-lg border border-red-700/30 transition-all text-xs cursor-pointer flex items-center gap-1">
+                                <i class="ph ph-sign-out-bold text-base"></i> {{ __('Keluar') }}
+                            </button>
+                        </form>
+                    </div>
+                @endauth
             </div>
         </div>
     </div>

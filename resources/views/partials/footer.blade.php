@@ -14,6 +14,10 @@
             <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition">Scientific eJournals</a>
             <span class="text-white/50">|</span>
             <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition">Scientific eBooks</a>
+            @guest
+                <span class="text-white/50">|</span>
+                <a href="{{ route('login') }}" class="text-white/30 hover:text-white/80 transition text-xs select-none decoration-none">Pustakawan</a>
+            @endguest
         </div>
     </div>
 </footer>
