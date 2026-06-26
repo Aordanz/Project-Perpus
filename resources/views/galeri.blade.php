@@ -80,8 +80,8 @@
             <div id="category-container" class="flex flex-wrap items-center gap-2 sm:gap-3 w-full">
                 <!-- Semua Kategori -->
                 <a href="{{ route('galeri', ['q' => request('q')]) }}" 
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-sm shadow-sm">
-                    <i class="ph ph-squares-four text-lg"></i> {{ __('Semua Kategori') }}
+                   class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
+                    <i class="ph ph-squares-four text-base sm:text-lg"></i> {{ __('Semua Kategori') }}
                 </a>
                 
                 @php
@@ -138,14 +138,14 @@
                         $isActive = $activeCategory === $cat['name'];
                     @endphp
                     <a href="{{ route('galeri', ['category' => $cat['name'], 'q' => request('q')]) }}" 
-                       class="category-bubble inline-flex items-center gap-2 px-4 py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold active-category-bubble' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-sm shadow-sm {{ $index >= 6 ? 'extra-category' : '' }}"
+                       class="category-bubble inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold active-category-bubble' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm {{ $index >= 6 ? 'extra-category' : '' }}"
                        style="{{ $index >= 6 && !$isActive ? 'display: none;' : '' }}">
-                        <i class="ph {{ $cat['icon'] }} text-lg"></i> {{ __($cat['name']) }}
+                        <i class="ph {{ $cat['icon'] }} text-base sm:text-lg"></i> {{ __($cat['name']) }}
                     </a>
                 @endforeach
 
                 @if(count($categories) > 6)
-                    <button id="toggle-categories-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 bg-white text-slate-500 font-medium hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 transition-colors text-sm shadow-sm cursor-pointer select-none">
+                    <button id="toggle-categories-btn" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-slate-200 bg-white text-slate-500 font-medium hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 transition-colors text-xs sm:text-sm shadow-sm cursor-pointer select-none">
                         <span id="toggle-categories-text">{{ __('Tampilkan Selengkapnya') }}</span>
                         <i id="toggle-categories-icon" class="ph ph-caret-down text-base transition-transform duration-200"></i>
                     </button>

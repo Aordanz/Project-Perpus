@@ -5,16 +5,16 @@
             <!-- Logo & Links -->
             <div class="flex items-center gap-4 lg:gap-6 flex-shrink-0">
                 <!-- USU Logo & Name -->
-                <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+                <a href="{{ route('home') }}" class="flex items-center gap-1.5 sm:gap-2 group">
                     <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
-                    <div class="flex flex-col hidden sm:flex">
-                        <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas') }}</span>
-                        <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Sumatera Utara') }}</span>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas') }}</span>
+                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Sumatera Utara') }}</span>
                     </div>
                 </a>
             </div>
 
-            <!-- Center Navigation Links -->
+            <!-- Center Navigation Links (Desktop) -->
             <div class="hidden lg:flex space-x-3 xl:space-x-6 items-center justify-center flex-grow mx-2 xl:mx-4 lg:text-xs xl:text-sm">
                 <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Beranda') }}</a>
                 <a href="{{ route('koleksi.terbaru') }}" class="{{ request()->routeIs('koleksi.terbaru') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Koleksi Terbaru') }}</a>
@@ -42,7 +42,7 @@
                 <a href="{{ route('kontak') }}" class="{{ request()->routeIs('kontak') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Kontak Kami') }}</a>
             </div>
             
-            <!-- Right Side -->
+            <!-- Right Side (Desktop) -->
             <div class="hidden md:flex space-x-4 xl:space-x-5 items-center flex-shrink-0 lg:text-xs xl:text-sm">
                 <!-- Language Dropdown -->
                 <div class="relative group cursor-pointer">
@@ -73,6 +73,125 @@
                     </div>
                 @endauth
             </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-white hover:bg-white/10 transition cursor-pointer" aria-label="Menu">
+                <i class="ph ph-list text-2xl" id="mobile-menu-icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Slide-Out Menu -->
+    <div id="mobile-menu-panel" class="lg:hidden fixed inset-0 z-[60] pointer-events-none">
+        <!-- Backdrop -->
+        <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
+        <!-- Panel -->
+        <div id="mobile-menu-drawer" class="absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-[#064e3b] transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl overflow-y-auto">
+            <!-- Close Button -->
+            <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+                <span class="text-white font-bold text-sm tracking-wide">Menu</span>
+                <button id="mobile-menu-close" class="w-9 h-9 rounded-lg flex items-center justify-center text-white hover:bg-white/10 transition cursor-pointer">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+            <!-- Navigation Links -->
+            <div class="flex flex-col py-3">
+                <a href="{{ route('home') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-medium {{ request()->routeIs('home') ? 'text-white bg-white/10 font-bold' : 'text-green-100 hover:text-white hover:bg-white/5' }} transition">
+                    <i class="ph ph-house text-lg"></i> {{ __('Beranda') }}
+                </a>
+                <a href="{{ route('koleksi.terbaru') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-medium {{ request()->routeIs('koleksi.terbaru') ? 'text-white bg-white/10 font-bold' : 'text-green-100 hover:text-white hover:bg-white/5' }} transition">
+                    <i class="ph ph-book-open text-lg"></i> {{ __('Koleksi Terbaru') }}
+                </a>
+                <a href="{{ route('galeri') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-medium {{ request()->routeIs('galeri') ? 'text-white bg-white/10 font-bold' : 'text-green-100 hover:text-white hover:bg-white/5' }} transition">
+                    <i class="ph ph-squares-four text-lg"></i> {{ __('Galeri') }}
+                </a>
+                <a href="{{ route('index-judul') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-medium {{ request()->routeIs('index-judul') ? 'text-white bg-white/10 font-bold' : 'text-green-100 hover:text-white hover:bg-white/5' }} transition">
+                    <i class="ph ph-list-bullets text-lg"></i> {{ __('Index Judul') }}
+                </a>
+                <a href="#" class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
+                    <i class="ph ph-clipboard-text text-lg"></i> {{ __('Cek Pinjaman') }}
+                </a>
+
+                <div class="border-t border-white/10 my-2"></div>
+                <span class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-green-300/60">{{ __('Tautan Lain') }}</span>
+                <a href="https://www.usu.ac.id/" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
+                    <i class="ph ph-globe text-base"></i> Universitas Sumatera Utara
+                </a>
+                <a href="https://library.usu.ac.id/id" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
+                    <i class="ph ph-buildings text-base"></i> Perpustakaan
+                </a>
+                <a href="https://repositori.usu.ac.id/" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
+                    <i class="ph ph-database text-base"></i> USU-IR
+                </a>
+
+                <div class="border-t border-white/10 my-2"></div>
+                <a href="{{ route('bantuan') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-medium {{ request()->routeIs('bantuan') ? 'text-white bg-white/10 font-bold' : 'text-green-100 hover:text-white hover:bg-white/5' }} transition">
+                    <i class="ph ph-question text-lg"></i> {{ __('Bantuan') }}
+                </a>
+                <a href="{{ route('kontak') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-medium {{ request()->routeIs('kontak') ? 'text-white bg-white/10 font-bold' : 'text-green-100 hover:text-white hover:bg-white/5' }} transition">
+                    <i class="ph ph-envelope text-lg"></i> {{ __('Kontak Kami') }}
+                </a>
+
+                <!-- Language Switcher -->
+                <div class="border-t border-white/10 my-2"></div>
+                <span class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-green-300/60">{{ __('Bahasa') }}</span>
+                <div class="flex gap-2 px-5 py-2">
+                    <a href="{{ url('/lang/id') }}" class="flex-1 text-center py-2 rounded-lg text-xs font-bold transition {{ session('locale') === 'id' || !session('locale') ? 'bg-white text-[#106c38]' : 'bg-white/10 text-green-100 hover:bg-white/20' }}">Indonesia</a>
+                    <a href="{{ url('/lang/en') }}" class="flex-1 text-center py-2 rounded-lg text-xs font-bold transition {{ session('locale') === 'en' ? 'bg-white text-[#106c38]' : 'bg-white/10 text-green-100 hover:bg-white/20' }}">English</a>
+                </div>
+
+                @auth
+                    <div class="border-t border-white/10 my-2"></div>
+                    @if(auth()->user()->role === 'pustakawan')
+                        <a href="{{ route('admin.index') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-bold text-white hover:bg-white/5 transition">
+                            <i class="ph ph-layout-bold text-lg"></i> {{ __('Dashboard') }}
+                        </a>
+                    @endif
+                    <form action="{{ route('logout') }}" method="POST" class="px-5 py-2">
+                        @csrf
+                        <button type="submit" class="w-full bg-red-700/20 hover:bg-red-700/30 text-red-200 font-bold py-2.5 rounded-lg border border-red-700/30 transition text-xs cursor-pointer flex items-center justify-center gap-1.5">
+                            <i class="ph ph-sign-out-bold text-base"></i> {{ __('Keluar') }}
+                        </button>
+                    </form>
+                @endauth
+            </div>
         </div>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const menuPanel = document.getElementById('mobile-menu-panel');
+        const menuBackdrop = document.getElementById('mobile-menu-backdrop');
+        const menuDrawer = document.getElementById('mobile-menu-drawer');
+        const menuClose = document.getElementById('mobile-menu-close');
+        const menuIcon = document.getElementById('mobile-menu-icon');
+
+        function openMenu() {
+            menuPanel.classList.remove('pointer-events-none');
+            menuBackdrop.classList.remove('opacity-0');
+            menuBackdrop.classList.add('opacity-100');
+            menuDrawer.classList.remove('translate-x-full');
+            menuDrawer.classList.add('translate-x-0');
+            menuIcon.classList.remove('ph-list');
+            menuIcon.classList.add('ph-x');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            menuBackdrop.classList.remove('opacity-100');
+            menuBackdrop.classList.add('opacity-0');
+            menuDrawer.classList.remove('translate-x-0');
+            menuDrawer.classList.add('translate-x-full');
+            menuIcon.classList.remove('ph-x');
+            menuIcon.classList.add('ph-list');
+            document.body.style.overflow = '';
+            setTimeout(() => menuPanel.classList.add('pointer-events-none'), 300);
+        }
+
+        if (menuBtn) menuBtn.addEventListener('click', openMenu);
+        if (menuClose) menuClose.addEventListener('click', closeMenu);
+        if (menuBackdrop) menuBackdrop.addEventListener('click', closeMenu);
+    });
+</script>

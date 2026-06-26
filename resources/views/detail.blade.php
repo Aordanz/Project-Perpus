@@ -30,6 +30,43 @@
         .cover-glow {
             box-shadow: 0 20px 40px -15px rgba(16, 108, 56, 0.15), 0 15px 25px -10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Responsive table for bibliografi on mobile */
+        @media (max-width: 639px) {
+            #pane-bibliografi table,
+            #pane-bibliografi tbody,
+            #pane-bibliografi tr,
+            #pane-bibliografi td {
+                display: block;
+                width: 100%;
+            }
+            #pane-bibliografi tr {
+                padding: 0.65rem 0.85rem;
+                border-bottom: 1px solid #f1f5f9;
+            }
+            #pane-bibliografi td {
+                padding: 0.15rem 0 !important;
+                background: transparent !important;
+                border: none !important;
+            }
+            #pane-bibliografi td:first-child {
+                width: 100% !important;
+                font-size: 10px;
+                padding-bottom: 0.1rem !important;
+            }
+            #pane-bibliografi td:last-child {
+                font-size: 13px;
+            }
+
+            #pane-ketersediaan th,
+            #pane-ketersediaan td {
+                padding-left: 0.65rem !important;
+                padding-right: 0.65rem !important;
+                padding-top: 0.65rem !important;
+                padding-bottom: 0.65rem !important;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -70,7 +107,7 @@
                         }
                     @endphp
 
-                    <div class="w-48 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow mb-6 relative group select-none">
+                    <div class="w-36 sm:w-48 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow mb-6 relative group select-none">
                         @if(count($allImages) > 0)
                             <!-- Slideshow wrapper -->
                             <div class="w-full h-full relative shadow-inner {{ count($allImages) > 1 ? 'cursor-pointer' : '' }}" id="book-slideshow">
@@ -156,10 +193,10 @@
                     <!-- Tab Headers -->
                     <div class="border-b border-slate-200 mb-6">
                         <nav class="flex gap-2 -mb-px" aria-label="Tabs">
-                            <button id="btn-tab-ketersediaan" onclick="switchTab('ketersediaan')" class="border-t border-x border-slate-200 border-b-white bg-white text-[#106c38] font-bold text-sm px-5 py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
+                            <button id="btn-tab-ketersediaan" onclick="switchTab('ketersediaan')" class="border-t border-x border-slate-200 border-b-white bg-white text-[#106c38] font-bold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
                                 {{ __('Ketersediaan') }}
                             </button>
-                            <button id="btn-tab-bibliografi" onclick="switchTab('bibliografi')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-sm px-5 py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
+                            <button id="btn-tab-bibliografi" onclick="switchTab('bibliografi')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
                                 {{ __('Informasi Detail') }}
                             </button>
                         </nav>

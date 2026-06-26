@@ -141,12 +141,12 @@
         <!-- Results List -->
         <div class="space-y-4 mb-8">
             @forelse($books as $book)
-                <div class="book-card result-card bg-white rounded-3xl border border-slate-100 p-5 sm:p-6 flex gap-5 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
+                <div class="book-card result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
                      data-title="{{ strtolower($book->title) }}" 
                      data-author="{{ strtolower($book->author) }}" 
                      data-publisher="{{ strtolower($book->publisher) }}">
                     <!-- Book Cover -->
-                    <div class="w-24 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
+                    <div class="w-20 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
                             <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                         @else
