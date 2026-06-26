@@ -54,6 +54,7 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
+
     <!-- Header Navigation -->
     <nav class="glass-nav sticky top-0 z-40 w-full transition-all">
         <div class="w-full px-4 sm:px-6 lg:px-8">
@@ -78,12 +79,7 @@
     <!-- Main Content Area -->
     <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
-        <!-- Back to Home Link (Below Navbar) -->
-        <div class="mb-6">
-            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-[#106c38] hover:text-[#064e3b] transition text-sm font-bold bg-[#106c38]/5 hover:bg-[#106c38]/10 px-4 py-2 rounded-lg border border-[#106c38]/10">
-                <i class="ph ph-arrow-left"></i> {{ __('Kembali ke Beranda') }}
-            </a>
-        </div>
+
         
         <!-- Search Header Banner with Background Image -->
         <div class="relative bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 sm:p-10 mb-8 overflow-hidden text-white shadow-lg">
@@ -252,26 +248,26 @@
     @include('partials.footer')
 
     <!-- Advanced Search Modal -->
-    <div id="modal-pencarian-spesifik" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-emerald-800/10 transform transition-all duration-200 scale-95 opacity-0" id="modal-content">
+    <div id="modal-pencarian-spesifik" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-sm p-0 sm:p-4">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[calc(100vh-4rem)] flex flex-col overflow-hidden border border-emerald-800/10 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
             <!-- Modal Header Banner -->
-            <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-6 py-6 text-white relative rounded-t-3xl">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">
+            <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-5 py-4 md:px-6 md:py-6 text-white relative flex-shrink-0">
+                <div class="flex items-center gap-3 md:gap-4 pr-8">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-md rounded-xl md:rounded-2xl flex items-center justify-center text-white text-lg md:text-2xl shadow-inner">
                         <i class="ph ph-graduation-cap"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg md:text-xl font-bold tracking-wide">{{ __('Pencarian Spesifik') }}</h3>
-                        <p class="text-xs text-green-100/90 font-medium font-sans">{{ __('Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!') }}</p>
+                        <h3 class="text-sm md:text-lg font-bold tracking-wide">{{ __('Pencarian Spesifik') }}</h3>
+                        <p class="text-[10px] md:text-xs text-green-100/90 font-medium font-sans leading-tight">{{ __('Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!') }}</p>
                     </div>
                 </div>
-                <button id="close-modal-pencarian-spesifik" class="absolute top-6 right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-2 rounded-xl flex items-center justify-center">
-                    <i class="ph ph-x text-lg"></i>
+                <button id="close-modal-pencarian-spesifik" class="absolute top-4 right-4 md:top-6 md:right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-1.5 md:p-2 rounded-xl flex items-center justify-center">
+                    <i class="ph ph-x text-base md:text-lg"></i>
                 </button>
             </div>
             
             <!-- Modal Body -->
-            <form action="{{ route('search') }}" method="GET" class="p-6 md:p-8 space-y-6">
+            <form action="{{ route('search') }}" method="GET" class="p-5 md:p-8 space-y-4 md:space-y-6 overflow-y-auto flex-grow">
                 <!-- Section 1: Detail Bibliografi -->
                 <div class="space-y-4">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
@@ -468,5 +464,14 @@
             });
         });
     </script>
+
+<button id="desktop-back-button" onclick="window.history.back();" 
+        class="fixed left-4 lg:left-8 xl:left-12 2xl:left-24 top-28 z-40 hidden md:flex items-center justify-start w-12 hover:w-32 h-12 bg-[#106c38] hover:bg-[#0e5c30] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer select-none group overflow-hidden pl-3.5 border border-transparent"
+        title="Back">
+    <div class="flex items-center gap-2.5 whitespace-nowrap">
+        <i class="ph ph-arrow-left text-xl font-bold transition-transform group-hover:-translate-x-0.5"></i>
+        <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold text-xs uppercase tracking-wider">Back</span>
+    </div>
+</button>
 </body>
 </html>

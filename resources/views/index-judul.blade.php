@@ -38,12 +38,7 @@
             <div class="absolute inset-0 bg-gradient-to-b from-[#064e3b]/80 via-[#064e3b]/60 to-[#f8fafc]"></div>
         </div>
         
-        <!-- Back to Home Link -->
-        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 sm:mb-8 text-left">
-            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-white/90 hover:text-white transition text-sm font-bold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg border border-white/20 backdrop-blur-md shadow-sm">
-                <i class="ph ph-arrow-left"></i> {{ __('Kembali ke Beranda') }}
-            </a>
-        </div>
+
 
         <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white mb-6 shadow-xl">
