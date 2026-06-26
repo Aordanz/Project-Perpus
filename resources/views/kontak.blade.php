@@ -202,8 +202,12 @@
                 </form>
             </div>
             
+            
         </div>
     </div>
+
+    <!-- Custom Toast Notification Container -->
+    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-3 pointer-events-none items-center"></div>
 
     @include('partials.footer')
 
@@ -215,17 +219,58 @@
             // Menggunakan DataTransfer untuk memanipulasi file yang dipilih (bisa dihapus)
             let dt = new DataTransfer();
 
+            // Custom Toast Function
+            function showToast(message, type = 'error') {
+                const toast = document.createElement('div');
+                toast.className = `max-w-xs w-full bg-white border ${type === 'error' ? 'border-rose-200' : 'border-green-200'} rounded-2xl shadow-xl flex items-center p-4 gap-3 transform transition-all duration-300 -translate-y-full opacity-0 pointer-events-auto`;
+                
+                const icon = type === 'error' 
+                    ? '<div class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center flex-shrink-0"><i class="ph ph-warning-circle text-xl"></i></div>'
+                    : '<div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0"><i class="ph ph-check-circle text-xl"></i></div>';
+                
+                toast.innerHTML = `
+                    ${icon}
+                    <div class="flex-grow">
+                        <p class="text-sm font-semibold text-slate-800">${type === 'error' ? 'Peringatan' : 'Berhasil'}</p>
+                        <p class="text-xs text-slate-500 leading-snug">${message}</p>
+                    </div>
+                    <button class="text-slate-400 hover:text-slate-600 transition focus:outline-none" onclick="this.parentElement.remove()">
+                        <i class="ph ph-x text-lg"></i>
+                    </button>
+                `;
+
+                document.getElementById('toast-container').appendChild(toast);
+
+                // Animate in
+                requestAnimationFrame(() => {
+                    toast.classList.remove('-translate-y-full', 'opacity-0');
+                    toast.classList.add('translate-y-0');
+                });
+
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0');
+                    toast.classList.add('-translate-y-full', 'opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
             fileInput.addEventListener('change', function(e) {
                 const newFiles = Array.from(fileInput.files);
+                let overLimit = false;
                 
                 // Tambahkan file baru ke DataTransfer (maks 3 total)
                 newFiles.forEach(file => {
                     if (dt.items.length < 3) {
                         dt.items.add(file);
                     } else {
-                        alert('Maksimal hanya 3 gambar yang dapat dilampirkan.');
+                        overLimit = true;
                     }
                 });
+
+                if (overLimit) {
+                    showToast('Maksimal hanya 3 gambar yang dapat dilampirkan.', 'error');
+                }
 
                 // Update input file dengan isi dt yang baru
                 fileInput.files = dt.files;

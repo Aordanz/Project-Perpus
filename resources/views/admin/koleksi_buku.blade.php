@@ -61,13 +61,6 @@
                         </h1>
                         <p class="text-slate-500 text-xs sm:text-sm mt-1">Kelola dan pantau seluruh data buku yang ada pada database perpustakaan.</p>
                     </div>
-                    
-                    <div class="flex gap-2">
-                        <a href="{{ route('home') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
-                            <i class="ph ph-arrow-square-out text-base"></i>
-                            <span>Lihat Halaman OPAC</span>
-                        </a>
-                    </div>
                 </div>
 
                 <!-- Success & Error Alerts -->
@@ -335,6 +328,9 @@
 
             </main>
 
+            <!-- Custom Toast Notification Container -->
+            <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-3 pointer-events-none items-center"></div>
+
             <!-- Footer -->
             <footer class="bg-[#106c38] text-white/90 py-5 border-t border-white/15 text-center text-xs font-medium mt-auto">
                 <div class="w-full px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -349,6 +345,44 @@
         // Modal Control Functions
         const addBookModal = document.getElementById('addBookModal');
         const addBookModalContent = document.getElementById('addBookModalContent');
+
+        // Custom Toast Function
+        function showToast(message, type = 'error') {
+            const toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) return;
+            const toast = document.createElement('div');
+            toast.className = `max-w-xs w-full bg-white border ${type === 'error' ? 'border-rose-200' : 'border-green-200'} rounded-2xl shadow-xl flex items-center p-4 gap-3 transform transition-all duration-300 -translate-y-full opacity-0 pointer-events-auto`;
+            
+            const icon = type === 'error' 
+                ? '<div class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center flex-shrink-0"><i class="ph ph-warning-circle text-xl"></i></div>'
+                : '<div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0"><i class="ph ph-check-circle text-xl"></i></div>';
+            
+            toast.innerHTML = `
+                ${icon}
+                <div class="flex-grow">
+                    <p class="text-sm font-semibold text-slate-800">${type === 'error' ? 'Peringatan' : 'Berhasil'}</p>
+                    <p class="text-xs text-slate-500 leading-snug">${message}</p>
+                </div>
+                <button type="button" class="text-slate-400 hover:text-slate-600 bg-transparent border-none p-0 transition focus:outline-none cursor-pointer" onclick="this.parentElement.remove()">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('-translate-y-full', 'opacity-0');
+                toast.classList.add('translate-y-0');
+            });
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0');
+                toast.classList.add('-translate-y-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
         function openAddBookModal() {
             addBookModal.classList.remove('hidden');
@@ -428,10 +462,18 @@
             if (imagesInput && bubblesContainer) {
                 imagesInput.addEventListener('change', function(e) {
                     const newFiles = Array.from(e.target.files);
+                    let overLimit = false;
                     for (let file of newFiles) {
-                        if (selectedFiles.length < 15 && !selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                            selectedFiles.push(file);
+                        if (selectedFiles.length < 15) {
+                            if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                                selectedFiles.push(file);
+                            }
+                        } else {
+                            overLimit = true;
                         }
+                    }
+                    if (overLimit) {
+                        showToast('Maksimal hanya 15 gambar yang dapat dilampirkan.', 'error');
                     }
                     updateBubblesUI();
                     syncInputFiles();
