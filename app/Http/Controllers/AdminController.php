@@ -142,6 +142,7 @@ class AdminController extends Controller implements HasMiddleware
             'jenis'                => 'nullable|string|max:255',
             'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
+            'pdf_file'             => 'nullable|file|mimes:pdf|max:20480',
             'images'               => 'nullable|array|max:15',
             'images.*'             => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
@@ -172,6 +173,14 @@ class AdminController extends Controller implements HasMiddleware
 
             if (!$request->filled('category')) {
                 $bookData['category'] = 'Umum';
+            }
+
+            // Handle optional PDF/E-book upload
+            if ($request->hasFile('pdf_file')) {
+                $pdf = $request->file('pdf_file');
+                $pdfName = time() . '_' . preg_replace('/\s+/', '_', $pdf->getClientOriginalName());
+                $pdf->move(public_path('ebooks'), $pdfName);
+                $bookData['pdf_file'] = $pdfName;
             }
 
             // Handle multiple image file upload
@@ -263,6 +272,8 @@ class AdminController extends Controller implements HasMiddleware
             'general_note'         => 'nullable|string',
             'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'delete_cover'         => 'nullable|boolean',
+            'pdf_file'             => 'nullable|file|mimes:pdf|max:20480',
+            'delete_pdf'           => 'nullable|boolean',
             'additional_images.*'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'delete_additional_images.*' => 'nullable|integer|exists:book_images,id',
 
@@ -308,6 +319,26 @@ class AdminController extends Controller implements HasMiddleware
                 $name  = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
                 $image->move(public_path('covers'), $name);
                 $bookData['cover_image'] = $name;
+            }
+
+            // Handle deleting the PDF file
+            if ($request->boolean('delete_pdf')) {
+                if ($book->pdf_file && file_exists(public_path('ebooks/' . $book->pdf_file))) {
+                    @unlink(public_path('ebooks/' . $book->pdf_file));
+                }
+                $bookData['pdf_file'] = null;
+            }
+
+            // Handle PDF upload (replace old one)
+            if ($request->hasFile('pdf_file')) {
+                // Delete old PDF if exists
+                if ($book->pdf_file && file_exists(public_path('ebooks/' . $book->pdf_file))) {
+                    @unlink(public_path('ebooks/' . $book->pdf_file));
+                }
+                $pdf = $request->file('pdf_file');
+                $pdfName  = time() . '_' . preg_replace('/\s+/', '_', $pdf->getClientOriginalName());
+                $pdf->move(public_path('ebooks'), $pdfName);
+                $bookData['pdf_file'] = $pdfName;
             }
 
             $book->update($bookData);
@@ -395,6 +426,11 @@ class AdminController extends Controller implements HasMiddleware
             // Delete the cover image file if it exists
             if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
                 @unlink(public_path('covers/' . $book->cover_image));
+            }
+
+            // Delete the PDF file if it exists
+            if ($book->pdf_file && file_exists(public_path('ebooks/' . $book->pdf_file))) {
+                @unlink(public_path('ebooks/' . $book->pdf_file));
             }
 
             $book->delete(); // cascades to items via migration constraint

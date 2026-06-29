@@ -163,6 +163,17 @@
                             </div>
                         @endif
                     </div>
+
+                    <!-- E-Book PDF Download Button if exists -->
+                    @if($book->pdf_file)
+                        <div class="w-full text-center py-4 border-t border-slate-100 flex flex-col gap-2">
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">{{ __('Format Digital') }}</span>
+                            <a href="{{ asset('ebooks/' . $book->pdf_file) }}" target="_blank" download class="inline-flex items-center justify-center gap-2 bg-[#106c38] hover:bg-green-800 text-white font-bold px-4 py-2.5 rounded-xl border border-transparent shadow hover:shadow-md transition text-xs cursor-pointer w-full">
+                                <i class="ph ph-file-pdf text-base"></i>
+                                {{ __('Unduh E-Book (PDF)') }}
+                            </a>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Contact / Help info -->
