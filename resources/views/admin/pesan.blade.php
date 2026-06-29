@@ -109,7 +109,7 @@
 
             <!-- Pagination -->
             <div class="mt-2">
-                {{ $messages->links() }}
+                {{ $messages->links('admin.partials.pagination') }}
             </div>
         </div>
 

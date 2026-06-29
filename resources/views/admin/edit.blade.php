@@ -257,18 +257,51 @@
                                     <div class="grid grid-cols-2 gap-3">
                                         <div class="flex flex-col gap-1">
                                             <label class="text-[10px] font-bold text-slate-400">Tipe</label>
-                                            <select name="items[{{ $item->barcode }}][type]" class="field-input appearance-none cursor-pointer text-xs">
-                                                <option value="STD" {{ $item->type == 'STD' ? 'selected' : '' }}>STD (Sirkulasi)</option>
-                                                <option value="KPS" {{ $item->type == 'KPS' ? 'selected' : '' }}>KPS (Kampus)</option>
-                                            </select>
+                                            <div class="relative custom-select-container w-full">
+                                                @php
+                                                    $typeVal = $item->type ?: 'STD';
+                                                    $typeLabel = $typeVal == 'KPS' ? 'KPS (Kampus)' : 'STD (Sirkulasi)';
+                                                @endphp
+                                                <button type="button" class="field-input flex items-center justify-between cursor-pointer pr-4 text-left w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all">
+                                                    <span class="custom-select-label text-xs font-semibold">{{ $typeLabel }}</span>
+                                                    <i class="ph ph-caret-down text-slate-400 text-xs transition-transform duration-200"></i>
+                                                </button>
+                                                <input type="hidden" name="items[{{ $item->barcode }}][type]" value="{{ $typeVal }}">
+                                                <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-40 overflow-y-auto">
+                                                    <button type="button" data-value="STD" class="custom-select-option w-full text-left px-5 py-3.5 text-xs transition flex items-center justify-between {{ $typeVal == 'STD' ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                        <span>STD (Sirkulasi)</span>
+                                                        <i class="ph ph-check text-xs select-active-check {{ $typeVal == 'STD' ? '' : 'hidden' }}"></i>
+                                                    </button>
+                                                    <button type="button" data-value="KPS" class="custom-select-option w-full text-left px-5 py-3.5 text-xs transition flex items-center justify-between {{ $typeVal == 'KPS' ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                        <span>KPS (Kampus)</span>
+                                                        <i class="ph ph-check text-xs select-active-check {{ $typeVal == 'KPS' ? '' : 'hidden' }}"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="flex flex-col gap-1">
                                             <label class="text-[10px] font-bold text-slate-400">Lokasi Rak</label>
-                                            <select name="items[{{ $item->barcode }}][location_id]" class="field-input appearance-none cursor-pointer text-xs">
-                                                @foreach($locations as $loc)
-                                                    <option value="{{ $loc->id }}" {{ $item->location_id == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
-                                                @endforeach
-                                            </select>
+                                            <div class="relative custom-select-container w-full">
+                                                @php
+                                                    $locVal = $item->location_id;
+                                                    $selectedLoc = $locations->firstWhere('id', $locVal);
+                                                    $locLabel = $selectedLoc ? $selectedLoc->name : 'Pilih Lokasi';
+                                                @endphp
+                                                <button type="button" class="field-input flex items-center justify-between cursor-pointer pr-4 text-left w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all">
+                                                    <span class="custom-select-label text-xs font-semibold">{{ $locLabel }}</span>
+                                                    <i class="ph ph-caret-down text-slate-400 text-xs transition-transform duration-200"></i>
+                                                </button>
+                                                <input type="hidden" name="items[{{ $item->barcode }}][location_id]" value="{{ $locVal }}">
+                                                <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-40 overflow-y-auto">
+                                                    @foreach($locations as $loc)
+                                                        @php $isSelected = $locVal == $loc->id; @endphp
+                                                        <button type="button" data-value="{{ $loc->id }}" class="custom-select-option w-full text-left px-5 py-3.5 text-xs transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                            <span>{{ $loc->name }}</span>
+                                                            <i class="ph ph-check text-xs select-active-check {{ $isSelected ? '' : 'hidden' }}"></i>
+                                                        </button>
+                                                    @endforeach
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -489,20 +522,36 @@
 
         // Add new item row dynamically
         let newItemIndex = 0;
-        const locationOptions = `@foreach($locations as $loc)<option value="{{ $loc->id }}">{{ $loc->name }}</option>@endforeach`;
 
         document.getElementById('btn-add-new-item').addEventListener('click', () => {
             const container = document.getElementById('new-items-container');
             const idx = newItemIndex++;
 
+            // Build location options for custom select
+            let locationOptions = '';
+            let firstLocId = '';
+            let firstLocName = '';
+            @foreach($locations as $index => $loc)
+                @if($index == 0)
+                    firstLocId = '{{ $loc->id }}';
+                    firstLocName = '{{ $loc->name }}';
+                @endif
+                locationOptions += `
+                    <button type="button" data-value="{{ $loc->id }}" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
+                        <span>{{ $loc->name }}</span>
+                        <i class="ph ph-check text-[10px] select-active-check hidden"></i>
+                    </button>
+                `;
+            @endforeach
+
             const row = document.createElement('div');
-            row.className = 'item-row-new';
+            row.className = 'item-row-new p-4 bg-slate-50 border border-slate-200 rounded-2xl relative pt-8 mt-3';
             row.innerHTML = `
                 <button type="button" onclick="this.closest('.item-row-new').remove()"
                     class="absolute top-2 right-2 text-slate-400 hover:text-red-500 bg-transparent border-none cursor-pointer">
                     <i class="ph ph-x-circle text-base"></i>
                 </button>
-                <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">+ Eksemplar Baru</p>
+                <p class="text-[10px] font-bold text-[#106c38] uppercase tracking-wider mb-2">+ Eksemplar Baru</p>
                 <div class="grid grid-cols-2 gap-2 mb-2">
                     <div class="flex flex-col gap-1 col-span-1">
                         <label class="text-[10px] font-bold text-slate-400">Barcode *</label>
@@ -511,22 +560,43 @@
                     </div>
                     <div class="flex flex-col gap-1 col-span-1">
                         <label class="text-[10px] font-bold text-slate-400">Tipe *</label>
-                        <select name="new_items[${idx}][type]"
-                            class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] appearance-none cursor-pointer bg-white">
-                            <option value="STD">STD (Sirkulasi)</option>
-                            <option value="KPS">KPS (Kampus)</option>
-                        </select>
+                        <div class="relative custom-select-container w-full">
+                            <button type="button" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all bg-white text-left">
+                                <span class="custom-select-label">STD (Sirkulasi)</span>
+                                <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
+                            </button>
+                            <input type="hidden" name="new_items[${idx}][type]" value="STD">
+                            <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
+                                <button type="button" data-value="STD" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-[#106c38] font-bold bg-green-50/50">
+                                    <span>STD (Sirkulasi)</span>
+                                    <i class="ph ph-check text-[10px] select-active-check"></i>
+                                </button>
+                                <button type="button" data-value="KPS" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
+                                    <span>KPS (Kampus)</span>
+                                    <i class="ph ph-check text-[10px] select-active-check hidden"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="text-[10px] font-bold text-slate-400">Lokasi Rak *</label>
-                    <select name="new_items[${idx}][location_id]"
-                        class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] appearance-none cursor-pointer bg-white">
-                        ${locationOptions}
-                    </select>
+                    <div class="relative custom-select-container w-full">
+                        <button type="button" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all bg-white text-left">
+                            <span class="custom-select-label">${firstLocName}</span>
+                            <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
+                        </button>
+                        <input type="hidden" name="new_items[${idx}][location_id]" value="${firstLocId}">
+                        <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
+                            ${locationOptions}
+                        </div>
+                    </div>
                 </div>
             `;
             container.appendChild(row);
+            if (window.initCustomSelects) {
+                window.initCustomSelects(row);
+            }
             row.querySelector('input[type="text"]').focus();
         });
 

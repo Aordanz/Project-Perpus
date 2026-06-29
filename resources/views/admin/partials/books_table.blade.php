@@ -44,7 +44,7 @@
                             $avail = $book->items->where('status', 'Tersedia')->count();
                         @endphp
                         <span class="inline-flex items-center gap-1 bg-[#106c38]/5 text-usu-green font-bold px-2.5 py-0.5 rounded-full text-xs">
-                            {{ $avail }} / {{ $copies }} Available
+                            {{ $avail }} / {{ $copies }} {{ __('Tersedia') }}
                         </span>
                     </td>
 
@@ -82,6 +82,6 @@
 </div>
 
 <!-- Custom Pagination Links -->
-<div class="mt-4 shadow-sm">
-    {{ $books->links() }}
+<div class="mt-4">
+    {{ $books->links('admin.partials.pagination') }}
 </div>

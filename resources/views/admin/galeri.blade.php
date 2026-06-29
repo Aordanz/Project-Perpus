@@ -58,6 +58,7 @@
             </div>
             
             <form id="gallery-search-form" action="{{ route('admin.galeri') }}" method="GET" class="w-full sm:w-64 relative flex items-center">
+                <input type="hidden" name="limit" id="admin-limit-select" value="{{ request('limit', 10) }}">
                 <div class="absolute left-3.5 text-slate-400">
                     <i class="ph ph-magnifying-glass text-lg"></i>
                 </div>
@@ -94,10 +95,11 @@
             
             let debounceTimer;
             
-            function performSearch(url = null) {
+            window.performSearch = function(url = null) {
                 if (!url) {
                     const query = encodeURIComponent(searchInput.value);
-                    url = `${searchForm.action}?search=${query}`;
+                    const limitVal = document.getElementById('admin-limit-select') ? document.getElementById('admin-limit-select').value : '10';
+                    url = `${searchForm.action}?search=${query}&limit=${limitVal}`;
                 }
                 
                 if (galleryContainer) {
@@ -152,7 +154,7 @@
                     
                     clearTimeout(debounceTimer);
                     debounceTimer = setTimeout(() => {
-                        performSearch();
+                        window.performSearch();
                     }, 300);
                 });
             }
@@ -161,7 +163,7 @@
                 clearBtn.addEventListener('click', () => {
                     searchInput.value = '';
                     clearBtn.classList.add('hidden');
-                    performSearch();
+                    window.performSearch();
                 });
             }
             
@@ -169,7 +171,7 @@
                 searchForm.addEventListener('submit', (e) => {
                     e.preventDefault();
                     clearTimeout(debounceTimer);
-                    performSearch();
+                    window.performSearch();
                 });
             }
             
@@ -178,7 +180,7 @@
                     const anchor = e.target.closest('a');
                     if (anchor && anchor.href && anchor.href.includes('page=')) {
                         e.preventDefault();
-                        performSearch(anchor.href);
+                        window.performSearch(anchor.href);
                     }
                 });
             }

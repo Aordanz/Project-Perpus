@@ -62,7 +62,14 @@ class AdminController extends Controller implements HasMiddleware
             });
         }
 
-        $books = $query->paginate(10)->withQueryString();
+        $perPage = $request->input('limit', 10);
+        if ($perPage === 'all') {
+            $perPage = $query->count() ?: 10;
+        } else {
+            $perPage = is_numeric($perPage) ? (int)$perPage : 10;
+        }
+
+        $books = $query->paginate($perPage)->withQueryString();
 
         // Get locations for the copies form dropdown
         $locations = Location::all();
@@ -74,9 +81,6 @@ class AdminController extends Controller implements HasMiddleware
         return view('admin.koleksi_buku', compact('books', 'locations'));
     }
 
-    /**
-     * Show the admin gallery to monitor books.
-     */
     public function galeri(Request $request)
     {
         $query = Book::with(['items'])->latest();
@@ -89,7 +93,14 @@ class AdminController extends Controller implements HasMiddleware
             });
         }
 
-        $books = $query->paginate(24)->withQueryString();
+        $perPage = $request->input('limit', 10);
+        if ($perPage === 'all') {
+            $perPage = $query->count() ?: 10;
+        } else {
+            $perPage = is_numeric($perPage) ? (int)$perPage : 10;
+        }
+
+        $books = $query->paginate($perPage)->withQueryString();
         
         if ($request->ajax()) {
             return view('admin.partials.gallery_grid', compact('books'));
@@ -98,12 +109,15 @@ class AdminController extends Controller implements HasMiddleware
         return view('admin.galeri', compact('books'));
     }
 
-    /**
-     * Show the messages from the contact page.
-     */
     public function pesan(Request $request)
     {
-        $messages = Message::latest()->paginate(10);
+        $perPage = $request->input('limit', 10);
+        if ($perPage === 'all') {
+            $perPage = Message::count() ?: 10;
+        } else {
+            $perPage = is_numeric($perPage) ? (int)$perPage : 10;
+        }
+        $messages = Message::latest()->paginate($perPage)->withQueryString();
         return view('admin.pesan', compact('messages'));
     }
 

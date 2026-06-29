@@ -102,6 +102,7 @@
                             <!-- Search Box inside Card & Button -->
                             <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                                 <form id="admin-search-form" action="{{ route('admin.koleksi-buku') }}" method="GET" class="w-full sm:w-64 relative flex items-center">
+                                    <input type="hidden" name="limit" id="admin-limit-select" value="{{ request('limit', 10) }}">
                                     <div class="absolute left-3.5 text-slate-400">
                                         <i class="ph ph-magnifying-glass text-lg"></i>
                                     </div>
@@ -321,19 +322,47 @@
                                                     </div>
                                                     <div class="flex flex-col gap-1 col-span-1">
                                                         <label class="text-[10px] font-bold text-slate-400">Tipe <span class="text-red-500">*</span></label>
-                                                        <select name="items[0][type]" required class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green appearance-none cursor-pointer">
-                                                            <option value="STD">STD (Sirkulasi)</option>
-                                                            <option value="KPS">KPS (Kampus)</option>
-                                                        </select>
+                                                        <div class="relative custom-select-container w-full">
+                                                            <button type="button" class="w-full px-2 py-1.5 text-left bg-white border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all flex items-center justify-between cursor-pointer custom-select-trigger">
+                                                                <span class="custom-select-label font-semibold">STD (Sirkulasi)</span>
+                                                                <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
+                                                            </button>
+                                                            <input type="hidden" name="items[0][type]" value="STD">
+                                                            <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
+                                                                <button type="button" data-value="STD" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-[#106c38] font-bold bg-green-50/50">
+                                                                    <span>STD (Sirkulasi)</span>
+                                                                    <i class="ph ph-check text-[10px] select-active-check"></i>
+                                                                </button>
+                                                                <button type="button" data-value="KPS" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
+                                                                    <span>KPS (Kampus)</span>
+                                                                    <i class="ph ph-check text-[10px] select-active-check hidden"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="flex flex-col gap-1">
                                                     <label class="text-[10px] font-bold text-slate-400">Lokasi Rak <span class="text-red-500">*</span></label>
-                                                    <select name="items[0][location_id]" required class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green appearance-none cursor-pointer">
-                                                        @foreach($locations as $loc)
-                                                            <option value="{{ $loc->id }}">{{ $loc->name }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                    <div class="relative custom-select-container w-full">
+                                                        @php
+                                                            $firstLoc = $locations->first();
+                                                            $firstLocName = $firstLoc ? $firstLoc->name : 'Pilih Lokasi';
+                                                            $firstLocId = $firstLoc ? $firstLoc->id : '';
+                                                        @endphp
+                                                        <button type="button" class="w-full px-2 py-1.5 text-left bg-white border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all flex items-center justify-between cursor-pointer custom-select-trigger">
+                                                            <span class="custom-select-label font-semibold">{{ $firstLocName }}</span>
+                                                            <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
+                                                        </button>
+                                                        <input type="hidden" name="items[0][location_id]" value="{{ $firstLocId }}">
+                                                        <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
+                                                            @foreach($locations as $index => $loc)
+                                                                <button type="button" data-value="{{ $loc->id }}" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between {{ $index == 0 ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                                    <span>{{ $loc->name }}</span>
+                                                                    <i class="ph ph-check text-[10px] select-active-check {{ $index == 0 ? '' : 'hidden' }}"></i>
+                                                                </button>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -441,6 +470,23 @@
                     const newRow = document.createElement('div');
                     newRow.className = 'item-row p-3 bg-white border border-slate-200 rounded-xl flex flex-col gap-2.5 relative pt-7';
                     
+                    // Build location options for custom select
+                    let locationOptions = '';
+                    let firstLocId = '';
+                    let firstLocName = '';
+                    @foreach($locations as $index => $loc)
+                        @if($index == 0)
+                            firstLocId = '{{ $loc->id }}';
+                            firstLocName = '{{ $loc->name }}';
+                        @endif
+                        locationOptions += `
+                            <button type="button" data-value="{{ $loc->id }}" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
+                                <span>{{ $loc->name }}</span>
+                                <i class="ph ph-check text-[10px] select-active-check hidden"></i>
+                            </button>
+                        `;
+                    @endforeach
+
                     newRow.innerHTML = `
                         <button type="button" class="btn-remove-row absolute top-2 right-2 text-slate-400 hover:text-red-500 bg-transparent border-none cursor-pointer text-sm">
                             <i class="ph ph-trash-simple text-base"></i>
@@ -448,23 +494,41 @@
                         <div class="grid grid-cols-2 gap-2">
                             <div class="flex flex-col gap-1 col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400">Barcode <span class="text-red-500">*</span></label>
-                                <input type="text" name="items[\${rowIndex}][barcode]" required placeholder="e.g. L0012903" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green">
+                                <input type="text" name="items[\${rowIndex}][barcode]" required placeholder="e.g. L0012903" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38]">
                             </div>
                             <div class="flex flex-col gap-1 col-span-1">
                                 <label class="text-[10px] font-bold text-slate-400">Tipe <span class="text-red-500">*</span></label>
-                                <select name="items[\${rowIndex}][type]" required class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green appearance-none cursor-pointer">
-                                    <option value="STD">STD (Sirkulasi)</option>
-                                    <option value="KPS">KPS (Kampus)</option>
-                                </select>
+                                <div class="relative custom-select-container w-full">
+                                    <button type="button" class="w-full px-2 py-1.5 text-left bg-white border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer custom-select-trigger">
+                                        <span class="custom-select-label font-semibold">STD (Sirkulasi)</span>
+                                        <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
+                                    </button>
+                                    <input type="hidden" name="items[\${rowIndex}][type]" value="STD">
+                                    <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
+                                        <button type="button" data-value="STD" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-[#106c38] font-bold bg-green-50/50">
+                                            <span>STD (Sirkulasi)</span>
+                                            <i class="ph ph-check text-[10px] select-active-check"></i>
+                                        </button>
+                                        <button type="button" data-value="KPS" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
+                                            <span>KPS (Kampus)</span>
+                                            <i class="ph ph-check text-[10px] select-active-check hidden"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="flex flex-col gap-1">
                             <label class="text-[10px] font-bold text-slate-400">Lokasi Rak <span class="text-red-500">*</span></label>
-                            <select name="items[\${rowIndex}][location_id]" required class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-usu-green appearance-none cursor-pointer">
-                                @foreach($locations as $loc)
-                                    <option value="{{ $loc->id }}">{{ $loc->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="relative custom-select-container w-full">
+                                <button type="button" class="w-full px-2 py-1.5 text-left bg-white border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer custom-select-trigger">
+                                    <span class="custom-select-label font-semibold">\${firstLocName}</span>
+                                    <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
+                                </button>
+                                <input type="hidden" name="items[\${rowIndex}][location_id]" value="\${firstLocId}">
+                                <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
+                                    \${locationOptions}
+                                </div>
+                            </div>
                         </div>
                     `;
 
@@ -474,6 +538,9 @@
                     });
 
                     container.appendChild(newRow);
+                    if (window.initCustomSelects) {
+                        window.initCustomSelects(newRow);
+                    }
                     rowIndex++;
                 });
             }
@@ -553,10 +620,11 @@
 
             let debounceTimer;
 
-            function performSearch(url = null) {
+            window.performSearch = function(url = null) {
                 if (!url) {
                     const query = encodeURIComponent(searchInput.value);
-                    url = `${searchForm.action}?search=${query}`;
+                    const limitVal = document.getElementById('admin-limit-select') ? document.getElementById('admin-limit-select').value : '10';
+                    url = `${searchForm.action}?search=${query}&limit=${limitVal}`;
                 }
 
                 if (tableContainer) {
@@ -611,7 +679,7 @@
 
                     clearTimeout(debounceTimer);
                     debounceTimer = setTimeout(() => {
-                        performSearch();
+                        window.performSearch();
                     }, 300);
                 });
             }
@@ -620,7 +688,7 @@
                 clearBtn.addEventListener('click', () => {
                     searchInput.value = '';
                     clearBtn.classList.add('hidden');
-                    performSearch();
+                    window.performSearch();
                 });
             }
 
@@ -628,17 +696,7 @@
                 searchForm.addEventListener('submit', (e) => {
                     e.preventDefault();
                     clearTimeout(debounceTimer);
-                    performSearch();
-                });
-            }
-
-            if (tableContainer) {
-                tableContainer.addEventListener('click', (e) => {
-                    const anchor = e.target.closest('a');
-                    if (anchor && anchor.href && anchor.href.includes('page=')) {
-                        e.preventDefault();
-                        performSearch(anchor.href);
-                    }
+                    window.performSearch();
                 });
             }
         });
@@ -701,61 +759,68 @@
                 });
             }
             // Custom Select UI Handler
-            const selectContainers = document.querySelectorAll('.custom-select-container');
-            selectContainers.forEach(container => {
-                const trigger = container.querySelector('.custom-select-trigger');
-                const menu = container.querySelector('.custom-select-menu');
-                const options = container.querySelectorAll('.custom-select-option');
-                const hiddenInput = container.querySelector('input[type="hidden"]');
-                const label = container.querySelector('.custom-select-label');
-                const caret = container.querySelector('.ph-caret-down');
-                
-                if (!trigger || !menu) return;
-                
-                trigger.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    // Close other select menus
-                    document.querySelectorAll('.custom-select-menu').forEach(m => {
-                        if (m !== menu) {
-                            m.classList.add('hidden');
-                            const c = m.parentElement.querySelector('.ph-caret-down');
-                            if (c) c.classList.remove('rotate-180');
-                        }
-                    });
-                    menu.classList.toggle('hidden');
-                    if (caret) caret.classList.toggle('rotate-180');
-                });
-                
-                options.forEach(opt => {
-                    opt.addEventListener('click', (e) => {
+            window.initCustomSelects = function(parent) {
+                const selectContainers = parent.querySelectorAll('.custom-select-container');
+                selectContainers.forEach(container => {
+                    if (container.dataset.initialized === 'true') return;
+                    container.dataset.initialized = 'true';
+
+                    const trigger = container.querySelector('.custom-select-trigger');
+                    const menu = container.querySelector('.custom-select-menu');
+                    const options = container.querySelectorAll('.custom-select-option');
+                    const hiddenInput = container.querySelector('input[type="hidden"]');
+                    const label = container.querySelector('.custom-select-label');
+                    const caret = container.querySelector('.ph-caret-down');
+                    
+                    if (!trigger || !menu) return;
+                    
+                    trigger.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        const val = opt.getAttribute('data-value');
-                        const text = opt.querySelector('span').textContent.trim();
-                        
-                        if (label) label.textContent = text;
-                        if (hiddenInput) {
-                            hiddenInput.value = val;
-                            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                        
-                        options.forEach(o => {
-                            const check = o.querySelector('.select-active-check');
-                            if (o === opt) {
-                                o.classList.remove('text-slate-600', 'font-semibold');
-                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                if (check) check.classList.remove('hidden');
-                            } else {
-                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                o.classList.add('text-slate-600', 'font-semibold');
-                                if (check) check.classList.add('hidden');
+                        // Close other select menus
+                        document.querySelectorAll('.custom-select-menu').forEach(m => {
+                            if (m !== menu) {
+                                m.classList.add('hidden');
+                                const c = m.parentElement.querySelector('.ph-caret-down');
+                                if (c) c.classList.remove('rotate-180');
                             }
                         });
-                        
-                        menu.classList.add('hidden');
-                        if (caret) caret.classList.remove('rotate-180');
+                        menu.classList.toggle('hidden');
+                        if (caret) caret.classList.toggle('rotate-180');
+                    });
+                    
+                    options.forEach(opt => {
+                        opt.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const val = opt.getAttribute('data-value');
+                            const text = opt.querySelector('span').textContent.trim();
+                            
+                            if (label) label.textContent = text;
+                            if (hiddenInput) {
+                                hiddenInput.value = val;
+                                hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+                            
+                            options.forEach(o => {
+                                const check = o.querySelector('.select-active-check');
+                                if (o === opt) {
+                                    o.classList.remove('text-slate-600', 'font-semibold');
+                                    o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                    if (check) check.classList.remove('hidden');
+                                } else {
+                                    o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                    o.classList.add('text-slate-600', 'font-semibold');
+                                    if (check) check.classList.add('hidden');
+                                }
+                            });
+                            
+                            menu.classList.add('hidden');
+                            if (caret) caret.classList.remove('rotate-180');
+                        });
                     });
                 });
-            });
+            }
+            
+            window.initCustomSelects(document);
             
             document.addEventListener('click', () => {
                 document.querySelectorAll('.custom-select-menu').forEach(m => {

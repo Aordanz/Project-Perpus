@@ -1,5 +1,5 @@
 <!-- Book Gallery Grid -->
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
     @forelse($books as $book)
         <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm book-card flex flex-col h-full group relative">
             <!-- Cover Image -->
@@ -18,7 +18,7 @@
                     <a href="{{ route('books.show', $book->id) }}" class="bg-white/20 hover:bg-white text-white hover:text-slate-900 text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
                         <i class="ph ph-eye"></i> Detail
                     </a>
-                     <a href="{{ route('admin.books.edit', $book->id) }}" class="bg-blue-600/80 hover:bg-blue-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
+                     <a href="{{ route('admin.books.edit', $book->id) }}" class="bg-[#106c38]/85 hover:bg-[#106c38] text-white text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
                          <i class="ph ph-pencil-simple"></i> Edit
                      </a>
                 </div>
@@ -55,5 +55,5 @@
 
 <!-- Pagination -->
 <div class="mt-4">
-    {{ $books->links() }}
+    {{ $books->links('admin.partials.pagination') }}
 </div>
