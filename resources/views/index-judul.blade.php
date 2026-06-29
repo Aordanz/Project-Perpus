@@ -65,7 +65,7 @@
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">{{ __('Angka') }}</h3>
                 <div class="flex flex-wrap justify-center gap-3">
                     @foreach(range(0, 9) as $number)
-                        <a href="{{ route('search', ['starts_with' => $number]) }}" 
+                        <a href="{{ route('index-judul.show', ['initial' => $number]) }}" 
                            class="w-12 h-12 flex items-center justify-center bg-slate-50 hover:bg-[#106c38] text-slate-700 hover:text-white rounded-xl font-bold text-lg border border-slate-200 hover:border-[#106c38] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                             {{ $number }}
                         </a>
@@ -80,7 +80,7 @@
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">{{ __('Abjad') }}</h3>
                 <div class="flex flex-wrap justify-center gap-3">
                     @foreach(range('A', 'Z') as $letter)
-                        <a href="{{ route('search', ['starts_with' => $letter]) }}" 
+                        <a href="{{ route('index-judul.show', ['initial' => $letter]) }}" 
                            class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center bg-slate-50 hover:bg-[#106c38] text-slate-700 hover:text-white rounded-xl font-bold text-lg sm:text-xl border border-slate-200 hover:border-[#106c38] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                             {{ $letter }}
                         </a>
