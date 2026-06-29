@@ -57,10 +57,11 @@ class BookController extends Controller
 
         $query->where(function($w) use ($columns, $searchTerms, $q) {
             // 3. FULL TEXT SEARCH (FTS) for exact keyword/phrase relevance
-            // Hanya aktifkan FTS pada kolom yang sudah kita beri FULLTEXT index
-            $ftsColumns = array_intersect($columns, ['title', 'author', 'publisher', 'subject']);
-            if (!empty($ftsColumns)) {
-                $w->orWhereFullText($ftsColumns, $q, ['mode' => 'boolean']);
+            // Hanya aktifkan FTS jika mencari di seluruh kolom utama yang di-index (yaitu ke-4 kolom bersama-sama)
+            $requiredFts = ['title', 'author', 'publisher', 'subject'];
+            $hasAllFts = count(array_intersect($requiredFts, $columns)) === count($requiredFts);
+            if ($hasAllFts) {
+                $w->orWhereFullText($requiredFts, $q, ['mode' => 'boolean']);
             }
 
             foreach ($searchTerms as $term) {

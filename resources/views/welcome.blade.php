@@ -526,7 +526,7 @@
             </div>
             
             <!-- Modal Body -->
-            <form action="{{ route('search') }}" method="GET" class="p-5 md:p-8 space-y-4 md:space-y-6 overflow-y-auto flex-grow">
+            <form id="modal-pencarian-spesifik-form" action="{{ route('search') }}" method="GET" class="p-5 md:p-8 space-y-4 md:space-y-6 overflow-y-auto flex-grow">
                 <!-- Section 1: Detail Bibliografi -->
                 <div class="space-y-4">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
@@ -947,6 +947,63 @@
                 });
             }
 
+            // Handle specific search form submission to open results popup on homepage
+            const specificSearchForm = document.getElementById('modal-pencarian-spesifik-form');
+            if (specificSearchForm) {
+                specificSearchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Close input modal
+                    closeModal();
+
+                    // Set modal title & icon
+                    if (modalHasilTitle) modalHasilTitle.innerText = '{{ __("Hasil Pencarian Spesifik") }}';
+                    if (modalHasilIcon) modalHasilIcon.className = 'ph ph-sliders-horizontal text-2xl';
+
+                    // Reset search state
+                    allCards = [];
+                    filteredCards = [];
+                    currentPage = 1;
+                    perPage = 10;
+                    if (perPageSelect) {
+                        perPageSelect.value = "10";
+                        const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
+                        modalDropdownOptions.forEach(o => {
+                            const val = o.getAttribute('data-value');
+                            const check = o.querySelector('.modal-active-check');
+                            if (val === "10") {
+                                o.classList.remove('text-slate-600', 'font-semibold');
+                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                if (check) check.classList.remove('hidden');
+                            } else {
+                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                o.classList.add('text-slate-600', 'font-semibold');
+                                if (check) check.classList.add('hidden');
+                            }
+                        });
+                    }
+                    if (searchInput) searchInput.value = '';
+                    if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
+
+                    openModalHasil();
+
+                    // Construct search URL from form data
+                    const formData = new FormData(specificSearchForm);
+                    const params = new URLSearchParams();
+                    for (const [key, value] of formData.entries()) {
+                        if (value.trim() !== '') {
+                            params.append(key, value);
+                        }
+                    }
+                    const searchUrl = `${specificSearchForm.action}?${params.toString()}`;
+
+                    loadLocationResults(searchUrl, '');
+                });
+            }
+
             function loadLocationResults(url, initialQuery = '') {
                 const loading = document.getElementById('modal-hasil-loading');
                 const container = document.getElementById('modal-hasil-container');
@@ -1088,8 +1145,14 @@
                     }
                     paginationEl.appendChild(prevBtn);
 
-                    // Page buttons
-                    for (let i = 1; i <= totalPages; i++) {
+                    // Page buttons (max 5 buttons sliding window)
+                    let startPage = Math.max(1, currentPage - 2);
+                    let endPage = Math.min(totalPages, startPage + 4);
+                    if (endPage - startPage < 4) {
+                        startPage = Math.max(1, endPage - 4);
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
                         const pageBtn = document.createElement('button');
                         if (i === currentPage) {
                             pageBtn.className = `w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center font-bold text-xs border-none cursor-default`;
