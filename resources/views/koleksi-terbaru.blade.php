@@ -83,7 +83,7 @@
             </div>
 
         <!-- Dynamic Quick Filter Chips -->
-        <div id="chips-container" class="flex flex-wrap gap-2 mb-2">
+        <div id="chips-container" class="flex flex-wrap gap-2 mb-2 justify-center">
             <button data-filter="all" class="filter-chip px-4 py-2 text-xs font-bold rounded-full transition-all border border-[#106c38] bg-[#106c38] text-white shadow-sm whitespace-nowrap cursor-pointer">
                 {{ __('Semua Buku') }}
             </button>
