@@ -129,7 +129,7 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-sm tracking-wide">USU Library AI</h4>
-                    <p class="text-[9px] text-green-100">Asisten Virtual Perpustakaan</p>
+                    <p class="text-[9px] text-green-100">{{ __('Asisten Virtual Perpustakaan') }}</p>
                 </div>
             </div>
             <button id="ai-close-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none" title="Tutup">
@@ -145,14 +145,14 @@
                     <i class="ph ph-robot text-xs"></i>
                 </div>
                 <div class="bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-2xl rounded-tl-sm shadow-sm text-[13px] leading-relaxed">
-                    Halo! Saya asisten virtual Perpustakaan USU. Ada yang bisa saya bantu mengenai informasi perpustakaan?
+                    {{ __('Halo! Saya asisten virtual Perpustakaan USU. Ada yang bisa saya bantu mengenai informasi perpustakaan?') }}
                 </div>
             </div>
         </div>
 
         <!-- Input Area -->
         <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
-            <input type="text" id="ai-chat-input" placeholder="Ketik pesan Anda..." class="flex-grow px-3 py-2 bg-slate-100 border-none rounded-full text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#106c38]/30 transition-all">
+            <input type="text" id="ai-chat-input" placeholder="{{ __('Ketik pesan Anda...') }}" class="flex-grow px-3 py-2 bg-slate-100 border-none rounded-full text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#106c38]/30 transition-all">
             <button id="ai-send-btn" class="w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center hover:bg-green-800 transition-colors shadow-sm focus:outline-none flex-shrink-0">
                 <i class="ph ph-paper-plane-tilt text-sm"></i>
             </button>
@@ -243,17 +243,17 @@
                 removeMessage(loadingId);
                 
                 if (response.status === 429) {
-                    addMessage(data.jawaban || "Kamu terlalu cepat mengirim pesan, tunggu sebentar ya!", 'bot');
+                    addMessage(data.jawaban || "{{ __('Kamu terlalu cepat mengirim pesan, tunggu sebentar ya!') }}", 'bot');
                     return;
                 }
                 
-                if (!response.ok) throw new Error("Terjadi kesalahan server");
+                if (!response.ok) throw new Error("{{ __('Terjadi kesalahan server') }}");
                 
                 addMessage(data.jawaban, 'bot');
                 
             } catch (error) {
                 removeMessage(loadingId);
-                addMessage("Maaf, sistem AI sedang offline atau GROQ_API_KEY di .env belum disetting.", 'bot');
+                addMessage("{{ __('Maaf, sistem AI sedang offline atau GROQ_API_KEY di .env belum disetting.') }}", 'bot');
             }
         }
 

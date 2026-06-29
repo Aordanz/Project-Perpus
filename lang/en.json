@@ -198,5 +198,11 @@
     "Filsafat": "Philosophy",
     "Geografi": "Geography",
     "Kategori Lainnya": "Other Categories",
-    "Tampilkan Selengkapnya": "Show More"
+    "Tampilkan Selengkapnya": "Show More",
+    "Asisten Virtual Perpustakaan": "Virtual Library Assistant",
+    "Halo! Saya asisten virtual Perpustakaan USU. Ada yang bisa saya bantu mengenai informasi perpustakaan?": "Hello! I am the USU Library virtual assistant. How can I help you with library information?",
+    "Ketik pesan Anda...": "Type your message...",
+    "Kamu terlalu cepat mengirim pesan, tunggu sebentar ya!": "You are sending messages too fast, please wait a moment!",
+    "Terjadi kesalahan server": "Server error occurred",
+    "Maaf, sistem AI sedang offline atau GROQ_API_KEY di .env belum disetting.": "Sorry, the AI system is offline or GROQ_API_KEY is not set in .env."
 }

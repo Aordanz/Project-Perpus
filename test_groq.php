@@ -1,8 +1,11 @@
 <?php
-// Test langsung API Groq
-$key = env('GROQ_API_KEY');
-echo "Key: " . ($key ? substr($key, 0, 15) . '...' : 'KOSONG') . "\n";
+require __DIR__.'/vendor/autoload.php';
+$app = require_once __DIR__.'/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
 
-// Test via config
-$configKey = config('services.groq.key');
-echo "Config Key: " . ($configKey ? substr($configKey, 0, 15) . '...' : 'KOSONG') . "\n";
+use Illuminate\Support\Facades\Storage;
+
+$path = 'private/data_perpus.txt';
+echo "Exists: " . (Storage::disk('local')->exists($path) ? 'Yes' : 'No') . "\n";
+echo "Path: " . Storage::disk('local')->path($path) . "\n";
