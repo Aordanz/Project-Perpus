@@ -286,9 +286,9 @@
                              data-author="{{ strtolower($book->author) }}" 
                              data-publisher="{{ strtolower($book->publisher) }}">
                             <a href="{{ route('books.show', $book->id) }}"
-                               class="flex bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
+                               class="flex h-[135px] sm:h-[285px] md:h-[315px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
                                 <!-- Cover Panel -->
-                                <div class="w-[90px] sm:w-[190px] md:w-[210px] flex-shrink-0 aspect-[2/3] bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
+                                <div class="w-[90px] sm:w-[190px] md:w-[210px] h-full flex-shrink-0 bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
                                     @if ($book->cover_image)
                                         <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
                                     @else
@@ -301,7 +301,7 @@
                                 </div>
 
                                 <!-- Info Panel -->
-                                <div class="info-panel flex flex-col justify-between text-left">
+                                <div class="info-panel flex flex-col justify-between text-left h-full">
                                     <div class="overflow-hidden">
                                         <!-- Big Category Badge -->
                                         <span class="inline-block px-2.5 py-0.5 bg-green-50 text-[#106c38] border border-green-200/60 text-[8px] sm:text-[9px] font-bold rounded-full uppercase tracking-wider mb-2 sm:mb-3">

@@ -140,12 +140,36 @@
         <!-- Chat Area -->
         <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto bg-slate-50 flex flex-col gap-3 text-sm">
             <!-- Initial Message -->
-            <div class="flex items-start gap-2 max-w-[85%]">
+            <div class="flex items-start gap-2 max-w-[90%]">
                 <div class="w-6 h-6 rounded-full bg-[#106c38] text-white flex items-center justify-center flex-shrink-0 mt-1">
                     <i class="ph ph-robot text-xs"></i>
                 </div>
-                <div class="bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-2xl rounded-tl-sm shadow-sm text-[13px] leading-relaxed">
-                    {{ __('Halo! Saya asisten virtual Perpustakaan USU. Ada yang bisa saya bantu mengenai informasi perpustakaan?') }}
+                <div class="flex flex-col gap-1 w-full">
+                    <div class="bg-white border border-slate-200 text-slate-700 pl-3 pr-3 pt-2 pb-7 rounded-2xl rounded-tl-sm shadow-sm text-[13px] leading-relaxed relative group">
+                        <span>{{ __('Halo! Saya asisten virtual Perpustakaan USU. Ada yang bisa saya bantu mengenai informasi perpustakaan?') }}</span>
+                        <button id="ai-suggestions-toggle" class="absolute bottom-1 right-1 w-6 h-6 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors border border-slate-200 focus:outline-none flex-shrink-0 shadow-sm">
+                            <i class="ph ph-caret-down text-xs transition-transform duration-300" id="ai-suggestions-icon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Suggestions Dropdown -->
+                    <div id="ai-suggestions-list" class="hidden flex-col gap-1.5 mt-1 ml-1 scale-y-0 opacity-0 transform origin-top transition-all duration-300">
+                        <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
+                            Jam berapa perpustakaan buka?
+                        </button>
+                        <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
+                            Apa saja syarat peminjaman buku?
+                        </button>
+                        <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
+                            Fasilitas apa yang tersedia di perpustakaan?
+                        </button>
+                        <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
+                            Berapa batas maksimal pinjam buku?
+                        </button>
+                        <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
+                            Apakah ada denda keterlambatan?
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -175,6 +199,42 @@
         const chatInput = document.getElementById('ai-chat-input');
         const sendBtn = document.getElementById('ai-send-btn');
         const messagesContainer = document.getElementById('ai-chat-messages');
+        
+        const suggestionsToggle = document.getElementById('ai-suggestions-toggle');
+        const suggestionsIcon = document.getElementById('ai-suggestions-icon');
+        const suggestionsList = document.getElementById('ai-suggestions-list');
+        const suggestionBtns = document.querySelectorAll('.ai-suggestion-btn');
+
+        if (suggestionsToggle) {
+            suggestionsToggle.addEventListener('click', () => {
+                const isHidden = suggestionsList.classList.contains('hidden');
+                if (isHidden) {
+                    suggestionsList.classList.remove('hidden');
+                    setTimeout(() => {
+                        suggestionsList.classList.remove('scale-y-0', 'opacity-0');
+                    }, 10);
+                    suggestionsIcon.classList.add('rotate-180');
+                } else {
+                    suggestionsList.classList.add('scale-y-0', 'opacity-0');
+                    suggestionsIcon.classList.remove('rotate-180');
+                    setTimeout(() => {
+                        suggestionsList.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        }
+
+        suggestionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                chatInput.value = btn.textContent.trim();
+                sendMessage();
+                suggestionsList.classList.add('scale-y-0', 'opacity-0');
+                suggestionsIcon.classList.remove('rotate-180');
+                setTimeout(() => {
+                    suggestionsList.classList.add('hidden');
+                }, 300);
+            });
+        });
 
         // Toggle chat window
         function toggleChat() {
