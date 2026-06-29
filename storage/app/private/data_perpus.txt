@@ -1,0 +1,58 @@
+[INFORMASI UMUM]
+Nama Resmi: Perpustakaan Universitas Sumatera Utara (USU)
+Status: UPT Perpustakaan USU
+Lokasi: Jl. Perpustakaan No.1, Kampus USU, Padang Bulan, Kota Medan, Sumatera Utara, Kode Pos 20155.
+Kontak Bantuan & Email: library@usu.ac.id
+Website Resmi & OPAC: https://library.usu.ac.id
+
+[STRUKTUR ORGANISASI & NAMA PEJABAT PENTING]
+- Kepala Perpustakaan Universitas Sumatera Utara (USU): Prof. Dr. Syahril Efendi, S.Si., M.I.T.
+- Sekretaris Perpustakaan USU: Sundari, S.Sos., M.Si.
+
+[WAKTU OPERASIONAL]
+- Senin s/d Kamis: 08.00 WIB - 16.00 WIB
+- Jumat: 08.00 WIB - 16.00 WIB (Istirahat siang 12.00 - 13.30 WIB)
+- Sabtu, Minggu, & Libur Nasional: TUTUP / LIBUR
+
+[ALUR & SYARAT KEANGGOTAAN]
+- Syarat Menjadi Anggota: Harus merupakan Mahasiswa Aktif, Dosen, atau Tenaga Kependidikan Universitas Sumatera Utara (USU).
+- Cara Aktivasi Kartu Anggota: Mahasiswa cukup membawa Kartu Tanda Mahasiswa (KTM) asli ke meja layanan sirkulasi perpustakaan untuk diaktivasi oleh petugas. Setelah aktif, KTM berfungsi sebagai kartu perpustakaan.
+
+[ATURAN TATA TERTIB & BERPAKAIAN]
+- Kewajiban Pengunjung: Mengisi Buku Tamu Elektronik (E-Visitor) di komputer pintu masuk dengan men-scan KTM atau mengetik NIM.
+- Aturan Pakaian: Pengunjung wajib berpakaian rapi dan sopan. Wajib menggunakan sepatu. Dilarang memakai kaos oblong, dilarang memakai celana pendek/robek, dan dilarang memakai sandal.
+- Larangan: Dilarang membawa makanan, minuman berwarna/manis (kecuali air putih dalam botol tertutup), dilarang membawa tas besar ke dalam ruang koleksi (tas harus dititipkan di loker).
+
+[ATURAN PEMINJAMAN & PENGEMBALIAN BUKU]
+- Hak Akses: Hanya mahasiswa/dosen yang KTM-nya sudah diaktivasi yang bisa meminjam buku.
+- Kuota Peminjaman: Maksimal meminjam 3 ekor/eksemplar buku dalam sekali pinjam.
+- Durasi Peminjaman: Lama waktu pinjam adalah 7 hari (1 minggu).
+- Perpanjangan Buku: Peminjaman dapat diperpanjang maksimal 1 kali untuk 7 hari berikutnya, asalkan buku tersebut tidak sedang dipesan oleh mahasiswa lain. Perpanjangan dilakukan sebelum tanggal jatuh tempo melalui web OPAC atau meja sirkulasi.
+
+[SANKSI & ATURAN DENDA]
+- Denda Keterlambatan: Jika terlambat mengembalikan buku dari tanggal jatuh tempo, akan dikenakan denda sebesar Rp 1.000,- per buku untuk setiap hari keterlambatan (hari libur tetap dihitung).
+- Buku Hilang atau Rusak: Wajib mengganti dengan buku yang sama (judul dan pengarang sama) atau membayar ganti rugi senilai harga buku terbaru berdasarkan kebijakan perpus.
+
+[PANDUAN LOKASI GEDUNG & DENAH LANTAI (SPESIFIK)]
+- LANTAI 1:
+  * Ruang Loker Penitipan Tas (Di dekat pintu masuk).
+  * Komputer E-Visitor (Buku Tamu).
+  * Meja Informasi & Layanan Administrasi Tata Usaha.
+  * BI Corner (Bank Indonesia Corner) & Sjahrir Corner.
+  * Ruang Baca Umum & Area Hotspot WiFi.
+- LANTAI 2:
+  * Ruang Koleksi Buku Sirkulasi (Rumpun Sains, Teknologi, Ilmu Komputer, IT, Matematika, Teknik, Pertanian, Kehutanan).
+  * Meja Layanan Sirkulasi (Tempat meminjam, memperpanjang, dan mengembalikan buku).
+  * Ruang Pengolahan Bahan Pustaka.
+- LANTAI 3:
+  * Ruang Koleksi Khusus & Tesis/Disertasi/Skripsi (Koleksi USU Repository).
+  * Ruang Koleksi Rumpun Ilmu Kesehatan & Kedokteran (Kedokteran, Kedokteran Gigi, Farmasi, Keperawatan, Kesehatan Masyarakat).
+  * Ruang Jurnal dan Terbitan Berkala.
+
+[PROSEDUR SURAT BEBAS PUSTAKA]
+- Kegunaan: Surat Bebas Pustaka wajib diurus oleh mahasiswa yang akan melaksanakan Seminar Hasil, Sidang Hijau, Wisuda, atau Pindah Kuliah.
+- Syarat Mendapatkan Bebas Pustaka:
+  1. Tidak memiliki pinjaman buku yang belum dikembalikan.
+  2. Tidak memiliki tunggakan denda keterlambatan buku.
+  3. Mengunggah (Upload) file softcopy skripsi/tesis lengkap ke sistem repositori USU.
+  4. Menyerahkan sumbangan buku fisik (jika diwajibkan oleh fakultas terkait).
