@@ -94,8 +94,8 @@ class BookController extends Controller
         // Get locations with count of items
         $locations = Location::withCount('items')->get();
 
-        // Get 20 latest books
-        $latestBooks = Book::latest()->take(20)->get();
+        // Get 20 latest books with items.location eager loaded
+        $latestBooks = Book::with('items.location')->latest()->take(20)->get();
 
         return view('welcome', compact('university', 'locations', 'latestBooks'));
     }

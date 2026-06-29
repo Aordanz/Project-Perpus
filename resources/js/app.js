@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 3. Merupakan anchor link ke ID halaman yang sama (#)
             // 4. Menuju domain yang berbeda
             // 5. Dibuka dengan tombol modifier (Ctrl/Cmd click)
+            // 6. Berada di dalam carousel track (agar swipe tidak memicu navigasi)
             if (
                 this.target === '_blank' ||
                 this.href.startsWith('mailto:') ||
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.getAttribute('href').startsWith('#') ||
                 this.hostname !== window.location.hostname ||
                 this.hasAttribute('data-location') ||
+                this.closest('#carousel-koleksi-track') ||
                 e.ctrlKey || e.metaKey || e.shiftKey
             ) {
                 return;
