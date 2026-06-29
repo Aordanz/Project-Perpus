@@ -31,7 +31,7 @@
         .result-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.05), 0 8px 8px -5px rgba(0, 0, 0, 0.02);
-            border-color: #106c38/30;
+            border-color: rgba(16, 108, 56, 0.3);
         }
     </style>
 </head>
@@ -78,11 +78,23 @@
     <!-- Content Section -->
     <div class="flex-grow max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 relative z-20 pb-20">
         
-        <!-- Search Summary -->
-        <div class="flex justify-between items-center mb-6">
+        <!-- Search Summary + Per-Page Selector -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
             <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">
                 {{ __('Koleksi Berawalan') }} "{{ $initial }}" ({{ $books->total() }} {{ __('Koleksi') }})
             </h2>
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                <span>{{ __('Tampilkan:') }}</span>
+                <div class="relative">
+                    <select onchange="window.location.href=this.value" class="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-full pl-4 pr-9 py-2 focus:outline-none focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] shadow-sm cursor-pointer transition-all hover:border-slate-300">
+                        @foreach([10, 20, 50, 100] as $val)
+                            <option value="{{ request()->fullUrlWithQuery(['per_page' => $val, 'page' => 1]) }}" {{ ($perPage == $val && $perPage !== 'all') ? 'selected' : '' }}>{{ $val }}</option>
+                        @endforeach
+                        <option value="{{ request()->fullUrlWithQuery(['per_page' => 'all', 'page' => 1]) }}" {{ $perPage === 'all' ? 'selected' : '' }}>{{ __('Semua') }}</option>
+                    </select>
+                    <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px] font-bold"></i>
+                </div>
+            </div>
         </div>
 
         <!-- Results List -->
@@ -188,10 +200,69 @@
             @endforelse
         </div>
 
-        <!-- Pagination -->
-        <div class="mt-8 flex justify-center">
-            {{ $books->links() }}
+        <!-- Custom Pagination -->
+        @if($books->lastPage() > 1)
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 pt-6">
+            <!-- Info text -->
+            <p class="text-xs text-slate-400 font-medium">
+                {{ __('Menampilkan') }} {{ $books->firstItem() }} {{ __('sampai') }} {{ $books->lastItem() }} {{ __('dari') }} {{ $books->total() }} {{ __('hasil') }}
+            </p>
+
+            <!-- Pagination Buttons -->
+            <div class="flex items-center gap-1.5">
+                @if ($books->onFirstPage())
+                    <span class="px-3 sm:px-4 py-2 rounded-full border border-slate-100 text-slate-300 text-xs sm:text-sm font-medium flex items-center gap-1.5 bg-slate-50 cursor-not-allowed">
+                        <i class="ph ph-caret-left text-lg"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>
+                    </span>
+                @else
+                    <a href="{{ $books->previousPageUrl() }}" class="px-3 sm:px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:bg-slate-50 hover:text-[#106c38] transition-colors shadow-sm">
+                        <i class="ph ph-caret-left text-lg"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>
+                    </a>
+                @endif
+
+                <!-- Page Numbers: max 5 with sliding window -->
+                <div class="flex items-center gap-1">
+                    @php
+                        $current = $books->currentPage();
+                        $last    = $books->lastPage();
+                        $window  = 5;
+                        $half    = (int) floor($window / 2);
+                        $start   = max(1, min($current - $half, $last - $window + 1));
+                        $end     = min($last, $start + $window - 1);
+                    @endphp
+                    @if($start > 1)
+                        <a href="{{ $books->url(1) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">1</a>
+                        @if($start > 2)
+                            <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
+                        @endif
+                    @endif
+                    @for($p = $start; $p <= $end; $p++)
+                        @if($p == $current)
+                            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#106c38] text-white flex items-center justify-center text-xs sm:text-sm font-bold shadow-md shadow-green-900/20">{{ $p }}</span>
+                        @else
+                            <a href="{{ $books->url($p) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">{{ $p }}</a>
+                        @endif
+                    @endfor
+                    @if($end < $last)
+                        @if($end < $last - 1)
+                            <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
+                        @endif
+                        <a href="{{ $books->url($last) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">{{ $last }}</a>
+                    @endif
+                </div>
+
+                @if ($books->hasMorePages())
+                    <a href="{{ $books->nextPageUrl() }}" class="px-3 sm:px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:bg-slate-50 hover:text-[#106c38] transition-colors shadow-sm">
+                        <span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-lg"></i>
+                    </a>
+                @else
+                    <span class="px-3 sm:px-4 py-2 rounded-full border border-slate-100 text-slate-300 text-xs sm:text-sm font-medium flex items-center gap-1.5 bg-slate-50 cursor-not-allowed">
+                        <span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-lg"></i>
+                    </span>
+                @endif
+            </div>
         </div>
+        @endif
 
     </div>
 
