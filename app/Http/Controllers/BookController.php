@@ -101,6 +101,19 @@ class BookController extends Controller
     }
 
     /**
+     * Display books starting with a specific initial.
+     */
+    public function indexJudulShow($initial)
+    {
+        $books = Book::with(['items.location'])
+            ->where('title', 'like', $initial . '%')
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('index-judul-show', compact('books', 'initial'));
+    }
+
+    /**
      * Display search results.
      */
     public function search(Request $request)
