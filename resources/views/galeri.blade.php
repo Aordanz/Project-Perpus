@@ -75,8 +75,8 @@
     <!-- Content Section -->
     <div class="flex-grow max-w-[1400px] mx-auto w-full px-2 sm:px-4 lg:px-6 mb-20">
         
-        <div class="mb-6">
-            <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3">
+        <div class="mb-6 max-w-5xl mx-auto">
+            <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center">
                 <!-- Semua Kategori -->
                 <a href="{{ route('galeri', ['q' => request('q')]) }}" 
                    class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">

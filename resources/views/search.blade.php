@@ -378,18 +378,37 @@
                         <!-- Semua Lokasi -->
                         <div class="flex flex-col gap-1.5">
                             <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Lokasi') }}</label>
-                            <div class="relative flex items-center">
-                                <div class="absolute left-4 text-slate-400">
+                            <div class="relative w-full" id="spec-dropdown-lokasi-container">
+                                <div class="absolute left-4 text-slate-400 z-10 pointer-events-none top-1/2 -translate-y-1/2 flex items-center">
                                     <i class="ph ph-map-pin text-xl"></i>
                                 </div>
-                                <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                    <option value="">{{ __('Semua Lokasi') }}</option>
+                                @php
+                                    $activeLocVal = request('inLokasi', '');
+                                    $activeLocLabel = __('Semua Lokasi');
+                                    if ($activeLocVal) {
+                                        $foundLoc = $locations->firstWhere('code', $activeLocVal);
+                                        if ($foundLoc) {
+                                            $activeLocLabel = __($foundLoc->name);
+                                        }
+                                    }
+                                @endphp
+                                <button type="button" id="spec-dropdown-lokasi-trigger" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm flex items-center justify-between cursor-pointer select-none text-left">
+                                    <span id="spec-dropdown-lokasi-label">{{ $activeLocLabel }}</span>
+                                    <i class="ph ph-caret-down text-sm text-slate-400"></i>
+                                </button>
+                                <input type="hidden" name="inLokasi" id="spec-dropdown-lokasi-value" value="{{ $activeLocVal }}">
+                                
+                                <div id="spec-dropdown-lokasi-menu" class="hidden absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-40 transition-all max-h-60 overflow-y-auto scrollbar-thin">
+                                    <button type="button" data-value="" class="spec-dropdown-lokasi-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Semua Lokasi') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
                                     @foreach($locations as $loc)
-                                        <option value="{{ $loc->code }}" {{ request('inLokasi') == $loc->code ? 'selected' : '' }}>{{ __($loc->name) }}</option>
+                                        <button type="button" data-value="{{ $loc->code }}" class="spec-dropdown-lokasi-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                            <span>{{ __($loc->name) }}</span>
+                                            <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                        </button>
                                     @endforeach
-                                </select>
-                                <div class="absolute right-4 pointer-events-none text-slate-400">
-                                    <i class="ph ph-caret-down text-sm"></i>
                                 </div>
                             </div>
                         </div>
@@ -397,20 +416,52 @@
                         <!-- Semua Jenis -->
                         <div class="flex flex-col gap-1.5">
                             <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Jenis Koleksi') }}</label>
-                            <div class="relative flex items-center">
-                                <div class="absolute left-4 text-slate-400">
+                            <div class="relative w-full" id="spec-dropdown-jenis-container">
+                                <div class="absolute left-4 text-slate-400 z-10 pointer-events-none top-1/2 -translate-y-1/2 flex items-center">
                                     <i class="ph ph-file-text text-xl"></i>
                                 </div>
-                                <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                    <option value="">{{ __('Semua Jenis') }}</option>
-                                    <option value="buku" {{ request('inJenis') == 'buku' ? 'selected' : '' }}>{{ __('Buku') }}</option>
-                                    <option value="jurnal" {{ request('inJenis') == 'jurnal' ? 'selected' : '' }}>{{ __('Jurnal') }}</option>
-                                    <option value="majalah" {{ request('inJenis') == 'majalah' ? 'selected' : '' }}>{{ __('Majalah') }}</option>
-                                    <option value="skripsi" {{ request('inJenis') == 'skripsi' ? 'selected' : '' }}>{{ __('Skripsi/Tesis/Disertasi') }}</option>
-                                    <option value="laporan_penelitian" {{ request('inJenis') == 'laporan_penelitian' ? 'selected' : '' }}>{{ __('Laporan Penelitian') }}</option>
-                                </select>
-                                <div class="absolute right-4 pointer-events-none text-slate-400">
-                                    <i class="ph ph-caret-down text-sm"></i>
+                                @php
+                                    $activeJenisVal = request('inJenis', '');
+                                    $jenisLabels = [
+                                        'buku' => __('Buku'),
+                                        'jurnal' => __('Jurnal'),
+                                        'majalah' => __('Majalah'),
+                                        'skripsi' => __('Skripsi/Tesis/Disertasi'),
+                                        'laporan_penelitian' => __('Laporan Penelitian')
+                                    ];
+                                    $activeJenisLabel = $jenisLabels[$activeJenisVal] ?? __('Semua Jenis');
+                                @endphp
+                                <button type="button" id="spec-dropdown-jenis-trigger" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm flex items-center justify-between cursor-pointer select-none text-left">
+                                    <span id="spec-dropdown-jenis-label">{{ $activeJenisLabel }}</span>
+                                    <i class="ph ph-caret-down text-sm text-slate-400"></i>
+                                </button>
+                                <input type="hidden" name="inJenis" id="spec-dropdown-jenis-value" value="{{ $activeJenisVal }}">
+                                
+                                <div id="spec-dropdown-jenis-menu" class="hidden absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-40 transition-all">
+                                    <button type="button" data-value="" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Semua Jenis') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="buku" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Buku') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="jurnal" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Jurnal') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="majalah" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Majalah') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="skripsi" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Skripsi/Tesis/Disertasi') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="laporan_penelitian" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Laporan Penelitian') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -466,6 +517,84 @@
                 if (e.target === modal) {
                     closeModal();
                 }
+            });
+            // Specific Search Modal Custom Dropdowns
+            const specLocTrigger = document.getElementById('spec-dropdown-lokasi-trigger');
+            const specLocMenu = document.getElementById('spec-dropdown-lokasi-menu');
+            const specLocLabel = document.getElementById('spec-dropdown-lokasi-label');
+            const specLocValue = document.getElementById('spec-dropdown-lokasi-value');
+            const specLocOpts = document.querySelectorAll('.spec-dropdown-lokasi-option');
+
+            const specJenisTrigger = document.getElementById('spec-dropdown-jenis-trigger');
+            const specJenisMenu = document.getElementById('spec-dropdown-jenis-menu');
+            const specJenisLabel = document.getElementById('spec-dropdown-jenis-label');
+            const specJenisValue = document.getElementById('spec-dropdown-jenis-value');
+            const specJenisOpts = document.querySelectorAll('.spec-dropdown-jenis-option');
+
+            function syncCheckIcons(options, activeVal) {
+                options.forEach(o => {
+                    const check = o.querySelector('.check-icon');
+                    if (!check) return;
+                    if (o.getAttribute('data-value') === activeVal) {
+                        check.classList.remove('hidden');
+                        o.classList.add('bg-green-50/50', 'text-[#106c38]', 'font-bold');
+                        o.classList.remove('text-slate-700', 'font-medium');
+                    } else {
+                        check.classList.add('hidden');
+                        o.classList.remove('bg-green-50/50', 'text-[#106c38]', 'font-bold');
+                        o.classList.add('text-slate-700', 'font-medium');
+                    }
+                });
+            }
+
+            // Init Check Icons based on active query states
+            syncCheckIcons(specLocOpts, specLocValue ? specLocValue.value : "");
+            syncCheckIcons(specJenisOpts, specJenisValue ? specJenisValue.value : "");
+
+            if (specLocTrigger && specLocMenu) {
+                specLocTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    specLocMenu.classList.toggle('hidden');
+                    if (specJenisMenu) specJenisMenu.classList.add('hidden');
+                });
+
+                specLocOpts.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = opt.getAttribute('data-value');
+                        const labelText = opt.querySelector('span').innerText.trim();
+                        specLocLabel.innerText = labelText;
+                        specLocValue.value = val;
+                        syncCheckIcons(specLocOpts, val);
+                        specLocMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            if (specJenisTrigger && specJenisMenu) {
+                specJenisTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    specJenisMenu.classList.toggle('hidden');
+                    if (specLocMenu) specLocMenu.classList.add('hidden');
+                });
+
+                specJenisOpts.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = opt.getAttribute('data-value');
+                        const labelText = opt.querySelector('span').innerText.trim();
+                        specJenisLabel.innerText = labelText;
+                        specJenisValue.value = val;
+                        syncCheckIcons(specJenisOpts, val);
+                        specJenisMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            // Close spec menus on click outside
+            document.addEventListener('click', () => {
+                if (specLocMenu) specLocMenu.classList.add('hidden');
+                if (specJenisMenu) specJenisMenu.classList.add('hidden');
             });
         });
     </script>

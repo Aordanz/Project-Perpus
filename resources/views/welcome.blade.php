@@ -283,7 +283,7 @@
                 <!-- Carousel Area -->
                 <div class="relative w-full h-[270px] sm:h-[420px] md:h-[460px] flex items-center justify-center overflow-hidden">
                     <!-- Left Navigation Button -->
-                    <button id="prev-btn-koleksi" class="absolute flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="prev-btn-koleksi" class="absolute hidden xl:flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-left text-xl font-bold"></i>
                     </button>
 
@@ -367,7 +367,7 @@
                     </div>
 
                     <!-- Right Navigation Button -->
-                    <button id="next-btn-koleksi" class="absolute flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="next-btn-koleksi" class="absolute hidden xl:flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-right text-xl font-bold"></i>
                     </button>
                 </div>
@@ -642,18 +642,27 @@
                         <!-- Semua Lokasi -->
                         <div class="flex flex-col gap-1.5">
                             <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Lokasi') }}</label>
-                            <div class="relative flex items-center">
-                                <div class="absolute left-4 text-slate-400">
+                            <div class="relative w-full" id="spec-dropdown-lokasi-container">
+                                <div class="absolute left-4 text-slate-400 z-10 pointer-events-none top-1/2 -translate-y-1/2 flex items-center">
                                     <i class="ph ph-map-pin text-xl"></i>
                                 </div>
-                                <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                    <option value="">{{ __('Semua Lokasi') }}</option>
+                                <button type="button" id="spec-dropdown-lokasi-trigger" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm flex items-center justify-between cursor-pointer select-none text-left">
+                                    <span id="spec-dropdown-lokasi-label">{{ __('Semua Lokasi') }}</span>
+                                    <i class="ph ph-caret-down text-sm text-slate-400"></i>
+                                </button>
+                                <input type="hidden" name="inLokasi" id="spec-dropdown-lokasi-value" value="">
+                                
+                                <div id="spec-dropdown-lokasi-menu" class="hidden absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-40 transition-all max-h-60 overflow-y-auto scrollbar-thin">
+                                    <button type="button" data-value="" class="spec-dropdown-lokasi-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Semua Lokasi') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
                                     @foreach($locations as $loc)
-                                        <option value="{{ $loc->code }}">{{ __($loc->name) }}</option>
+                                        <button type="button" data-value="{{ $loc->code }}" class="spec-dropdown-lokasi-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                            <span>{{ __($loc->name) }}</span>
+                                            <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                        </button>
                                     @endforeach
-                                </select>
-                                <div class="absolute right-4 pointer-events-none text-slate-400">
-                                    <i class="ph ph-caret-down text-sm"></i>
                                 </div>
                             </div>
                         </div>
@@ -661,20 +670,41 @@
                         <!-- Semua Jenis -->
                         <div class="flex flex-col gap-1.5">
                             <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Jenis Koleksi') }}</label>
-                            <div class="relative flex items-center">
-                                <div class="absolute left-4 text-slate-400">
+                            <div class="relative w-full" id="spec-dropdown-jenis-container">
+                                <div class="absolute left-4 text-slate-400 z-10 pointer-events-none top-1/2 -translate-y-1/2 flex items-center">
                                     <i class="ph ph-file-text text-xl"></i>
                                 </div>
-                                <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                    <option value="">{{ __('Semua Jenis') }}</option>
-                                    <option value="buku">{{ __('Buku') }}</option>
-                                    <option value="jurnal">{{ __('Jurnal') }}</option>
-                                    <option value="majalah">{{ __('Majalah') }}</option>
-                                    <option value="skripsi">{{ __('Skripsi/Tesis/Disertasi') }}</option>
-                                    <option value="laporan_penelitian">{{ __('Laporan Penelitian') }}</option>
-                                </select>
-                                <div class="absolute right-4 pointer-events-none text-slate-400">
-                                    <i class="ph ph-caret-down text-sm"></i>
+                                <button type="button" id="spec-dropdown-jenis-trigger" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm flex items-center justify-between cursor-pointer select-none text-left">
+                                    <span id="spec-dropdown-jenis-label">{{ __('Semua Jenis') }}</span>
+                                    <i class="ph ph-caret-down text-sm text-slate-400"></i>
+                                </button>
+                                <input type="hidden" name="inJenis" id="spec-dropdown-jenis-value" value="">
+                                
+                                <div id="spec-dropdown-jenis-menu" class="hidden absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-40 transition-all">
+                                    <button type="button" data-value="" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Semua Jenis') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="buku" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Buku') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="jurnal" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Jurnal') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="majalah" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Majalah') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="skripsi" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Skripsi/Tesis/Disertasi') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="laporan_penelitian" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Laporan Penelitian') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -818,6 +848,85 @@
                 if (e.target === modal) {
                     closeModal();
                 }
+            });
+
+            // Specific Search Modal: Custom Dropdowns Toggles & Handlers
+            const specLocTrigger = document.getElementById('spec-dropdown-lokasi-trigger');
+            const specLocMenu = document.getElementById('spec-dropdown-lokasi-menu');
+            const specLocLabel = document.getElementById('spec-dropdown-lokasi-label');
+            const specLocValue = document.getElementById('spec-dropdown-lokasi-value');
+            const specLocOpts = document.querySelectorAll('.spec-dropdown-lokasi-option');
+
+            const specJenisTrigger = document.getElementById('spec-dropdown-jenis-trigger');
+            const specJenisMenu = document.getElementById('spec-dropdown-jenis-menu');
+            const specJenisLabel = document.getElementById('spec-dropdown-jenis-label');
+            const specJenisValue = document.getElementById('spec-dropdown-jenis-value');
+            const specJenisOpts = document.querySelectorAll('.spec-dropdown-jenis-option');
+
+            function syncCheckIcons(options, activeVal) {
+                options.forEach(o => {
+                    const check = o.querySelector('.check-icon');
+                    if (!check) return;
+                    if (o.getAttribute('data-value') === activeVal) {
+                        check.classList.remove('hidden');
+                        o.classList.add('bg-green-50/50', 'text-[#106c38]', 'font-bold');
+                        o.classList.remove('text-slate-700', 'font-medium');
+                    } else {
+                        check.classList.add('hidden');
+                        o.classList.remove('bg-green-50/50', 'text-[#106c38]', 'font-bold');
+                        o.classList.add('text-slate-700', 'font-medium');
+                    }
+                });
+            }
+
+            // Init Check Icons
+            syncCheckIcons(specLocOpts, "");
+            syncCheckIcons(specJenisOpts, "");
+
+            if (specLocTrigger && specLocMenu) {
+                specLocTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    specLocMenu.classList.toggle('hidden');
+                    if (specJenisMenu) specJenisMenu.classList.add('hidden');
+                });
+
+                specLocOpts.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = opt.getAttribute('data-value');
+                        const labelText = opt.querySelector('span').innerText.trim();
+                        specLocLabel.innerText = labelText;
+                        specLocValue.value = val;
+                        syncCheckIcons(specLocOpts, val);
+                        specLocMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            if (specJenisTrigger && specJenisMenu) {
+                specJenisTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    specJenisMenu.classList.toggle('hidden');
+                    if (specLocMenu) specLocMenu.classList.add('hidden');
+                });
+
+                specJenisOpts.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = opt.getAttribute('data-value');
+                        const labelText = opt.querySelector('span').innerText.trim();
+                        specJenisLabel.innerText = labelText;
+                        specJenisValue.value = val;
+                        syncCheckIcons(specJenisOpts, val);
+                        specJenisMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            // Close spec menus on click outside
+            document.addEventListener('click', () => {
+                if (specLocMenu) specLocMenu.classList.add('hidden');
+                if (specJenisMenu) specJenisMenu.classList.add('hidden');
             });
 
             // Location results modal toggles
@@ -1167,11 +1276,14 @@
                     }
                     paginationEl.appendChild(prevBtn);
 
-                    // Page buttons (max 5 buttons sliding window)
-                    let startPage = Math.max(1, currentPage - 2);
-                    let endPage = Math.min(totalPages, startPage + 4);
-                    if (endPage - startPage < 4) {
-                        startPage = Math.max(1, endPage - 4);
+                    // Page buttons (max 5 buttons on desktop, 4 on mobile/HP)
+                    const isMobile = window.innerWidth < 640;
+                    const maxButtons = isMobile ? 4 : 5;
+                    const half = Math.floor(maxButtons / 2);
+                    let startPage = Math.max(1, currentPage - (maxButtons - 1 - half));
+                    let endPage = Math.min(totalPages, startPage + (maxButtons - 1));
+                    if (endPage - startPage < (maxButtons - 1)) {
+                        startPage = Math.max(1, endPage - (maxButtons - 1));
                     }
 
                     for (let i = startPage; i <= endPage; i++) {
