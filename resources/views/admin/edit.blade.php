@@ -25,7 +25,10 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .field-input:focus { border-color: #106c38; }
+        .field-input:focus {
+            border-color: #106c38;
+            box-shadow: 0 0 0 2px rgba(16, 108, 56, 0.2);
+        }
         .item-row-existing { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 0.75rem; position: relative; }
         .item-row-new { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 0.75rem; padding: 0.75rem; position: relative; padding-top: 1.75rem; }
         .section-card { background: white; border: 1px solid #f1f5f9; border-radius: 1.5rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
@@ -163,11 +166,22 @@
                             </div>
                             <div class="flex flex-col gap-1">
                                 <label class="field-label">Spesifikasi Buku</label>
-                                <select name="category" class="field-input appearance-none cursor-pointer">
-                                    @foreach(['Sains & Teknologi', 'Sosial & Humaniora', 'Kesehatan & Kedokteran', 'Agama', 'Umum'] as $cat)
-                                        <option value="{{ $cat }}" {{ old('category', $book->category) == $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="relative custom-select-container w-full">
+                                    <button type="button" class="field-input flex items-center justify-between cursor-pointer pr-4 text-left w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all">
+                                        <span class="custom-select-label">{{ old('category', $book->category) ?: 'Umum' }}</span>
+                                        <i class="ph ph-caret-down text-slate-400 text-xs transition-transform duration-200"></i>
+                                    </button>
+                                    <input type="hidden" name="category" value="{{ old('category', $book->category) ?: 'Umum' }}">
+                                    <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-60 overflow-y-auto">
+                                        @foreach(['Sains & Teknologi', 'Sosial & Humaniora', 'Kesehatan & Kedokteran', 'Agama', 'Umum'] as $cat)
+                                            @php $isSelected = (old('category', $book->category) ?: 'Umum') == $cat; @endphp
+                                            <button type="button" data-value="{{ $cat }}" class="custom-select-option w-full text-left px-5 py-3.5 text-xs transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                <span>{{ $cat }}</span>
+                                                <i class="ph ph-check text-xs select-active-check {{ $isSelected ? '' : 'hidden' }}"></i>
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -178,11 +192,27 @@
                             </div>
                             <div class="flex flex-col gap-1">
                                 <label class="field-label">Jenis Koleksi</label>
-                                <select name="jenis" class="field-input appearance-none cursor-pointer">
-                                    @foreach(['buku' => 'Buku', 'jurnal' => 'Jurnal', 'majalah' => 'Majalah', 'skripsi' => 'Skripsi/Tesis'] as $val => $label)
-                                        <option value="{{ $val }}" {{ old('jenis', $book->jenis) == $val ? 'selected' : '' }}>{{ $label }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="relative custom-select-container w-full">
+                                    @php
+                                        $jenisMap = ['buku' => 'Buku', 'jurnal' => 'Jurnal', 'majalah' => 'Majalah', 'skripsi' => 'Skripsi/Tesis'];
+                                        $currentJenisVal = old('jenis', $book->jenis) ?: 'buku';
+                                        $currentJenisLabel = $jenisMap[$currentJenisVal] ?? 'Buku';
+                                    @endphp
+                                    <button type="button" class="field-input flex items-center justify-between cursor-pointer pr-4 text-left w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all">
+                                        <span class="custom-select-label">{{ $currentJenisLabel }}</span>
+                                        <i class="ph ph-caret-down text-slate-400 text-xs transition-transform duration-200"></i>
+                                    </button>
+                                    <input type="hidden" name="jenis" value="{{ $currentJenisVal }}">
+                                    <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-60 overflow-y-auto">
+                                        @foreach($jenisMap as $val => $label)
+                                            @php $isSelected = $currentJenisVal == $val; @endphp
+                                            <button type="button" data-value="{{ $val }}" class="custom-select-option w-full text-left px-5 py-3.5 text-xs transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                <span>{{ $label }}</span>
+                                                <i class="ph ph-check text-xs select-active-check {{ $isSelected ? '' : 'hidden' }}"></i>
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -205,7 +235,7 @@
                     <!-- Section: Eksemplar Fisik -->
                     <div class="section-card space-y-4">
                         <div class="flex items-center justify-between">
-                            <div class="section-title mb-0"><i class="ph ph-list-checks"></i> Eksemplar Fisik (Salinan)</div>
+                            <div class="section-title mb-0"><i class="ph ph-list-checks"></i> Eksemplar Fisik</div>
                             <button type="button" id="btn-add-new-item" class="text-[10px] bg-[#106c38] hover:bg-green-800 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer border-none">
                                 <i class="ph ph-plus"></i> Tambah Eksemplar
                             </button>
@@ -216,11 +246,11 @@
                             @forelse($book->items as $item)
                                 <div class="item-row-existing" id="item-row-{{ $item->barcode }}">
                                     <div class="flex items-center justify-between mb-2">
-                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Salinan Barcode: <span class="font-mono text-slate-600">{{ $item->barcode }}</span></span>
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Eksemplar Barcode: <span class="font-mono text-slate-600">{{ $item->barcode }}</span></span>
                                         <label class="flex items-center gap-1.5 cursor-pointer text-[10px] text-red-500 font-semibold hover:text-red-700">
                                             <input type="checkbox" name="delete_items[]" value="{{ $item->barcode }}" class="rounded border-red-300 text-red-500 focus:ring-red-500 w-3 h-3"
                                                 onchange="toggleItemDeletion(this, 'item-row-{{ $item->barcode }}')">
-                                            Hapus salinan ini
+                                            Hapus eksemplar ini
                                         </label>
                                     </div>
                                     <input type="hidden" name="items[{{ $item->barcode }}][barcode]" value="{{ $item->barcode }}">
@@ -243,7 +273,7 @@
                                     </div>
                                 </div>
                             @empty
-                                <p class="text-center text-slate-400 text-xs py-4">Belum ada salinan fisik terdaftar.</p>
+                                <p class="text-center text-slate-400 text-xs py-4">Belum ada eksemplar fisik terdaftar.</p>
                             @endforelse
                         </div>
 
@@ -500,12 +530,125 @@
             row.querySelector('input[type="text"]').focus();
         });
 
+        // Custom Confirm Modal Logic
+        let confirmCallback = null;
+
+        window.showCustomConfirm = function(message, callback) {
+            const modal = document.getElementById('confirm-modal');
+            const card = document.getElementById('confirm-modal-card');
+            const msgEl = document.getElementById('confirm-modal-message');
+            
+            if (!modal || !card || !msgEl) return;
+            
+            msgEl.innerText = message;
+            confirmCallback = callback;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        window.hideCustomConfirm = function() {
+            const modal = document.getElementById('confirm-modal');
+            const card = document.getElementById('confirm-modal-card');
+            
+            if (!modal || !card) return;
+            
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                confirmCallback = null;
+            }, 200);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cancelBtn = document.getElementById('confirm-modal-cancel');
+            const confirmBtn = document.getElementById('confirm-modal-confirm');
+            
+            if (cancelBtn) cancelBtn.addEventListener('click', hideCustomConfirm);
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', () => {
+                    if (confirmCallback) confirmCallback();
+                    hideCustomConfirm();
+                });
+            }
+
+            // Custom Select UI Handler
+            const selectContainers = document.querySelectorAll('.custom-select-container');
+            selectContainers.forEach(container => {
+                const trigger = container.querySelector('.custom-select-trigger');
+                const menu = container.querySelector('.custom-select-menu');
+                const options = container.querySelectorAll('.custom-select-option');
+                const hiddenInput = container.querySelector('input[type="hidden"]');
+                const label = container.querySelector('.custom-select-label');
+                const caret = container.querySelector('.ph-caret-down');
+                
+                if (!trigger || !menu) return;
+                
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Close other select menus
+                    document.querySelectorAll('.custom-select-menu').forEach(m => {
+                        if (m !== menu) {
+                            m.classList.add('hidden');
+                            const c = m.parentElement.querySelector('.ph-caret-down');
+                            if (c) c.classList.remove('rotate-180');
+                        }
+                    });
+                    menu.classList.toggle('hidden');
+                    if (caret) caret.classList.toggle('rotate-180');
+                });
+                
+                options.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = opt.getAttribute('data-value');
+                        const text = opt.querySelector('span').textContent.trim();
+                        
+                        if (label) label.textContent = text;
+                        if (hiddenInput) {
+                            hiddenInput.value = val;
+                            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                        
+                        options.forEach(o => {
+                            const check = o.querySelector('.select-active-check');
+                            if (o === opt) {
+                                o.classList.remove('text-slate-600', 'font-semibold');
+                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                if (check) check.classList.remove('hidden');
+                            } else {
+                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                o.classList.add('text-slate-600', 'font-semibold');
+                                if (check) check.classList.add('hidden');
+                            }
+                        });
+                        
+                        menu.classList.add('hidden');
+                        if (caret) caret.classList.remove('rotate-180');
+                    });
+                });
+            });
+            
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.custom-select-menu').forEach(m => {
+                    m.classList.add('hidden');
+                    const c = m.parentElement.querySelector('.ph-caret-down');
+                    if (c) c.classList.remove('rotate-180');
+                });
+            });
+        });
+
         // Cover deletion logic
         const btnDeleteCover = document.getElementById('btn-delete-cover');
         const deleteCoverInput = document.getElementById('delete-cover-input');
         if (btnDeleteCover && deleteCoverInput) {
             btnDeleteCover.addEventListener('click', () => {
-                if (confirm('Apakah Anda yakin ingin menghapus sampul buku ini?')) {
+                showCustomConfirm('Apakah Anda yakin ingin menghapus sampul buku ini?', () => {
                     deleteCoverInput.value = '1';
                     
                     const preview = document.getElementById('cover-large-preview');
@@ -534,7 +677,7 @@
                         addWarning.innerText = 'Unggah sampul default terlebih dahulu.';
                         addWarning.className = 'text-[10px] text-red-500 font-semibold mt-1';
                     }
-                }
+                });
             });
         }
 
@@ -615,5 +758,37 @@
             addImagesInput.files = dataTransfer.files;
         }
     </script>
+
+    <!-- Custom Confirm Modal -->
+    <div id="confirm-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="hideCustomConfirm()"></div>
+        
+        <!-- Modal Content Card -->
+        <div class="relative bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 transform transition-all scale-95 opacity-0 duration-200" id="confirm-modal-card">
+            <div class="flex flex-col items-center text-center">
+                <!-- Icon -->
+                <div class="w-14 h-14 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-4">
+                    <i class="ph ph-warning-circle text-3xl"></i>
+                </div>
+                
+                <!-- Title -->
+                <h3 class="text-base font-bold text-slate-800 mb-2">Konfirmasi Hapus</h3>
+                
+                <!-- Message -->
+                <p id="confirm-modal-message" class="text-xs text-slate-500 leading-relaxed mb-6">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+                
+                <!-- Buttons -->
+                <div class="flex items-center gap-3 w-full">
+                    <button type="button" id="confirm-modal-cancel" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl transition text-xs border-none cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="button" id="confirm-modal-confirm" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs border-none cursor-pointer shadow-md shadow-red-200">
+                        Ya, Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

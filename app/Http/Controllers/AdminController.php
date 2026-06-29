@@ -83,12 +83,18 @@ class AdminController extends Controller implements HasMiddleware
         
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('title', 'like', "%{$search}%")
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
                   ->orWhere('author', 'like', "%{$search}%");
+            });
         }
 
         $books = $query->paginate(24)->withQueryString();
         
+        if ($request->ajax()) {
+            return view('admin.partials.gallery_grid', compact('books'));
+        }
+
         return view('admin.galeri', compact('books'));
     }
 
@@ -198,7 +204,7 @@ class AdminController extends Controller implements HasMiddleware
 
             DB::commit();
             return redirect()->route('admin.index')
-                ->with('success', 'Buku "' . $book->title . '" dan salinannya berhasil ditambahkan ke database.');
+                ->with('success', 'Buku "' . $book->title . '" dan eksemplarnya berhasil ditambahkan ke database.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()

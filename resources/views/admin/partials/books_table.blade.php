@@ -5,7 +5,7 @@
             <tr class="bg-slate-50/50 border-b border-slate-100 text-slate-400 font-bold text-xs uppercase tracking-wider">
                 <th class="px-5 py-4">Informasi Buku</th>
                 <th class="px-5 py-4">No. Panggil / ISBN</th>
-                <th class="px-5 py-4 text-center">Salinan</th>
+                <th class="px-5 py-4 text-center">Eksemplar</th>
                 <th class="px-5 py-4 text-center">Aksi</th>
             </tr>
         </thead>
@@ -59,10 +59,10 @@
                                 <i class="ph ph-pencil-simple text-base"></i>
                             </a>
                             
-                            <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini beserta seluruh salinan fisiknya dari database?');">
+                            <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center border border-slate-200/60 transition cursor-pointer" title="Hapus Buku">
+                                <button type="button" onclick="confirmDeleteBook(this)" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center border border-slate-200/60 transition cursor-pointer" title="Hapus Buku">
                                     <i class="ph ph-trash text-base"></i>
                                 </button>
                             </form>

@@ -124,7 +124,7 @@
                     <i class="ph ph-barcode"></i>
                 </div>
                 <div>
-                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Salinan</span>
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Eksemplar</span>
                     <h3 class="text-2xl font-black text-slate-800 mt-0.5">{{ number_format($totalItems) }}</h3>
                 </div>
             </div>
