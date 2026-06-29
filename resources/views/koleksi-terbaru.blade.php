@@ -82,28 +82,21 @@
                 </div>
             </div>
 
-            <!-- Dynamic Quick Filter Chips with scroll layout -->
-            <div id="chips-container" class="flex overflow-x-auto whitespace-nowrap scrollbar-hide items-center gap-2.5 w-full pb-2">
-                <button data-filter="all" class="filter-chip px-4 py-2 text-xs font-bold rounded-full transition-all border border-[#106c38] bg-[#106c38] text-white shadow-sm whitespace-nowrap cursor-pointer flex-shrink-0">
-                    {{ __('Semua Buku') }}
+        <!-- Dynamic Quick Filter Chips -->
+        <div id="chips-container" class="flex flex-wrap gap-2 mb-2">
+            <button data-filter="all" class="filter-chip px-4 py-2 text-xs font-bold rounded-full transition-all border border-[#106c38] bg-[#106c38] text-white shadow-sm whitespace-nowrap cursor-pointer">
+                {{ __('Semua Buku') }}
+            </button>
+            <button data-filter="available" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
+                {{ __('Tersedia Sekarang') }}
+            </button>
+            @foreach($existingBigCategories as $cat)
+                <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
+                    class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
+                    {{ __($cat) }}
                 </button>
-                <button data-filter="available" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer flex-shrink-0">
-                    {{ __('Tersedia Sekarang') }}
-                </button>
-                @foreach($existingBigCategories as $index => $cat)
-                    <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
-                        class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer flex-shrink-0 {{ $index >= 3 ? 'extra-chip' : '' }}"
-                        style="{{ $index >= 3 ? 'display: none;' : '' }}">
-                        {{ __($cat) }}
-                    </button>
-                @endforeach
-                @if(count($existingBigCategories) > 3)
-                    <button id="toggle-chips-btn" class="px-4 py-2 text-xs font-bold rounded-full transition-all border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 whitespace-nowrap cursor-pointer flex items-center gap-1 select-none flex-shrink-0">
-                        <span id="toggle-chips-text">{{ __('Tampilkan Selengkapnya') }}</span>
-                        <i id="toggle-chips-icon" class="ph ph-caret-down text-sm transition-transform duration-200"></i>
-                    </button>
-                @endif
-            </div>
+            @endforeach
+        </div>
         </div>
 
         <!-- Collections Header Count -->
@@ -520,34 +513,6 @@
                         
                         dropdownMenu.classList.add('hidden');
                     });
-                });
-            }
-
-            // Toggle chips toggle button functionality
-            const toggleChipsBtn = document.getElementById('toggle-chips-btn');
-            const extraChips = document.querySelectorAll('.extra-chip');
-            const toggleChipsText = document.getElementById('toggle-chips-text');
-            const toggleChipsIcon = document.getElementById('toggle-chips-icon');
-
-            if (toggleChipsBtn) {
-                toggleChipsBtn.addEventListener('click', () => {
-                    const isHidden = Array.from(extraChips).some(chip => chip.style.display === 'none');
-                    extraChips.forEach(chip => {
-                        if (isHidden) {
-                            chip.style.display = 'inline-block';
-                        } else {
-                            chip.style.display = 'none';
-                        }
-                    });
-                    if (isHidden) {
-                        toggleChipsText.textContent = "{{ __('Sembunyikan') }}";
-                        toggleChipsIcon.classList.remove('ph-caret-down');
-                        toggleChipsIcon.classList.add('ph-caret-up');
-                    } else {
-                        toggleChipsText.textContent = "{{ __('Tampilkan Selengkapnya') }}";
-                        toggleChipsIcon.classList.remove('ph-caret-up');
-                        toggleChipsIcon.classList.add('ph-caret-down');
-                    }
                 });
             }
 

@@ -58,99 +58,109 @@
 
         /* ===== Mobile (< 640px): tighter card, prev/next peeking at edges ===== */
         .carousel-slide.prev {
-            opacity: 0.75;
-            transform: translate(-105%, -50%) scale(0.8);
+            opacity: 0.6;
+            transform: translate(-96%, -50%) scale(0.75);
             z-index: 20;
             pointer-events: auto;
         }
 
         .carousel-slide.next {
-            opacity: 0.75;
-            transform: translate(5%, -50%) scale(0.8);
+            opacity: 0.6;
+            transform: translate(-4%, -50%) scale(0.75);
             z-index: 20;
             pointer-events: auto;
         }
 
         .carousel-slide.hidden-left {
             opacity: 0;
-            transform: translate(-170%, -50%) scale(0.5);
+            transform: translate(-160%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
 
         .carousel-slide.hidden-right {
             opacity: 0;
-            transform: translate(70%, -50%) scale(0.5);
+            transform: translate(60%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
 
-        /* ===== Tablet (640px+) ===== */
+        /* ===== Small Tablet (640px+) ===== */
         @media (min-width: 640px) {
             .carousel-slide.active {
                 transform: translate(-50%, -50%) scale(1);
             }
 
             .carousel-slide.prev {
-                opacity: 0.85;
-                transform: translate(-140%, -50%) scale(0.8);
+                opacity: 0.75;
+                transform: translate(-128%, -50%) scale(0.78);
                 pointer-events: auto;
                 cursor: pointer;
             }
 
             .carousel-slide.next {
-                opacity: 0.85;
-                transform: translate(40%, -50%) scale(0.8);
+                opacity: 0.75;
+                transform: translate(28%, -50%) scale(0.78);
                 pointer-events: auto;
                 cursor: pointer;
             }
 
             .carousel-slide.hidden-left {
-                transform: translate(-220%, -50%) scale(0.5);
+                transform: translate(-210%, -50%) scale(0.5);
             }
 
             .carousel-slide.hidden-right {
-                transform: translate(120%, -50%) scale(0.5);
+                transform: translate(110%, -50%) scale(0.5);
             }
         }
 
+        /* ===== iPad / Medium Tablet (768px+) ===== */
         @media (min-width: 768px) {
+            .carousel-slide.active {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
             .carousel-slide.prev {
-                opacity: 0.85;
-                transform: translate(-220%, -50%) scale(0.85);
+                opacity: 0.80;
+                transform: translate(-190%, -50%) scale(0.82);
             }
 
             .carousel-slide.next {
-                opacity: 0.85;
-                transform: translate(120%, -50%) scale(0.85);
+                opacity: 0.80;
+                transform: translate(90%, -50%) scale(0.82);
             }
 
             .carousel-slide.hidden-left {
-                transform: translate(-320%, -50%) scale(0.5);
+                transform: translate(-290%, -50%) scale(0.5);
             }
 
             .carousel-slide.hidden-right {
-                transform: translate(220%, -50%) scale(0.5);
+                transform: translate(190%, -50%) scale(0.5);
             }
         }
 
+        /* ===== Desktop (1024px+) ===== */
         @media (min-width: 1024px) {
+            .carousel-slide.active {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
             .carousel-slide.prev {
-                opacity: 0.9;
-                transform: translate(-225%, -50%) scale(0.85);
+                opacity: 0.88;
+                transform: translate(-205%, -50%) scale(0.84);
             }
 
             .carousel-slide.next {
-                opacity: 0.9;
-                transform: translate(125%, -50%) scale(0.85);
+                opacity: 0.88;
+                transform: translate(105%, -50%) scale(0.84);
             }
 
             .carousel-slide.hidden-left {
-                transform: translate(-325%, -50%) scale(0.5);
+                transform: translate(-310%, -50%) scale(0.5);
             }
 
             .carousel-slide.hidden-right {
-                transform: translate(225%, -50%) scale(0.5);
+                transform: translate(210%, -50%) scale(0.5);
             }
         }
 
@@ -164,35 +174,35 @@
             transition: max-width 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, padding 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Mobile active info panel — compact */
+        /* Mobile active info panel — compact but readable */
         .carousel-slide.active .info-panel {
-            width: 140px;
-            max-width: 140px;
+            width: 160px;
+            max-width: 160px;
             opacity: 1;
-            padding: 0.5rem;
+            padding: 0.6rem 0.5rem;
             border-left: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         @media (min-width: 640px) {
             .carousel-slide.active .info-panel {
-                width: 300px;
-                max-width: 300px;
-                padding: 1.5rem;
+                width: 280px;
+                max-width: 280px;
+                padding: 1.25rem;
             }
         }
 
         @media (min-width: 768px) {
             .carousel-slide.active .info-panel {
-                width: 360px;
-                max-width: 360px;
-                padding: 2rem;
+                width: 340px;
+                max-width: 340px;
+                padding: 1.75rem;
             }
         }
 
         @media (min-width: 1024px) {
             .carousel-slide.active .info-panel {
-                width: 400px;
-                max-width: 400px;
+                width: 390px;
+                max-width: 390px;
                 padding: 2rem;
             }
         }
@@ -286,7 +296,7 @@
                              data-author="{{ strtolower($book->author) }}" 
                              data-publisher="{{ strtolower($book->publisher) }}">
                             <a href="{{ route('books.show', $book->id) }}"
-                               class="flex h-[135px] sm:h-[285px] md:h-[315px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
+                               class="flex h-[170px] sm:h-[290px] md:h-[330px] lg:h-[370px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
                                 <!-- Cover Panel -->
                                 <div class="w-[90px] sm:w-[190px] md:w-[210px] h-full flex-shrink-0 bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
                                     @if ($book->cover_image)
@@ -735,17 +745,21 @@
                         <div class="relative inline-block text-left" id="modal-custom-dropdown">
                             <!-- Dropdown Trigger Button -->
                             <button type="button" id="modal-dropdown-trigger" class="flex items-center justify-between gap-4 bg-white border border-emerald-600/35 text-slate-700 text-xs font-bold rounded-full pl-4 pr-3 py-1.5 outline-none cursor-pointer hover:border-emerald-600 focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all shadow-sm min-w-[75px]">
-                                <span id="modal-dropdown-selected-label">10</span>
+                                <span id="modal-dropdown-selected-label">5</span>
                                 <i class="ph ph-caret-down text-[10px] text-slate-400"></i>
                             </button>
                             <!-- Hidden input to store value -->
-                            <input type="hidden" id="modal-hasil-perpage" value="10">
+                            <input type="hidden" id="modal-hasil-perpage" value="5">
                             
                             <!-- Dropdown Options Menu -->
                             <div id="modal-dropdown-menu" class="hidden absolute left-0 bottom-full mb-2 w-28 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-30 transition-all">
-                                <button type="button" data-value="10" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-bold text-[#106c38] bg-green-50/50 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
-                                    <span>10</span>
+                                <button type="button" data-value="5" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-bold text-[#106c38] bg-green-50/50 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                                    <span>5</span>
                                     <i class="ph ph-check text-[12px] modal-active-check"></i>
+                                </button>
+                                <button type="button" data-value="10" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                                    <span>10</span>
+                                    <i class="ph ph-check text-[12px] modal-active-check hidden"></i>
                                 </button>
                                 <button type="button" data-value="50" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
                                     <span>50</span>
@@ -841,7 +855,7 @@
             let allCards = [];
             let filteredCards = [];
             let currentPage = 1;
-            let perPage = 10;
+            let perPage = 5;
 
             const searchInput = document.getElementById('modal-hasil-search');
             const clearSearchBtn = document.getElementById('modal-hasil-search-clear');
@@ -868,16 +882,16 @@
                     allCards = [];
                     filteredCards = [];
                     currentPage = 1;
-                    perPage = 10;
+                    perPage = 5;
                     if (perPageSelect) {
-                        perPageSelect.value = "10";
+                        perPageSelect.value = "5";
                         const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
                         const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
                         modalDropdownOptions.forEach(o => {
                             const val = o.getAttribute('data-value');
                             const check = o.querySelector('.modal-active-check');
-                            if (val === "10") {
+                            if (val === "5") {
                                 o.classList.remove('text-slate-600', 'font-semibold');
                                 o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
                                 if (check) check.classList.remove('hidden');
@@ -915,16 +929,16 @@
                     allCards = [];
                     filteredCards = [];
                     currentPage = 1;
-                    perPage = 10;
+                    perPage = 5;
                     if (perPageSelect) {
-                        perPageSelect.value = "10";
+                        perPageSelect.value = "5";
                         const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
                         const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
                         modalDropdownOptions.forEach(o => {
                             const val = o.getAttribute('data-value');
                             const check = o.querySelector('.modal-active-check');
-                            if (val === "10") {
+                            if (val === "5") {
                                 o.classList.remove('text-slate-600', 'font-semibold');
                                 o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
                                 if (check) check.classList.remove('hidden');
@@ -965,16 +979,16 @@
                     allCards = [];
                     filteredCards = [];
                     currentPage = 1;
-                    perPage = 10;
+                    perPage = 5;
                     if (perPageSelect) {
-                        perPageSelect.value = "10";
+                        perPageSelect.value = "5";
                         const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
                         const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
                         modalDropdownOptions.forEach(o => {
                             const val = o.getAttribute('data-value');
                             const check = o.querySelector('.modal-active-check');
-                            if (val === "10") {
+                            if (val === "5") {
                                 o.classList.remove('text-slate-600', 'font-semibold');
                                 o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
                                 if (check) check.classList.remove('hidden');
@@ -1118,8 +1132,16 @@
                     displayCards = filteredCards.slice(startIndex, endIndex);
                 }
 
-                displayCards.forEach(card => {
-                    container.appendChild(card.cloneNode(true));
+                displayCards.forEach((card, index) => {
+                    const cloned = card.cloneNode(true);
+                    const numberingEl = cloned.querySelector('.text-slate-200');
+                    if (numberingEl) {
+                        const itemNumber = (perPage === 'all') 
+                            ? (index + 1) 
+                            : ((currentPage - 1) * perPage + index + 1);
+                        numberingEl.innerText = String(itemNumber).padStart(2, '0');
+                    }
+                    container.appendChild(cloned);
                 });
 
                 if (paginationEl) {

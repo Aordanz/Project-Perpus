@@ -75,26 +75,21 @@
     <!-- Content Section -->
     <div class="flex-grow max-w-[1400px] mx-auto w-full px-2 sm:px-4 lg:px-6 mb-20">
         
-        <div class="mb-6 relative">
-            <div id="category-container" class="flex overflow-x-auto whitespace-nowrap scrollbar-hide items-center gap-2 sm:gap-3 w-full pb-2">
+        <div class="mb-6">
+            <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3">
                 <!-- Semua Kategori -->
                 <a href="{{ route('galeri', ['q' => request('q')]) }}" 
-                   class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm flex-shrink-0">
+                   class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
                     <i class="ph ph-squares-four text-base sm:text-lg"></i> {{ __('Semua Kategori') }}
                 </a>
                 
                 @php
-                    // Get unique categories from books table dynamically
                     $dbCategories = \App\Models\Book::select('category')->distinct()->whereNotNull('category')->pluck('category')->toArray();
-                    
-                    // Sort categories according to our preferred order
                     $preferredOrder = [
                         'Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora',
                         'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik',
                         'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'
                     ];
-                    
-                    // Icon mapping
                     $iconMap = [
                         'Umum' => 'ph-books',
                         'Agama' => 'ph-mosque',
@@ -111,8 +106,6 @@
                         'Seni & Desain' => 'ph-palette',
                         'Sejarah & Geografi' => 'ph-globe',
                     ];
-                    
-                    // Sort dbCategories based on preferredOrder
                     usort($dbCategories, function($a, $b) use ($preferredOrder) {
                         $posA = array_search($a, $preferredOrder);
                         $posB = array_search($b, $preferredOrder);
@@ -120,35 +113,20 @@
                         if ($posB === false) return -1;
                         return $posA - $posB;
                     });
-
                     $categories = [];
                     foreach ($dbCategories as $catName) {
-                        $categories[] = [
-                            'name' => $catName,
-                            'icon' => $iconMap[$catName] ?? 'ph-books'
-                        ];
+                        $categories[] = ['name' => $catName, 'icon' => $iconMap[$catName] ?? 'ph-books'];
                     }
-
                     $activeCategory = request('category');
                 @endphp
 
-                @foreach($categories as $index => $cat)
-                    @php
-                        $isActive = $activeCategory === $cat['name'];
-                    @endphp
+                @foreach($categories as $cat)
+                    @php $isActive = $activeCategory === $cat['name']; @endphp
                     <a href="{{ route('galeri', ['category' => $cat['name'], 'q' => request('q')]) }}" 
-                       class="category-bubble inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold active-category-bubble' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm flex-shrink-0 {{ $index >= 6 ? 'extra-category' : '' }}"
-                       style="{{ $index >= 6 && !$isActive ? 'display: none;' : '' }}">
+                       class="category-bubble inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
                         <i class="ph {{ $cat['icon'] }} text-base sm:text-lg"></i> {{ __($cat['name']) }}
                     </a>
                 @endforeach
-
-                @if(count($categories) > 6)
-                    <button id="toggle-categories-btn" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-slate-200 bg-white text-slate-500 font-medium hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 transition-colors text-xs sm:text-sm shadow-sm cursor-pointer select-none flex-shrink-0">
-                        <span id="toggle-categories-text">{{ __('Tampilkan Selengkapnya') }}</span>
-                        <i id="toggle-categories-icon" class="ph ph-caret-down text-base transition-transform duration-200"></i>
-                    </button>
-                @endif
             </div>
         </div>
 
@@ -267,39 +245,35 @@
                         </a>
                     @endif
 
-                    <!-- Page Numbers -->
+                    <!-- Page Numbers: max 5 sliding window -->
                     <div class="flex items-center gap-1">
                         @php
-                            $window = \Illuminate\Pagination\UrlWindow::make($books);
-                            $elements = array_filter([
-                                $window['first'],
-                                is_array($window['slider']) ? '...' : null,
-                                $window['slider'],
-                                is_array($window['last']) ? '...' : null,
-                                $window['last'],
-                            ]);
+                            $current = $books->currentPage();
+                            $last    = $books->lastPage();
+                            $window  = 5;
+                            $half    = (int) floor($window / 2);
+                            $start   = max(1, min($current - $half, $last - $window + 1));
+                            $end     = min($last, $start + $window - 1);
                         @endphp
-                        @foreach ($elements as $element)
-                            @if (is_string($element))
-                                <span class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-400 text-xs sm:text-sm font-bold">
-                                    {{ $element }}
-                                </span>
+                        @if($start > 1)
+                            <a href="{{ $books->url(1) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">1</a>
+                            @if($start > 2)
+                                <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
                             @endif
-
-                            @if (is_array($element))
-                                @foreach ($element as $page => $url)
-                                    @if ($page == $books->currentPage())
-                                        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#106c38] text-white flex items-center justify-center text-xs sm:text-sm font-bold shadow-md shadow-green-900/20">
-                                            {{ $page }}
-                                        </span>
-                                    @else
-                                        <a href="{{ $url }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">
-                                            {{ $page }}
-                                        </a>
-                                    @endif
-                                @endforeach
+                        @endif
+                        @for($p = $start; $p <= $end; $p++)
+                            @if($p == $current)
+                                <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#106c38] text-white flex items-center justify-center text-xs sm:text-sm font-bold shadow-md shadow-green-900/20">{{ $p }}</span>
+                            @else
+                                <a href="{{ $books->url($p) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">{{ $p }}</a>
                             @endif
-                        @endforeach
+                        @endfor
+                        @if($end < $last)
+                            @if($end < $last - 1)
+                                <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
+                            @endif
+                            <a href="{{ $books->url($last) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">{{ $last }}</a>
+                        @endif
                     </div>
 
                     @if ($books->hasMorePages())
@@ -320,36 +294,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const toggleBtn = document.getElementById('toggle-categories-btn');
-            const toggleText = document.getElementById('toggle-categories-text');
-            const toggleIcon = document.getElementById('toggle-categories-icon');
-            const extraCategories = document.querySelectorAll('.extra-category');
-
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', function() {
-                    const isCollapsed = Array.from(extraCategories).some(el => el.style.display === 'none');
-                    
-                    extraCategories.forEach(el => {
-                        if (isCollapsed) {
-                            el.style.display = 'inline-flex';
-                        } else {
-                            if (el.classList.contains('active-category-bubble')) {
-                                el.style.display = 'inline-flex';
-                            } else {
-                                el.style.display = 'none';
-                            }
-                        }
+            // ── Live Search Filter ──────────────────────────────────────
+            const liveInput = document.getElementById('live-search-input');
+            if (liveInput) {
+                liveInput.addEventListener('input', function() {
+                    const q = this.value.toLowerCase().trim();
+                    document.querySelectorAll('.book-card').forEach(card => {
+                        const title     = (card.dataset.title     || '').toLowerCase();
+                        const author    = (card.dataset.author    || '').toLowerCase();
+                        const publisher = (card.dataset.publisher || '').toLowerCase();
+                        card.style.display = (!q || title.includes(q) || author.includes(q) || publisher.includes(q)) ? '' : 'none';
                     });
-
-                    if (isCollapsed) {
-                        toggleText.textContent = '{{ __("Sembunyikan") }}';
-                        toggleIcon.classList.remove('ph-caret-down');
-                        toggleIcon.classList.add('ph-caret-up');
-                    } else {
-                        toggleText.textContent = '{{ __("Tampilkan Selengkapnya") }}';
-                        toggleIcon.classList.remove('ph-caret-up');
-                        toggleIcon.classList.add('ph-caret-down');
-                    }
                 });
             }
         });
