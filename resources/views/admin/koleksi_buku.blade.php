@@ -96,7 +96,7 @@
                                     <i class="ph ph-database text-usu-green"></i>
                                     <span>Daftar Koleksi Buku</span>
                                 </h2>
-                                <p class="text-slate-500 text-xs mt-0.5">Menampilkan seluruh buku yang ada di database beserta salinan fisiknya.</p>
+                                <p class="text-slate-500 text-xs mt-0.5">Menampilkan seluruh buku yang ada di database beserta eksemplar fisiknya.</p>
                             </div>
                             
                             <!-- Search Box inside Card & Button -->
@@ -223,13 +223,22 @@
                                             </div>
                                             <div class="flex flex-col gap-1">
                                                 <label class="text-[11px] font-bold text-slate-500">Spesifikasi Buku</label>
-                                                <select name="category" class="w-full px-2 py-2 bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-usu-green transition-all appearance-none cursor-pointer">
-                                                    <option value="Sains & Teknologi" {{ old('category') == 'Sains & Teknologi' ? 'selected' : '' }}>Sains & Teknologi</option>
-                                                    <option value="Sosial & Humaniora" {{ old('category') == 'Sosial & Humaniora' ? 'selected' : '' }}>Sosial & Humaniora</option>
-                                                    <option value="Kesehatan & Kedokteran" {{ old('category') == 'Kesehatan & Kedokteran' ? 'selected' : '' }}>Kesehatan & Kedokteran</option>
-                                                    <option value="Agama" {{ old('category') == 'Agama' ? 'selected' : '' }}>Agama</option>
-                                                    <option value="Umum" {{ old('category', 'Umum') == 'Umum' ? 'selected' : '' }}>Umum</option>
-                                                </select>
+                                                <div class="relative custom-select-container w-full">
+                                                    <button type="button" class="w-full pl-3 pr-8 py-2 text-left bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all flex items-center justify-between cursor-pointer custom-select-trigger">
+                                                        <span class="custom-select-label">{{ old('category') ?: 'Umum' }}</span>
+                                                        <i class="ph ph-caret-down text-slate-400 text-xs transition-transform duration-200"></i>
+                                                    </button>
+                                                    <input type="hidden" name="category" value="{{ old('category') ?: 'Umum' }}">
+                                                    <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-60 overflow-y-auto">
+                                                        @foreach(['Sains & Teknologi', 'Sosial & Humaniora', 'Kesehatan & Kedokteran', 'Agama', 'Umum'] as $cat)
+                                                            @php $isSelected = (old('category') ?: 'Umum') == $cat; @endphp
+                                                            <button type="button" data-value="{{ $cat }}" class="custom-select-option w-full text-left px-5 py-3 text-xs transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                                <span>{{ $cat }}</span>
+                                                                <i class="ph ph-check text-xs select-active-check {{ $isSelected ? '' : 'hidden' }}"></i>
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -240,12 +249,27 @@
                                             </div>
                                             <div class="flex flex-col gap-1">
                                                 <label class="text-[11px] font-bold text-slate-500">Jenis Koleksi</label>
-                                                <select name="jenis" class="w-full px-2 py-2 bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-usu-green transition-all appearance-none cursor-pointer">
-                                                    <option value="buku" {{ old('jenis') == 'buku' ? 'selected' : '' }}>Buku</option>
-                                                    <option value="jurnal" {{ old('jenis') == 'jurnal' ? 'selected' : '' }}>Jurnal</option>
-                                                    <option value="majalah" {{ old('jenis') == 'majalah' ? 'selected' : '' }}>Majalah</option>
-                                                    <option value="skripsi" {{ old('jenis') == 'skripsi' ? 'selected' : '' }}>Skripsi/Tesis</option>
-                                                </select>
+                                                <div class="relative custom-select-container w-full">
+                                                    @php
+                                                        $jenisMap = ['buku' => 'Buku', 'jurnal' => 'Jurnal', 'majalah' => 'Majalah', 'skripsi' => 'Skripsi/Tesis'];
+                                                        $currentJenisVal = old('jenis') ?: 'buku';
+                                                        $currentJenisLabel = $jenisMap[$currentJenisVal] ?? 'Buku';
+                                                    @endphp
+                                                    <button type="button" class="w-full pl-3 pr-8 py-2 text-left bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all flex items-center justify-between cursor-pointer custom-select-trigger">
+                                                        <span class="custom-select-label">{{ $currentJenisLabel }}</span>
+                                                        <i class="ph ph-caret-down text-slate-400 text-xs transition-transform duration-200"></i>
+                                                    </button>
+                                                    <input type="hidden" name="jenis" value="{{ $currentJenisVal }}">
+                                                    <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-60 overflow-y-auto">
+                                                        @foreach($jenisMap as $val => $label)
+                                                            @php $isSelected = $currentJenisVal == $val; @endphp
+                                                            <button type="button" data-value="{{ $val }}" class="custom-select-option w-full text-left px-5 py-3 text-xs transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                                <span>{{ $label }}</span>
+                                                                <i class="ph ph-check text-xs select-active-check {{ $isSelected ? '' : 'hidden' }}"></i>
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -276,11 +300,11 @@
                                         </div>
                                     </div>
 
-                                    <!-- Field group: Data Eksemplar Fisik (Salinan) -->
+                                    <!-- Field group: Data Eksemplar Fisik -->
                                     <div class="p-4 bg-slate-50/50 rounded-2xl border border-slate-200/40 space-y-3">
                                         <div class="flex items-center justify-between">
                                             <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                                <i class="ph ph-list-checks"></i> Registrasi Salinan (Eksemplar)
+                                                <i class="ph ph-list-checks"></i> Registrasi Eksemplar
                                             </h4>
                                             <button type="button" id="btn-add-item-row" class="text-[10px] bg-[#106c38] hover:bg-green-800 text-white font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer transition border-none shadow-sm">
                                                 <i class="ph ph-plus"></i> Tambah
@@ -618,6 +642,161 @@
                 });
             }
         });
+
+        // Custom Confirm Modal Logic
+        let confirmCallback = null;
+
+        window.showCustomConfirm = function(message, callback) {
+            const modal = document.getElementById('confirm-modal');
+            const card = document.getElementById('confirm-modal-card');
+            const msgEl = document.getElementById('confirm-modal-message');
+            
+            if (!modal || !card || !msgEl) return;
+            
+            msgEl.innerText = message;
+            confirmCallback = callback;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        window.hideCustomConfirm = function() {
+            const modal = document.getElementById('confirm-modal');
+            const card = document.getElementById('confirm-modal-card');
+            
+            if (!modal || !card) return;
+            
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                confirmCallback = null;
+            }, 200);
+        }
+
+        // Global Book Deletion Handler
+        window.confirmDeleteBook = function(button) {
+            const form = button.closest('form');
+            if (form) {
+                showCustomConfirm('Apakah Anda yakin ingin menghapus buku ini beserta seluruh eksemplar fisiknya dari database?', () => {
+                    form.submit();
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Modal Event Listeners
+            const cancelBtn = document.getElementById('confirm-modal-cancel');
+            const confirmBtn = document.getElementById('confirm-modal-confirm');
+            
+            if (cancelBtn) cancelBtn.addEventListener('click', hideCustomConfirm);
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', () => {
+                    if (confirmCallback) confirmCallback();
+                    hideCustomConfirm();
+                });
+            }
+            // Custom Select UI Handler
+            const selectContainers = document.querySelectorAll('.custom-select-container');
+            selectContainers.forEach(container => {
+                const trigger = container.querySelector('.custom-select-trigger');
+                const menu = container.querySelector('.custom-select-menu');
+                const options = container.querySelectorAll('.custom-select-option');
+                const hiddenInput = container.querySelector('input[type="hidden"]');
+                const label = container.querySelector('.custom-select-label');
+                const caret = container.querySelector('.ph-caret-down');
+                
+                if (!trigger || !menu) return;
+                
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Close other select menus
+                    document.querySelectorAll('.custom-select-menu').forEach(m => {
+                        if (m !== menu) {
+                            m.classList.add('hidden');
+                            const c = m.parentElement.querySelector('.ph-caret-down');
+                            if (c) c.classList.remove('rotate-180');
+                        }
+                    });
+                    menu.classList.toggle('hidden');
+                    if (caret) caret.classList.toggle('rotate-180');
+                });
+                
+                options.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = opt.getAttribute('data-value');
+                        const text = opt.querySelector('span').textContent.trim();
+                        
+                        if (label) label.textContent = text;
+                        if (hiddenInput) {
+                            hiddenInput.value = val;
+                            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                        
+                        options.forEach(o => {
+                            const check = o.querySelector('.select-active-check');
+                            if (o === opt) {
+                                o.classList.remove('text-slate-600', 'font-semibold');
+                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                if (check) check.classList.remove('hidden');
+                            } else {
+                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                o.classList.add('text-slate-600', 'font-semibold');
+                                if (check) check.classList.add('hidden');
+                            }
+                        });
+                        
+                        menu.classList.add('hidden');
+                        if (caret) caret.classList.remove('rotate-180');
+                    });
+                });
+            });
+            
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.custom-select-menu').forEach(m => {
+                    m.classList.add('hidden');
+                    const c = m.parentElement.querySelector('.ph-caret-down');
+                    if (c) c.classList.remove('rotate-180');
+                });
+            });
+        });
     </script>
+
+    <!-- Custom Confirm Modal -->
+    <div id="confirm-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="hideCustomConfirm()"></div>
+        
+        <!-- Modal Content Card -->
+        <div class="relative bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 transform transition-all scale-95 opacity-0 duration-200" id="confirm-modal-card">
+            <div class="flex flex-col items-center text-center">
+                <!-- Icon -->
+                <div class="w-14 h-14 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-4">
+                    <i class="ph ph-warning-circle text-3xl"></i>
+                </div>
+                
+                <!-- Title -->
+                <h3 class="text-base font-bold text-slate-800 mb-2">Konfirmasi Hapus</h3>
+                
+                <!-- Message -->
+                <p id="confirm-modal-message" class="text-xs text-slate-500 leading-relaxed mb-6">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+                
+                <!-- Buttons -->
+                <div class="flex items-center gap-3 w-full">
+                    <button type="button" id="confirm-modal-cancel" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl transition text-xs border-none cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="button" id="confirm-modal-confirm" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs border-none cursor-pointer shadow-md shadow-red-200">
+                        Ya, Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
