@@ -398,6 +398,29 @@
                             @endif
                         </div>
 
+                        <!-- PDF/E-Book Section -->
+                        <hr class="border-slate-100">
+                        <div class="section-title text-xs"><i class="ph ph-file-pdf"></i> E-Book (PDF, Opsional)</div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[11px] font-bold text-slate-500">File E-Book (PDF)</label>
+                            <input type="file" name="pdf_file" accept="application/pdf"
+                                class="text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-[#106c38] hover:file:bg-green-100 cursor-pointer w-full">
+                            <p class="text-[10px] text-slate-400 mt-1">Unggah berkas PDF untuk e-book ini. Kosongkan jika tidak ingin mengganti.</p>
+                        </div>
+
+                        @if($book->pdf_file)
+                            <div class="flex items-center justify-between text-xs text-slate-500 bg-slate-50 rounded-xl p-3 border border-slate-200">
+                                <div class="flex items-center gap-2 overflow-hidden">
+                                    <i class="ph ph-file-pdf text-red-600 text-lg flex-shrink-0"></i>
+                                    <span class="truncate">E-Book saat ini: <a href="{{ asset('ebooks/' . $book->pdf_file) }}" target="_blank" class="font-mono text-[#106c38] hover:underline text-[10px]">{{ $book->pdf_file }}</a></span>
+                                </div>
+                                <label class="flex items-center gap-1 cursor-pointer text-red-600 hover:text-red-800 font-bold select-none text-[10px] flex-shrink-0">
+                                    <input type="checkbox" name="delete_pdf" value="1" class="rounded text-red-500 focus:ring-red-500 w-3.5 h-3.5"> Hapus File
+                                </label>
+                            </div>
+                        @endif
+
                         <!-- Submit Button -->
                         <button type="submit" class="w-full bg-[#106c38] hover:bg-green-800 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-md border-none">
                             <i class="ph ph-floppy-disk text-lg"></i>

@@ -299,6 +299,12 @@
                                             <!-- Bubble Container -->
                                             <div id="image-bubbles-container" class="flex flex-wrap gap-2 mt-2 empty:hidden"></div>
                                         </div>
+
+                                        <div class="flex flex-col gap-1">
+                                            <label class="text-[11px] font-bold text-slate-500">File E-Book (PDF, Opsional)</label>
+                                            <input type="file" name="pdf_file" accept="application/pdf" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-usu-green hover:file:bg-green-100 cursor-pointer w-full">
+                                            <p class="text-[10px] text-slate-400">Pilih berkas PDF jika buku ini juga tersedia dalam versi e-book.</p>
+                                        </div>
                                     </div>
 
                                     <!-- Field group: Data Eksemplar Fisik -->
