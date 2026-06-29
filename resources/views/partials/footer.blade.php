@@ -187,7 +187,7 @@
         closeBtn.addEventListener('click', toggleChat);
 
         // Send message
-        function sendMessage() {
+        async function sendMessage() {
             const text = chatInput.value.trim();
             if (!text) return;
 
@@ -195,11 +195,36 @@
             addMessage(text, 'user');
             chatInput.value = '';
 
-            // Simulate typing delay
-            setTimeout(() => {
-                const response = getAIResponse(text.toLowerCase());
-                addMessage(response, 'bot');
-            }, 800);
+            // Add loading indicator
+            const loadingId = 'loading-' + Date.now();
+            addMessage('<div class="flex items-center gap-1"><div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div><div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div></div>', 'bot', loadingId);
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ message: text })
+                });
+                
+                const data = await response.json();
+                removeMessage(loadingId);
+                
+                if (response.status === 429) {
+                    addMessage(data.jawaban || "Kamu terlalu cepat mengirim pesan, tunggu sebentar ya!", 'bot');
+                    return;
+                }
+                
+                if (!response.ok) throw new Error("Terjadi kesalahan server");
+                
+                addMessage(data.jawaban, 'bot');
+                
+            } catch (error) {
+                removeMessage(loadingId);
+                addMessage("Maaf, sistem AI sedang offline atau GROQ_API_KEY di .env belum disetting.", 'bot');
+            }
         }
 
         sendBtn.addEventListener('click', sendMessage);
@@ -208,8 +233,9 @@
         });
 
         // Add message to DOM
-        function addMessage(text, sender) {
+        function addMessage(text, sender, id = null) {
             const msgDiv = document.createElement('div');
+            if (id) msgDiv.id = id;
             
             if (sender === 'user') {
                 msgDiv.className = "flex justify-end w-full";
@@ -234,27 +260,9 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        // Mock AI Logic
-        function getAIResponse(text) {
-            const knowledgeBase = [
-                { keywords: ['jam', 'buka', 'waktu', 'operasional'], response: 'Jam operasional Perpustakaan USU adalah Senin - Jumat dari jam 08.00 hingga 16.00 WIB. Hari Sabtu, Minggu, dan Libur Nasional tutup.' },
-                { keywords: ['lokasi', 'dimana', 'alamat'], response: 'Perpustakaan Universitas Sumatera Utara berlokasi di Jl. Perpustakaan No.1, Kampus USU, Padang Bulan, Kota Medan, Sumatera Utara.' },
-                { keywords: ['pinjam', 'meminjam', 'peminjaman'], response: 'Untuk meminjam buku, Anda harus terdaftar sebagai anggota perpustakaan (mahasiswa/dosen USU) dan membawa KTM. Anda dapat meminjam maksimal 3 buku selama 1 minggu.' },
-                { keywords: ['denda', 'terlambat'], response: 'Keterlambatan pengembalian buku akan dikenakan denda sesuai dengan peraturan yang berlaku di Perpustakaan USU. Pastikan mengembalikan buku tepat waktu.' },
-                { keywords: ['syarat', 'anggota', 'mendaftar'], response: 'Mahasiswa aktif USU secara otomatis menjadi anggota perpustakaan menggunakan Kartu Tanda Mahasiswa (KTM). Silakan aktivasi KTM Anda di meja sirkulasi.' },
-                { keywords: ['opac', 'cari buku', 'katalog'], response: 'Anda dapat mencari koleksi buku kami melalui fitur pencarian di OPAC ini. Gunakan judul, nama pengarang, atau ISBN.' },
-                { keywords: ['kontak', 'hubungi', 'email'], response: 'Anda dapat menghubungi kami melalui halaman Kontak Kami di menu navigasi, atau mengirim email ke library@usu.ac.id.' },
-                { keywords: ['halo', 'hai', 'pagi', 'siang', 'sore'], response: 'Halo! Ada yang bisa saya bantu terkait Perpustakaan USU hari ini?' },
-                { keywords: ['terima kasih', 'makasih', 'oke', 'baik'], response: 'Sama-sama! Jika ada pertanyaan lain seputar perpustakaan, jangan ragu untuk bertanya.' }
-            ];
-
-            for (const item of knowledgeBase) {
-                if (item.keywords.some(kw => text.includes(kw))) {
-                    return item.response;
-                }
-            }
-
-            return 'Maaf, saya hanya diprogram untuk menjawab pertanyaan seputar informasi dasar Perpustakaan Universitas Sumatera Utara. Bisakah Anda memberikan pertanyaan yang lebih spesifik?';
+        function removeMessage(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
         }
     });
 </script>

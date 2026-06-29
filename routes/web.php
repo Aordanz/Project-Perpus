@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ChatbotController;
 
 Route::get('/', [BookController::class, 'index'])->name('home');
 Route::get('/search', [BookController::class, 'search'])->name('search');
@@ -35,3 +36,6 @@ Route::get('/lang/{locale}', function ($locale) {
     }
     return redirect()->back();
 });
+
+// AI Chatbot Route with Rate Limiting (10 requests per minute)
+Route::post('/api/chat', [ChatbotController::class, 'handleChat'])->middleware('throttle:10,1')->name('chat.api');
