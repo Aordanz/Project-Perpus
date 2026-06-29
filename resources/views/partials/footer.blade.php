@@ -120,7 +120,10 @@
     <div id="ai-chat-window" class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-[320px] h-[400px] mb-4 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right scale-0 opacity-0 pointer-events-auto">
         <!-- Header -->
         <div class="bg-[#106c38] text-white p-3.5 flex items-center justify-between shadow-sm">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button id="ai-expand-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none" title="Perbesar Layar">
+                    <i class="ph ph-corners-out text-lg" id="ai-expand-icon"></i>
+                </button>
                 <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                     <i class="ph ph-robot text-xl"></i>
                 </div>
@@ -129,7 +132,7 @@
                     <p class="text-[9px] text-green-100">Asisten Virtual Perpustakaan</p>
                 </div>
             </div>
-            <button id="ai-close-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none">
+            <button id="ai-close-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none" title="Tutup">
                 <i class="ph ph-x text-lg"></i>
             </button>
         </div>
@@ -166,6 +169,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         const toggleBtn = document.getElementById('ai-toggle-btn');
         const closeBtn = document.getElementById('ai-close-btn');
+        const expandBtn = document.getElementById('ai-expand-btn');
+        const expandIcon = document.getElementById('ai-expand-icon');
         const chatWindow = document.getElementById('ai-chat-window');
         const chatInput = document.getElementById('ai-chat-input');
         const sendBtn = document.getElementById('ai-send-btn');
@@ -180,11 +185,36 @@
             } else {
                 chatWindow.classList.remove('scale-100', 'opacity-100');
                 chatWindow.classList.add('scale-0', 'opacity-0');
+                
+                // Return to normal size if closed while expanded
+                if (chatWindow.classList.contains('expanded-mode')) {
+                    toggleExpand();
+                }
+            }
+        }
+
+        // Toggle expand window
+        function toggleExpand() {
+            const isExpanded = chatWindow.classList.contains('expanded-mode');
+            
+            if (isExpanded) {
+                // Return to normal bottom-right corner
+                chatWindow.classList.remove('expanded-mode', '!fixed', 'top-1/2', 'left-1/2', '-translate-x-1/2', '-translate-y-1/2', '!w-[92vw]', '!h-[90vh]', 'sm:!w-[700px]', 'sm:!h-[85vh]', 'shadow-[0_0_0_100vmax_rgba(0,0,0,0.5)]');
+                expandIcon.classList.remove('ph-corners-in');
+                expandIcon.classList.add('ph-corners-out');
+                toggleBtn.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                // Expand to center of screen
+                chatWindow.classList.add('expanded-mode', '!fixed', 'top-1/2', 'left-1/2', '-translate-x-1/2', '-translate-y-1/2', '!w-[92vw]', '!h-[90vh]', 'sm:!w-[700px]', 'sm:!h-[85vh]', 'shadow-[0_0_0_100vmax_rgba(0,0,0,0.5)]');
+                expandIcon.classList.remove('ph-corners-out');
+                expandIcon.classList.add('ph-corners-in');
+                toggleBtn.classList.add('opacity-0', 'pointer-events-none');
             }
         }
 
         toggleBtn.addEventListener('click', toggleChat);
         closeBtn.addEventListener('click', toggleChat);
+        expandBtn.addEventListener('click', toggleExpand);
 
         // Send message
         async function sendMessage() {
