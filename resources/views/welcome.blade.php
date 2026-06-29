@@ -56,36 +56,36 @@
             pointer-events: auto;
         }
 
-        /* Mobile positions (hidden by default unless active) */
+        /* ===== Mobile (< 640px): tighter card, prev/next peeking at edges ===== */
         .carousel-slide.prev {
-            opacity: 0;
-            transform: translate(-120%, -50%) scale(0.7);
+            opacity: 0.75;
+            transform: translate(-105%, -50%) scale(0.8);
             z-index: 20;
-            pointer-events: none;
+            pointer-events: auto;
         }
 
         .carousel-slide.next {
-            opacity: 0;
-            transform: translate(20%, -50%) scale(0.7);
+            opacity: 0.75;
+            transform: translate(5%, -50%) scale(0.8);
             z-index: 20;
-            pointer-events: none;
+            pointer-events: auto;
         }
 
         .carousel-slide.hidden-left {
             opacity: 0;
-            transform: translate(-200%, -50%) scale(0.5);
+            transform: translate(-170%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
 
         .carousel-slide.hidden-right {
             opacity: 0;
-            transform: translate(100%, -50%) scale(0.5);
+            transform: translate(70%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
 
-        /* Desktop positions */
+        /* ===== Tablet (640px+) ===== */
         @media (min-width: 640px) {
             .carousel-slide.active {
                 transform: translate(-50%, -50%) scale(1);
@@ -93,24 +93,24 @@
 
             .carousel-slide.prev {
                 opacity: 0.85;
-                transform: translate(-215%, -50%) scale(0.8);
+                transform: translate(-140%, -50%) scale(0.8);
                 pointer-events: auto;
                 cursor: pointer;
             }
 
             .carousel-slide.next {
                 opacity: 0.85;
-                transform: translate(115%, -50%) scale(0.8);
+                transform: translate(40%, -50%) scale(0.8);
                 pointer-events: auto;
                 cursor: pointer;
             }
 
             .carousel-slide.hidden-left {
-                transform: translate(-315%, -50%) scale(0.5);
+                transform: translate(-220%, -50%) scale(0.5);
             }
 
             .carousel-slide.hidden-right {
-                transform: translate(215%, -50%) scale(0.5);
+                transform: translate(120%, -50%) scale(0.5);
             }
         }
 
@@ -164,11 +164,12 @@
             transition: max-width 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, padding 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
+        /* Mobile active info panel — compact */
         .carousel-slide.active .info-panel {
-            width: 150px;
-            max-width: 150px;
+            width: 140px;
+            max-width: 140px;
             opacity: 1;
-            padding: 1rem;
+            padding: 0.5rem;
             border-left: 1px solid rgba(0, 0, 0, 0.08);
         }
 
@@ -195,6 +196,22 @@
                 padding: 2rem;
             }
         }
+        /* Carousel swipe: disable browser touch handling so our Pointer Events work */
+        #carousel-koleksi-track,
+        #carousel-koleksi-track .carousel-slide,
+        #carousel-koleksi-track a {
+            touch-action: pan-y;      /* allow vertical scroll, let JS handle horizontal */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* The outer wrapper (overflow-hidden div) also needs touch-action */
+        #prev-btn-koleksi,
+        #next-btn-koleksi,
+        #prev-btn-koleksi ~ * {
+            touch-action: pan-y;
+        }
+
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-green-200 selection:text-green-900">
@@ -254,9 +271,9 @@
                 </div>
 
                 <!-- Carousel Area -->
-                <div class="relative w-full h-[190px] sm:h-[390px] md:h-[420px] flex items-center justify-center overflow-hidden">
+                <div class="relative w-full h-[270px] sm:h-[420px] md:h-[460px] flex items-center justify-center overflow-hidden">
                     <!-- Left Navigation Button -->
-                    <button id="prev-btn-koleksi" class="absolute hidden sm:flex bottom-3 left-[calc(50%-30px)] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-9 h-9 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="prev-btn-koleksi" class="absolute flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-left text-xl font-bold"></i>
                     </button>
 
@@ -271,7 +288,7 @@
                             <a href="{{ route('books.show', $book->id) }}"
                                class="flex bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
                                 <!-- Cover Panel -->
-                                <div class="w-[110px] sm:w-[190px] md:w-[210px] flex-shrink-0 aspect-[2/3] bg-slate-50 relative overflow-hidden flex items-center justify-center p-3 sm:p-5 border-r border-slate-100">
+                                <div class="w-[90px] sm:w-[190px] md:w-[210px] flex-shrink-0 aspect-[2/3] bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
                                     @if ($book->cover_image)
                                         <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
                                     @else
@@ -294,28 +311,36 @@
                                         <h4 class="text-sm sm:text-base md:text-xl font-bold text-slate-900 leading-snug mb-1 sm:mb-2 line-clamp-2 group-hover:text-[#106c38] transition-colors" title="{{ $book->title }}">
                                             {{ $book->title }}
                                         </h4>
-                                        <!-- Author (Mobile only) -->
-                                        <p class="text-[9px] sm:hidden text-slate-500 mb-2 truncate">
-                                            {{ __('Penulis:') }} <span class="text-[#106c38] font-bold">{{ $book->author ?: '-' }}</span>
-                                        </p>
-
-                                        <!-- Metadata Grid (Tablet/Desktop) -->
-                                        <div class="hidden sm:grid grid-cols-2 gap-x-6 gap-y-3 border-t border-slate-100 pt-4 mb-2 text-xs sm:text-sm">
+                                        <!-- Metadata (Mobile & Desktop) -->
+                                        @php
+                                            $locNames = $book->items->map(function($i) { return __($i->location->name); })->unique();
+                                        @endphp
+                                        
+                                        <!-- Metadata Grid (All devices) -->
+                                        <div class="grid grid-cols-2 gap-x-2 sm:gap-x-6 gap-y-2 sm:gap-y-3 border-t border-slate-100 pt-2 sm:pt-4 mb-2 text-[9px] sm:text-xs md:text-sm">
                                             <div>
-                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Penulis') }}</span>
+                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Penulis') }}</span>
                                                 <span class="text-slate-800 font-semibold block truncate" title="{{ $book->author }}">{{ $book->author ?: '-' }}</span>
                                             </div>
                                             <div>
-                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('No. Klasifikasi') }}</span>
+                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('No. Klasifikasi') }}</span>
                                                 <span class="text-slate-800 font-semibold block truncate">{{ $book->classification ?: '-' }}</span>
                                             </div>
                                             <div>
-                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Penerbit') }}</span>
+                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Penerbit') }}</span>
                                                 <span class="text-slate-800 font-semibold block truncate" title="{{ $book->publisher }}">{{ $book->publisher ?: '-' }}</span>
                                             </div>
                                             <div>
-                                                <span class="block text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Tahun Terbit') }}</span>
+                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Tahun Terbit') }}</span>
                                                 <span class="text-slate-800 font-semibold block">{{ $book->publish_year ?: '-' }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">Jenis</span>
+                                                <span class="text-slate-800 font-semibold block truncate">{{ strtoupper($book->jenis ?: 'buku') }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Lokasi') }}</span>
+                                                <span class="text-slate-800 font-semibold block truncate" title="{{ $locNames->implode(', ') ?: __('Tidak ditentukan') }}">{{ $locNames->implode(', ') ?: __('Tidak ditentukan') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -332,7 +357,7 @@
                     </div>
 
                     <!-- Right Navigation Button -->
-                    <button id="next-btn-koleksi" class="absolute hidden sm:flex bottom-3 right-[calc(50%-30px)] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-9 h-9 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="next-btn-koleksi" class="absolute flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-right text-xl font-bold"></i>
                     </button>
                 </div>
@@ -1278,7 +1303,7 @@
                 });
             }
 
-            // 3D Koleksi Terbaru Carousel
+            // ─── 3D Koleksi Terbaru Carousel ───────────────────────────────────────
             const newestSlides = document.querySelectorAll('.carousel-slide');
             if (newestSlides.length > 0) {
                 let newestCurrentIndex = 0;
@@ -1288,27 +1313,15 @@
                 function updateNewestCarousel() {
                     newestSlides.forEach((slide, idx) => {
                         slide.className = 'carousel-slide absolute transition-all duration-500 ease-in-out';
-                        
                         let diff = idx - newestCurrentIndex;
-                        
-                        // Handle circular index wrapping
-                        if (diff < -newestTotalSlides / 2) {
-                            diff += newestTotalSlides;
-                        } else if (diff > newestTotalSlides / 2) {
-                            diff -= newestTotalSlides;
-                        }
+                        if (diff < -newestTotalSlides / 2) diff += newestTotalSlides;
+                        else if (diff > newestTotalSlides / 2) diff -= newestTotalSlides;
 
-                        if (diff === 0) {
-                            slide.classList.add('active');
-                        } else if (diff === -1) {
-                            slide.classList.add('prev');
-                        } else if (diff === 1) {
-                            slide.classList.add('next');
-                        } else if (diff < 0) {
-                            slide.classList.add('hidden-left');
-                        } else {
-                            slide.classList.add('hidden-right');
-                        }
+                        if (diff === 0)       slide.classList.add('active');
+                        else if (diff === -1) slide.classList.add('prev');
+                        else if (diff === 1)  slide.classList.add('next');
+                        else if (diff < 0)   slide.classList.add('hidden-left');
+                        else                 slide.classList.add('hidden-right');
                     });
                 }
 
@@ -1322,40 +1335,6 @@
                     updateNewestCarousel();
                 }
 
-                const prevBtnKoleksi = document.getElementById('prev-btn-koleksi');
-                const nextBtnKoleksi = document.getElementById('next-btn-koleksi');
-
-                if (prevBtnKoleksi) {
-                    prevBtnKoleksi.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        newestPrevSlide();
-                        resetNewestAutoPlay();
-                    });
-                }
-
-                if (nextBtnKoleksi) {
-                    nextBtnKoleksi.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        newestNextSlide();
-                        resetNewestAutoPlay();
-                    });
-                }
-
-                // Click on adjacent slides to move to them
-                newestSlides.forEach((slide, idx) => {
-                    slide.addEventListener('click', (e) => {
-                        if (slide.classList.contains('prev')) {
-                            e.preventDefault();
-                            newestPrevSlide();
-                            resetNewestAutoPlay();
-                        } else if (slide.classList.contains('next')) {
-                            e.preventDefault();
-                            newestNextSlide();
-                            resetNewestAutoPlay();
-                        }
-                    });
-                });
-
                 function startNewestAutoPlay() {
                     newestAutoScroll = setInterval(newestNextSlide, 4500);
                 }
@@ -1364,6 +1343,20 @@
                     clearInterval(newestAutoScroll);
                     startNewestAutoPlay();
                 }
+
+                // Nav buttons
+                const prevBtnKoleksi = document.getElementById('prev-btn-koleksi');
+                const nextBtnKoleksi = document.getElementById('next-btn-koleksi');
+                if (prevBtnKoleksi) prevBtnKoleksi.addEventListener('click', (e) => { e.stopPropagation(); newestPrevSlide(); resetNewestAutoPlay(); });
+                if (nextBtnKoleksi) nextBtnKoleksi.addEventListener('click', (e) => { e.stopPropagation(); newestNextSlide(); resetNewestAutoPlay(); });
+
+                // Click on prev/next cards to navigate
+                newestSlides.forEach((slide) => {
+                    slide.addEventListener('click', (e) => {
+                        if (slide.classList.contains('prev')) { e.preventDefault(); newestPrevSlide(); resetNewestAutoPlay(); }
+                        else if (slide.classList.contains('next')) { e.preventDefault(); newestNextSlide(); resetNewestAutoPlay(); }
+                    });
+                });
 
                 // Initialize
                 updateNewestCarousel();
@@ -1376,32 +1369,54 @@
                     carouselTrack.addEventListener('mouseleave', resetNewestAutoPlay);
                 }
 
-                // Touch Swipe Swipe-to-Slide for Mobile view
-                if (carouselTrack) {
-                    let touchStartX = 0;
-                    let touchEndX = 0;
-                    
-                    carouselTrack.addEventListener('touchstart', (e) => {
-                        touchStartX = e.changedTouches[0].screenX;
+                // ── Touch / Pointer Swipe ─────────────────────────────────────────
+                // Uses Pointer Events (works on both touch and mouse).
+                // We listen on the carousel wrapper so ANY touch inside it counts.
+                const carouselWrapper = carouselTrack ? carouselTrack.parentElement : null;
+
+                if (carouselWrapper) {
+                    let pStartX = 0;
+                    let pStartY = 0;
+                    let pMoved  = false;          // did the pointer move significantly?
+                    let pIsTouch = false;
+                    const SWIPE_MIN = 40;         // px horizontal distance to count as swipe
+
+                    carouselWrapper.addEventListener('pointerdown', (e) => {
+                        pIsTouch = e.pointerType === 'touch' || e.pointerType === 'pen';
+                        pStartX = e.clientX;
+                        pStartY = e.clientY;
+                        pMoved  = false;
                     }, { passive: true });
-                    
-                    carouselTrack.addEventListener('touchend', (e) => {
-                        touchEndX = e.changedTouches[0].screenX;
-                        handleSwipe();
+
+                    carouselWrapper.addEventListener('pointermove', (e) => {
+                        if (!pIsTouch) return;
+                        const dx = Math.abs(e.clientX - pStartX);
+                        const dy = Math.abs(e.clientY - pStartY);
+                        if (dx > 8 && dx > dy) pMoved = true;
                     }, { passive: true });
-                    
-                    function handleSwipe() {
-                        const swipeThreshold = 50; // minimum touch-drag width in px
-                        if (touchStartX - touchEndX > swipeThreshold) {
-                            // Swipe Left -> Next Slide
-                            newestNextSlide();
-                            resetNewestAutoPlay();
-                        } else if (touchEndX - touchStartX > swipeThreshold) {
-                            // Swipe Right -> Previous Slide
-                            newestPrevSlide();
+
+                    carouselWrapper.addEventListener('pointerup', (e) => {
+                        if (!pIsTouch) return;
+                        const dx = e.clientX - pStartX;
+                        if (pMoved && Math.abs(dx) >= SWIPE_MIN) {
+                            if (dx < 0) newestNextSlide();
+                            else        newestPrevSlide();
                             resetNewestAutoPlay();
                         }
-                    }
+                        pMoved = false;
+                    }, { passive: true });
+
+                    carouselWrapper.addEventListener('pointercancel', () => {
+                        pMoved = false;
+                    }, { passive: true });
+
+                    // Block click-through navigation when the pointer moved (swipe, not tap)
+                    carouselWrapper.addEventListener('click', (e) => {
+                        if (pMoved) {
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                        }
+                    }, true /* capture phase, runs before app.js handler */);
                 }
             }
             // Location grid toggle functionality

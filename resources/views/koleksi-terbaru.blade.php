@@ -38,6 +38,13 @@
         .!hidden {
             display: none !important;
         }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col text-slate-800 antialiased">
@@ -75,23 +82,23 @@
                 </div>
             </div>
 
-            <!-- Dynamic Quick Filter Chips with wrap layout -->
-            <div class="flex flex-wrap items-center justify-center gap-2.5">
-                <button data-filter="all" class="filter-chip px-4 py-2 text-xs font-bold rounded-full transition-all border border-[#106c38] bg-[#106c38] text-white shadow-sm whitespace-nowrap cursor-pointer">
+            <!-- Dynamic Quick Filter Chips with scroll layout -->
+            <div id="chips-container" class="flex overflow-x-auto whitespace-nowrap scrollbar-hide items-center gap-2.5 w-full pb-2">
+                <button data-filter="all" class="filter-chip px-4 py-2 text-xs font-bold rounded-full transition-all border border-[#106c38] bg-[#106c38] text-white shadow-sm whitespace-nowrap cursor-pointer flex-shrink-0">
                     {{ __('Semua Buku') }}
                 </button>
-                <button data-filter="available" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
+                <button data-filter="available" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer flex-shrink-0">
                     {{ __('Tersedia Sekarang') }}
                 </button>
                 @foreach($existingBigCategories as $index => $cat)
                     <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
-                        class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer {{ $index >= 3 ? 'extra-chip' : '' }}"
+                        class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer flex-shrink-0 {{ $index >= 3 ? 'extra-chip' : '' }}"
                         style="{{ $index >= 3 ? 'display: none;' : '' }}">
                         {{ __($cat) }}
                     </button>
                 @endforeach
                 @if(count($existingBigCategories) > 3)
-                    <button id="toggle-chips-btn" class="px-4 py-2 text-xs font-bold rounded-full transition-all border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 whitespace-nowrap cursor-pointer flex items-center gap-1 select-none">
+                    <button id="toggle-chips-btn" class="px-4 py-2 text-xs font-bold rounded-full transition-all border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 whitespace-nowrap cursor-pointer flex items-center gap-1 select-none flex-shrink-0">
                         <span id="toggle-chips-text">{{ __('Tampilkan Selengkapnya') }}</span>
                         <i id="toggle-chips-icon" class="ph ph-caret-down text-sm transition-transform duration-200"></i>
                     </button>
@@ -124,7 +131,7 @@
                      data-available="{{ $availableCopies > 0 ? 'true' : 'false' }}">
                     
                     <!-- Card Numbering Index -->
-                    <div class="flex-shrink-0 text-xl sm:text-2xl font-black text-slate-200 group-hover:text-[#106c38]/30 transition-colors select-none w-8 text-center pt-2 sm:pt-4 hidden sm:block">
+                    <div class="flex-shrink-0 text-base sm:text-2xl font-black text-slate-200 group-hover:text-[#106c38]/30 transition-colors select-none w-6 sm:w-8 text-center pt-1.5 sm:pt-4">
                         {{ sprintf('%02d', $loop->iteration) }}
                     </div>
 
