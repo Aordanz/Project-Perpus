@@ -381,7 +381,7 @@
                         @endif
 
                         <div class="flex flex-col gap-1">
-                            <label class="text-[11px] font-bold text-slate-500">Tambah Gambar Tambahan</label>
+                            <label class="text-[11px] font-bold text-slate-500">Tambah Gambar Tambahan (Maks 3)</label>
                             <input type="file" name="additional_images[]" id="additional-images-input" multiple accept="image/*"
                                 class="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-green-50 file:text-[#106c38] hover:file:bg-green-100 cursor-pointer w-full"
                                 {{ !$book->cover_image ? 'disabled' : '' }}>
@@ -394,7 +394,7 @@
                                     Unggah sampul default terlebih dahulu.
                                 </p>
                             @else
-                                <p class="text-[10px] text-slate-400 mt-1" id="additional-images-warning">Bisa memilih lebih dari 1 gambar sekaligus.</p>
+                                <p class="text-[10px] text-slate-400 mt-1" id="additional-images-warning">Bisa memilih lebih dari 1 gambar sekaligus (Maksimal total 3 gambar tambahan).</p>
                             @endif
                         </div>
 
@@ -784,17 +784,26 @@
             }
         });
 
-        // Handle new additional images preview bubbles
+        // Handle new additional images preview bubbles (Max 3 total)
         const addImagesInput = document.getElementById('additional-images-input');
         const addBubblesContainer = document.getElementById('additional-image-bubbles-container');
         let selectedAddFiles = [];
 
+        function getMaxNewAllowed() {
+            const existingImagesCount = {{ $book->images ? $book->images->count() : 0 }};
+            const checkedDeletions = document.querySelectorAll('input[name="delete_additional_images[]"]:checked').length;
+            const netExisting = Math.max(0, existingImagesCount - checkedDeletions);
+            return Math.max(0, 3 - netExisting);
+        }
+
         if (addImagesInput && addBubblesContainer) {
             addImagesInput.addEventListener('change', function(e) {
                 const newFiles = Array.from(e.target.files);
+                const maxAllowed = getMaxNewAllowed();
                 let overLimit = false;
+                
                 for (let file of newFiles) {
-                    if (selectedAddFiles.length < 15) {
+                    if (selectedAddFiles.length < maxAllowed) {
                         if (!selectedAddFiles.some(f => f.name === file.name && f.size === file.size)) {
                             selectedAddFiles.push(file);
                         }
@@ -803,10 +812,23 @@
                     }
                 }
                 if (overLimit) {
-                    showToast('Maksimal hanya 15 gambar yang dapat dilampirkan.', 'error');
+                    showToast('Total gambar tambahan tidak boleh melebihi 3 foto.', 'error');
                 }
                 updateAddBubblesUI();
                 syncAddInputFiles();
+            });
+
+            // Listen to delete checkbox changes to sync allowed files count dynamically
+            document.querySelectorAll('input[name="delete_additional_images[]"]').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const maxAllowed = getMaxNewAllowed();
+                    if (selectedAddFiles.length > maxAllowed) {
+                        selectedAddFiles = selectedAddFiles.slice(0, maxAllowed);
+                        showToast('Daftar gambar tambahan baru disesuaikan (maksimal total 3 gambar tambahan).', 'warning');
+                        updateAddBubblesUI();
+                        syncAddInputFiles();
+                    }
+                });
             });
         }
 

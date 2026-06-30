@@ -75,21 +75,26 @@
     <!-- Content Section -->
     <div class="flex-grow max-w-[1400px] mx-auto w-full px-2 sm:px-4 lg:px-6 mb-20">
         
-        <div class="mb-6 max-w-5xl mx-auto">
-            <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center">
+        <div class="mb-6 relative">
+            <div id="category-container" class="flex overflow-x-auto whitespace-nowrap scrollbar-hide items-center gap-2 sm:gap-3 w-full pb-2">
                 <!-- Semua Kategori -->
                 <a href="{{ route('galeri', ['q' => request('q')]) }}" 
-                   class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
+                   class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm flex-shrink-0">
                     <i class="ph ph-squares-four text-base sm:text-lg"></i> {{ __('Semua Kategori') }}
                 </a>
                 
                 @php
+                    // Get unique categories from books table dynamically
                     $dbCategories = \App\Models\Book::select('category')->distinct()->whereNotNull('category')->pluck('category')->toArray();
+                    
+                    // Sort categories according to our preferred order
                     $preferredOrder = [
                         'Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora',
                         'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik',
                         'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'
                     ];
+                    
+                    // Icon mapping
                     $iconMap = [
                         'Umum' => 'ph-books',
                         'Agama' => 'ph-mosque',
@@ -106,6 +111,8 @@
                         'Seni & Desain' => 'ph-palette',
                         'Sejarah & Geografi' => 'ph-globe',
                     ];
+                    
+                    // Sort dbCategories based on preferredOrder
                     usort($dbCategories, function($a, $b) use ($preferredOrder) {
                         $posA = array_search($a, $preferredOrder);
                         $posB = array_search($b, $preferredOrder);
@@ -113,20 +120,35 @@
                         if ($posB === false) return -1;
                         return $posA - $posB;
                     });
+
                     $categories = [];
                     foreach ($dbCategories as $catName) {
-                        $categories[] = ['name' => $catName, 'icon' => $iconMap[$catName] ?? 'ph-books'];
+                        $categories[] = [
+                            'name' => $catName,
+                            'icon' => $iconMap[$catName] ?? 'ph-books'
+                        ];
                     }
+
                     $activeCategory = request('category');
                 @endphp
 
-                @foreach($categories as $cat)
-                    @php $isActive = $activeCategory === $cat['name']; @endphp
+                @foreach($categories as $index => $cat)
+                    @php
+                        $isActive = $activeCategory === $cat['name'];
+                    @endphp
                     <a href="{{ route('galeri', ['category' => $cat['name'], 'q' => request('q')]) }}" 
-                       class="category-bubble inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
+                       class="category-bubble inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold active-category-bubble' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm flex-shrink-0 {{ $index >= 6 ? 'extra-category' : '' }}"
+                       style="{{ $index >= 6 && !$isActive ? 'display: none;' : '' }}">
                         <i class="ph {{ $cat['icon'] }} text-base sm:text-lg"></i> {{ __($cat['name']) }}
                     </a>
                 @endforeach
+
+                @if(count($categories) > 6)
+                    <button id="toggle-categories-btn" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-slate-200 bg-white text-slate-500 font-medium hover:bg-slate-50 hover:text-[#106c38] hover:border-[#106c38]/40 transition-colors text-xs sm:text-sm shadow-sm cursor-pointer select-none flex-shrink-0">
+                        <span id="toggle-categories-text">{{ __('Tampilkan Selengkapnya') }}</span>
+                        <i id="toggle-categories-icon" class="ph ph-caret-down text-base transition-transform duration-200"></i>
+                    </button>
+                @endif
             </div>
         </div>
 
@@ -245,17 +267,96 @@
                         </a>
                     @endif
 
-                    <!-- Page Numbers: max 5 sliding window -->
+                    <!-- Page Numbers -->
                     <div class="flex items-center gap-1">
                         @php
-                            $current = $books->currentPage();
-                            $last    = $books->lastPage();
-                            $window  = 5;
-                            $half    = (int) floor($window / 2);
-                            $start   = max(1, min($current - $half, $last - $window + 1));
-                            $end     = min($last, $start + $window - 1);
+                            $window = \Illuminate\Pagination\UrlWindow::make($books);
+                            $elements = array_filter([
+                                $window['first'],
+                                is_array($window['slider']) ? '...' : null,
+                                $window['slider'],
+                                is_array($window['last']) ? '...' : null,
+                                $window['last'],
+                            ]);
                         @endphp
-                        @if($start > 1)
+                        @foreach ($elements as $element)
+                            @if (is_string($element))
+                                <span class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-400 text-xs sm:text-sm font-bold">
+                                    {{ $element }}
+                                </span>
+                            @endif
+
+                            @if (is_array($element))
+                                @foreach ($element as $page => $url)
+                                    @if ($page == $books->currentPage())
+                                        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#106c38] text-white flex items-center justify-center text-xs sm:text-sm font-bold shadow-md shadow-green-900/20">
+                                            {{ $page }}
+                                        </span>
+                                    @else
+                                        <a href="{{ $url }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">
+                                            {{ $page }}
+                                        </a>
+                                    @endif
+                                @endforeach
+                            @endif
+                        @endforeach
+                    </div>
+
+                    @if ($books->hasMorePages())
+                        <a href="{{ $books->nextPageUrl() }}" class="px-3 sm:px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:bg-slate-50 hover:text-[#106c38] transition-colors shadow-sm">
+                            <span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-lg"></i>
+                        </a>
+                    @else
+                        <span class="px-3 sm:px-4 py-2 rounded-full border border-slate-100 text-slate-300 text-xs sm:text-sm font-medium flex items-center gap-1.5 bg-slate-50 cursor-not-allowed">
+                            <span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-lg"></i>
+                        </span>
+                    @endif
+                </div>
+            </div>
+        @endif
+    </div>
+
+    @include('partials.footer')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggle-categories-btn');
+            const toggleText = document.getElementById('toggle-categories-text');
+            const toggleIcon = document.getElementById('toggle-categories-icon');
+            const extraCategories = document.querySelectorAll('.extra-category');
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const isCollapsed = Array.from(extraCategories).some(el => el.style.display === 'none');
+                    
+                    extraCategories.forEach(el => {
+                        if (isCollapsed) {
+                            el.style.display = 'inline-flex';
+                        } else {
+                            if (el.classList.contains('active-category-bubble')) {
+                                el.style.display = 'inline-flex';
+                            } else {
+                                el.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    if (isCollapsed) {
+                        toggleText.textContent = '{{ __("Sembunyikan") }}';
+                        toggleIcon.classList.remove('ph-caret-down');
+                        toggleIcon.classList.add('ph-caret-up');
+                    } else {
+                        toggleText.textContent = '{{ __("Tampilkan Selengkapnya") }}';
+                        toggleIcon.classList.remove('ph-caret-up');
+                        toggleIcon.classList.add('ph-caret-down');
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>                 @if($start > 1)
                             <a href="{{ $books->url(1) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">1</a>
                             @if($start > 2)
                                 <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
@@ -288,6 +389,7 @@
                 </div>
             </div>
         @endif
+>>>>>>> 430151e8cefb4d77d875427f6423145d68d94256
     </div>
 
     @include('partials.footer')
@@ -306,6 +408,69 @@
                         card.style.display = (!q || title.includes(q) || author.includes(q) || publisher.includes(q)) ? '' : 'none';
                     });
                 });
+            }
+
+            // AJAX Live Search for Galeri Koleksi (global across all pages)
+            const searchInput = document.getElementById('live-search-input');
+            let debounceTimer;
+
+            function performGallerySearch() {
+                const query = searchInput.value;
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('q', query);
+                urlParams.set('page', '1'); // Reset to page 1 on new search
+
+                const targetUrl = `{{ route('galeri') }}?${urlParams.toString()}`;
+                
+                // Update browser address bar without reload
+                window.history.pushState({}, '', targetUrl);
+
+                const container = document.getElementById('gallery-container');
+                if (container) {
+                    container.style.opacity = '0.5';
+                    container.style.pointerEvents = 'none';
+                }
+
+                fetch(targetUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Search failed');
+                    return response.text();
+                })
+                .then(html => {
+                    if (container) {
+                        container.innerHTML = html;
+                        container.style.opacity = '1';
+                        container.style.pointerEvents = 'auto';
+                    }
+                })
+                .catch(error => {
+                    console.error('Gallery live search failed:', error);
+                    if (container) {
+                        container.style.opacity = '1';
+                        container.style.pointerEvents = 'auto';
+                    }
+                });
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(performGallerySearch, 300);
+                });
+
+                // Prevent page refresh on form submit, trigger AJAX search instead
+                const searchForm = searchInput.closest('form');
+                if (searchForm) {
+                    searchForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        clearTimeout(debounceTimer);
+                        performGallerySearch();
+                    });
+                }
             }
         });
     </script>
