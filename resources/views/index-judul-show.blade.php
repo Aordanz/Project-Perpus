@@ -146,7 +146,7 @@
                             <div class="flex items-center gap-1.5 text-slate-400">
                                 <i class="ph ph-map-pin text-sm text-[#106c38]"></i>
                                 <span class="font-medium text-slate-500">
-                                    {{ __('Penyimpanan:') }} 
+                                    {{ __('Lokasi:') }} 
                                     @php
                                         $locNames = $book->items->map(function($i) { return __($i->location->name); })->unique();
                                     @endphp

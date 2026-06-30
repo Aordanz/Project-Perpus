@@ -234,6 +234,11 @@ class BookController extends Controller
 
         $perPage = $request->input('per', 24);
         $books = $query->paginate($perPage)->withQueryString();
+
+        if ($request->ajax()) {
+            return view('partials.gallery_content', compact('books', 'perPage'));
+        }
+
         return view('galeri', compact('books', 'perPage'));
     }
 

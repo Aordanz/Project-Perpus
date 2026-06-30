@@ -94,7 +94,7 @@
             <!-- Left Side: Book Cover & Quick Status -->
             <div class="md:col-span-1 space-y-6">
                 <!-- Book Cover Card -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 flex flex-col items-center shadow-sm">
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 flex flex-col items-center shadow-sm w-full max-w-sm md:max-w-none mx-auto">
                     @php
                         $allImages = [];
                         if ($book->cover_image) {
@@ -107,45 +107,48 @@
                         }
                     @endphp
 
-                    <div class="w-36 sm:w-48 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow mb-6 relative group select-none">
-                        @if(count($allImages) > 0)
-                            <!-- Slideshow wrapper -->
-                            <div class="w-full h-full relative shadow-inner {{ count($allImages) > 1 ? 'cursor-pointer' : '' }}" id="book-slideshow">
-                                @foreach($allImages as $index => $imgUrl)
-                                    <img src="{{ $imgUrl }}" 
-                                         alt="Cover {{ $index + 1 }}" 
-                                         class="slideshow-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
-                                         data-slide-index="{{ $index }}">
-                                @endforeach
-                            </div>
-
-                            @if(count($allImages) > 1)
-                                <!-- Navigation buttons -->
-                                <button type="button" id="btn-slide-prev" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white w-7 h-7 rounded-full flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-20 cursor-pointer border-none text-xs">
-                                    <i class="ph ph-caret-left-bold"></i>
-                                </button>
-                                <button type="button" id="btn-slide-next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white w-7 h-7 rounded-full flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-20 cursor-pointer border-none text-xs">
-                                    <i class="ph ph-caret-right-bold"></i>
-                                </button>
-
-                                <!-- Navigation dots indicator -->
-                                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-black/30 px-2 py-1 rounded-full backdrop-blur-[2px]">
-                                    @foreach($allImages as $index => $_)
-                                        <span class="slide-dot w-1.5 h-1.5 rounded-full bg-white/50 transition cursor-pointer {{ $index === 0 ? '!bg-white scale-110' : '' }}"
-                                              data-dot-index="{{ $index }}"></span>
+                    <div class="relative w-44 sm:w-48 aspect-[2/3] mb-6 group select-none">
+                        <!-- Cover Container -->
+                        <div class="w-full h-full bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow relative">
+                            @if(count($allImages) > 0)
+                                <!-- Slideshow wrapper -->
+                                <div class="w-full h-full relative shadow-inner {{ count($allImages) > 1 ? 'cursor-pointer' : '' }}" id="book-slideshow">
+                                    @foreach($allImages as $index => $imgUrl)
+                                        <img src="{{ $imgUrl }}" 
+                                             alt="Cover {{ $index + 1 }}" 
+                                             class="slideshow-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
+                                             data-slide-index="{{ $index }}">
                                     @endforeach
                                 </div>
+                            @else
+                                <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4">
+                                    <i class="ph ph-book-open text-6xl mb-3"></i>
+                                    <span class="text-xs font-bold text-center leading-normal">{{ __('NO COVER IMAGE') }}</span>
+                                </div>
                             @endif
-                        @else
-                            <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4">
-                                <i class="ph ph-book-open text-6xl mb-3"></i>
-                                <span class="text-xs font-bold text-center leading-normal">{{ __('NO COVER IMAGE') }}</span>
+
+                            <span class="absolute top-3 left-3 bg-[#106c38] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow z-20">
+                                {{ strtoupper(__($book->jenis)) }}
+                            </span>
+                        </div>
+
+                        @if(count($allImages) > 1)
+                            <!-- Navigation buttons (positioned outside the cover image, left and right) -->
+                            <button type="button" id="btn-slide-prev" class="absolute -left-5 top-1/2 -translate-y-1/2 bg-white hover:bg-slate-50 text-slate-800 hover:text-[#106c38] w-8 h-8 rounded-full flex items-center justify-center transition z-20 cursor-pointer border border-slate-200 shadow-lg text-sm opacity-95 hover:opacity-100">
+                                <i class="ph ph-caret-left-bold"></i>
+                            </button>
+                            <button type="button" id="btn-slide-next" class="absolute -right-5 top-1/2 -translate-y-1/2 bg-white hover:bg-slate-50 text-slate-800 hover:text-[#106c38] w-8 h-8 rounded-full flex items-center justify-center transition z-20 cursor-pointer border border-slate-200 shadow-lg text-sm opacity-95 hover:opacity-100">
+                                <i class="ph ph-caret-right-bold"></i>
+                            </button>
+
+                            <!-- Navigation dots indicator -->
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-black/30 px-2 py-1 rounded-full backdrop-blur-[2px]">
+                                @foreach($allImages as $index => $_)
+                                    <span class="slide-dot w-1.5 h-1.5 rounded-full bg-white/50 transition cursor-pointer {{ $index === 0 ? '!bg-white scale-110' : '' }}"
+                                          data-dot-index="{{ $index }}"></span>
+                                @endforeach
                             </div>
                         @endif
-
-                        <span class="absolute top-3 left-3 bg-[#106c38] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow z-20">
-                            {{ strtoupper(__($book->jenis)) }}
-                        </span>
                     </div>
                     
                     <!-- Quick Stats -->
@@ -165,7 +168,7 @@
                     </div>
 
                     <!-- E-Book PDF Download Button if exists -->
-                    @if($book->pdf_file)
+                    {{-- @if($book->pdf_file)
                         <div class="w-full text-center py-4 border-t border-slate-100 flex flex-col gap-2">
                             <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">{{ __('Format Digital') }}</span>
                             <a href="{{ asset('ebooks/' . $book->pdf_file) }}" target="_blank" download class="inline-flex items-center justify-center gap-2 bg-[#106c38] hover:bg-green-800 text-white font-bold px-4 py-2.5 rounded-xl border border-transparent shadow hover:shadow-md transition text-xs cursor-pointer w-full">
@@ -173,7 +176,7 @@
                                 {{ __('Unduh E-Book (PDF)') }}
                             </a>
                         </div>
-                    @endif
+                    @endif --}}
                 </div>
 
                 <!-- Contact / Help info -->
@@ -221,7 +224,7 @@
                                     <tr class="bg-slate-50/50 border-b border-slate-100 text-slate-400 font-bold text-xs uppercase tracking-wider">
                                         <th class="px-5 py-4">{{ __('No. Barcode') }}</th>
                                         <th class="px-5 py-4">{{ __('Tipe') }}</th>
-                                        <th class="px-5 py-4">{{ __('Lokasi Rak') }}</th>
+                                        <th class="px-5 py-4">{{ __('Lokasi') }}</th>
                                         <th class="px-5 py-4 text-center">{{ __('Status') }}</th>
                                     </tr>
                                 </thead>

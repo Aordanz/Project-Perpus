@@ -292,9 +292,9 @@
                                         </div>
 
                                         <div class="flex flex-col gap-1">
-                                            <label class="text-[11px] font-bold text-slate-500">Unggah Gambar (Maks 15, Utama & Tambahan)</label>
+                                            <label class="text-[11px] font-bold text-slate-500">Unggah Gambar (Maks 4, Utama & Tambahan)</label>
                                             <input type="file" name="images[]" id="images-input" multiple accept="image/*" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-usu-green hover:file:bg-green-100 cursor-pointer w-full">
-                                            <p class="text-[10px] text-slate-400" id="images-helper">Gambar pertama yang Anda pilih akan menjadi sampul utama.</p>
+                                            <p class="text-[10px] text-slate-400" id="images-helper">Gambar pertama yang Anda pilih akan menjadi sampul utama. Maksimal 4 gambar (1 utama & 3 tambahan).</p>
                                             
                                             <!-- Bubble Container -->
                                             <div id="image-bubbles-container" class="flex flex-wrap gap-2 mt-2 empty:hidden"></div>
@@ -561,7 +561,7 @@
                     const newFiles = Array.from(e.target.files);
                     let overLimit = false;
                     for (let file of newFiles) {
-                        if (selectedFiles.length < 15) {
+                        if (selectedFiles.length < 4) {
                             if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
                                 selectedFiles.push(file);
                             }
@@ -570,7 +570,7 @@
                         }
                     }
                     if (overLimit) {
-                        showToast('Maksimal hanya 15 gambar yang dapat dilampirkan.', 'error');
+                        showToast('Maksimal hanya 4 gambar (1 utama & 3 tambahan) yang dapat dilampirkan.', 'error');
                     }
                     updateBubblesUI();
                     syncInputFiles();

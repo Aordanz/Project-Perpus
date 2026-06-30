@@ -143,7 +143,7 @@ class AdminController extends Controller implements HasMiddleware
             'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
             'pdf_file'             => 'nullable|file|mimes:pdf|max:20480',
-            'images'               => 'nullable|array|max:15',
+            'images'               => 'nullable|array|max:4',
             'images.*'             => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
             // Validation for dynamic items
@@ -155,7 +155,7 @@ class AdminController extends Controller implements HasMiddleware
             'items.*.barcode.required'    => 'Barcode wajib diisi.',
             'items.*.location_id.required'=> 'Lokasi rak wajib dipilih.',
             'items.*.type.required'       => 'Tipe eksemplar wajib dipilih.',
-            'images.max'                  => 'Maksimal 15 gambar yang dapat diunggah sekaligus.'
+            'images.max'                  => 'Maksimal 4 gambar (1 utama & 3 tambahan) yang dapat diunggah sekaligus.'
         ]);
 
         try {
@@ -290,6 +290,16 @@ class AdminController extends Controller implements HasMiddleware
 
         try {
             DB::beginTransaction();
+
+            // Calculate and validate final additional images count (limit to 3)
+            $existingImagesCount = \App\Models\BookImage::where('book_id', $book->id)->count();
+            $deletedImagesCount = $request->has('delete_additional_images') ? count($request->delete_additional_images) : 0;
+            $newImagesCount = $request->hasFile('additional_images') ? count($request->file('additional_images')) : 0;
+            $finalImagesCount = max(0, $existingImagesCount - $deletedImagesCount) + $newImagesCount;
+
+            if ($finalImagesCount > 3) {
+                throw new \Exception('Maksimal total gambar tambahan adalah 3 foto.');
+            }
 
             $bookData = $request->only([
                 'title', 'author', 'publisher', 'publication_city', 'edition',

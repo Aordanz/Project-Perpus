@@ -123,7 +123,7 @@
                     $bigCategoryName = $book->category ?: 'Umum';
                     $subjValue = strtolower(trim($bigCategoryName));
                 @endphp
-                <div class="result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
+                <a href="{{ route('books.show', $book->id) }}" class="result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group cursor-pointer block"
                      data-title="{{ strtolower($book->title) }}" 
                      data-author="{{ strtolower($book->author) }}" 
                      data-publisher="{{ strtolower($book->publisher) }}" 
@@ -157,8 +157,8 @@
                             <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[9px] font-bold px-2 py-0.5 rounded-full mb-1 tracking-wider uppercase">
                                 {{ __($bigCategoryName) }}
                             </span>
-                            <h3 class="text-base sm:text-lg font-bold text-slate-800 hover:text-[#106c38] hover:underline transition leading-snug">
-                                <a href="{{ route('books.show', $book->id) }}">{{ $book->title }}</a>
+                            <h3 class="text-base sm:text-lg font-bold text-slate-800 group-hover:text-[#106c38] group-hover:underline transition leading-snug">
+                                {{ $book->title }}
                             </h3>
                         </div>
 
@@ -187,7 +187,7 @@
                             <div class="flex items-center gap-1.5 text-slate-400">
                                 <i class="ph ph-map-pin text-sm text-[#106c38]"></i>
                                 <span class="font-medium text-slate-500">
-                                    {{ __('Penyimpanan:') }} 
+                                    {{ __('Lokasi:') }} 
                                     @php
                                         $locNames = $book->items->map(function($i) { return __($i->location->name); })->unique();
                                     @endphp
@@ -211,7 +211,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             @empty
                 <div class="bg-white rounded-3xl border border-slate-100 p-12 text-center shadow-sm">
                     <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
@@ -233,17 +233,21 @@
                 <div class="relative inline-block text-left" id="custom-dropdown">
                     <!-- Dropdown Trigger Button -->
                     <button type="button" id="dropdown-trigger" class="flex items-center justify-between gap-4 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-full pl-4 pr-3 py-2 outline-none cursor-pointer hover:border-[#106c38] focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all shadow-sm min-w-[75px]">
-                        <span id="dropdown-selected-label">10</span>
+                        <span id="dropdown-selected-label">5</span>
                         <i class="ph ph-caret-down text-[10px] text-slate-400"></i>
                     </button>
                     <!-- Hidden input to store value -->
-                    <input type="hidden" id="limit-select" value="10">
+                    <input type="hidden" id="limit-select" value="5">
                     
                     <!-- Dropdown Options Menu -->
                     <div id="dropdown-menu" class="hidden absolute left-0 bottom-full mb-2 w-28 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-30 transition-all">
-                        <button type="button" data-value="10" class="dropdown-option w-full text-left px-4 py-2.5 text-xs font-bold text-[#106c38] bg-green-50/50 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
-                            <span>10</span>
+                        <button type="button" data-value="5" class="dropdown-option w-full text-left px-4 py-2.5 text-xs font-bold text-[#106c38] bg-green-50/50 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                            <span>5</span>
                             <i class="ph ph-check text-[12px] active-check"></i>
+                        </button>
+                        <button type="button" data-value="10" class="dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                            <span>10</span>
+                            <i class="ph ph-check text-[12px] active-check hidden"></i>
                         </button>
                         <button type="button" data-value="all" class="dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
                             <span>{{ __('Semua') }}</span>
@@ -290,7 +294,7 @@
             let activeSubjectValue = '';
 
             let currentPage = 1;
-            let itemsPerPage = 10;
+            let itemsPerPage = 5;
 
             function applyFilters() {
                 let matchedCards = [];

@@ -92,7 +92,7 @@
         const searchInput = document.getElementById('live-search-input');
         const bookCards = document.querySelectorAll('.book-card');
 
-        if(searchInput && bookCards.length > 0) {
+        if(searchInput && bookCards.length > 0 && !window.location.pathname.includes('/galeri')) {
             searchInput.addEventListener('input', function(e) {
                 const keyword = e.target.value.toLowerCase().trim();
 
@@ -183,15 +183,39 @@
         </div>
     </div>
 
+    <!-- Intro Bubble -->
+    <div id="ai-intro-bubble" class="bg-white text-slate-800 px-4 py-3 rounded-2xl rounded-br-sm shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15),_0_8px_10px_-6px_rgba(0,0,0,0.15)] text-xs font-medium mb-3.5 transition-all duration-500 scale-0 opacity-0 origin-bottom-right flex items-center gap-3 border border-slate-200 pointer-events-auto max-w-[280px]">
+        <div class="w-8 h-8 rounded-full bg-[#F3C300] text-[#106c38] flex items-center justify-center flex-shrink-0 font-bold shadow-sm animate-bounce">
+            <i class="ph ph-robot text-lg"></i>
+        </div>
+        <div class="flex-grow">
+            <p class="font-bold text-[#106c38] text-[11px] mb-0.5">{{ __('USU Library AI') }}</p>
+            <p class="text-slate-600 text-[10px] leading-tight">{{ __('Ada yang bisa dibantu? Tanya asisten AI di sini!') }}</p>
+        </div>
+        <button id="ai-close-bubble-btn" class="text-slate-400 hover:text-slate-600 transition-colors focus:outline-none ml-1 cursor-pointer">
+            <i class="ph ph-x text-xs"></i>
+        </button>
+    </div>
+
     <!-- Toggle Button -->
-    <button id="ai-toggle-btn" class="w-14 h-14 rounded-full bg-[#106c38] text-white flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transition-all focus:outline-none pointer-events-auto border-4 border-white">
-        <i class="ph ph-chat-teardrop-text text-2xl"></i>
-    </button>
+    <div id="ai-toggle-wrapper" class="relative pointer-events-auto group">
+        <!-- Pulse Aura -->
+        <span id="ai-pulse-ring" class="absolute inset-0 rounded-full bg-[#F3C300]/40 animate-ping opacity-75"></span>
+        <!-- Main Button -->
+        <button id="ai-toggle-btn" class="relative w-14 h-14 rounded-full bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transition-all focus:outline-none border-4 border-white cursor-pointer z-10">
+            <i class="ph ph-robot text-2xl"></i>
+        </button>
+    </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const toggleBtn = document.getElementById('ai-toggle-btn');
+        const toggleWrapper = document.getElementById('ai-toggle-wrapper');
+        const pulseRing = document.getElementById('ai-pulse-ring');
+        const introBubble = document.getElementById('ai-intro-bubble');
+        const closeBubbleBtn = document.getElementById('ai-close-bubble-btn');
+        
         const closeBtn = document.getElementById('ai-close-btn');
         const expandBtn = document.getElementById('ai-expand-btn');
         const expandIcon = document.getElementById('ai-expand-icon');
@@ -236,15 +260,51 @@
             });
         });
 
+        // Bubble popup helpers
+        let bubbleTimeout;
+        function showIntroBubble() {
+            if (introBubble && chatWindow.classList.contains('scale-0')) {
+                introBubble.classList.remove('scale-0', 'opacity-0');
+                introBubble.classList.add('scale-100', 'opacity-100');
+                
+                // Auto hide after 8 seconds
+                bubbleTimeout = setTimeout(() => {
+                    hideIntroBubble();
+                }, 8000);
+            }
+        }
+
+        function hideIntroBubble() {
+            if (introBubble && !introBubble.classList.contains('scale-0')) {
+                introBubble.classList.remove('scale-100', 'opacity-100');
+                introBubble.classList.add('scale-0', 'opacity-0');
+            }
+        }
+
+        if (closeBubbleBtn) {
+            closeBubbleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (bubbleTimeout) clearTimeout(bubbleTimeout);
+                hideIntroBubble();
+            });
+        }
+
+        // Trigger showIntroBubble after 2 seconds
+        setTimeout(showIntroBubble, 2000);
+
         // Toggle chat window
         function toggleChat() {
             if (chatWindow.classList.contains('scale-0')) {
                 chatWindow.classList.remove('scale-0', 'opacity-0');
                 chatWindow.classList.add('scale-100', 'opacity-100');
+                if (pulseRing) pulseRing.classList.add('hidden');
+                if (bubbleTimeout) clearTimeout(bubbleTimeout);
+                hideIntroBubble();
                 setTimeout(() => chatInput.focus(), 300);
             } else {
                 chatWindow.classList.remove('scale-100', 'opacity-100');
                 chatWindow.classList.add('scale-0', 'opacity-0');
+                if (pulseRing) pulseRing.classList.remove('hidden');
                 
                 // Return to normal size if closed while expanded
                 if (chatWindow.classList.contains('expanded-mode')) {
@@ -262,13 +322,13 @@
                 chatWindow.classList.remove('expanded-mode', '!fixed', 'top-1/2', 'left-1/2', '-translate-x-1/2', '-translate-y-1/2', '!w-[92vw]', '!h-[90vh]', 'sm:!w-[700px]', 'sm:!h-[85vh]', 'shadow-[0_0_0_100vmax_rgba(0,0,0,0.5)]');
                 expandIcon.classList.remove('ph-corners-in');
                 expandIcon.classList.add('ph-corners-out');
-                toggleBtn.classList.remove('opacity-0', 'pointer-events-none');
+                if (toggleWrapper) toggleWrapper.classList.remove('opacity-0', 'pointer-events-none');
             } else {
                 // Expand to center of screen
                 chatWindow.classList.add('expanded-mode', '!fixed', 'top-1/2', 'left-1/2', '-translate-x-1/2', '-translate-y-1/2', '!w-[92vw]', '!h-[90vh]', 'sm:!w-[700px]', 'sm:!h-[85vh]', 'shadow-[0_0_0_100vmax_rgba(0,0,0,0.5)]');
                 expandIcon.classList.remove('ph-corners-out');
                 expandIcon.classList.add('ph-corners-in');
-                toggleBtn.classList.add('opacity-0', 'pointer-events-none');
+                if (toggleWrapper) toggleWrapper.classList.add('opacity-0', 'pointer-events-none');
             }
         }
 
