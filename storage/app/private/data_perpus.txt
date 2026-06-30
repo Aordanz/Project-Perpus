@@ -10,8 +10,8 @@ Website Resmi & OPAC: https://library.usu.ac.id
 - Sekretaris Perpustakaan USU: Sundari, S.Sos., M.Si.
 
 [WAKTU OPERASIONAL]
-- Senin s/d Kamis: 08.00 WIB - 16.00 WIB
-- Jumat: 08.00 WIB - 16.00 WIB (Istirahat siang 12.00 - 13.30 WIB)
+- Senin s/d Kamis: 08.00 WIB - 20.00 WIB
+- Jumat: 08.00 WIB - 17.00 WIB (Istirahat siang 12.00 - 13.30 WIB)
 - Sabtu, Minggu, & Libur Nasional: TUTUP / LIBUR
 
 [ALUR & SYARAT KEANGGOTAAN]
@@ -56,3 +56,15 @@ Website Resmi & OPAC: https://library.usu.ac.id
   2. Tidak memiliki tunggakan denda keterlambatan buku.
   3. Mengunggah (Upload) file softcopy skripsi/tesis lengkap ke sistem repositori USU.
   4. Menyerahkan sumbangan buku fisik (jika diwajibkan oleh fakultas terkait).
+
+[LAYANAN DIGITAL & SISTEM TERINTEGRASI]
+- Katalog Online (OPAC): digilib.usu.ac.id
+- Repositori USU: repositori.usu.ac.id
+- Arsip Dupak Dosen: dupakdosen.usu.ac.id
+- Layanan EBSCO DISCOVERY: Layanan penelusuran jurnal internasional terintegrasi.
+- Akses E-Journal dan E-Book: Akses online 24 jam/7 hari.
+
+[STATISTIK & PENCAPAIAN PERPUSTAKAAN]
+- Total Anggota: Lebih dari 27.826 anggota.
+- Total Kunjungan: Lebih dari 256.191 pengunjung.
+- Peringkat Scimago: 40th Overall, 20th Research, 85th Innovation, 27th Societal.
