@@ -104,14 +104,26 @@ class BookController extends Controller
     /**
      * Display books starting with a specific initial.
      */
-    public function indexJudulShow($initial)
+    public function indexJudulShow(Request $request, $initial)
     {
-        $books = Book::with(['items.location'])
-            ->where('title', 'like', $initial . '%')
-            ->paginate(12)
-            ->withQueryString();
+        $perPage = $request->input('per_page', 10);
+        $query = Book::with(['items.location'])
+            ->where('title', 'like', $initial . '%');
 
-        return view('index-judul-show', compact('books', 'initial'));
+        if ($perPage === 'all' || $perPage == 0) {
+            $books = $query->get()->toArray();
+            // Wrap in a LengthAwarePaginator-like structure for view compatibility
+            $books = new \Illuminate\Pagination\LengthAwarePaginator(
+                $query->get(),
+                $query->count(),
+                $query->count() ?: 1,
+                1
+            );
+        } else {
+            $books = $query->paginate((int) $perPage)->withQueryString();
+        }
+
+        return view('index-judul-show', compact('books', 'initial', 'perPage'));
     }
 
     /**

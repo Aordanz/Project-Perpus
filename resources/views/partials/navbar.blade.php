@@ -8,8 +8,8 @@
                 <a href="{{ route('home') }}" class="flex items-center gap-1.5 sm:gap-2 group">
                     <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
                     <div class="flex flex-col">
-                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas') }}</span>
-                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Sumatera Utara') }}</span>
+                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Perpustakaan ') }}</span>
+                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas Sumatera Utara') }}</span>
                     </div>
                 </a>
             </div>
@@ -43,7 +43,7 @@
             </div>
             
             <!-- Right Side (Desktop) -->
-            <div class="hidden md:flex space-x-4 xl:space-x-5 items-center flex-shrink-0 lg:text-xs xl:text-sm">
+            <div class="hidden lg:flex space-x-4 xl:space-x-5 items-center flex-shrink-0 lg:text-xs xl:text-sm">
                 <!-- Language Dropdown -->
                 <div class="relative group cursor-pointer">
                     <div class="text-green-100 font-medium hover:text-white transition flex items-center gap-1 pb-1">
@@ -86,7 +86,7 @@
         <!-- Backdrop -->
         <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
         <!-- Panel -->
-        <div id="mobile-menu-drawer" class="absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-[#064e3b] transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl overflow-y-auto">
+        <div id="mobile-menu-drawer" class="absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-[#106c38] transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl overflow-y-auto">
             <!-- Close Button -->
             <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
                 <span class="text-white font-bold text-sm tracking-wide">Menu</span>
@@ -160,6 +160,21 @@
                         </button>
                     </form>
                 @endauth
+
+                <!-- Footer / Social Elements -->
+                <div class="border-t border-white/10 mt-6 pt-4 pb-6 px-5 flex flex-col items-center gap-3">
+                    <div class="flex items-center gap-3">
+                        <a href="https://library.usu.ac.id/" target="_blank" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" aria-label="Website">
+                            <i class="ph ph-globe text-lg"></i>
+                        </a>
+                        <a href="https://www.instagram.com/usu.library/" target="_blank" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" aria-label="Instagram">
+                            <i class="ph ph-instagram-logo text-lg"></i>
+                        </a>
+                    </div>
+                    <span class="text-[10px] text-green-200/50 text-center font-medium font-sans">
+                        &copy; 2026 Perpustakaan USU
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -180,8 +195,6 @@
             menuBackdrop.classList.add('opacity-100');
             menuDrawer.classList.remove('translate-x-full');
             menuDrawer.classList.add('translate-x-0');
-            menuIcon.classList.remove('ph-list');
-            menuIcon.classList.add('ph-x');
             document.body.style.overflow = 'hidden';
         }
 
@@ -190,8 +203,6 @@
             menuBackdrop.classList.add('opacity-0');
             menuDrawer.classList.remove('translate-x-0');
             menuDrawer.classList.add('translate-x-full');
-            menuIcon.classList.remove('ph-x');
-            menuIcon.classList.add('ph-list');
             document.body.style.overflow = '';
             setTimeout(() => menuPanel.classList.add('pointer-events-none'), 300);
         }

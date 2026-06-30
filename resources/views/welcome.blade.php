@@ -59,28 +59,28 @@
         /* ===== Mobile (< 640px): tighter card, prev/next peeking at edges ===== */
         .carousel-slide.prev {
             opacity: 0.75;
-            transform: translate(-225%, -50%) scale(0.85);
+            transform: translate(-105%, -50%) scale(0.8);
             z-index: 20;
             pointer-events: auto;
         }
 
         .carousel-slide.next {
             opacity: 0.75;
-            transform: translate(125%, -50%) scale(0.85);
+            transform: translate(5%, -50%) scale(0.8);
             z-index: 20;
             pointer-events: auto;
         }
 
         .carousel-slide.hidden-left {
             opacity: 0;
-            transform: translate(-325%, -50%) scale(0.5);
+            transform: translate(-170%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
 
         .carousel-slide.hidden-right {
             opacity: 0;
-            transform: translate(225%, -50%) scale(0.5);
+            transform: translate(70%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
@@ -166,10 +166,10 @@
 
         /* Mobile active info panel — compact */
         .carousel-slide.active .info-panel {
-            width: 250px;
-            max-width: 250px;
+            width: 140px;
+            max-width: 140px;
             opacity: 1;
-            padding: 1rem;
+            padding: 0.5rem;
             border-left: 1px solid rgba(0, 0, 0, 0.08);
         }
 
@@ -211,8 +211,6 @@
         #prev-btn-koleksi ~ * {
             touch-action: pan-y;
         }
-
-        /* Reverted mobile scroll styles to preserve original 3D stacked layout style */
 
     </style>
 </head>
@@ -273,9 +271,9 @@
                 </div>
 
                 <!-- Carousel Area -->
-                <div id="carousel-koleksi-area" class="relative w-full h-[280px] sm:h-[420px] md:h-[460px] flex items-center justify-center overflow-hidden">
+                <div class="relative w-full h-[270px] sm:h-[420px] md:h-[460px] flex items-center justify-center overflow-hidden">
                     <!-- Left Navigation Button -->
-                    <button id="prev-btn-koleksi" class="absolute hidden lg:flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="prev-btn-koleksi" class="absolute flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-left text-xl font-bold"></i>
                     </button>
 
@@ -288,9 +286,9 @@
                              data-author="{{ strtolower($book->author) }}" 
                              data-publisher="{{ strtolower($book->publisher) }}">
                             <a href="{{ route('books.show', $book->id) }}"
-                               class="flex h-[225px] sm:h-[285px] md:h-[315px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
+                               class="flex h-[135px] sm:h-[285px] md:h-[315px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
                                 <!-- Cover Panel -->
-                                <div class="w-[150px] sm:w-[190px] md:w-[210px] h-full flex-shrink-0 bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
+                                <div class="w-[90px] sm:w-[190px] md:w-[210px] h-full flex-shrink-0 bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
                                     @if ($book->cover_image)
                                         <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
                                     @else
@@ -346,6 +344,12 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Footer: hint text only -->
+                                    <div class="flex items-center gap-2 border-t border-slate-100 pt-3 mt-auto text-[10px] text-slate-400 font-medium">
+                                        <i class="ph ph-arrow-square-out text-sm text-[#106c38]"></i>
+                                        <span class="group-hover:text-[#106c38] transition-colors">{{ __('Klik untuk lihat detail buku') }}</span>
+                                    </div>
                                 </div>
                             </a>
                         </div>
@@ -353,7 +357,7 @@
                     </div>
 
                     <!-- Right Navigation Button -->
-                    <button id="next-btn-koleksi" class="absolute hidden lg:flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="next-btn-koleksi" class="absolute flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-right text-xl font-bold"></i>
                     </button>
                 </div>
@@ -363,12 +367,12 @@
 
     <!-- Statistics Section (Marquee) -->
     <div id="statistics-section" class="pt-6 pb-6 w-full overflow-hidden bg-[#f8fafc]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-10 relative flex flex-col items-center justify-center text-center">
-            <div class="flex flex-col items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-10 relative flex items-center justify-between">
+            <div>
                 <h2 class="text-lg sm:text-2xl md:text-3xl font-bold text-slate-800 mb-1 sm:mb-3">{{ __('Jumlah Judul Buku Berdasarkan Lokasi') }}</h2>
                 <div class="w-16 sm:w-24 h-1 bg-[#106c38] rounded-full"></div>
             </div>
-            <div class="sm:absolute right-4 sm:right-6 lg:right-8 sm:top-1/2 sm:-translate-y-1/2 mt-4 sm:mt-0">
+            <div class="flex-shrink-0 ml-3">
                 <button id="btn-toggle-locations" class="inline-flex items-center gap-1 sm:gap-2 bg-white hover:bg-slate-50 text-[#106c38] px-3 sm:px-6 py-1.5 sm:py-2.5 rounded-full font-bold text-[10px] sm:text-sm tracking-wider uppercase border-2 border-[#106c38]/20 hover:border-[#106c38] transition shadow-sm focus:outline-none cursor-pointer">
                     <span id="text-toggle-locations">{{ __('Lihat Semua') }}</span> 
                     <i class="ph ph-caret-down text-sm sm:text-lg transition-transform duration-300" id="icon-toggle-locations"></i>
@@ -1419,94 +1423,47 @@
 
                 // Initialize
                 updateNewestCarousel();
-                if (window.innerWidth >= 1024) {
-                    startNewestAutoPlay();
-                }
+                startNewestAutoPlay();
 
                 // Pause on hover
                 const carouselTrack = document.getElementById('carousel-koleksi-track');
                 if (carouselTrack) {
-                    carouselTrack.addEventListener('mouseenter', () => {
-                        if (window.innerWidth >= 1024) clearInterval(newestAutoScroll);
-                    });
-                    carouselTrack.addEventListener('mouseleave', () => {
-                        if (window.innerWidth >= 1024) resetNewestAutoPlay();
-                    });
+                    carouselTrack.addEventListener('mouseenter', () => clearInterval(newestAutoScroll));
+                    carouselTrack.addEventListener('mouseleave', resetNewestAutoPlay);
                 }
 
-                // Window resize handler to toggle auto scroll based on screen width
-                window.addEventListener('resize', () => {
-                    if (window.innerWidth >= 1024) {
-                        if (!newestAutoScroll) startNewestAutoPlay();
-                    } else {
-                        if (newestAutoScroll) {
-                            clearInterval(newestAutoScroll);
-                            newestAutoScroll = null;
-                        }
-                    }
-                });
-
-                // ── Touch / Pointer Swipe with Velocity (All Screens) ─────────────
+                // ── Touch / Pointer Swipe ─────────────────────────────────────────
+                // Uses Pointer Events (works on both touch and mouse).
+                // We listen on the carousel wrapper so ANY touch inside it counts.
                 const carouselWrapper = carouselTrack ? carouselTrack.parentElement : null;
 
                 if (carouselWrapper) {
                     let pStartX = 0;
                     let pStartY = 0;
-                    let pStartTime = 0;
-                    let pMoved  = false;
+                    let pMoved  = false;          // did the pointer move significantly?
                     let pIsTouch = false;
-                    const SWIPE_MIN = 40;
-
-                    // Prevent native browser link/image dragging to avoid cancelling pointers
-                    carouselWrapper.querySelectorAll('a, img').forEach(el => {
-                        el.setAttribute('draggable', 'false');
-                    });
-                    carouselWrapper.addEventListener('dragstart', (e) => {
-                        e.preventDefault();
-                    });
+                    const SWIPE_MIN = 40;         // px horizontal distance to count as swipe
 
                     carouselWrapper.addEventListener('pointerdown', (e) => {
-                        pIsTouch = e.pointerType === 'touch' || e.pointerType === 'pen' || e.pointerType === 'mouse';
+                        pIsTouch = e.pointerType === 'touch' || e.pointerType === 'pen';
                         pStartX = e.clientX;
                         pStartY = e.clientY;
-                        pStartTime = Date.now();
                         pMoved  = false;
                     }, { passive: true });
 
                     carouselWrapper.addEventListener('pointermove', (e) => {
+                        if (!pIsTouch) return;
                         const dx = Math.abs(e.clientX - pStartX);
                         const dy = Math.abs(e.clientY - pStartY);
                         if (dx > 8 && dx > dy) pMoved = true;
                     }, { passive: true });
 
                     carouselWrapper.addEventListener('pointerup', (e) => {
+                        if (!pIsTouch) return;
                         const dx = e.clientX - pStartX;
-                        const duration = Date.now() - pStartTime;
-                        const distance = Math.abs(dx);
-                        
-                        if (pMoved && distance >= SWIPE_MIN) {
-                            const velocity = distance / duration;
-                            
-                            // On mobile/tablet, support scrolling multiple slides if swiped quickly
-                            let slidesToScroll = 1;
-                            if (window.innerWidth < 1024) {
-                                if (velocity > 1.2) {
-                                    slidesToScroll = 3;
-                                } else if (velocity > 0.6) {
-                                    slidesToScroll = 2;
-                                }
-                            }
-
-                            let count = 0;
-                            function stepScroll() {
-                                if (count < slidesToScroll) {
-                                    if (dx < 0) newestNextSlide();
-                                    else newestPrevSlide();
-                                    count++;
-                                    setTimeout(stepScroll, 120); // clean rolling delay for stacked cards
-                                }
-                            }
-                            stepScroll();
+                        if (pMoved && Math.abs(dx) >= SWIPE_MIN) {
+                            if (dx < 0) newestNextSlide();
+                            else        newestPrevSlide();
                             resetNewestAutoPlay();
                         }
                         pMoved = false;
@@ -1516,12 +1473,13 @@
                         pMoved = false;
                     }, { passive: true });
 
+                    // Block click-through navigation when the pointer moved (swipe, not tap)
                     carouselWrapper.addEventListener('click', (e) => {
                         if (pMoved) {
                             e.preventDefault();
                             e.stopImmediatePropagation();
                         }
-                    }, true);
+                    }, true /* capture phase, runs before app.js handler */);
                 }
             }
             // Location grid toggle functionality
