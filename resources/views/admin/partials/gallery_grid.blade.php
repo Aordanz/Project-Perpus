@@ -15,9 +15,6 @@
                 
                 <!-- Overlay Actions -->
                 <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-                    <a href="{{ route('books.show', $book->id) }}" class="bg-white/20 hover:bg-white text-white hover:text-slate-900 text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
-                        <i class="ph ph-eye"></i> Detail
-                    </a>
                      <a href="{{ route('admin.books.edit', $book->id) }}" class="bg-[#106c38]/85 hover:bg-[#106c38] text-white text-xs font-bold py-1.5 px-3 rounded-lg backdrop-blur-sm transition flex items-center gap-1.5">
                          <i class="ph ph-pencil-simple"></i> Edit
                      </a>
