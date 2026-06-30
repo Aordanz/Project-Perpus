@@ -59,98 +59,108 @@
         /* ===== Mobile (< 640px): tighter card, prev/next peeking at edges ===== */
         .carousel-slide.prev {
             opacity: 0.75;
-            transform: translate(-105%, -50%) scale(0.8);
+            transform: translate(-225%, -50%) scale(0.85);
             z-index: 20;
             pointer-events: auto;
         }
 
         .carousel-slide.next {
             opacity: 0.75;
-            transform: translate(5%, -50%) scale(0.8);
+            transform: translate(125%, -50%) scale(0.85);
             z-index: 20;
             pointer-events: auto;
         }
 
         .carousel-slide.hidden-left {
             opacity: 0;
-            transform: translate(-170%, -50%) scale(0.5);
+            transform: translate(-325%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
 
         .carousel-slide.hidden-right {
             opacity: 0;
-            transform: translate(70%, -50%) scale(0.5);
+            transform: translate(225%, -50%) scale(0.5);
             z-index: 10;
             pointer-events: none;
         }
 
-        /* ===== Tablet (640px+) ===== */
+        /* ===== Small Tablet (640px+) ===== */
         @media (min-width: 640px) {
             .carousel-slide.active {
                 transform: translate(-50%, -50%) scale(1);
             }
 
             .carousel-slide.prev {
-                opacity: 0.85;
-                transform: translate(-140%, -50%) scale(0.8);
+                opacity: 0.75;
+                transform: translate(-128%, -50%) scale(0.78);
                 pointer-events: auto;
                 cursor: pointer;
             }
 
             .carousel-slide.next {
-                opacity: 0.85;
-                transform: translate(40%, -50%) scale(0.8);
+                opacity: 0.75;
+                transform: translate(28%, -50%) scale(0.78);
                 pointer-events: auto;
                 cursor: pointer;
             }
 
             .carousel-slide.hidden-left {
-                transform: translate(-220%, -50%) scale(0.5);
+                transform: translate(-210%, -50%) scale(0.5);
             }
 
             .carousel-slide.hidden-right {
-                transform: translate(120%, -50%) scale(0.5);
+                transform: translate(110%, -50%) scale(0.5);
             }
         }
 
+        /* ===== iPad / Medium Tablet (768px+) ===== */
         @media (min-width: 768px) {
+            .carousel-slide.active {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
             .carousel-slide.prev {
-                opacity: 0.85;
-                transform: translate(-220%, -50%) scale(0.85);
+                opacity: 0.80;
+                transform: translate(-190%, -50%) scale(0.82);
             }
 
             .carousel-slide.next {
-                opacity: 0.85;
-                transform: translate(120%, -50%) scale(0.85);
+                opacity: 0.80;
+                transform: translate(90%, -50%) scale(0.82);
             }
 
             .carousel-slide.hidden-left {
-                transform: translate(-320%, -50%) scale(0.5);
+                transform: translate(-290%, -50%) scale(0.5);
             }
 
             .carousel-slide.hidden-right {
-                transform: translate(220%, -50%) scale(0.5);
+                transform: translate(190%, -50%) scale(0.5);
             }
         }
 
+        /* ===== Desktop (1024px+) ===== */
         @media (min-width: 1024px) {
+            .carousel-slide.active {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
             .carousel-slide.prev {
-                opacity: 0.9;
-                transform: translate(-225%, -50%) scale(0.85);
+                opacity: 0.88;
+                transform: translate(-205%, -50%) scale(0.84);
             }
 
             .carousel-slide.next {
-                opacity: 0.9;
-                transform: translate(125%, -50%) scale(0.85);
+                opacity: 0.88;
+                transform: translate(105%, -50%) scale(0.84);
             }
 
             .carousel-slide.hidden-left {
-                transform: translate(-325%, -50%) scale(0.5);
+                transform: translate(-310%, -50%) scale(0.5);
             }
 
             .carousel-slide.hidden-right {
-                transform: translate(225%, -50%) scale(0.5);
+                transform: translate(210%, -50%) scale(0.5);
             }
         }
 
@@ -164,35 +174,35 @@
             transition: max-width 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, padding 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Mobile active info panel — compact */
+        /* Mobile active info panel — compact but readable */
         .carousel-slide.active .info-panel {
-            width: 140px;
-            max-width: 140px;
+            width: 250px;
+            max-width: 250px;
             opacity: 1;
-            padding: 0.5rem;
+            padding: 1rem;
             border-left: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         @media (min-width: 640px) {
             .carousel-slide.active .info-panel {
-                width: 300px;
-                max-width: 300px;
-                padding: 1.5rem;
+                width: 280px;
+                max-width: 280px;
+                padding: 1.25rem;
             }
         }
 
         @media (min-width: 768px) {
             .carousel-slide.active .info-panel {
-                width: 360px;
-                max-width: 360px;
-                padding: 2rem;
+                width: 340px;
+                max-width: 340px;
+                padding: 1.75rem;
             }
         }
 
         @media (min-width: 1024px) {
             .carousel-slide.active .info-panel {
-                width: 400px;
-                max-width: 400px;
+                width: 390px;
+                max-width: 390px;
                 padding: 2rem;
             }
         }
@@ -211,6 +221,8 @@
         #prev-btn-koleksi ~ * {
             touch-action: pan-y;
         }
+
+        /* Reverted mobile scroll styles to preserve original 3D stacked layout style */
 
     </style>
 </head>
@@ -271,9 +283,9 @@
                 </div>
 
                 <!-- Carousel Area -->
-                <div class="relative w-full h-[270px] sm:h-[420px] md:h-[460px] flex items-center justify-center overflow-hidden">
+                <div id="carousel-koleksi-area" class="relative w-full h-[280px] sm:h-[420px] md:h-[460px] flex items-center justify-center overflow-hidden">
                     <!-- Left Navigation Button -->
-                    <button id="prev-btn-koleksi" class="absolute flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="prev-btn-koleksi" class="absolute hidden lg:flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-left text-xl font-bold"></i>
                     </button>
 
@@ -286,9 +298,9 @@
                              data-author="{{ strtolower($book->author) }}" 
                              data-publisher="{{ strtolower($book->publisher) }}">
                             <a href="{{ route('books.show', $book->id) }}"
-                               class="flex h-[135px] sm:h-[285px] md:h-[315px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
+                               class="flex h-[225px] sm:h-[285px] md:h-[315px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
                                 <!-- Cover Panel -->
-                                <div class="w-[90px] sm:w-[190px] md:w-[210px] h-full flex-shrink-0 bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
+                                <div class="w-[150px] sm:w-[190px] md:w-[210px] h-full flex-shrink-0 bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
                                     @if ($book->cover_image)
                                         <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
                                     @else
@@ -344,12 +356,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Footer: hint text only -->
-                                    <div class="flex items-center gap-2 border-t border-slate-100 pt-3 mt-auto text-[10px] text-slate-400 font-medium">
-                                        <i class="ph ph-arrow-square-out text-sm text-[#106c38]"></i>
-                                        <span class="group-hover:text-[#106c38] transition-colors">{{ __('Klik untuk lihat detail buku') }}</span>
-                                    </div>
                                 </div>
                             </a>
                         </div>
@@ -357,7 +363,7 @@
                     </div>
 
                     <!-- Right Navigation Button -->
-                    <button id="next-btn-koleksi" class="absolute flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="next-btn-koleksi" class="absolute hidden lg:flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-right text-xl font-bold"></i>
                     </button>
                 </div>
@@ -367,12 +373,12 @@
 
     <!-- Statistics Section (Marquee) -->
     <div id="statistics-section" class="pt-6 pb-6 w-full overflow-hidden bg-[#f8fafc]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-10 relative flex items-center justify-between">
-            <div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-10 relative flex flex-col items-center justify-center text-center">
+            <div class="flex flex-col items-center">
                 <h2 class="text-lg sm:text-2xl md:text-3xl font-bold text-slate-800 mb-1 sm:mb-3">{{ __('Jumlah Judul Buku Berdasarkan Lokasi') }}</h2>
                 <div class="w-16 sm:w-24 h-1 bg-[#106c38] rounded-full"></div>
             </div>
-            <div class="flex-shrink-0 ml-3">
+            <div class="sm:absolute right-4 sm:right-6 lg:right-8 sm:top-1/2 sm:-translate-y-1/2 mt-4 sm:mt-0">
                 <button id="btn-toggle-locations" class="inline-flex items-center gap-1 sm:gap-2 bg-white hover:bg-slate-50 text-[#106c38] px-3 sm:px-6 py-1.5 sm:py-2.5 rounded-full font-bold text-[10px] sm:text-sm tracking-wider uppercase border-2 border-[#106c38]/20 hover:border-[#106c38] transition shadow-sm focus:outline-none cursor-pointer">
                     <span id="text-toggle-locations">{{ __('Lihat Semua') }}</span> 
                     <i class="ph ph-caret-down text-sm sm:text-lg transition-transform duration-300" id="icon-toggle-locations"></i>
@@ -632,18 +638,27 @@
                         <!-- Semua Lokasi -->
                         <div class="flex flex-col gap-1.5">
                             <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Lokasi') }}</label>
-                            <div class="relative flex items-center">
-                                <div class="absolute left-4 text-slate-400">
+                            <div class="relative w-full" id="spec-dropdown-lokasi-container">
+                                <div class="absolute left-4 text-slate-400 z-10 pointer-events-none top-1/2 -translate-y-1/2 flex items-center">
                                     <i class="ph ph-map-pin text-xl"></i>
                                 </div>
-                                <select name="inLokasi" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                    <option value="">{{ __('Semua Lokasi') }}</option>
+                                <button type="button" id="spec-dropdown-lokasi-trigger" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm flex items-center justify-between cursor-pointer select-none text-left">
+                                    <span id="spec-dropdown-lokasi-label">{{ __('Semua Lokasi') }}</span>
+                                    <i class="ph ph-caret-down text-sm text-slate-400"></i>
+                                </button>
+                                <input type="hidden" name="inLokasi" id="spec-dropdown-lokasi-value" value="">
+                                
+                                <div id="spec-dropdown-lokasi-menu" class="hidden absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-40 transition-all max-h-60 overflow-y-auto scrollbar-thin">
+                                    <button type="button" data-value="" class="spec-dropdown-lokasi-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Semua Lokasi') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
                                     @foreach($locations as $loc)
-                                        <option value="{{ $loc->code }}">{{ __($loc->name) }}</option>
+                                        <button type="button" data-value="{{ $loc->code }}" class="spec-dropdown-lokasi-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                            <span>{{ __($loc->name) }}</span>
+                                            <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                        </button>
                                     @endforeach
-                                </select>
-                                <div class="absolute right-4 pointer-events-none text-slate-400">
-                                    <i class="ph ph-caret-down text-sm"></i>
                                 </div>
                             </div>
                         </div>
@@ -651,20 +666,41 @@
                         <!-- Semua Jenis -->
                         <div class="flex flex-col gap-1.5">
                             <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Jenis Koleksi') }}</label>
-                            <div class="relative flex items-center">
-                                <div class="absolute left-4 text-slate-400">
+                            <div class="relative w-full" id="spec-dropdown-jenis-container">
+                                <div class="absolute left-4 text-slate-400 z-10 pointer-events-none top-1/2 -translate-y-1/2 flex items-center">
                                     <i class="ph ph-file-text text-xl"></i>
                                 </div>
-                                <select name="inJenis" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm appearance-none cursor-pointer">
-                                    <option value="">{{ __('Semua Jenis') }}</option>
-                                    <option value="buku">{{ __('Buku') }}</option>
-                                    <option value="jurnal">{{ __('Jurnal') }}</option>
-                                    <option value="majalah">{{ __('Majalah') }}</option>
-                                    <option value="skripsi">{{ __('Skripsi/Tesis/Disertasi') }}</option>
-                                    <option value="laporan_penelitian">{{ __('Laporan Penelitian') }}</option>
-                                </select>
-                                <div class="absolute right-4 pointer-events-none text-slate-400">
-                                    <i class="ph ph-caret-down text-sm"></i>
+                                <button type="button" id="spec-dropdown-jenis-trigger" class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200/80 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-600 font-medium text-sm flex items-center justify-between cursor-pointer select-none text-left">
+                                    <span id="spec-dropdown-jenis-label">{{ __('Semua Jenis') }}</span>
+                                    <i class="ph ph-caret-down text-sm text-slate-400"></i>
+                                </button>
+                                <input type="hidden" name="inJenis" id="spec-dropdown-jenis-value" value="">
+                                
+                                <div id="spec-dropdown-jenis-menu" class="hidden absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-40 transition-all">
+                                    <button type="button" data-value="" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Semua Jenis') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="buku" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Buku') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="jurnal" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Jurnal') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="majalah" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Majalah') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="skripsi" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Skripsi/Tesis/Disertasi') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
+                                    <button type="button" data-value="laporan_penelitian" class="spec-dropdown-jenis-option w-full text-left px-5 py-3 text-sm text-slate-700 hover:bg-green-50 hover:text-[#106c38] transition font-medium flex items-center justify-between">
+                                        <span>{{ __('Laporan Penelitian') }}</span>
+                                        <i class="ph ph-check text-[14px] check-icon hidden text-[#106c38]"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -735,17 +771,21 @@
                         <div class="relative inline-block text-left" id="modal-custom-dropdown">
                             <!-- Dropdown Trigger Button -->
                             <button type="button" id="modal-dropdown-trigger" class="flex items-center justify-between gap-4 bg-white border border-emerald-600/35 text-slate-700 text-xs font-bold rounded-full pl-4 pr-3 py-1.5 outline-none cursor-pointer hover:border-emerald-600 focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all shadow-sm min-w-[75px]">
-                                <span id="modal-dropdown-selected-label">10</span>
+                                <span id="modal-dropdown-selected-label">5</span>
                                 <i class="ph ph-caret-down text-[10px] text-slate-400"></i>
                             </button>
                             <!-- Hidden input to store value -->
-                            <input type="hidden" id="modal-hasil-perpage" value="10">
+                            <input type="hidden" id="modal-hasil-perpage" value="5">
                             
                             <!-- Dropdown Options Menu -->
                             <div id="modal-dropdown-menu" class="hidden absolute left-0 bottom-full mb-2 w-28 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-30 transition-all">
-                                <button type="button" data-value="10" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-bold text-[#106c38] bg-green-50/50 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
-                                    <span>10</span>
+                                <button type="button" data-value="5" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-bold text-[#106c38] bg-green-50/50 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                                    <span>5</span>
                                     <i class="ph ph-check text-[12px] modal-active-check"></i>
+                                </button>
+                                <button type="button" data-value="10" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
+                                    <span>10</span>
+                                    <i class="ph ph-check text-[12px] modal-active-check hidden"></i>
                                 </button>
                                 <button type="button" data-value="50" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
                                     <span>50</span>
@@ -806,6 +846,85 @@
                 }
             });
 
+            // Specific Search Modal: Custom Dropdowns Toggles & Handlers
+            const specLocTrigger = document.getElementById('spec-dropdown-lokasi-trigger');
+            const specLocMenu = document.getElementById('spec-dropdown-lokasi-menu');
+            const specLocLabel = document.getElementById('spec-dropdown-lokasi-label');
+            const specLocValue = document.getElementById('spec-dropdown-lokasi-value');
+            const specLocOpts = document.querySelectorAll('.spec-dropdown-lokasi-option');
+
+            const specJenisTrigger = document.getElementById('spec-dropdown-jenis-trigger');
+            const specJenisMenu = document.getElementById('spec-dropdown-jenis-menu');
+            const specJenisLabel = document.getElementById('spec-dropdown-jenis-label');
+            const specJenisValue = document.getElementById('spec-dropdown-jenis-value');
+            const specJenisOpts = document.querySelectorAll('.spec-dropdown-jenis-option');
+
+            function syncCheckIcons(options, activeVal) {
+                options.forEach(o => {
+                    const check = o.querySelector('.check-icon');
+                    if (!check) return;
+                    if (o.getAttribute('data-value') === activeVal) {
+                        check.classList.remove('hidden');
+                        o.classList.add('bg-green-50/50', 'text-[#106c38]', 'font-bold');
+                        o.classList.remove('text-slate-700', 'font-medium');
+                    } else {
+                        check.classList.add('hidden');
+                        o.classList.remove('bg-green-50/50', 'text-[#106c38]', 'font-bold');
+                        o.classList.add('text-slate-700', 'font-medium');
+                    }
+                });
+            }
+
+            // Init Check Icons
+            syncCheckIcons(specLocOpts, "");
+            syncCheckIcons(specJenisOpts, "");
+
+            if (specLocTrigger && specLocMenu) {
+                specLocTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    specLocMenu.classList.toggle('hidden');
+                    if (specJenisMenu) specJenisMenu.classList.add('hidden');
+                });
+
+                specLocOpts.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = opt.getAttribute('data-value');
+                        const labelText = opt.querySelector('span').innerText.trim();
+                        specLocLabel.innerText = labelText;
+                        specLocValue.value = val;
+                        syncCheckIcons(specLocOpts, val);
+                        specLocMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            if (specJenisTrigger && specJenisMenu) {
+                specJenisTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    specJenisMenu.classList.toggle('hidden');
+                    if (specLocMenu) specLocMenu.classList.add('hidden');
+                });
+
+                specJenisOpts.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = opt.getAttribute('data-value');
+                        const labelText = opt.querySelector('span').innerText.trim();
+                        specJenisLabel.innerText = labelText;
+                        specJenisValue.value = val;
+                        syncCheckIcons(specJenisOpts, val);
+                        specJenisMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            // Close spec menus on click outside
+            document.addEventListener('click', () => {
+                if (specLocMenu) specLocMenu.classList.add('hidden');
+                if (specJenisMenu) specJenisMenu.classList.add('hidden');
+            });
+
             // Location results modal toggles
             const modalHasil = document.getElementById('modal-hasil-lokasi');
             const modalHasilContent = document.getElementById('modal-hasil-content');
@@ -841,7 +960,7 @@
             let allCards = [];
             let filteredCards = [];
             let currentPage = 1;
-            let perPage = 10;
+            let perPage = 5;
 
             const searchInput = document.getElementById('modal-hasil-search');
             const clearSearchBtn = document.getElementById('modal-hasil-search-clear');
@@ -868,16 +987,16 @@
                     allCards = [];
                     filteredCards = [];
                     currentPage = 1;
-                    perPage = 10;
+                    perPage = 5;
                     if (perPageSelect) {
-                        perPageSelect.value = "10";
+                        perPageSelect.value = "5";
                         const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
                         const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
                         modalDropdownOptions.forEach(o => {
                             const val = o.getAttribute('data-value');
                             const check = o.querySelector('.modal-active-check');
-                            if (val === "10") {
+                            if (val === "5") {
                                 o.classList.remove('text-slate-600', 'font-semibold');
                                 o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
                                 if (check) check.classList.remove('hidden');
@@ -915,16 +1034,16 @@
                     allCards = [];
                     filteredCards = [];
                     currentPage = 1;
-                    perPage = 10;
+                    perPage = 5;
                     if (perPageSelect) {
-                        perPageSelect.value = "10";
+                        perPageSelect.value = "5";
                         const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
                         const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
                         modalDropdownOptions.forEach(o => {
                             const val = o.getAttribute('data-value');
                             const check = o.querySelector('.modal-active-check');
-                            if (val === "10") {
+                            if (val === "5") {
                                 o.classList.remove('text-slate-600', 'font-semibold');
                                 o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
                                 if (check) check.classList.remove('hidden');
@@ -965,16 +1084,16 @@
                     allCards = [];
                     filteredCards = [];
                     currentPage = 1;
-                    perPage = 10;
+                    perPage = 5;
                     if (perPageSelect) {
-                        perPageSelect.value = "10";
+                        perPageSelect.value = "5";
                         const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "10";
+                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
                         const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
                         modalDropdownOptions.forEach(o => {
                             const val = o.getAttribute('data-value');
                             const check = o.querySelector('.modal-active-check');
-                            if (val === "10") {
+                            if (val === "5") {
                                 o.classList.remove('text-slate-600', 'font-semibold');
                                 o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
                                 if (check) check.classList.remove('hidden');
@@ -1118,8 +1237,16 @@
                     displayCards = filteredCards.slice(startIndex, endIndex);
                 }
 
-                displayCards.forEach(card => {
-                    container.appendChild(card.cloneNode(true));
+                displayCards.forEach((card, index) => {
+                    const cloned = card.cloneNode(true);
+                    const numberingEl = cloned.querySelector('.text-slate-200');
+                    if (numberingEl) {
+                        const itemNumber = (perPage === 'all') 
+                            ? (index + 1) 
+                            : ((currentPage - 1) * perPage + index + 1);
+                        numberingEl.innerText = String(itemNumber).padStart(2, '0');
+                    }
+                    container.appendChild(cloned);
                 });
 
                 if (paginationEl) {
@@ -1145,11 +1272,14 @@
                     }
                     paginationEl.appendChild(prevBtn);
 
-                    // Page buttons (max 5 buttons sliding window)
-                    let startPage = Math.max(1, currentPage - 2);
-                    let endPage = Math.min(totalPages, startPage + 4);
-                    if (endPage - startPage < 4) {
-                        startPage = Math.max(1, endPage - 4);
+                    // Page buttons (max 5 buttons on desktop, 4 on mobile/HP)
+                    const isMobile = window.innerWidth < 640;
+                    const maxButtons = isMobile ? 4 : 5;
+                    const half = Math.floor(maxButtons / 2);
+                    let startPage = Math.max(1, currentPage - (maxButtons - 1 - half));
+                    let endPage = Math.min(totalPages, startPage + (maxButtons - 1));
+                    if (endPage - startPage < (maxButtons - 1)) {
+                        startPage = Math.max(1, endPage - (maxButtons - 1));
                     }
 
                     for (let i = startPage; i <= endPage; i++) {
@@ -1423,47 +1553,94 @@
 
                 // Initialize
                 updateNewestCarousel();
-                startNewestAutoPlay();
+                if (window.innerWidth >= 1024) {
+                    startNewestAutoPlay();
+                }
 
                 // Pause on hover
                 const carouselTrack = document.getElementById('carousel-koleksi-track');
                 if (carouselTrack) {
-                    carouselTrack.addEventListener('mouseenter', () => clearInterval(newestAutoScroll));
-                    carouselTrack.addEventListener('mouseleave', resetNewestAutoPlay);
+                    carouselTrack.addEventListener('mouseenter', () => {
+                        if (window.innerWidth >= 1024) clearInterval(newestAutoScroll);
+                    });
+                    carouselTrack.addEventListener('mouseleave', () => {
+                        if (window.innerWidth >= 1024) resetNewestAutoPlay();
+                    });
                 }
 
-                // ── Touch / Pointer Swipe ─────────────────────────────────────────
-                // Uses Pointer Events (works on both touch and mouse).
-                // We listen on the carousel wrapper so ANY touch inside it counts.
+                // Window resize handler to toggle auto scroll based on screen width
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth >= 1024) {
+                        if (!newestAutoScroll) startNewestAutoPlay();
+                    } else {
+                        if (newestAutoScroll) {
+                            clearInterval(newestAutoScroll);
+                            newestAutoScroll = null;
+                        }
+                    }
+                });
+
+                // ── Touch / Pointer Swipe with Velocity (All Screens) ─────────────
                 const carouselWrapper = carouselTrack ? carouselTrack.parentElement : null;
 
                 if (carouselWrapper) {
                     let pStartX = 0;
                     let pStartY = 0;
-                    let pMoved  = false;          // did the pointer move significantly?
+                    let pStartTime = 0;
+                    let pMoved  = false;
                     let pIsTouch = false;
-                    const SWIPE_MIN = 40;         // px horizontal distance to count as swipe
+                    const SWIPE_MIN = 40;
+
+                    // Prevent native browser link/image dragging to avoid cancelling pointers
+                    carouselWrapper.querySelectorAll('a, img').forEach(el => {
+                        el.setAttribute('draggable', 'false');
+                    });
+                    carouselWrapper.addEventListener('dragstart', (e) => {
+                        e.preventDefault();
+                    });
 
                     carouselWrapper.addEventListener('pointerdown', (e) => {
-                        pIsTouch = e.pointerType === 'touch' || e.pointerType === 'pen';
+                        pIsTouch = e.pointerType === 'touch' || e.pointerType === 'pen' || e.pointerType === 'mouse';
                         pStartX = e.clientX;
                         pStartY = e.clientY;
+                        pStartTime = Date.now();
                         pMoved  = false;
                     }, { passive: true });
 
                     carouselWrapper.addEventListener('pointermove', (e) => {
-                        if (!pIsTouch) return;
                         const dx = Math.abs(e.clientX - pStartX);
                         const dy = Math.abs(e.clientY - pStartY);
                         if (dx > 8 && dx > dy) pMoved = true;
                     }, { passive: true });
 
                     carouselWrapper.addEventListener('pointerup', (e) => {
-                        if (!pIsTouch) return;
                         const dx = e.clientX - pStartX;
-                        if (pMoved && Math.abs(dx) >= SWIPE_MIN) {
-                            if (dx < 0) newestNextSlide();
-                            else        newestPrevSlide();
+                        const duration = Date.now() - pStartTime;
+                        const distance = Math.abs(dx);
+                        
+                        if (pMoved && distance >= SWIPE_MIN) {
+                            const velocity = distance / duration;
+                            
+                            // On mobile/tablet, support scrolling multiple slides if swiped quickly
+                            let slidesToScroll = 1;
+                            if (window.innerWidth < 1024) {
+                                if (velocity > 1.2) {
+                                    slidesToScroll = 3;
+                                } else if (velocity > 0.6) {
+                                    slidesToScroll = 2;
+                                }
+                            }
+
+                            let count = 0;
+                            function stepScroll() {
+                                if (count < slidesToScroll) {
+                                    if (dx < 0) newestNextSlide();
+                                    else newestPrevSlide();
+                                    count++;
+                                    setTimeout(stepScroll, 120); // clean rolling delay for stacked cards
+                                }
+                            }
+                            stepScroll();
                             resetNewestAutoPlay();
                         }
                         pMoved = false;
@@ -1473,13 +1650,12 @@
                         pMoved = false;
                     }, { passive: true });
 
-                    // Block click-through navigation when the pointer moved (swipe, not tap)
                     carouselWrapper.addEventListener('click', (e) => {
                         if (pMoved) {
                             e.preventDefault();
                             e.stopImmediatePropagation();
                         }
-                    }, true /* capture phase, runs before app.js handler */);
+                    }, true);
                 }
             }
             // Location grid toggle functionality
