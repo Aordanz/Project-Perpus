@@ -81,20 +81,20 @@
         $availableCopies = $book->items->where('status', 'Tersedia')->count();
         $borrowedCopies = $totalCopies - $availableCopies;
     @endphp
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+    <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         
         <!-- Back button (Below Navbar) -->
-        <div class="mb-6 md:hidden">
+        <div class="mb-6 lg:hidden">
             <button onclick="history.back()" class="inline-flex items-center gap-2 text-[#106c38] hover:text-[#064e3b] transition text-sm font-bold bg-[#106c38]/5 hover:bg-[#106c38]/10 px-4 py-2 rounded-lg border border-[#106c38]/10 cursor-pointer">
                 <i class="ph ph-arrow-left"></i> {{ __('Kembali') }}
             </button>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 xl:gap-8">
             <!-- Left Side: Book Cover & Quick Status -->
-            <div class="md:col-span-1 space-y-6">
+            <div class="lg:col-span-1 space-y-6">
                 <!-- Book Cover Card -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 flex flex-col items-center shadow-sm w-full max-w-sm md:max-w-none mx-auto">
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 flex flex-col items-center shadow-sm w-full max-w-[280px] mx-auto">
                     @php
                         $allImages = [];
                         if ($book->cover_image) {
@@ -107,7 +107,7 @@
                         }
                     @endphp
 
-                    <div class="relative w-44 sm:w-48 aspect-[2/3] mb-6 group select-none">
+                    <div class="relative w-full aspect-[2/3] mb-6 group select-none">
                         <!-- Cover Container -->
                         <div class="w-full h-full bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow relative">
                             @if(count($allImages) > 0)
@@ -133,12 +133,12 @@
                         </div>
 
                         @if(count($allImages) > 1)
-                            <!-- Navigation buttons (positioned outside the cover image, left and right) -->
-                            <button type="button" id="btn-slide-prev" class="absolute -left-5 top-1/2 -translate-y-1/2 bg-white hover:bg-slate-50 text-slate-800 hover:text-[#106c38] w-8 h-8 rounded-full flex items-center justify-center transition z-20 cursor-pointer border border-slate-200 shadow-lg text-sm opacity-95 hover:opacity-100">
-                                <i class="ph ph-caret-left-bold"></i>
+                            <!-- Navigation buttons (positioned inside the cover image, left and right) -->
+                            <button type="button" id="btn-slide-prev" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full w-8 h-8 flex items-center justify-center transition-all z-20 cursor-pointer shadow-md opacity-90 hover:opacity-100">
+                                <i class="ph ph-caret-left text-base font-bold"></i>
                             </button>
-                            <button type="button" id="btn-slide-next" class="absolute -right-5 top-1/2 -translate-y-1/2 bg-white hover:bg-slate-50 text-slate-800 hover:text-[#106c38] w-8 h-8 rounded-full flex items-center justify-center transition z-20 cursor-pointer border border-slate-200 shadow-lg text-sm opacity-95 hover:opacity-100">
-                                <i class="ph ph-caret-right-bold"></i>
+                            <button type="button" id="btn-slide-next" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full w-8 h-8 flex items-center justify-center transition-all z-20 cursor-pointer shadow-md opacity-90 hover:opacity-100">
+                                <i class="ph ph-caret-right text-base font-bold"></i>
                             </button>
 
                             <!-- Navigation dots indicator -->
@@ -179,8 +179,8 @@
                     @endif --}}
                 </div>
 
-                <!-- Contact / Help info -->
-                <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 text-white shadow-sm flex flex-col gap-3">
+                <!-- Contact / Help info (Desktop only) -->
+                <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 text-white shadow-sm hidden lg:flex flex-col gap-3">
                     <i class="ph ph-info text-2xl text-green-200"></i>
                     <h4 class="font-bold text-sm">{{ __('Butuh bantuan mencari buku?') }}</h4>
                     <p class="text-xs text-green-100/80 leading-relaxed">
@@ -190,7 +190,7 @@
             </div>
 
             <!-- Right Side: Detailed Tables inside Tabs -->
-            <div class="md:col-span-2 space-y-6">
+            <div class="lg:col-span-3 space-y-6">
                 <!-- Book Title header -->
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-sm">
                     <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[10px] font-bold px-3 py-1 rounded-full mb-3 tracking-wider uppercase">
@@ -339,6 +339,15 @@
                             </table>
                         </div>
                     </div>
+                </div>
+
+                <!-- Contact / Help info (Mobile only) -->
+                <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 text-white shadow-sm flex lg:hidden flex-col gap-3">
+                    <i class="ph ph-info text-2xl text-green-200"></i>
+                    <h4 class="font-bold text-sm">{{ __('Butuh bantuan mencari buku?') }}</h4>
+                    <p class="text-xs text-green-100/80 leading-relaxed">
+                        {{ __('Silakan hubungi pustakawan kami di meja informasi atau gunakan layanan pesan instan perpustakaan untuk memandu pencarian Anda di rak buku.') }}
+                    </p>
                 </div>
             </div>
         </div>

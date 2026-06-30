@@ -106,7 +106,7 @@ class BookController extends Controller
      */
     public function indexJudulShow(Request $request, $initial)
     {
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 5);
         $query = Book::with(['items.location'])
             ->where('title', 'like', $initial . '%');
 

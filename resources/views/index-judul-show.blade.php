@@ -85,15 +85,41 @@
             </h2>
             <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
                 <span>{{ __('Tampilkan:') }}</span>
-                <div class="relative">
-                    <select onchange="window.location.href=this.value" class="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-full pl-4 pr-9 py-2 focus:outline-none focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] shadow-sm cursor-pointer transition-all hover:border-slate-300">
-                        @foreach([10, 20, 50, 100] as $val)
-                            <option value="{{ request()->fullUrlWithQuery(['per_page' => $val, 'page' => 1]) }}" {{ ($perPage == $val && $perPage !== 'all') ? 'selected' : '' }}>{{ $val }}</option>
-                        @endforeach
-                        <option value="{{ request()->fullUrlWithQuery(['per_page' => 'all', 'page' => 1]) }}" {{ $perPage === 'all' ? 'selected' : '' }}>{{ __('Semua') }}</option>
-                    </select>
-                    <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px] font-bold"></i>
+            <div class="relative">
+                <!-- Dropdown Trigger Button -->
+                <button type="button" id="per-page-dropdown-trigger" class="flex items-center justify-between gap-4 bg-white border border-emerald-600/35 text-slate-700 text-xs font-bold rounded-full pl-4 pr-3 py-1.5 outline-none cursor-pointer hover:border-emerald-600 focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all shadow-sm min-w-[75px]">
+                    <span id="per-page-selected-label">
+                        @if($perPage === 'all')
+                            {{ __('Semua') }}
+                        @else
+                            {{ $perPage }}
+                        @endif
+                    </span>
+                    <i class="ph ph-caret-down text-[10px] text-slate-400"></i>
+                </button>
+                
+                <!-- Dropdown Options Menu -->
+                <div id="per-page-dropdown-menu" class="hidden absolute right-0 top-full mt-2 w-28 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-50 transition-all">
+                    @foreach([5, 10, 20, 50, 100] as $val)
+                        @php
+                            $isSelected = ($perPage == $val && $perPage !== 'all');
+                        @endphp
+                        <a href="{{ request()->fullUrlWithQuery(['per_page' => $val, 'page' => 1]) }}" 
+                           class="w-full text-left px-4 py-2.5 text-xs font-bold transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] bg-green-50/50 hover:bg-green-50' : 'text-slate-600 hover:bg-green-50 hover:text-[#106c38]' }}">
+                            <span>{{ $val }}</span>
+                            <i class="ph ph-check text-[12px] {{ $isSelected ? '' : 'hidden' }}"></i>
+                        </a>
+                    @endforeach
+                    @php
+                        $isAllSelected = ($perPage === 'all');
+                    @endphp
+                    <a href="{{ request()->fullUrlWithQuery(['per_page' => 'all', 'page' => 1]) }}" 
+                       class="w-full text-left px-4 py-2.5 text-xs font-bold transition flex items-center justify-between {{ $isAllSelected ? 'text-[#106c38] bg-green-50/50 hover:bg-green-50' : 'text-slate-600 hover:bg-green-50 hover:text-[#106c38]' }}">
+                        <span>{{ __('Semua') }}</span>
+                        <i class="ph ph-check text-[12px] {{ $isAllSelected ? '' : 'hidden' }}"></i>
+                    </a>
                 </div>
+            </div>
             </div>
         </div>
 
@@ -276,5 +302,25 @@
             <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold text-xs uppercase tracking-wider">Back</span>
         </div>
     </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const trigger = document.getElementById('per-page-dropdown-trigger');
+            const menu = document.getElementById('per-page-dropdown-menu');
+
+            if (trigger && menu) {
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+                        menu.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

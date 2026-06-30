@@ -115,6 +115,24 @@
             @endphp
 
             <style>
+                .cat-collapsible {
+                    display: none !important;
+                }
+                @media (min-width: 640px) {
+                    .cat-collapsible.sm-visible {
+                        display: inline-flex !important;
+                    }
+                }
+                @media (min-width: 768px) {
+                    .cat-collapsible.md-visible {
+                        display: inline-flex !important;
+                    }
+                }
+                @media (min-width: 1024px) {
+                    .cat-collapsible.lg-visible {
+                        display: inline-flex !important;
+                    }
+                }
                 .expanded-mode .cat-collapsible {
                     display: inline-flex !important;
                 }
@@ -130,10 +148,10 @@
                     @php 
                         $isActive = $activeCategory === $cat['name']; 
                         $visibilityClass = '';
-                        if ($index >= 2 && $index < 4) $visibilityClass = 'hidden sm:inline-flex cat-collapsible';
-                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'hidden md:inline-flex cat-collapsible';
-                        elseif ($index >= 6 && $index < 9) $visibilityClass = 'hidden lg:inline-flex cat-collapsible';
-                        elseif ($index >= 9) $visibilityClass = 'hidden xl:inline-flex cat-collapsible';
+                        if ($index >= 2 && $index < 4) $visibilityClass = 'cat-collapsible sm-visible';
+                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'cat-collapsible md-visible';
+                        elseif ($index >= 6 && $index < 9) $visibilityClass = 'cat-collapsible lg-visible';
+                        elseif ($index >= 9) $visibilityClass = 'cat-collapsible';
                     @endphp
                     <a href="{{ route('galeri', ['category' => $cat['name'], 'q' => request('q')]) }}" 
                        class="category-bubble {{ $visibilityClass ?: 'inline-flex' }} items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
@@ -242,6 +260,21 @@
                     });
                 }
             }
+
+            // Event delegation for custom per-page dropdown in gallery
+            document.addEventListener('click', function(e) {
+                const trigger = document.getElementById('per-dropdown-trigger');
+                const menu = document.getElementById('per-dropdown-menu');
+                
+                if (trigger && menu) {
+                    if (trigger.contains(e.target)) {
+                        e.stopPropagation();
+                        menu.classList.toggle('hidden');
+                    } else if (!menu.contains(e.target)) {
+                        menu.classList.add('hidden');
+                    }
+                }
+            });
         });
     </script>
 
