@@ -44,11 +44,19 @@
         }
         .result-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
         }
         .result-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.05), 0 8px 8px -5px rgba(0, 0, 0, 0.02);
             border-color: #106c38/30;
+        }
+        .result-card h3 a::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 10;
         }
     </style>
 </head>
@@ -76,8 +84,7 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
 
         

@@ -90,14 +90,27 @@
         <div class="flex items-center gap-3">
             <span class="text-sm font-semibold text-slate-500">{{ __('Tampilkan:') }}</span>
             <div class="relative">
-                <select onchange="window.location.href=this.value" class="appearance-none bg-white border border-slate-200 text-slate-700 text-sm font-bold rounded-full pl-5 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] shadow-sm cursor-pointer transition-colors hover:border-slate-300">
+                <!-- Dropdown Trigger Button -->
+                <button type="button" id="per-dropdown-trigger" class="flex items-center justify-between gap-4 bg-white border border-emerald-600/35 text-slate-700 text-xs font-bold rounded-full pl-4 pr-3 py-1.5 outline-none cursor-pointer hover:border-emerald-600 focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all shadow-sm min-w-[75px]">
+                    <span id="per-selected-label">
+                        {{ $perPage }}
+                    </span>
+                    <i class="ph ph-caret-down text-[10px] text-slate-400"></i>
+                </button>
+                
+                <!-- Dropdown Options Menu -->
+                <div id="per-dropdown-menu" class="hidden absolute left-0 bottom-full mb-2 w-28 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-50 transition-all">
                     @foreach([10, 24, 48, 100] as $val)
-                        <option value="{{ request()->fullUrlWithQuery(['per' => $val, 'page' => 1]) }}" {{ $perPage == $val ? 'selected' : '' }}>
-                            {{ $val }}
-                        </option>
+                        @php
+                            $isSelected = ($perPage == $val);
+                        @endphp
+                        <a href="{{ request()->fullUrlWithQuery(['per' => $val, 'page' => 1]) }}" 
+                           class="w-full text-left px-4 py-2.5 text-xs font-bold transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] bg-green-50/50 hover:bg-green-50' : 'text-slate-600 hover:bg-green-50 hover:text-[#106c38]' }}">
+                            <span>{{ $val }}</span>
+                            <i class="ph ph-check text-[12px] {{ $isSelected ? '' : 'hidden' }}"></i>
+                        </a>
                     @endforeach
-                </select>
-                <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs font-bold"></i>
+                </div>
             </div>
         </div>
 

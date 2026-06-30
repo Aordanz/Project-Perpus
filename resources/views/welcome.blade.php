@@ -376,7 +376,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-10 relative flex flex-col items-center justify-center text-center">
             <div class="flex flex-col items-center">
                 <h2 class="text-lg sm:text-2xl md:text-3xl font-bold text-slate-800 mb-1 sm:mb-3">{{ __('Jumlah Judul Buku Berdasarkan Lokasi') }}</h2>
-                <div class="w-16 sm:w-24 h-1 bg-[#106c38] rounded-full"></div>
+                <!-- <div class="w-16 sm:w-24 h-1 bg-[#106c38] rounded-full"></div> -->
             </div>
             <div class="sm:absolute right-4 sm:right-6 lg:right-8 sm:top-1/2 sm:-translate-y-1/2 mt-4 sm:mt-0">
                 <button id="btn-toggle-locations" class="inline-flex items-center gap-1 sm:gap-2 bg-white hover:bg-slate-50 text-[#106c38] px-3 sm:px-6 py-1.5 sm:py-2.5 rounded-full font-bold text-[10px] sm:text-sm tracking-wider uppercase border-2 border-[#106c38]/20 hover:border-[#106c38] transition shadow-sm focus:outline-none cursor-pointer">
@@ -504,11 +504,19 @@
         }
         .result-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
         }
         .result-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.05), 0 8px 8px -5px rgba(0, 0, 0, 0.02);
             border-color: rgba(16, 108, 56, 0.3);
+        }
+        .result-card h3 a::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 10;
         }
     </style>
 

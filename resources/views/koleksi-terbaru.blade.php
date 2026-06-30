@@ -51,70 +51,112 @@
 
     @include('partials.navbar')
 
-    <!-- Main Content Area -->
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
-        
-
-
-        <div class="text-center mb-8">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight" style="font-family: 'Outfit', sans-serif;">{{ __('Koleksi Terbaru') }}</h2>
-        </div>
-
-        <!-- Helper Functions and Subject Mapping -->
-        @php
-            // Dynamically gather only the BIG categories that exist in the loaded books
-            $existingBigCategories = $latestBooks->map(function($book) {
-                return $book->category ?: 'Umum';
-            })->unique()->filter()->values();
-        @endphp
-
-        <!-- Student-Friendly Search & Filter Panel -->
-        <div class="mb-8 max-w-2xl mx-auto">
-            <!-- Search Row (Modern Rounded-Full Layout) -->
-            <div class="flex items-center gap-3">
-                <!-- Search Input -->
-                <div class="relative flex-grow shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                        <i class="ph ph-magnifying-glass text-lg"></i>
+    <!-- Header Section -->
+    <div class="relative pt-24 pb-16 overflow-hidden bg-white shadow-sm mb-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center border border-green-100">
+                        <i class="ph ph-book-open text-2xl font-bold"></i>
                     </div>
-                    <input type="text" id="live-search" placeholder="{{ __('Ketik kata kunci untuk mencari (judul, pengarang, penerbit)...') }}" 
-                        class="w-full pl-11 pr-4 py-2.5 text-sm bg-white border border-slate-200 rounded-full outline-none focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all placeholder:text-slate-400">
+                    <div>
+                        <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight" style="font-family: 'Outfit', sans-serif;">{{ __('Koleksi Terbaru') }}</h1>
+                        <p class="text-sm text-slate-500 font-medium">{{ __('Jelajahi seluruh koleksi literatur terbaru kami.') }}</p>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="w-full md:w-96 relative">
+                    <input type="text" id="live-search" placeholder="{{ __('Cari Koleksi Terbaru...') }}" 
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-0 rounded-xl focus:ring-2 focus:ring-[#106c38]/20 focus:bg-white transition-all text-sm font-medium outline-none">
+                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                        <i class="ph ph-magnifying-glass text-lg font-bold"></i>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+
+        <!-- Helper Functions and Subject Mapping -->
+        @php
+            $preferredOrder = [
+                'Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora',
+                'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik',
+                'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'
+            ];
+
+            $existingBigCategories = $preferredOrder;
+
+            $iconMap = [
+                'Umum' => 'ph-books',
+                'Agama' => 'ph-mosque',
+                'Kesehatan & Kedokteran' => 'ph-stethoscope',
+                'Sains & Teknologi' => 'ph-rocket',
+                'Sosial & Humaniora' => 'ph-users-three',
+                'Hukum' => 'ph-scales',
+                'Ekonomi & Bisnis' => 'ph-chart-line-up',
+                'Pertanian & Kehutanan' => 'ph-tree',
+                'Matematika & IPA' => 'ph-calculator',
+                'Teknik' => 'ph-wrench',
+                'Sastra & Bahasa' => 'ph-translate',
+                'Komputer & Informatika' => 'ph-desktop',
+                'Seni & Desain' => 'ph-palette',
+                'Sejarah & Geografi' => 'ph-globe',
+            ];
+        @endphp
 
         <!-- Dynamic Quick Filter Chips -->
-        <div class="mb-8 max-w-5xl mx-auto px-2">
+        <div class="mb-8 max-w-6xl mx-auto px-2">
             <style>
+                .chip-collapsible {
+                    display: none !important;
+                }
+                @media (min-width: 640px) {
+                    .chip-collapsible.sm-visible {
+                        display: inline-flex !important;
+                    }
+                }
+                @media (min-width: 768px) {
+                    .chip-collapsible.md-visible {
+                        display: inline-flex !important;
+                    }
+                }
+                @media (min-width: 1024px) {
+                    .chip-collapsible.lg-visible {
+                        display: inline-flex !important;
+                    }
+                }
                 .expanded-mode .chip-collapsible {
-                    display: block !important;
+                    display: inline-flex !important;
                 }
             </style>
-            <div id="chips-container" class="flex flex-wrap gap-2 mb-2 justify-center items-center">
-                <button data-filter="all" class="filter-chip active-chip px-4 py-2 text-xs font-bold rounded-full transition-all border border-[#106c38] bg-[#106c38] text-white shadow-sm whitespace-nowrap cursor-pointer">
-                    {{ __('Semua Buku') }}
+            <div id="chips-container" class="flex flex-wrap gap-2 sm:gap-3 mb-2 justify-center items-center">
+                <button data-filter="all" class="filter-chip active-chip bg-green-50 border-[#106c38] text-[#106c38] font-bold inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all text-xs sm:text-sm shadow-sm whitespace-nowrap cursor-pointer">
+                    <i class="ph ph-squares-four text-base sm:text-lg"></i> {{ __('Semua Kategori') }}
                 </button>
-                <button data-filter="available" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
-                    {{ __('Tersedia Sekarang') }}
-                </button>
-                
+
                 @foreach($existingBigCategories as $index => $cat)
                     @php
                         $visibilityClass = '';
-                        if ($index >= 2 && $index < 4) $visibilityClass = 'hidden sm:block chip-collapsible';
-                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'hidden md:block chip-collapsible';
-                        elseif ($index >= 6 && $index < 9) $visibilityClass = 'hidden lg:block chip-collapsible';
-                        elseif ($index >= 9) $visibilityClass = 'hidden xl:block chip-collapsible';
+                        if ($index >= 2 && $index < 4) $visibilityClass = 'chip-collapsible sm-visible';
+                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'chip-collapsible md-visible';
+                        elseif ($index >= 6 && $index < 9) $visibilityClass = 'chip-collapsible lg-visible';
+                        elseif ($index >= 9) $visibilityClass = 'chip-collapsible';
+
+                        $iconClass = $iconMap[$cat] ?? 'ph-books';
                     @endphp
                     <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
-                        class="filter-chip {{ $visibilityClass ?: 'block' }} px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
-                        {{ __($cat) }}
+                        class="filter-chip {{ $visibilityClass ?: 'inline-flex' }} bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38] items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all text-xs sm:text-sm shadow-sm whitespace-nowrap cursor-pointer">
+                        <i class="ph {{ $iconClass }} text-base sm:text-lg"></i> {{ __($cat) }}
                     </button>
                 @endforeach
 
                 <!-- Toggle Button -->
                 @if(count($existingBigCategories) > 2)
-                    <button id="toggle-chips-btn" class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-full transition-all border border-[#106c38]/30 bg-white text-[#106c38] hover:border-[#106c38] hover:text-[#0b4d27] shadow-sm flex items-center gap-1 cursor-pointer">
+                    <button id="toggle-chips-btn" class="flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] flex items-center gap-1 transition-colors bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] cursor-pointer">
                         <span id="toggle-chips-text">{{ __('Lainnya') }}</span>
                         <i id="toggle-chips-icon" class="ph ph-caret-down transition-transform duration-300"></i>
                     </button>
@@ -125,7 +167,7 @@
         <!-- Collections Header Count -->
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">
-                <span id="collections-heading-label">{{ __('Semua Buku') }}</span> (<span id="visible-count">{{ count($latestBooks) }}</span> {{ __('Koleksi') }})
+                <span id="collections-heading-label">{{ __('Semua Kategori') }}</span> (<span id="visible-count">{{ count($latestBooks) }}</span> {{ __('Koleksi') }})
             </h2>
         </div>
 
@@ -377,7 +419,7 @@
                 // Update heading label text dynamically
                 if (headingLabel) {
                     if (activeFilter === 'all') {
-                        headingLabel.textContent = "{{ __('Semua Buku') }}";
+                        headingLabel.textContent = "{{ __('Semua Kategori') }}";
                     } else if (activeFilter === 'available') {
                         headingLabel.textContent = "{{ __('Buku Tersedia Sekarang') }}";
                     } else if (activeFilter === 'subject') {
@@ -487,12 +529,12 @@
             filterChips.forEach(chip => {
                 chip.addEventListener('click', () => {
                     filterChips.forEach(c => {
-                        c.classList.remove('active-chip', 'bg-[#106c38]', 'text-white', 'border-[#106c38]', 'font-bold');
-                        c.classList.add('bg-white', 'text-slate-600', 'border-slate-200', 'font-semibold');
+                        c.classList.remove('active-chip', 'bg-green-50', 'border-[#106c38]', 'text-[#106c38]', 'font-bold');
+                        c.classList.add('bg-white', 'border-slate-200', 'text-slate-700', 'font-medium');
                     });
                     
-                    chip.classList.remove('bg-white', 'text-slate-600', 'border-slate-200', 'font-semibold');
-                    chip.classList.add('active-chip', 'bg-[#106c38]', 'text-white', 'border-[#106c38]', 'font-bold');
+                    chip.classList.remove('bg-white', 'border-slate-200', 'text-slate-700', 'font-medium');
+                    chip.classList.add('active-chip', 'bg-green-50', 'border-[#106c38]', 'text-[#106c38]', 'font-bold');
 
                     const filterType = chip.getAttribute('data-filter');
                     activeFilter = filterType;
