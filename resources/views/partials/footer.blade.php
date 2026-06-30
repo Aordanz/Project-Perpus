@@ -118,14 +118,14 @@
     
     <!-- Chat Window -->
     <div id="ai-chat-window" class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-[320px] h-[400px] mb-4 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right scale-0 opacity-0 pointer-events-auto">
-        <!-- Header -->
-        <div class="bg-[#106c38] text-white p-3.5 flex items-center justify-between shadow-sm">
+        <!-- Header (draggable) -->
+        <div id="ai-chat-header" class="bg-[#106c38] text-white p-3.5 flex items-center justify-between shadow-sm cursor-grab active:cursor-grabbing select-none">
             <div class="flex items-center gap-2 sm:gap-3">
                 <button id="ai-expand-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none" title="Perbesar Layar">
                     <i class="ph ph-corners-out text-lg" id="ai-expand-icon"></i>
                 </button>
                 <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <i class="ph ph-robot text-xl"></i>
+                    <i class="ph ph-headset text-xl"></i>
                 </div>
                 <div>
                     <h4 class="font-bold text-sm tracking-wide">USU Library AI</h4>
@@ -142,7 +142,7 @@
             <!-- Initial Message -->
             <div class="flex items-start gap-2 max-w-[90%]">
                 <div class="w-6 h-6 rounded-full bg-[#106c38] text-white flex items-center justify-center flex-shrink-0 mt-1">
-                    <i class="ph ph-robot text-xs"></i>
+                    <i class="ph ph-headset text-xs"></i>
                 </div>
                 <div class="flex flex-col gap-1 w-full">
                     <div class="bg-white border border-slate-200 text-slate-700 pl-3 pr-3 pt-2 pb-7 rounded-2xl rounded-tl-sm shadow-sm text-[13px] leading-relaxed relative group">
@@ -184,26 +184,30 @@
     </div>
 
     <!-- Intro Bubble -->
-    <div id="ai-intro-bubble" class="bg-white text-slate-800 px-4 py-3 rounded-2xl rounded-br-sm shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15),_0_8px_10px_-6px_rgba(0,0,0,0.15)] text-xs font-medium mb-3.5 transition-all duration-500 scale-0 opacity-0 origin-bottom-right flex items-center gap-3 border border-slate-200 pointer-events-auto max-w-[280px]">
-        <div class="w-8 h-8 rounded-full bg-[#F3C300] text-[#106c38] flex items-center justify-center flex-shrink-0 font-bold shadow-sm animate-bounce">
-            <i class="ph ph-robot text-lg"></i>
+    <div id="ai-intro-bubble" class="relative mb-4 mr-2 transition-all duration-500 scale-0 opacity-0 origin-bottom-right pointer-events-auto">
+        <div class="bg-white text-slate-800 px-4 py-3.5 rounded-[18px] text-xs font-medium flex items-center gap-3 max-w-[280px] relative shadow-[0_2px_16px_rgba(0,0,0,0.12)]">
+            <div class="w-9 h-9 rounded-full bg-[#F3C300] text-[#106c38] flex items-center justify-center flex-shrink-0 font-bold">
+                <i class="ph ph-headset text-lg"></i>
+            </div>
+            <div class="flex-grow min-w-0">
+                <p class="font-bold text-[#106c38] text-[11px] mb-0.5">{{ __('USU Library AI') }}</p>
+                <p class="text-slate-500 text-[10px] leading-relaxed">{{ __('Ada yang bisa dibantu? Tanya asisten AI di sini!') }}</p>
+            </div>
+            <button id="ai-close-bubble-btn" class="text-slate-300 hover:text-slate-500 transition-colors focus:outline-none ml-0.5 cursor-pointer self-start mt-0.5">
+                <i class="ph ph-x text-[10px]"></i>
+            </button>
         </div>
-        <div class="flex-grow">
-            <p class="font-bold text-[#106c38] text-[11px] mb-0.5">{{ __('USU Library AI') }}</p>
-            <p class="text-slate-600 text-[10px] leading-tight">{{ __('Ada yang bisa dibantu? Tanya asisten AI di sini!') }}</p>
-        </div>
-        <button id="ai-close-bubble-btn" class="text-slate-400 hover:text-slate-600 transition-colors focus:outline-none ml-1 cursor-pointer">
-            <i class="ph ph-x text-xs"></i>
-        </button>
+        <!-- Speech bubble tail (bottom-right, curved like classic comic bubble) -->
+        <svg class="absolute -bottom-[14px] right-[18px] w-[24px] h-[16px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.06)]" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0 C4 0, 8 0, 12 0 C12 4, 14 10, 24 16 C16 14, 8 10, 4 6 C2 4, 0 2, 0 0 Z" fill="white"/>
+        </svg>
     </div>
 
     <!-- Toggle Button -->
     <div id="ai-toggle-wrapper" class="relative pointer-events-auto group">
-        <!-- Pulse Aura -->
-        <span id="ai-pulse-ring" class="absolute inset-0 rounded-full bg-[#F3C300]/40 animate-ping opacity-75"></span>
         <!-- Main Button -->
         <button id="ai-toggle-btn" class="relative w-14 h-14 rounded-full bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transition-all focus:outline-none border-4 border-white cursor-pointer z-10">
-            <i class="ph ph-robot text-2xl"></i>
+            <i class="ph ph-chat-circle-dots text-2xl"></i>
         </button>
     </div>
 </div>
@@ -289,8 +293,107 @@
             });
         }
 
-        // Trigger showIntroBubble after 2 seconds
-        setTimeout(showIntroBubble, 2000);
+        // Trigger showIntroBubble after 2 seconds only on first visit per session
+        if (!sessionStorage.getItem('chatbotIntroSeen')) {
+            setTimeout(showIntroBubble, 2000);
+            sessionStorage.setItem('chatbotIntroSeen', 'true');
+        }
+
+        // --- Drag-to-move logic ---
+        const chatHeader = document.getElementById('ai-chat-header');
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let hasDragPosition = false;
+
+        function resetDragPosition() {
+            chatWindow.style.position = '';
+            chatWindow.style.left = '';
+            chatWindow.style.top = '';
+            chatWindow.style.right = '';
+            chatWindow.style.bottom = '';
+            hasDragPosition = false;
+        }
+
+        if (chatHeader) {
+            chatHeader.addEventListener('mousedown', (e) => {
+                // Don't drag if clicking buttons inside header or if expanded
+                if (e.target.closest('button') || chatWindow.classList.contains('expanded-mode')) return;
+                isDragging = true;
+                const rect = chatWindow.getBoundingClientRect();
+                dragOffsetX = e.clientX - rect.left;
+                dragOffsetY = e.clientY - rect.top;
+                chatWindow.style.transition = 'none';
+                chatHeader.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                let newLeft = e.clientX - dragOffsetX;
+                let newTop = e.clientY - dragOffsetY;
+
+                // Keep within viewport bounds
+                const ww = window.innerWidth;
+                const wh = window.innerHeight;
+                const cw = chatWindow.offsetWidth;
+                const ch = chatWindow.offsetHeight;
+                newLeft = Math.max(0, Math.min(newLeft, ww - cw));
+                newTop = Math.max(0, Math.min(newTop, wh - ch));
+
+                chatWindow.style.position = 'fixed';
+                chatWindow.style.left = newLeft + 'px';
+                chatWindow.style.top = newTop + 'px';
+                chatWindow.style.right = 'auto';
+                chatWindow.style.bottom = 'auto';
+                hasDragPosition = true;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    chatWindow.style.transition = '';
+                    chatHeader.style.cursor = '';
+                }
+            });
+
+            // Touch support for mobile
+            chatHeader.addEventListener('touchstart', (e) => {
+                if (e.target.closest('button') || chatWindow.classList.contains('expanded-mode')) return;
+                isDragging = true;
+                const touch = e.touches[0];
+                const rect = chatWindow.getBoundingClientRect();
+                dragOffsetX = touch.clientX - rect.left;
+                dragOffsetY = touch.clientY - rect.top;
+                chatWindow.style.transition = 'none';
+            }, { passive: true });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                let newLeft = touch.clientX - dragOffsetX;
+                let newTop = touch.clientY - dragOffsetY;
+                const ww = window.innerWidth;
+                const wh = window.innerHeight;
+                const cw = chatWindow.offsetWidth;
+                const ch = chatWindow.offsetHeight;
+                newLeft = Math.max(0, Math.min(newLeft, ww - cw));
+                newTop = Math.max(0, Math.min(newTop, wh - ch));
+                chatWindow.style.position = 'fixed';
+                chatWindow.style.left = newLeft + 'px';
+                chatWindow.style.top = newTop + 'px';
+                chatWindow.style.right = 'auto';
+                chatWindow.style.bottom = 'auto';
+                hasDragPosition = true;
+            }, { passive: false });
+
+            document.addEventListener('touchend', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    chatWindow.style.transition = '';
+                }
+            });
+        }
 
         // Toggle chat window
         function toggleChat() {
@@ -310,6 +413,8 @@
                 if (chatWindow.classList.contains('expanded-mode')) {
                     toggleExpand();
                 }
+                // Reset drag position when closing
+                resetDragPosition();
             }
         }
 
@@ -323,12 +428,23 @@
                 expandIcon.classList.remove('ph-corners-in');
                 expandIcon.classList.add('ph-corners-out');
                 if (toggleWrapper) toggleWrapper.classList.remove('opacity-0', 'pointer-events-none');
+                // Re-enable drag cursor
+                chatHeader.classList.add('cursor-grab');
+                chatHeader.classList.add('active:cursor-grabbing');
+                // Restore drag position if it had one
+                if (!hasDragPosition) resetDragPosition();
             } else {
+                // Reset drag position before expanding to center
+                resetDragPosition();
                 // Expand to center of screen
                 chatWindow.classList.add('expanded-mode', '!fixed', 'top-1/2', 'left-1/2', '-translate-x-1/2', '-translate-y-1/2', '!w-[92vw]', '!h-[90vh]', 'sm:!w-[700px]', 'sm:!h-[85vh]', 'shadow-[0_0_0_100vmax_rgba(0,0,0,0.5)]');
                 expandIcon.classList.remove('ph-corners-out');
                 expandIcon.classList.add('ph-corners-in');
                 if (toggleWrapper) toggleWrapper.classList.add('opacity-0', 'pointer-events-none');
+                // Disable drag cursor
+                chatHeader.classList.remove('cursor-grab');
+                chatHeader.classList.remove('active:cursor-grabbing');
+                chatHeader.style.cursor = 'default';
             }
         }
 
@@ -398,7 +514,7 @@
                 msgDiv.className = "flex items-start gap-2 max-w-[85%]";
                 msgDiv.innerHTML = `
                     <div class="w-6 h-6 rounded-full bg-[#106c38] text-white flex items-center justify-center flex-shrink-0 mt-1">
-                        <i class="ph ph-robot text-xs"></i>
+                        <i class="ph ph-headset text-xs"></i>
                     </div>
                     <div class="bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-2xl rounded-tl-sm shadow-sm text-[13px] leading-relaxed">
                         ${text}

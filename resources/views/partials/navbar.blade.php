@@ -56,22 +56,7 @@
                     </div>
                 </div>
 
-                <!-- Auth Buttons -->
-                @auth
-                    <div class="flex items-center gap-3">
-                        @if(auth()->user()->role === 'pustakawan')
-                            <a href="{{ route('admin.index') }}" class="text-green-100 font-bold hover:text-white transition flex items-center gap-1.5">
-                                <i class="ph ph-layout-bold text-lg"></i> {{ __('Dashboard') }}
-                            </a>
-                        @endif
-                        <form action="{{ route('logout') }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="bg-red-700/10 hover:bg-red-700/20 text-red-200 hover:text-white font-bold px-3 py-1.5 rounded-lg border border-red-700/30 transition-all text-xs cursor-pointer flex items-center gap-1">
-                                <i class="ph ph-sign-out-bold text-base"></i> {{ __('Keluar') }}
-                            </button>
-                        </form>
-                    </div>
-                @endauth
+
             </div>
 
             <!-- Mobile Hamburger Button -->
@@ -146,20 +131,7 @@
                     <a href="{{ url('/lang/en') }}" class="flex-1 text-center py-2 rounded-lg text-xs font-bold transition {{ session('locale') === 'en' ? 'bg-white text-[#106c38]' : 'bg-white/10 text-green-100 hover:bg-white/20' }}">English</a>
                 </div>
 
-                @auth
-                    <div class="border-t border-white/10 my-2"></div>
-                    @if(auth()->user()->role === 'pustakawan')
-                        <a href="{{ route('admin.index') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-bold text-white hover:bg-white/5 transition">
-                            <i class="ph ph-layout-bold text-lg"></i> {{ __('Dashboard') }}
-                        </a>
-                    @endif
-                    <form action="{{ route('logout') }}" method="POST" class="px-5 py-2">
-                        @csrf
-                        <button type="submit" class="w-full bg-red-700/20 hover:bg-red-700/30 text-red-200 font-bold py-2.5 rounded-lg border border-red-700/30 transition text-xs cursor-pointer flex items-center justify-center gap-1.5">
-                            <i class="ph ph-sign-out-bold text-base"></i> {{ __('Keluar') }}
-                        </button>
-                    </form>
-                @endauth
+
 
                 <!-- Footer / Social Elements -->
                 <div class="border-t border-white/10 mt-6 pt-4 pb-6 px-5 flex flex-col items-center gap-3">

@@ -75,58 +75,77 @@
     <!-- Content Section -->
     <div class="flex-grow max-w-[1400px] mx-auto w-full px-2 sm:px-4 lg:px-6 mb-20">
         
-        <div class="mb-6 max-w-5xl mx-auto">
-            <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center">
+        <div class="mb-6 max-w-6xl mx-auto px-2">
+            @php
+                $hasActiveCategory = request()->has('category') && request('category') != '';
+                $dbCategories = \App\Models\Book::select('category')->distinct()->whereNotNull('category')->pluck('category')->toArray();
+                $preferredOrder = [
+                    'Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora',
+                    'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik',
+                    'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'
+                ];
+                $iconMap = [
+                    'Umum' => 'ph-books',
+                    'Agama' => 'ph-mosque',
+                    'Kesehatan & Kedokteran' => 'ph-stethoscope',
+                    'Sains & Teknologi' => 'ph-rocket',
+                    'Sosial & Humaniora' => 'ph-users-three',
+                    'Hukum' => 'ph-scales',
+                    'Ekonomi & Bisnis' => 'ph-chart-line-up',
+                    'Pertanian & Kehutanan' => 'ph-tree',
+                    'Matematika & IPA' => 'ph-calculator',
+                    'Teknik' => 'ph-wrench',
+                    'Sastra & Bahasa' => 'ph-translate',
+                    'Komputer & Informatika' => 'ph-desktop',
+                    'Seni & Desain' => 'ph-palette',
+                    'Sejarah & Geografi' => 'ph-globe',
+                ];
+                usort($dbCategories, function($a, $b) use ($preferredOrder) {
+                    $posA = array_search($a, $preferredOrder);
+                    $posB = array_search($b, $preferredOrder);
+                    if ($posA === false) return 1;
+                    if ($posB === false) return -1;
+                    return $posA - $posB;
+                });
+                $categories = [];
+                foreach ($dbCategories as $catName) {
+                    $categories[] = ['name' => $catName, 'icon' => $iconMap[$catName] ?? 'ph-books'];
+                }
+                $activeCategory = request('category');
+            @endphp
+
+            <style>
+                .expanded-mode .cat-collapsible {
+                    display: inline-flex !important;
+                }
+            </style>
+            <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center items-center {{ $hasActiveCategory ? 'expanded-mode' : '' }}">
                 <!-- Semua Kategori -->
                 <a href="{{ route('galeri', ['q' => request('q')]) }}" 
                    class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
                     <i class="ph ph-squares-four text-base sm:text-lg"></i> {{ __('Semua Kategori') }}
                 </a>
                 
-                @php
-                    $dbCategories = \App\Models\Book::select('category')->distinct()->whereNotNull('category')->pluck('category')->toArray();
-                    $preferredOrder = [
-                        'Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora',
-                        'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik',
-                        'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'
-                    ];
-                    $iconMap = [
-                        'Umum' => 'ph-books',
-                        'Agama' => 'ph-mosque',
-                        'Kesehatan & Kedokteran' => 'ph-stethoscope',
-                        'Sains & Teknologi' => 'ph-rocket',
-                        'Sosial & Humaniora' => 'ph-users-three',
-                        'Hukum' => 'ph-scales',
-                        'Ekonomi & Bisnis' => 'ph-chart-line-up',
-                        'Pertanian & Kehutanan' => 'ph-tree',
-                        'Matematika & IPA' => 'ph-calculator',
-                        'Teknik' => 'ph-wrench',
-                        'Sastra & Bahasa' => 'ph-translate',
-                        'Komputer & Informatika' => 'ph-desktop',
-                        'Seni & Desain' => 'ph-palette',
-                        'Sejarah & Geografi' => 'ph-globe',
-                    ];
-                    usort($dbCategories, function($a, $b) use ($preferredOrder) {
-                        $posA = array_search($a, $preferredOrder);
-                        $posB = array_search($b, $preferredOrder);
-                        if ($posA === false) return 1;
-                        if ($posB === false) return -1;
-                        return $posA - $posB;
-                    });
-                    $categories = [];
-                    foreach ($dbCategories as $catName) {
-                        $categories[] = ['name' => $catName, 'icon' => $iconMap[$catName] ?? 'ph-books'];
-                    }
-                    $activeCategory = request('category');
-                @endphp
-
-                @foreach($categories as $cat)
-                    @php $isActive = $activeCategory === $cat['name']; @endphp
+                @foreach($categories as $index => $cat)
+                    @php 
+                        $isActive = $activeCategory === $cat['name']; 
+                        $visibilityClass = '';
+                        if ($index >= 2 && $index < 4) $visibilityClass = 'hidden sm:inline-flex cat-collapsible';
+                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'hidden md:inline-flex cat-collapsible';
+                        elseif ($index >= 6 && $index < 9) $visibilityClass = 'hidden lg:inline-flex cat-collapsible';
+                        elseif ($index >= 9) $visibilityClass = 'hidden xl:inline-flex cat-collapsible';
+                    @endphp
                     <a href="{{ route('galeri', ['category' => $cat['name'], 'q' => request('q')]) }}" 
-                       class="category-bubble inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
+                       class="category-bubble {{ $visibilityClass ?: 'inline-flex' }} items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
                         <i class="ph {{ $cat['icon'] }} text-base sm:text-lg"></i> {{ __($cat['name']) }}
                     </a>
                 @endforeach
+
+                <!-- Toggle Button -->
+                <button id="toggle-category-btn" class="flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] flex items-center gap-1 transition-colors bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] cursor-pointer">
+                    <span id="toggle-category-text">{{ $hasActiveCategory ? __('Sembunyikan') : __('Lainnya') }}</span>
+                    <i id="toggle-category-icon" class="ph ph-caret-down transition-transform duration-300 {{ $hasActiveCategory ? 'rotate-180' : '' }}"></i>
+                </button>
             </div>
         </div>
 
@@ -181,6 +200,28 @@
                     if (container) {
                         container.style.opacity = '1';
                         container.style.pointerEvents = 'auto';
+                    }
+                });
+            }
+
+            const categoryContainer = document.getElementById('category-container');
+            const toggleCategoryBtn = document.getElementById('toggle-category-btn');
+            const toggleCategoryText = document.getElementById('toggle-category-text');
+            const toggleCategoryIcon = document.getElementById('toggle-category-icon');
+            
+            if (toggleCategoryBtn && categoryContainer) {
+                let isExpanded = {{ request()->has('category') && request('category') != '' ? 'true' : 'false' }};
+                
+                toggleCategoryBtn.addEventListener('click', function() {
+                    isExpanded = !isExpanded;
+                    if (isExpanded) {
+                        categoryContainer.classList.add('expanded-mode');
+                        toggleCategoryText.textContent = '{{ __("Sembunyikan") }}';
+                        toggleCategoryIcon.classList.add('rotate-180');
+                    } else {
+                        categoryContainer.classList.remove('expanded-mode');
+                        toggleCategoryText.textContent = '{{ __("Lainnya") }}';
+                        toggleCategoryIcon.classList.remove('rotate-180');
                     }
                 });
             }

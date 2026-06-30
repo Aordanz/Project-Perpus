@@ -51,10 +51,6 @@
                     <!-- Actions -->
                     <td class="px-5 py-4 text-center">
                         <div class="flex items-center justify-center gap-2">
-                            <a href="{{ route('books.show', $book->id) }}" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-green-50 text-slate-600 hover:text-usu-green flex items-center justify-center border border-slate-200/60 transition" title="Lihat Halaman Detail">
-                                <i class="ph ph-eye text-base"></i>
-                            </a>
-
                             <a href="{{ route('admin.books.edit', $book->id) }}" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-600 flex items-center justify-center border border-slate-200/60 transition" title="Edit Buku">
                                 <i class="ph ph-pencil-simple text-base"></i>
                             </a>

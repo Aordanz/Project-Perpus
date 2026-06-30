@@ -69,7 +69,7 @@
         @endphp
 
         <!-- Student-Friendly Search & Filter Panel -->
-        <div class="flex flex-col gap-4 mb-8 max-w-2xl mx-auto">
+        <div class="mb-8 max-w-2xl mx-auto">
             <!-- Search Row (Modern Rounded-Full Layout) -->
             <div class="flex items-center gap-3">
                 <!-- Search Input -->
@@ -81,22 +81,45 @@
                         class="w-full pl-11 pr-4 py-2.5 text-sm bg-white border border-slate-200 rounded-full outline-none focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all placeholder:text-slate-400">
                 </div>
             </div>
+        </div>
 
         <!-- Dynamic Quick Filter Chips -->
-        <div id="chips-container" class="flex flex-wrap gap-2 mb-2 justify-center">
-            <button data-filter="all" class="filter-chip px-4 py-2 text-xs font-bold rounded-full transition-all border border-[#106c38] bg-[#106c38] text-white shadow-sm whitespace-nowrap cursor-pointer">
-                {{ __('Semua Buku') }}
-            </button>
-            <button data-filter="available" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
-                {{ __('Tersedia Sekarang') }}
-            </button>
-            @foreach($existingBigCategories as $cat)
-                <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
-                    class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
-                    {{ __($cat) }}
+        <div class="mb-8 max-w-5xl mx-auto px-2">
+            <style>
+                .expanded-mode .chip-collapsible {
+                    display: block !important;
+                }
+            </style>
+            <div id="chips-container" class="flex flex-wrap gap-2 mb-2 justify-center items-center">
+                <button data-filter="all" class="filter-chip active-chip px-4 py-2 text-xs font-bold rounded-full transition-all border border-[#106c38] bg-[#106c38] text-white shadow-sm whitespace-nowrap cursor-pointer">
+                    {{ __('Semua Buku') }}
                 </button>
-            @endforeach
-        </div>
+                <button data-filter="available" class="filter-chip px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
+                    {{ __('Tersedia Sekarang') }}
+                </button>
+                
+                @foreach($existingBigCategories as $index => $cat)
+                    @php
+                        $visibilityClass = '';
+                        if ($index >= 2 && $index < 4) $visibilityClass = 'hidden sm:block chip-collapsible';
+                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'hidden md:block chip-collapsible';
+                        elseif ($index >= 6 && $index < 9) $visibilityClass = 'hidden lg:block chip-collapsible';
+                        elseif ($index >= 9) $visibilityClass = 'hidden xl:block chip-collapsible';
+                    @endphp
+                    <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
+                        class="filter-chip {{ $visibilityClass ?: 'block' }} px-4 py-2 text-xs font-semibold rounded-full transition-all border border-slate-200 bg-white text-slate-600 hover:border-[#106c38]/40 hover:text-[#106c38] whitespace-nowrap cursor-pointer">
+                        {{ __($cat) }}
+                    </button>
+                @endforeach
+
+                <!-- Toggle Button -->
+                @if(count($existingBigCategories) > 2)
+                    <button id="toggle-chips-btn" class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-full transition-all border border-[#106c38]/30 bg-white text-[#106c38] hover:border-[#106c38] hover:text-[#0b4d27] shadow-sm flex items-center gap-1 cursor-pointer">
+                        <span id="toggle-chips-text">{{ __('Lainnya') }}</span>
+                        <i id="toggle-chips-icon" class="ph ph-caret-down transition-transform duration-300"></i>
+                    </button>
+                @endif
+            </div>
         </div>
 
         <!-- Collections Header Count -->
@@ -281,6 +304,28 @@
             const buttonsContainer = document.getElementById('page-buttons-container');
             const paginationBar = document.getElementById('pagination-controls');
             const totalCount = bookCards.length;
+            
+            // Toggle Chips Logic
+            const chipsContainer = document.getElementById('chips-container');
+            const toggleChipsBtn = document.getElementById('toggle-chips-btn');
+            const toggleChipsText = document.getElementById('toggle-chips-text');
+            const toggleChipsIcon = document.getElementById('toggle-chips-icon');
+            
+            if (toggleChipsBtn && chipsContainer) {
+                let chipsExpanded = false;
+                toggleChipsBtn.addEventListener('click', () => {
+                    chipsExpanded = !chipsExpanded;
+                    if (chipsExpanded) {
+                        chipsContainer.classList.add('expanded-mode');
+                        toggleChipsText.textContent = '{{ __("Sembunyikan") }}';
+                        toggleChipsIcon.classList.add('rotate-180');
+                    } else {
+                        chipsContainer.classList.remove('expanded-mode');
+                        toggleChipsText.textContent = '{{ __("Lainnya") }}';
+                        toggleChipsIcon.classList.remove('rotate-180');
+                    }
+                });
+            }
 
             let activeSearch = '';
             let activeFilter = 'all'; // 'all', 'available', or 'subject'
