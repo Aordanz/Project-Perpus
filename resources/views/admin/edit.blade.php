@@ -399,7 +399,7 @@
                         </div>
 
                         <!-- PDF/E-Book Section -->
-                        <hr class="border-slate-100">
+                        <!-- <hr class="border-slate-100">
                         <div class="section-title text-xs"><i class="ph ph-file-pdf"></i> E-Book (PDF, Opsional)</div>
 
                         <div class="flex flex-col gap-1">
@@ -419,7 +419,7 @@
                                     <input type="checkbox" name="delete_pdf" value="1" class="rounded text-red-500 focus:ring-red-500 w-3.5 h-3.5"> Hapus File
                                 </label>
                             </div>
-                        @endif
+                        @endif -->
 
                         <!-- Submit Button -->
                         <button type="submit" class="w-full bg-[#106c38] hover:bg-green-800 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-md border-none">
