@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         $usu = University::create([
             'code' => 'usu',
             'name' => 'Universitas Sumatera Utara',
-            'logo_path' => 'logousu.jpeg',
+            'logo_path' => 'logousu.png',
         ]);
 
         // 3. Create Locations (19 Locations matching the statistics on landing page)

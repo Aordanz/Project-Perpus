@@ -335,8 +335,8 @@
                                                 <span class="text-slate-800 font-semibold block truncate" title="{{ $book->author }}">{{ $book->author ?: '-' }}</span>
                                             </div>
                                             <div>
-                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('No. Klasifikasi') }}</span>
-                                                <span class="text-slate-800 font-semibold block truncate">{{ $book->classification ?: '-' }}</span>
+                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('No. Panggil') }}</span>
+                                                <span class="text-slate-800 font-semibold block truncate">{{ $book->call_number ?: '-' }}</span>
                                             </div>
                                             <div>
                                                 <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Penerbit') }}</span>

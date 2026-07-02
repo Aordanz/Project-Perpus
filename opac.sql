@@ -996,7 +996,7 @@ CREATE TABLE `universities` (
 --
 
 INSERT INTO `universities` (`id`, `code`, `name`, `logo_path`, `created_at`, `updated_at`) VALUES
-(1, 'usu', 'Universitas Sumatera Utara', 'logousu.jpeg', '2026-06-25 18:49:48', '2026-06-25 18:49:48');
+(1, 'usu', 'Universitas Sumatera Utara', 'logousu.png', '2026-06-25 18:49:48', '2026-06-25 18:49:48');
 
 -- --------------------------------------------------------
 

@@ -61,7 +61,7 @@
 
             <div class="relative z-10">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 hover:opacity-90 transition">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-10 w-10 object-cover bg-white rounded-full p-0.5">
+                    <img src="{{ asset('logousu.png') }}" alt="USU Logo" class="h-10 w-10 object-contain">
                     <div class="flex flex-col">
                         <span class="font-bold tracking-tight text-white leading-none text-xs uppercase">Perpustakaan</span>
                         <span class="font-bold tracking-tight text-white leading-none text-sm uppercase">USU OPAC</span>
