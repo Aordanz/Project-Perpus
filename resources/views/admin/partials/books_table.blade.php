@@ -3,6 +3,7 @@
     <table class="w-full text-left border-collapse">
         <thead>
             <tr class="bg-slate-50/50 border-b border-slate-100 text-slate-400 font-bold text-xs uppercase tracking-wider">
+                <th class="px-5 py-4 text-center w-12">No.</th>
                 <th class="px-5 py-4">Informasi Buku</th>
                 <th class="px-5 py-4">No. Panggil / ISBN</th>
                 <th class="px-5 py-4 text-center">Eksemplar</th>
@@ -12,6 +13,10 @@
         <tbody class="divide-y divide-slate-100 text-sm font-medium text-slate-600">
             @forelse($books as $book)
                 <tr class="hover:bg-slate-50/30 transition">
+                    <!-- Number -->
+                    <td class="px-5 py-4 text-center text-xs font-semibold text-slate-400 w-12">
+                        {{ $loop->iteration + ($books->firstItem() - 1) }}
+                    </td>
                     <!-- Book Title & Cover/Author -->
                     <td class="px-5 py-4">
                         <div class="flex items-center gap-3">
@@ -67,7 +72,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4" class="px-5 py-12 text-center text-slate-400">
+                    <td colspan="5" class="px-5 py-12 text-center text-slate-400">
                         <i class="ph ph-warning-circle text-4xl mb-2 text-slate-300"></i>
                         <p class="text-sm font-semibold">Tidak ada data buku yang ditemukan.</p>
                     </td>

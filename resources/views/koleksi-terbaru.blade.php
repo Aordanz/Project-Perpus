@@ -228,7 +228,7 @@
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="ph ph-hash text-sm text-slate-400"></i>
-                                <span>{{ __('No. Klasifikasi:') }} <strong class="text-slate-700">{{ $book->classification }}</strong></span>
+                                <span>{{ __('No. Panggil:') }} <strong class="text-slate-700">{{ $book->call_number ?: '-' }}</strong></span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="ph ph-buildings text-sm text-slate-400"></i>

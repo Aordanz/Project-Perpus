@@ -144,7 +144,7 @@ class AdminController extends Controller implements HasMiddleware
             'general_note'         => 'nullable|string',
             'pdf_file'             => 'nullable|file|mimes:pdf|max:20480',
             'images'               => 'nullable|array|max:4',
-            'images.*'             => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images.*'             => 'image|mimes:jpeg,png,jpg,gif,svg|max:20480',
 
             // Validation for dynamic items
             'items.*.barcode'     => 'required|string|unique:items,barcode|max:255',
@@ -155,7 +155,8 @@ class AdminController extends Controller implements HasMiddleware
             'items.*.barcode.required'    => 'Barcode wajib diisi.',
             'items.*.location_id.required'=> 'Lokasi rak wajib dipilih.',
             'items.*.type.required'       => 'Tipe eksemplar wajib dipilih.',
-            'images.max'                  => 'Maksimal 4 gambar (1 utama & 3 tambahan) yang dapat diunggah sekaligus.'
+            'images.max'                  => 'Maksimal 4 gambar (1 utama & 3 tambahan) yang dapat diunggah sekaligus.',
+            'images.*.max'                => 'Ukuran setiap gambar tidak boleh melebihi 20 MB.',
         ]);
 
         try {
@@ -270,11 +271,11 @@ class AdminController extends Controller implements HasMiddleware
             'jenis'                => 'nullable|string|max:255',
             'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
-            'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
             'delete_cover'         => 'nullable|boolean',
             'pdf_file'             => 'nullable|file|mimes:pdf|max:20480',
             'delete_pdf'           => 'nullable|boolean',
-            'additional_images.*'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'additional_images.*'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
             'delete_additional_images.*' => 'nullable|integer|exists:book_images,id',
 
             // Existing items update
@@ -286,6 +287,9 @@ class AdminController extends Controller implements HasMiddleware
             'new_items.*.barcode'      => 'nullable|string|unique:items,barcode|max:255',
             'new_items.*.location_id'  => 'nullable|exists:locations,id',
             'new_items.*.type'         => 'nullable|string|in:STD,KPS',
+        ], [
+            'cover_image.max' => 'Ukuran sampul buku tidak boleh melebihi 20 MB.',
+            'additional_images.*.max' => 'Ukuran setiap gambar tambahan tidak boleh melebihi 20 MB.',
         ]);
 
         try {
@@ -450,6 +454,33 @@ class AdminController extends Controller implements HasMiddleware
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => 'Gagal menghapus buku: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Delete an additional book image immediately via AJAX.
+     */
+    public function deleteImage($id)
+    {
+        try {
+            $img = \App\Models\BookImage::findOrFail($id);
+            
+            // Delete the image file if it exists
+            if ($img->image_path && file_exists(public_path('covers/' . $img->image_path))) {
+                @unlink(public_path('covers/' . $img->image_path));
+            }
+            
+            $img->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Gambar tambahan berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus gambar: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

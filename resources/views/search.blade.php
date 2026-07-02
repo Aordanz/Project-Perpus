@@ -71,7 +71,7 @@
                 <div class="flex items-center gap-6">
                 <!-- USU Logo & Name -->
                     <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                        <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
+                        <img src="{{ asset('logousu.png') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain">
                         <div class="flex flex-col hidden sm:flex">
                             <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas') }}</span>
                             <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Sumatera Utara') }}</span>
@@ -188,7 +188,7 @@
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="ph ph-hash text-sm text-slate-400"></i>
-                                <span>{{ __('No. Klasifikasi:') }} <strong class="text-slate-700">{{ $book->classification }}</strong></span>
+                                <span>{{ __('No. Panggil:') }} <strong class="text-slate-700">{{ $book->call_number ?: '-' }}</strong></span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="ph ph-buildings text-sm text-slate-400"></i>

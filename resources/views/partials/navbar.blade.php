@@ -6,7 +6,7 @@
             <div class="flex items-center gap-4 lg:gap-6 flex-shrink-0">
                 <!-- USU Logo & Name -->
                 <a href="{{ route('home') }}" class="flex items-center gap-1.5 sm:gap-2 group">
-                    <img src="{{ asset('logousu.jpeg') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white p-0.5 object-cover shadow-sm">
+                    <img src="{{ asset('logousu.png') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain">
                     <div class="flex flex-col">
                         <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Perpustakaan ') }}</span>
                         <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas Sumatera Utara') }}</span>

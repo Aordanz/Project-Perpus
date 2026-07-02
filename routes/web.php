@@ -30,6 +30,7 @@ Route::post('/admin/books', [AdminController::class, 'store'])->name('admin.book
 Route::get('/admin/books/{id}/edit', [AdminController::class, 'edit'])->name('admin.books.edit');
 Route::put('/admin/books/{id}', [AdminController::class, 'update'])->name('admin.books.update');
 Route::delete('/admin/books/{id}', [AdminController::class, 'destroy'])->name('admin.books.destroy');
+Route::delete('/admin/books/images/{id}', [AdminController::class, 'deleteImage'])->name('admin.books.delete-image');
 
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'id'])) {

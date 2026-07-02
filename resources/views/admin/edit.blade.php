@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Edit Buku - Portal Admin OPAC USU</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -260,7 +261,7 @@
                                             <div class="relative custom-select-container w-full">
                                                 @php
                                                     $typeVal = $item->type ?: 'STD';
-                                                    $typeLabel = $typeVal == 'KPS' ? 'KPS (Kampus)' : 'STD (Sirkulasi)';
+                                                    $typeLabel = $typeVal == 'KPS' ? 'KPS (Koleksi Pinjem Singkat)' : 'STD (Standart)';
                                                 @endphp
                                                 <button type="button" class="field-input flex items-center justify-between cursor-pointer pr-4 text-left w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all">
                                                     <span class="custom-select-label text-xs font-semibold">{{ $typeLabel }}</span>
@@ -269,11 +270,11 @@
                                                 <input type="hidden" name="items[{{ $item->barcode }}][type]" value="{{ $typeVal }}">
                                                 <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-40 overflow-y-auto">
                                                     <button type="button" data-value="STD" class="custom-select-option w-full text-left px-5 py-3.5 text-xs transition flex items-center justify-between {{ $typeVal == 'STD' ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
-                                                        <span>STD (Sirkulasi)</span>
+                                                        <span>STD (Standart)</span>
                                                         <i class="ph ph-check text-xs select-active-check {{ $typeVal == 'STD' ? '' : 'hidden' }}"></i>
                                                     </button>
                                                     <button type="button" data-value="KPS" class="custom-select-option w-full text-left px-5 py-3.5 text-xs transition flex items-center justify-between {{ $typeVal == 'KPS' ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
-                                                        <span>KPS (Kampus)</span>
+                                                        <span>KPS (Koleksi Pinjam Singkat)</span>
                                                         <i class="ph ph-check text-xs select-active-check {{ $typeVal == 'KPS' ? '' : 'hidden' }}"></i>
                                                     </button>
                                                 </div>
@@ -319,7 +320,7 @@
                 <div class="flex flex-col gap-6">
 
                     <!-- Cover Image Card -->
-                    <div class="section-card flex flex-col gap-4 sticky top-24">
+                    <div class="section-card flex flex-col gap-4">
                         <div class="section-title"><i class="ph ph-image"></i> Sampul Buku</div>
 
                         <input type="hidden" name="delete_cover" id="delete-cover-input" value="0">
@@ -365,14 +366,14 @@
                         <div class="section-title text-xs"><i class="ph ph-images"></i> Gambar Tambahan</div>
 
                         @if($book->images && $book->images->count() > 0)
-                            <div class="grid grid-cols-3 gap-2 my-2">
+                            <div class="grid grid-cols-3 gap-2 my-2" id="additional-images-grid">
                                 @foreach($book->images as $img)
-                                    <div class="relative group aspect-square rounded-xl border border-slate-200 overflow-hidden bg-slate-50">
+                                    <div class="relative group aspect-square rounded-xl border border-slate-200 overflow-hidden bg-slate-50 existing-image-item" id="additional-image-{{ $img->id }}">
                                         <img src="{{ asset('covers/' . $img->image_path) }}" class="w-full h-full object-cover">
-                                        <label class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white text-[9px] font-bold cursor-pointer gap-1">
-                                            <input type="checkbox" name="delete_additional_images[]" value="{{ $img->id }}" class="rounded text-red-500 focus:ring-red-500 w-3 h-3">
+                                        <button type="button" onclick="deleteAdditionalImage({{ $img->id }})" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white text-[9px] font-bold cursor-pointer gap-1 border-none w-full h-full">
+                                            <i class="ph ph-trash text-lg"></i>
                                             <span>Hapus</span>
-                                        </label>
+                                        </button>
                                     </div>
                                 @endforeach
                             </div>
@@ -585,17 +586,17 @@
                         <label class="text-[10px] font-bold text-slate-400">Tipe *</label>
                         <div class="relative custom-select-container w-full">
                             <button type="button" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all bg-white text-left">
-                                <span class="custom-select-label">STD (Sirkulasi)</span>
+                                <span class="custom-select-label">STD (Standart)</span>
                                 <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
                             </button>
                             <input type="hidden" name="new_items[${idx}][type]" value="STD">
                             <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
                                 <button type="button" data-value="STD" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-[#106c38] font-bold bg-green-50/50">
-                                    <span>STD (Sirkulasi)</span>
+                                    <span>STD (Standart)</span>
                                     <i class="ph ph-check text-[10px] select-active-check"></i>
                                 </button>
                                 <button type="button" data-value="KPS" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
-                                    <span>KPS (Kampus)</span>
+                                    <span>KPS (Koleksi Pinjam Singkat)</span>
                                     <i class="ph ph-check text-[10px] select-active-check hidden"></i>
                                 </button>
                             </div>
@@ -789,11 +790,10 @@
         const addBubblesContainer = document.getElementById('additional-image-bubbles-container');
         let selectedAddFiles = [];
 
+        let existingImagesCount = {{ $book->images ? $book->images->count() : 0 }};
+
         function getMaxNewAllowed() {
-            const existingImagesCount = {{ $book->images ? $book->images->count() : 0 }};
-            const checkedDeletions = document.querySelectorAll('input[name="delete_additional_images[]"]:checked').length;
-            const netExisting = Math.max(0, existingImagesCount - checkedDeletions);
-            return Math.max(0, 3 - netExisting);
+            return Math.max(0, 3 - existingImagesCount);
         }
 
         if (addImagesInput && addBubblesContainer) {
@@ -817,25 +817,57 @@
                 updateAddBubblesUI();
                 syncAddInputFiles();
             });
-
-            // Listen to delete checkbox changes to sync allowed files count dynamically
-            document.querySelectorAll('input[name="delete_additional_images[]"]').forEach(cb => {
-                cb.addEventListener('change', () => {
-                    const maxAllowed = getMaxNewAllowed();
-                    if (selectedAddFiles.length > maxAllowed) {
-                        selectedAddFiles = selectedAddFiles.slice(0, maxAllowed);
-                        showToast('Daftar gambar tambahan baru disesuaikan (maksimal total 3 gambar tambahan).', 'warning');
-                        updateAddBubblesUI();
-                        syncAddInputFiles();
-                    }
-                });
-            });
         }
 
         window.removeAddFile = function(index) {
             selectedAddFiles.splice(index, 1);
             updateAddBubblesUI();
             syncAddInputFiles();
+        };
+
+        window.deleteAdditionalImage = function(id) {
+            showCustomConfirm('Apakah Anda yakin ingin menghapus gambar tambahan ini?', () => {
+                const url = "{{ route('admin.books.delete-image', ['id' => ':id']) }}".replace(':id', id);
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const imgEl = document.getElementById(`additional-image-${id}`);
+                        if (imgEl) {
+                            imgEl.remove();
+                        }
+                        
+                        existingImagesCount--;
+                        
+                        // Check if container is empty
+                        const container = document.getElementById('additional-images-grid');
+                        if (container && container.querySelectorAll('.existing-image-item').length === 0) {
+                            container.outerHTML = `<p class="text-[10px] text-slate-400 my-2 text-center" id="no-additional-images-text">Belum ada gambar tambahan.</p>`;
+                        }
+                        
+                        // Enable inputs/warnings
+                        const addWarning = document.getElementById('additional-images-warning');
+                        if (addWarning) {
+                            addWarning.innerText = 'Bisa memilih lebih dari 1 gambar sekaligus (Maksimal total 3 gambar tambahan).';
+                            addWarning.className = 'text-[10px] text-slate-400 mt-1';
+                        }
+                        
+                        showToast(data.message, 'success');
+                    } else {
+                        showToast(data.message || 'Gagal menghapus gambar.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Terjadi kesalahan saat menghapus gambar.', 'error');
+                });
+            });
         };
 
         function updateAddBubblesUI() {
