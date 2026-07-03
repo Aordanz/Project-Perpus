@@ -483,4 +483,94 @@ class AdminController extends Controller implements HasMiddleware
             ], 500);
         }
     }
+
+    /**
+     * Show the locations management index.
+     */
+    public function lokasiIndex(Request $request)
+    {
+        $query = Location::withCount('items')->orderBy('name');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('code', 'like', "%{$search}%");
+            });
+        }
+
+        $perPage = $request->input('limit', 10);
+        if ($perPage === 'all') {
+            $perPage = $query->count() ?: 10;
+        } else {
+            $perPage = is_numeric($perPage) ? (int)$perPage : 10;
+        }
+
+        $locations = $query->paginate($perPage)->withQueryString();
+
+        return view('admin.lokasi.index', compact('locations'));
+    }
+
+    /**
+     * Store a new location.
+     */
+    public function lokasiStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|alpha_dash|unique:locations,code|max:255',
+            'icon' => 'required|string|max:255',
+        ], [
+            'code.unique' => 'Kode lokasi sudah terdaftar.',
+            'code.alpha_dash' => 'Kode lokasi hanya boleh berisi huruf, angka, tanda hubung (-), dan garis bawah (_).',
+        ]);
+
+        try {
+            // Find current university (usu)
+            $university = \App\Models\University::where('code', 'usu')->first();
+            if (!$university) {
+                $university = \App\Models\University::first();
+            }
+
+            if (!$university) {
+                return redirect()->back()->withErrors(['error' => 'Universitas belum terdaftar di sistem.']);
+            }
+
+            Location::create([
+                'university_id' => $university->id,
+                'code' => strtolower($request->code),
+                'name' => $request->name,
+                'icon' => $request->icon,
+            ]);
+
+            return redirect()->route('admin.lokasi.index')
+                ->with('success', 'Lokasi baru berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Gagal menambahkan lokasi: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Delete a location.
+     */
+    public function lokasiDestroy($id)
+    {
+        try {
+            $location = Location::withCount('items')->findOrFail($id);
+
+            if ($location->items_count > 0) {
+                return redirect()->back()
+                    ->withErrors(['error' => 'Gagal menghapus lokasi: Lokasi ini sedang digunakan oleh ' . $location->items_count . ' eksemplar buku.']);
+            }
+
+            $location->delete();
+
+            return redirect()->route('admin.lokasi.index')
+                ->with('success', 'Lokasi berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Gagal menghapus lokasi: ' . $e->getMessage()]);
+        }
+    }
 }

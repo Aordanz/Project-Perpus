@@ -46,6 +46,12 @@
             <span>Koleksi Buku</span>
         </a>
         
+        <a href="{{ route('admin.lokasi.index') }}" 
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.lokasi.*') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+            <i class="ph ph-map-pin text-lg"></i>
+            <span>Daftar Lokasi</span>
+        </a>
+        
         <a href="{{ route('admin.galeri') }}" 
            class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.galeri') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
             <i class="ph ph-images text-lg"></i>
