@@ -14,10 +14,8 @@
             <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition">Scientific eJournals</a>
             <span class="text-white/30 hidden sm:inline">|</span>
             <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition">Scientific eBooks</a>
-            @guest
-                <span class="text-white/30 hidden sm:inline">|</span>
-                <a href="{{ route('login') }}" class="text-white/60 hover:text-white transition text-[10px] sm:text-xs select-none decoration-none">Pustakawan</a>
-            @endguest
+            <span class="text-white/30 hidden sm:inline">|</span>
+            <a href="{{ route('login') }}" class="hover:text-white transition text-white/30 text-[10px] sm:text-xs">Pustakawan</a>
         </div>
     </div>
 </footer>
