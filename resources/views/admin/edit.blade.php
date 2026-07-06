@@ -551,21 +551,16 @@
             const container = document.getElementById('new-items-container');
             const idx = newItemIndex++;
 
-            // Build location options for custom select
+            // Build location options for custom select (Blade renders values server-side)
             let locationOptions = '';
             let firstLocId = '';
             let firstLocName = '';
-            @foreach($locations as $index => $loc)
-                @if($index == 0)
+            @foreach($locations as $loopIdx => $loc)
+                @if($loopIdx == 0)
                     firstLocId = '{{ $loc->id }}';
-                    firstLocName = '{{ $loc->name }}';
+                    firstLocName = '{{ addslashes($loc->name) }}';
                 @endif
-                locationOptions += `
-                    <button type="button" data-value="{{ $loc->id }}" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
-                        <span>{{ $loc->name }}</span>
-                        <i class="ph ph-check text-[10px] select-active-check hidden"></i>
-                    </button>
-                `;
+                locationOptions += `<button type="button" data-value="{{ $loc->id }}" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]"><span>{{ addslashes($loc->name) }}</span><i class="ph ph-check text-[10px] select-active-check hidden"></i></button>`;
             @endforeach
 
             const row = document.createElement('div');
@@ -579,7 +574,7 @@
                 <div class="grid grid-cols-2 gap-2 mb-2">
                     <div class="flex flex-col gap-1 col-span-1">
                         <label class="text-[10px] font-bold text-slate-400">Barcode *</label>
-                        <input type="text" name="new_items[${idx}][barcode]" placeholder="e.g. L009876"
+                        <input type="text" name="new_items[` + idx + `][barcode]" placeholder="e.g. L009876"
                             class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38] bg-white">
                     </div>
                     <div class="flex flex-col gap-1 col-span-1">
@@ -589,7 +584,7 @@
                                 <span class="custom-select-label">STD (Standart)</span>
                                 <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
                             </button>
-                            <input type="hidden" name="new_items[${idx}][type]" value="STD">
+                            <input type="hidden" name="new_items[` + idx + `][type]" value="STD">
                             <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
                                 <button type="button" data-value="STD" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-[#106c38] font-bold bg-green-50/50">
                                     <span>STD (Standart)</span>
@@ -607,12 +602,12 @@
                     <label class="text-[10px] font-bold text-slate-400">Lokasi Rak *</label>
                     <div class="relative custom-select-container w-full">
                         <button type="button" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all bg-white text-left">
-                            <span class="custom-select-label">${firstLocName}</span>
+                            <span class="custom-select-label">` + firstLocName + `</span>
                             <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
                         </button>
-                        <input type="hidden" name="new_items[${idx}][location_id]" value="${firstLocId}">
+                        <input type="hidden" name="new_items[` + idx + `][location_id]" value="` + firstLocId + `">
                         <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
-                            ${locationOptions}
+                            ` + locationOptions + `
                         </div>
                     </div>
                 </div>
@@ -671,62 +666,71 @@
                 });
             }
 
-            // Custom Select UI Handler
-            const selectContainers = document.querySelectorAll('.custom-select-container');
-            selectContainers.forEach(container => {
-                const trigger = container.querySelector('.custom-select-trigger');
-                const menu = container.querySelector('.custom-select-menu');
-                const options = container.querySelectorAll('.custom-select-option');
-                const hiddenInput = container.querySelector('input[type="hidden"]');
-                const label = container.querySelector('.custom-select-label');
-                const caret = container.querySelector('.ph-caret-down');
-                
-                if (!trigger || !menu) return;
-                
-                trigger.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    // Close other select menus
-                    document.querySelectorAll('.custom-select-menu').forEach(m => {
-                        if (m !== menu) {
-                            m.classList.add('hidden');
-                            const c = m.parentElement.querySelector('.ph-caret-down');
-                            if (c) c.classList.remove('rotate-180');
-                        }
-                    });
-                    menu.classList.toggle('hidden');
-                    if (caret) caret.classList.toggle('rotate-180');
-                });
-                
-                options.forEach(opt => {
-                    opt.addEventListener('click', (e) => {
+            // Custom Select UI Handler — bisa dipanggil ulang untuk elemen dinamis
+            window.initCustomSelects = function(scope) {
+                scope = scope || document;
+                const selectContainers = scope.querySelectorAll('.custom-select-container');
+                selectContainers.forEach(container => {
+                    if (container.dataset.initialized === 'true') return;
+                    container.dataset.initialized = 'true';
+
+                    const trigger = container.querySelector('.custom-select-trigger');
+                    const menu = container.querySelector('.custom-select-menu');
+                    const options = container.querySelectorAll('.custom-select-option');
+                    const hiddenInput = container.querySelector('input[type="hidden"]');
+                    const label = container.querySelector('.custom-select-label');
+                    const caret = container.querySelector('.ph-caret-down');
+                    
+                    if (!trigger || !menu) return;
+                    
+                    trigger.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        const val = opt.getAttribute('data-value');
-                        const text = opt.querySelector('span').textContent.trim();
-                        
-                        if (label) label.textContent = text;
-                        if (hiddenInput) {
-                            hiddenInput.value = val;
-                            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                        
-                        options.forEach(o => {
-                            const check = o.querySelector('.select-active-check');
-                            if (o === opt) {
-                                o.classList.remove('text-slate-600', 'font-semibold');
-                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                if (check) check.classList.remove('hidden');
-                            } else {
-                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                o.classList.add('text-slate-600', 'font-semibold');
-                                if (check) check.classList.add('hidden');
+                        // Close other select menus
+                        document.querySelectorAll('.custom-select-menu').forEach(m => {
+                            if (m !== menu) {
+                                m.classList.add('hidden');
+                                const c = m.parentElement.querySelector('.ph-caret-down');
+                                if (c) c.classList.remove('rotate-180');
                             }
                         });
-                        
-                        menu.classList.add('hidden');
-                        if (caret) caret.classList.remove('rotate-180');
+                        menu.classList.toggle('hidden');
+                        if (caret) caret.classList.toggle('rotate-180');
+                    });
+                    
+                    options.forEach(opt => {
+                        opt.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const val = opt.getAttribute('data-value');
+                            const text = opt.querySelector('span').textContent.trim();
+                            
+                            if (label) label.textContent = text;
+                            if (hiddenInput) {
+                                hiddenInput.value = val;
+                                hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+                            
+                            options.forEach(o => {
+                                const check = o.querySelector('.select-active-check');
+                                if (o === opt) {
+                                    o.classList.remove('text-slate-600', 'font-semibold');
+                                    o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                    if (check) check.classList.remove('hidden');
+                                } else {
+                                    o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                                    o.classList.add('text-slate-600', 'font-semibold');
+                                    if (check) check.classList.add('hidden');
+                                }
+                            });
+                            
+                            menu.classList.add('hidden');
+                            if (caret) caret.classList.remove('rotate-180');
+                        });
                     });
                 });
-            });
+            };
+
+            // Init untuk elemen yang sudah ada di halaman
+            window.initCustomSelects(document);
             
             document.addEventListener('click', () => {
                 document.querySelectorAll('.custom-select-menu').forEach(m => {
@@ -888,8 +892,8 @@
 
                 bubble.innerHTML = `
                     <i class="ph ph-image"></i>
-                    <span title="${file.name}">${displayTitle}</span>
-                    <button type="button" onclick="removeAddFile(${index})" class="ml-1 text-green-700 hover:text-red-500 bg-transparent border-none p-0 cursor-pointer flex items-center justify-center transition">
+                    <span title="` + file.name + `">` + (index === 0 ? '[Sampul] ' : '') + displayTitle + `</span>
+                    <button type="button" onclick="removeAddFile(` + index + `)" class="ml-1 text-green-700 hover:text-red-500 bg-transparent border-none p-0 cursor-pointer flex items-center justify-center transition">
                         <i class="ph ph-x-circle text-[14px]"></i>
                     </button>
                 `;
