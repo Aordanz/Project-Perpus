@@ -26,7 +26,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .hero-gradient {
-            background: linear-gradient(135deg, #07522d 0%, #106c38 50%, #15803d 100%);
+            background: linear-gradient(135deg, #04331a 0%, #084323 50%, #0c542c 100%);
         }
         .stat-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -223,6 +223,12 @@
         }
 
         /* Reverted mobile scroll styles to preserve original 3D stacked layout style */
+        .hero-bg-slide {
+            transition: opacity 2s ease-in-out;
+            will-change: opacity;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+        }
 
     </style>
 </head>
@@ -232,8 +238,14 @@
 
     <!-- Hero Section -->
     <div class="hero-gradient min-h-[74vh] pt-24 pb-0 relative overflow-hidden flex flex-col justify-start">
-        <!-- Background Image of USU Pond with Low Opacity Overlay -->
-        <div class="absolute inset-0 z-0 bg-cover bg-center mix-blend-multiply opacity-35" style="background-image: url('{{ asset('kolam_perpustakaan.jpg') }}');"></div>
+        <!-- Background Images Slideshow with Low Opacity Overlay -->
+        <div id="hero-bg-slideshow" class="absolute inset-0 z-0">
+            <div class="hero-bg-slide absolute inset-0 bg-cover bg-center opacity-100" style="background-image: url('{{ asset('kolam_perpustakaan.jpg') }}');"></div>
+            <div class="hero-bg-slide absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('{{ asset('perpustakaan_depan.jpg') }}');"></div>
+            <div class="hero-bg-slide absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('{{ asset('perpustakaan_samping.jpg') }}');"></div>
+            <!-- Dark green static overlay layer to emulate blend and keep it dark -->
+            <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/90 via-[#084323]/85 to-[#0c542c]/90 z-10 pointer-events-none"></div>
+        </div>
 
         <!-- Abstract Shapes -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-40">
@@ -1702,6 +1714,25 @@
                         textToggleLoc.textContent = '{{ __("Lihat Semua") }}';
                     }
                 });
+            }
+
+            // Hero background slideshow functionality
+            const heroSlides = document.querySelectorAll('.hero-bg-slide');
+            if (heroSlides.length > 1) {
+                let currentSlideIdx = 0;
+                setInterval(() => {
+                    const nextSlideIdx = (currentSlideIdx + 1) % heroSlides.length;
+                    
+                    // Fade out current slide
+                    heroSlides[currentSlideIdx].classList.remove('opacity-100');
+                    heroSlides[currentSlideIdx].classList.add('opacity-0');
+                    
+                    // Fade in next slide
+                    heroSlides[nextSlideIdx].classList.remove('opacity-0');
+                    heroSlides[nextSlideIdx].classList.add('opacity-100');
+                    
+                    currentSlideIdx = nextSlideIdx;
+                }, 10000); // 10 seconds per slide
             }
         });
     </script>
