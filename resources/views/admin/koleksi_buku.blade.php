@@ -476,67 +476,62 @@
                     const newRow = document.createElement('div');
                     newRow.className = 'item-row p-3 bg-white border border-slate-200 rounded-xl flex flex-col gap-2.5 relative pt-7';
                     
-                    // Build location options for custom select
-                    let locationOptions = '';
-                    let firstLocId = '';
-                    let firstLocName = '';
-                    @foreach($locations as $index => $loc)
-                        @if($index == 0)
-                            firstLocId = '{{ $loc->id }}';
-                            firstLocName = '{{ $loc->name }}';
-                        @endif
-                        locationOptions += `
-                            <button type="button" data-value="{{ $loc->id }}" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
-                                <span>{{ $loc->name }}</span>
-                                <i class="ph ph-check text-[10px] select-active-check hidden"></i>
-                            </button>
-                        `;
-                    @endforeach
+                     // Build location options HTML (rendered by Blade, not JS template literals)
+                     let locationOptions = '';
+                     let firstLocId = '';
+                     let firstLocName = '';
+                     @foreach($locations as $loopIdx => $loc)
+                         @if($loopIdx == 0)
+                             firstLocId = '{{ $loc->id }}';
+                             firstLocName = '{{ addslashes($loc->name) }}';
+                         @endif
+                         locationOptions += `<button type="button" data-value="{{ $loc->id }}" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]"><span>{{ addslashes($loc->name) }}</span><i class="ph ph-check text-[10px] select-active-check hidden"></i></button>`;
+                     @endforeach
 
-                    newRow.innerHTML = `
-                        <button type="button" class="btn-remove-row absolute top-2 right-2 text-slate-400 hover:text-red-500 bg-transparent border-none cursor-pointer text-sm">
-                            <i class="ph ph-trash-simple text-base"></i>
-                        </button>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="flex flex-col gap-1 col-span-1">
-                                <label class="text-[10px] font-bold text-slate-400">Barcode <span class="text-red-500">*</span></label>
-                                <input type="text" name="items[\${rowIndex}][barcode]" required placeholder="e.g. L0012903" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38]">
-                            </div>
-                            <div class="flex flex-col gap-1 col-span-1">
-                                <label class="text-[10px] font-bold text-slate-400">Tipe <span class="text-red-500">*</span></label>
-                                <div class="relative custom-select-container w-full">
-                                    <button type="button" class="w-full px-2 py-1.5 text-left bg-white border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer custom-select-trigger">
-                                        <span class="custom-select-label font-semibold">STD (Sirkulasi)</span>
-                                        <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
-                                    </button>
-                                    <input type="hidden" name="items[\${rowIndex}][type]" value="STD">
-                                    <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
-                                        <button type="button" data-value="STD" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-[#106c38] font-bold bg-green-50/50">
-                                            <span>STD (Sirkulasi)</span>
-                                            <i class="ph ph-check text-[10px] select-active-check"></i>
-                                        </button>
-                                        <button type="button" data-value="KPS" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
-                                            <span>KPS (Kampus)</span>
-                                            <i class="ph ph-check text-[10px] select-active-check hidden"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <label class="text-[10px] font-bold text-slate-400">Lokasi Rak <span class="text-red-500">*</span></label>
-                            <div class="relative custom-select-container w-full">
-                                <button type="button" class="w-full px-2 py-1.5 text-left bg-white border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer custom-select-trigger">
-                                    <span class="custom-select-label font-semibold">\${firstLocName}</span>
-                                    <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
-                                </button>
-                                <input type="hidden" name="items[\${rowIndex}][location_id]" value="\${firstLocId}">
-                                <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
-                                    \${locationOptions}
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                     newRow.innerHTML = `
+                         <button type="button" class="btn-remove-row absolute top-2 right-2 text-slate-400 hover:text-red-500 bg-transparent border-none cursor-pointer text-sm">
+                             <i class="ph ph-trash-simple text-base"></i>
+                         </button>
+                         <div class="grid grid-cols-2 gap-2">
+                             <div class="flex flex-col gap-1 col-span-1">
+                                 <label class="text-[10px] font-bold text-slate-400">Barcode <span class="text-red-500">*</span></label>
+                                 <input type="text" name="items[` + rowIndex + `][barcode]" required placeholder="e.g. L0012903" class="px-2 py-1.5 border border-slate-200 rounded-lg outline-none text-xs focus:border-[#106c38]">
+                             </div>
+                             <div class="flex flex-col gap-1 col-span-1">
+                                 <label class="text-[10px] font-bold text-slate-400">Tipe <span class="text-red-500">*</span></label>
+                                 <div class="relative custom-select-container w-full">
+                                     <button type="button" class="w-full px-2 py-1.5 text-left bg-white border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer custom-select-trigger">
+                                         <span class="custom-select-label font-semibold">STD (Sirkulasi)</span>
+                                         <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
+                                     </button>
+                                     <input type="hidden" name="items[` + rowIndex + `][type]" value="STD">
+                                     <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
+                                         <button type="button" data-value="STD" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-[#106c38] font-bold bg-green-50/50">
+                                             <span>STD (Sirkulasi)</span>
+                                             <i class="ph ph-check text-[10px] select-active-check"></i>
+                                         </button>
+                                         <button type="button" data-value="KPS" class="custom-select-option w-full text-left px-3 py-2 text-[11px] transition flex items-center justify-between text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]">
+                                             <span>KPS (Kampus)</span>
+                                             <i class="ph ph-check text-[10px] select-active-check hidden"></i>
+                                         </button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="flex flex-col gap-1">
+                             <label class="text-[10px] font-bold text-slate-400">Lokasi Rak <span class="text-red-500">*</span></label>
+                             <div class="relative custom-select-container w-full">
+                                 <button type="button" class="w-full px-2 py-1.5 text-left bg-white border border-slate-200 rounded-lg outline-none text-xs flex items-center justify-between cursor-pointer custom-select-trigger">
+                                     <span class="custom-select-label font-semibold">` + firstLocName + `</span>
+                                     <i class="ph ph-caret-down text-slate-400 text-[10px] transition-transform duration-200"></i>
+                                 </button>
+                                 <input type="hidden" name="items[` + rowIndex + `][location_id]" value="` + firstLocId + `">
+                                 <div class="custom-select-menu hidden absolute left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[1000] max-h-40 overflow-y-auto">
+                                     ` + locationOptions + `
+                                 </div>
+                             </div>
+                         </div>
+                     `;
 
                     const btnRemove = newRow.querySelector('.btn-remove-row');
                     btnRemove.addEventListener('click', () => {
@@ -601,8 +596,8 @@
 
                     bubble.innerHTML = `
                         <i class="ph ph-image"></i>
-                        <span title="\${file.name}">\${index === 0 ? '[Sampul] ' : ''}\${displayTitle}</span>
-                        <button type="button" onclick="removeFile(\${index})" class="ml-1 text-green-600 hover:text-red-500 bg-transparent border-none p-0 cursor-pointer flex items-center justify-center transition">
+                        <span title="` + file.name + `">` + (index === 0 ? '[Sampul] ' : '') + displayTitle + `</span>
+                        <button type="button" onclick="removeFile(` + index + `)" class="ml-1 text-green-600 hover:text-red-500 bg-transparent border-none p-0 cursor-pointer flex items-center justify-center transition">
                             <i class="ph ph-x-circle text-[14px]"></i>
                         </button>
                     `;
