@@ -223,23 +223,23 @@
                                                 <input type="text" name="subject" value="{{ old('subject') }}" placeholder="e.g. Komputer & Pemrograman" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-usu-green transition-all">
                                             </div>
                                             <div class="flex flex-col gap-1">
-                                                <label class="text-[11px] font-bold text-slate-500">Spesifikasi Buku</label>
+                                                <label class="text-[11px] font-bold text-slate-500">Kategori Buku</label>
                                                 <div class="relative custom-select-container w-full">
                                                     <button type="button" class="w-full pl-3 pr-8 py-2 text-left bg-white border border-slate-200 rounded-xl outline-none text-xs focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all flex items-center justify-between cursor-pointer custom-select-trigger">
                                                         <span class="custom-select-label">{{ old('category') ?: 'Umum' }}</span>
                                                         <i class="ph ph-caret-down text-slate-400 text-xs transition-transform duration-200"></i>
-                                                    </button>
-                                                    <input type="hidden" name="category" value="{{ old('category') ?: 'Umum' }}">
-                                                    <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-60 overflow-y-auto">
-                                                        @foreach(['Sains & Teknologi', 'Sosial & Humaniora', 'Kesehatan & Kedokteran', 'Agama', 'Umum'] as $cat)
-                                                            @php $isSelected = (old('category') ?: 'Umum') == $cat; @endphp
-                                                            <button type="button" data-value="{{ $cat }}" class="custom-select-option w-full text-left px-5 py-3 text-xs transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
-                                                                <span>{{ $cat }}</span>
-                                                                <i class="ph ph-check text-xs select-active-check {{ $isSelected ? '' : 'hidden' }}"></i>
-                                                            </button>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
+                                                     </button>
+                                                     <input type="hidden" name="category" value="{{ old('category') ?: 'Umum' }}">
+                                                     <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-60 overflow-y-auto">
+                                                         @foreach(['Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora', 'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik', 'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'] as $cat)
+                                                             @php $isSelected = (old('category') ?: 'Umum') == $cat; @endphp
+                                                             <button type="button" data-value="{{ $cat }}" class="custom-select-option w-full text-left px-5 py-3 text-xs transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
+                                                                 <span>{{ $cat }}</span>
+                                                                 <i class="ph ph-check text-xs select-active-check {{ $isSelected ? '' : 'hidden' }}"></i>
+                                                             </button>
+                                                         @endforeach
+                                                     </div>
+                                                 </div>
                                             </div>
                                         </div>
 

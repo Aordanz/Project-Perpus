@@ -166,7 +166,7 @@
                                 <input type="text" name="subject" value="{{ old('subject', $book->subject) }}" class="field-input" placeholder="e.g. Komputer & Pemrograman">
                             </div>
                             <div class="flex flex-col gap-1">
-                                <label class="field-label">Spesifikasi Buku</label>
+                                <label class="field-label">Kategori Buku</label>
                                 <div class="relative custom-select-container w-full">
                                     <button type="button" class="field-input flex items-center justify-between cursor-pointer pr-4 text-left w-full custom-select-trigger focus:border-[#106c38] focus:ring-2 focus:ring-[#106c38]/20 transition-all">
                                         <span class="custom-select-label">{{ old('category', $book->category) ?: 'Umum' }}</span>
@@ -174,7 +174,7 @@
                                     </button>
                                     <input type="hidden" name="category" value="{{ old('category', $book->category) ?: 'Umum' }}">
                                     <div class="custom-select-menu hidden absolute left-0 mt-1.5 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-[1000] max-h-60 overflow-y-auto">
-                                        @foreach(['Sains & Teknologi', 'Sosial & Humaniora', 'Kesehatan & Kedokteran', 'Agama', 'Umum'] as $cat)
+                                        @foreach(['Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora', 'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik', 'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'] as $cat)
                                             @php $isSelected = (old('category', $book->category) ?: 'Umum') == $cat; @endphp
                                             <button type="button" data-value="{{ $cat }}" class="custom-select-option w-full text-left px-5 py-3.5 text-xs transition flex items-center justify-between {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
                                                 <span>{{ $cat }}</span>
