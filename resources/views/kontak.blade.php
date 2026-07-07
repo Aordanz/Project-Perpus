@@ -226,7 +226,7 @@
                 toast.innerHTML = `
                     ${icon}
                     <div class="flex-grow">
-                        <p class="text-sm font-semibold text-slate-800">${type === 'error' ? 'Peringatan' : 'Berhasil'}</p>
+                        <p class="text-sm font-semibold text-slate-800">${type === 'error' ? '{{ __('Peringatan') }}' : '{{ __('Berhasil') }}'}</p>
                         <p class="text-xs text-slate-500 leading-snug">${message}</p>
                     </div>
                     <button class="text-slate-400 hover:text-slate-600 transition focus:outline-none" onclick="this.parentElement.remove()">
@@ -264,7 +264,7 @@
                 });
 
                 if (overLimit) {
-                    showToast('Maksimal hanya 3 gambar yang dapat dilampirkan.', 'error');
+                    showToast('{{ __('Maksimal hanya 3 gambar yang dapat dilampirkan.') }}', 'error');
                 }
 
                 // Update input file dengan isi dt yang baru

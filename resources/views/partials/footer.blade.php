@@ -2,21 +2,21 @@
 <footer class="bg-[#106c38] py-2.5 sm:py-4 text-white text-center text-[10px] sm:text-xs md:text-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p class="mb-1 sm:mb-1.5 text-white/90">
-            &copy; 2025 University of Sumatera Utara Library | OPAC. All rights reserved.
+            &copy; 2025 {{ __('University of Sumatera Utara Library') }} | OPAC. {{ __('All rights reserved.') }}
         </p>
         <div class="flex flex-wrap justify-center gap-x-2 gap-y-1 items-center text-white/80">
-            <a href="https://www.usu.ac.id/" target="_blank" class="hover:text-white transition">Universitas Sumatera Utara</a>
+            <a href="https://www.usu.ac.id/" target="_blank" class="hover:text-white transition">{{ __('Universitas Sumatera Utara') }}</a>
             <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id" target="_blank" class="hover:text-white transition">Perpustakaan USU</a>
+            <a href="https://library.usu.ac.id/id" target="_blank" class="hover:text-white transition">{{ __('Perpustakaan USU') }}</a>
             <span class="text-white/30 hidden sm:inline">|</span>
             <a href="https://repositori.usu.ac.id/" target="_blank" class="hover:text-white transition">USU-IR</a>
             <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition">Scientific eJournals</a>
+            <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition">{{ __('Scientific eJournals') }}</a>
             <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition">Scientific eBooks</a>
+            <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition">{{ __('Scientific eBooks') }}</a>
             @guest
                 <span class="text-white/30 hidden sm:inline">|</span>
-                <a href="{{ route('login') }}" class="hover:text-white transition text-white/40 text-[10px] sm:text-xs">Pustakawan</a>
+                <a href="{{ route('login') }}" class="hover:text-white transition text-white/40 text-[10px] sm:text-xs">{{ __('Pustakawan') }}</a>
             @endguest
         </div>
     </div>
@@ -155,19 +155,19 @@
                     <!-- Suggestions Dropdown -->
                     <div id="ai-suggestions-list" class="hidden flex-col gap-1.5 mt-1 ml-1 scale-y-0 opacity-0 transform origin-top transition-all duration-300">
                         <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
-                            Jam berapa perpustakaan buka?
+                            {{ __('Jam berapa perpustakaan buka?') }}
                         </button>
                         <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
-                            Apa saja syarat peminjaman buku?
+                            {{ __('Apa saja syarat peminjaman buku?') }}
                         </button>
                         <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
-                            Fasilitas apa yang tersedia di perpustakaan?
+                            {{ __('Fasilitas apa yang tersedia di perpustakaan?') }}
                         </button>
                         <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
-                            Berapa batas maksimal pinjam buku?
+                            {{ __('Berapa batas maksimal pinjam buku?') }}
                         </button>
                         <button class="ai-suggestion-btn text-left px-3 py-2 bg-green-50 hover:bg-green-100 text-[#106c38] text-xs rounded-xl border border-green-200/50 transition-colors shadow-sm">
-                            Apakah ada denda keterlambatan?
+                            {{ __('Apakah ada denda keterlambatan?') }}
                         </button>
                     </div>
                 </div>

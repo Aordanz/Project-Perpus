@@ -27,11 +27,11 @@
                     </button>
                     <!-- Dropdown Menu -->
                     <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden border border-slate-100">
-                        <a href="https://www.usu.ac.id/" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">Universitas Sumatera Utara</a>
-                        <a href="https://library.usu.ac.id/id" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">Perpustakaan</a>
+                        <a href="https://www.usu.ac.id/" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">{{ __('Universitas Sumatera Utara') }}</a>
+                        <a href="https://library.usu.ac.id/id" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">{{ __('Perpustakaan') }}</a>
                         <a href="https://repositori.usu.ac.id/" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">USU-IR</a>
-                        <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">Scientific eJournals</a>
-                        <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">Scientific eBooks</a>
+                        <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">{{ __('Scientific eJournals') }}</a>
+                        <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">{{ __('Scientific eBooks') }}</a>
                     </div>
                 </div>
                 
@@ -100,19 +100,19 @@
                 <div class="border-t border-white/10 my-2"></div>
                 <span class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-green-300/60">{{ __('Tautan Lain') }}</span>
                 <a href="https://www.usu.ac.id/" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
-                    <i class="ph ph-globe text-base"></i> Universitas Sumatera Utara
+                    <i class="ph ph-globe text-base"></i> {{ __('Universitas Sumatera Utara') }}
                 </a>
                 <a href="https://library.usu.ac.id/id" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
-                    <i class="ph ph-buildings text-base"></i> Perpustakaan
+                    <i class="ph ph-buildings text-base"></i> {{ __('Perpustakaan') }}
                 </a>
                 <a href="https://repositori.usu.ac.id/" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
                     <i class="ph ph-database text-base"></i> USU-IR
                 </a>
                 <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
-                    <i class="ph ph-article text-base"></i> Scientific eJournals
+                    <i class="ph ph-article text-base"></i> {{ __('Scientific eJournals') }}
                 </a>
                 <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
-                    <i class="ph ph-book text-base"></i> Scientific eBooks
+                    <i class="ph ph-book text-base"></i> {{ __('Scientific eBooks') }}
                 </a>
 
                 <div class="border-t border-white/10 my-2"></div>
@@ -144,7 +144,7 @@
                         </a>
                     </div>
                     <span class="text-[10px] text-green-200/50 text-center font-medium font-sans">
-                        &copy; 2026 Perpustakaan USU
+                        &copy; 2026 {{ __('Perpustakaan USU') }}
                     </span>
                 </div>
             </div>
@@ -188,10 +188,10 @@
 @if(!request()->routeIs('home'))
 <button id="desktop-back-button" onclick="window.history.back();" 
         class="fixed left-4 lg:left-8 xl:left-12 2xl:left-24 top-28 z-40 hidden md:flex items-center justify-start w-12 hover:w-32 h-12 bg-[#106c38] hover:bg-[#0e5c30] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer select-none group overflow-hidden pl-3.5 border border-transparent"
-        title="Back">
+        title="{{ __('Kembali') }}">
     <div class="flex items-center gap-2.5 whitespace-nowrap">
         <i class="ph ph-arrow-left text-xl font-bold transition-transform group-hover:-translate-x-0.5"></i>
-        <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold text-xs uppercase tracking-wider">Back</span>
+        <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold text-xs uppercase tracking-wider">{{ __('Kembali') }}</span>
     </div>
 </button>
 @endif
