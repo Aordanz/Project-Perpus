@@ -359,8 +359,8 @@
                                                 <span class="text-slate-800 font-semibold block">{{ $book->publish_year ?: '-' }}</span>
                                             </div>
                                             <div>
-                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">Jenis</span>
-                                                <span class="text-slate-800 font-semibold block truncate">{{ strtoupper($book->jenis ?: 'buku') }}</span>
+                                                <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Jenis') }}</span>
+                                                <span class="text-slate-800 font-semibold block truncate">{{ strtoupper(__($book->jenis ?: 'buku')) }}</span>
                                             </div>
                                             <div>
                                                 <span class="block text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{ __('Lokasi') }}</span>
@@ -776,7 +776,7 @@
                     <!-- Loading State -->
                     <div id="modal-hasil-loading" class="flex flex-col items-center justify-center py-16 gap-3">
                         <div class="w-12 h-12 border-4 border-[#106c38] border-t-transparent rounded-full animate-spin"></div>
-                        <p class="text-slate-500 font-medium text-sm">Memuat daftar koleksi...</p>
+                        <p class="text-slate-500 font-medium text-sm">{{ __('Memuat daftar koleksi...') }}</p>
                     </div>
                     <!-- Content Container -->
                     <div id="modal-hasil-container" class="hidden space-y-4">

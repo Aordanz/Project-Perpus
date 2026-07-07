@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Masuk - OPAC Universitas Sumatera Utara</title>
+    <title>{{ __('Masuk') }} - OPAC {{ __('Universitas Sumatera Utara') }}</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,7 +63,7 @@
                 <a href="{{ route('home') }}" class="flex items-center gap-3 hover:opacity-90 transition">
                     <img src="{{ asset('logousu.png') }}" alt="USU Logo" class="h-10 w-10 object-contain">
                     <div class="flex flex-col">
-                        <span class="font-bold tracking-tight text-white leading-none text-xs uppercase">Perpustakaan</span>
+                        <span class="font-bold tracking-tight text-white leading-none text-xs uppercase">{{ __('Perpustakaan') }}</span>
                         <span class="font-bold tracking-tight text-white leading-none text-sm uppercase">USU OPAC</span>
                     </div>
                 </a>
@@ -71,29 +71,29 @@
 
             <div class="relative z-10 my-auto py-10">
                 <h2 class="text-3xl font-bold tracking-tight leading-tight mb-4">
-                    Jendela Menuju Pustaka Dunia
+                    {{ __('Jendela Menuju Pustaka Dunia') }}
                 </h2>
                 <p class="text-green-150 text-sm font-light leading-relaxed mb-6">
-                    Akses jutaan katalog online, kelola peminjaman, dan jelajahi hasil riset terbaru secara instan.
+                    {{ __('Akses jutaan katalog online, kelola peminjaman, dan jelajahi hasil riset terbaru secara instan.') }}
                 </p>
                 <div class="space-y-3">
                     <div class="flex items-center gap-3 text-xs text-green-100">
                         <i class="ph ph-check-circle text-lg text-emerald-400"></i>
-                        <span>Cari & pesan buku kapan saja</span>
+                        <span>{{ __('Cari & pesan buku kapan saja') }}</span>
                     </div>
                     <div class="flex items-center gap-3 text-xs text-green-100">
                         <i class="ph ph-check-circle text-lg text-emerald-400"></i>
-                        <span>Kelola peminjaman mandiri</span>
+                        <span>{{ __('Kelola peminjaman mandiri') }}</span>
                     </div>
                     <div class="flex items-center gap-3 text-xs text-green-100">
                         <i class="ph ph-check-circle text-lg text-emerald-400"></i>
-                        <span>Integrasi satu akun universitas</span>
+                        <span>{{ __('Integrasi satu akun universitas') }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="relative z-10 text-xs text-green-200">
-                &copy; {{ date('Y') }} Universitas Sumatera Utara. All rights reserved.
+                &copy; {{ date('Y') }} {{ __('Universitas Sumatera Utara') }}. {{ __('All rights reserved.') }}
             </div>
         </div>
 
@@ -102,15 +102,15 @@
             
             <!-- Back Button to Home (visible initially or on role selection) -->
             <a href="{{ route('home') }}" id="btn-back-home" class="absolute top-6 right-8 text-slate-400 hover:text-[#106c38] flex items-center gap-1.5 text-xs font-semibold tracking-wide transition uppercase">
-                <i class="ph ph-house text-base"></i> Beranda
+                <i class="ph ph-house text-base"></i> {{ __('Beranda') }}
             </a>
 
             <!-- SECTION 1: ROLE SELECTION -->
             <div id="section-role-select" class="{{ $selectedRole ? 'hidden' : '' }}">
                 <div class="mb-8">
-                    <span class="text-[#106c38] font-bold text-xs uppercase tracking-wider block mb-2">Selamat Datang</span>
-                    <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight mb-2">Pilih Metode Masuk</h1>
-                    <p class="text-slate-500 text-sm">Masuk ke sistem OPAC untuk pengalaman penuh sesuai peran Anda.</p>
+                    <span class="text-[#106c38] font-bold text-xs uppercase tracking-wider block mb-2">{{ __('Selamat Datang') }}</span>
+                    <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight mb-2">{{ __('Pilih Metode Masuk') }}</h1>
+                    <p class="text-slate-500 text-sm">{{ __('Masuk ke sistem OPAC untuk pengalaman penuh sesuai peran Anda.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
@@ -120,8 +120,8 @@
                             <i class="ph ph-user-gear text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-800 text-base mb-1">Pustakawan</h3>
-                            <p class="text-xs text-slate-550 leading-normal">Kelola sirkulasi, data buku, anggota, dan administrasi perpus.</p>
+                            <h3 class="font-bold text-slate-800 text-base mb-1">{{ __('Pustakawan') }}</h3>
+                            <p class="text-xs text-slate-550 leading-normal">{{ __('Kelola sirkulasi, data buku, anggota, dan administrasi perpus.') }}</p>
                         </div>
                     </button>
 
@@ -131,14 +131,14 @@
                             <i class="ph ph-identification-card text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-800 text-base mb-1">Anggota</h3>
-                            <p class="text-xs text-slate-550 leading-normal">Untuk Mahasiswa, Dosen, Alumni, dan Anggota Terdaftar.</p>
+                            <h3 class="font-bold text-slate-800 text-base mb-1">{{ __('Anggota') }}</h3>
+                            <p class="text-xs text-slate-550 leading-normal">{{ __('Untuk Mahasiswa, Dosen, Alumni, dan Anggota Terdaftar.') }}</p>
                         </div>
                     </button>
                 </div>
 
                 <div class="text-center">
-                    <p class="text-slate-400 text-xs">Butuh bantuan masuk? <a href="#" class="text-[#106c38] font-semibold hover:underline">Hubungi IT Helpdesk</a></p>
+                    <p class="text-slate-400 text-xs">{{ __('Butuh bantuan masuk?') }} <a href="#" class="text-[#106c38] font-semibold hover:underline">{{ __('Hubungi IT Helpdesk') }}</a></p>
                 </div>
             </div>
 
@@ -157,7 +157,7 @@
                     <h2 id="form-role-title" class="text-2xl font-bold text-slate-800 tracking-tight">
                         <!-- Filled by JS -->
                     </h2>
-                    <p class="text-slate-500 text-xs mt-1">Masukkan kredensial Anda untuk melanjutkan ke aplikasi.</p>
+                    <p class="text-slate-500 text-xs mt-1">{{ __('Masukkan kredensial Anda untuk melanjutkan ke aplikasi.') }}</p>
                 </div>
 
                 <!-- Form Errors -->
@@ -176,8 +176,8 @@
                 <div id="anggota-warning-banner" class="hidden mb-5 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3 text-amber-800">
                     <i class="ph ph-warning-circle text-2xl flex-shrink-0 text-amber-600"></i>
                     <div class="text-xs leading-normal">
-                        <p class="font-bold mb-1">Pemberitahuan</p>
-                        <p>Login Anggota belum bisa digunakan. Silakan hubungi admin/pustakawan terlebih dahulu untuk mengurus aktivasi akun Anda.</p>
+                        <p class="font-bold mb-1">{{ __('Pemberitahuan') }}</p>
+                        <p>{{ __('Login Anggota belum bisa digunakan. Silakan hubungi admin/pustakawan terlebih dahulu untuk mengurus aktivasi akun Anda.') }}</p>
                     </div>
                 </div>
 
@@ -206,8 +206,8 @@
                     <!-- Password Input -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <label for="password" class="block text-xs font-bold text-slate-600 uppercase tracking-wide">Kata Sandi</label>
-                            <a href="#" class="text-xs font-semibold text-[#106c38] hover:underline">Lupa Sandi?</a>
+                            <label for="password" class="block text-xs font-bold text-slate-600 uppercase tracking-wide">{{ __('Kata Sandi') }}</label>
+                            <a href="#" class="text-xs font-semibold text-[#106c38] hover:underline">{{ __('Lupa Sandi?') }}</a>
                         </div>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -223,12 +223,12 @@
                     <!-- Remember Me -->
                     <div class="flex items-center">
                         <input type="checkbox" name="remember" id="remember" {{ $rememberChecked }} class="w-4.5 h-4.5 rounded border-slate-300 text-[#106c38] focus:ring-[#106c38]">
-                        <label for="remember" class="ml-2 text-xs text-slate-500 font-medium select-none cursor-pointer">Ingat saya di perangkat ini</label>
+                        <label for="remember" class="ml-2 text-xs text-slate-500 font-medium select-none cursor-pointer">{{ __('Ingat saya di perangkat ini') }}</label>
                     </div>
 
                     <!-- Submit Button -->
                     <button type="submit" id="btn-login-submit" class="w-full bg-gradient-to-r from-[#106c38] to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-xl py-3 font-semibold text-sm transition-all shadow-md shadow-green-700/20 hover:shadow-lg hover:shadow-green-700/30 flex items-center justify-center gap-1.5 cursor-pointer mt-6 border-none">
-                        Masuk Sistem <i class="ph ph-arrow-right"></i>
+                        {{ __('Masuk Sistem') }} <i class="ph ph-arrow-right"></i>
                     </button>
                 </form>
             </div>
