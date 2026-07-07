@@ -748,7 +748,7 @@
                     </div>
                     <div>
                         <h3 id="modal-hasil-title" class="text-lg md:text-xl font-bold tracking-wide">{{ __('Koleksi Buku') }}</h3>
-                        <p class="text-xs text-green-100/90 font-medium font-sans">{{ __('Daftar koleksi buku yang tersedia di lokasi ini') }}</p>
+                        <p id="modal-hasil-subtitle" class="text-xs text-green-100/90 font-medium font-sans">{{ __('Daftar koleksi buku yang tersedia di lokasi ini') }}</p>
                     </div>
                 </div>
                 <button id="close-modal-hasil-lokasi" class="absolute top-5 right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-2 rounded-xl flex items-center justify-center cursor-pointer">
@@ -989,6 +989,7 @@
             // Handle location cards click to open search results popup on homepage
             const locationCards = document.querySelectorAll('[data-location]');
             const modalHasilTitle = document.getElementById('modal-hasil-title');
+            const modalHasilSubtitle = document.getElementById('modal-hasil-subtitle');
             const modalHasilIcon = document.getElementById('modal-hasil-icon');
 
             locationCards.forEach(card => {
@@ -1002,6 +1003,7 @@
 
                     if (modalHasilTitle) modalHasilTitle.innerText = branchName;
                     if (modalHasilIcon) modalHasilIcon.className = iconClass + ' text-2xl';
+                    if (modalHasilSubtitle) modalHasilSubtitle.innerText = '{{ __("Daftar koleksi buku yang tersedia di lokasi ini") }}';
 
                     // Reset search state
                     allCards = [];
@@ -1048,6 +1050,7 @@
 
                     // Set modal info
                     if (modalHasilTitle) modalHasilTitle.innerText = '{{ __("Hasil Pencarian: ") }}' + '"' + queryVal + '"';
+                    if (modalHasilSubtitle) modalHasilSubtitle.innerText = '{{ __("Daftar koleksi buku dari semua lokasi") }}';
                     if (modalHasilIcon) modalHasilIcon.className = 'ph ph-magnifying-glass text-2xl';
 
                     // Reset search state
@@ -1099,6 +1102,17 @@
                     // Set modal title & icon
                     if (modalHasilTitle) modalHasilTitle.innerText = '{{ __("Hasil Pencarian Spesifik") }}';
                     if (modalHasilIcon) modalHasilIcon.className = 'ph ph-sliders-horizontal text-2xl';
+
+                    // Check if specific location is selected
+                    const specLokasiInput = document.getElementById('spec-dropdown-lokasi-value');
+                    const specLokasiLabel = document.getElementById('spec-dropdown-lokasi-label');
+                    if (modalHasilSubtitle) {
+                        if (specLokasiInput && specLokasiInput.value !== '') {
+                            modalHasilSubtitle.innerText = '{{ __("Daftar koleksi buku yang tersedia di") }}' + ' ' + (specLokasiLabel ? specLokasiLabel.innerText : '');
+                        } else {
+                            modalHasilSubtitle.innerText = '{{ __("Daftar koleksi buku dari semua lokasi") }}';
+                        }
+                    }
 
                     // Reset search state
                     allCards = [];
