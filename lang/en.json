@@ -276,5 +276,16 @@
     "Apakah ada denda keterlambatan?": "Is there a fine for late returns?",
     "Peringatan": "Warning",
     "Berhasil": "Success",
-    "Maksimal hanya 3 gambar yang dapat dilampirkan.": "Maximum of only 3 images can be attached."
+    "Maksimal hanya 3 gambar yang dapat dilampirkan.": "Maximum of only 3 images can be attached.",
+    "Halo! Saya asisten virtual Perpustakaan USU. Ada yang bisa saya bantu mengenai informasi perpustakaan?": "Hello! I am the USU Library virtual assistant. How can I help you with library information?",
+    "Ketik pesan Anda...": "Type your message...",
+    "Asisten Virtual Perpustakaan": "Library Virtual Assistant",
+    "Ada yang bisa dibantu? Tanya asisten AI di sini!": "Can I help you? Ask the AI assistant here!",
+    "Kamu terlalu cepat mengirim pesan, tunggu sebentar ya!": "You are sending messages too fast, please wait a moment!",
+    "Terjadi kesalahan server": "A server error occurred",
+    "Maaf, sistem AI sedang offline atau GROQ_API_KEY di .env belum disetting.": "Sorry, the AI system is offline or GROQ_API_KEY in .env is not set.",
+    "Maaf, asisten AI sedang sibuk melayani banyak mahasiswa saat ini. Silakan coba kirim pertanyaanmu kembali dalam 1 menit.": "Sorry, the AI assistant is busy serving many students right now. Please try sending your question again in 1 minute.",
+    "Maaf, terjadi kesalahan saat menghubungi server AI. Silakan coba lagi nanti.": "Sorry, an error occurred while contacting the AI server. Please try again later.",
+    "Perbesar Layar": "Expand Screen",
+    "Tutup": "Close"
 }
