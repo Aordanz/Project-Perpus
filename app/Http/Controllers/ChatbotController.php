@@ -57,14 +57,14 @@ class ChatbotController extends Controller
             // Tangani Error 429 Rate Limit Groq
             if ($response->status() === 429) {
                 return response()->json([
-                    'jawaban' => "Maaf, asisten AI sedang sibuk melayani banyak mahasiswa saat ini. Silakan coba kirim pertanyaanmu kembali dalam 1 menit."
+                    'jawaban' => __("Maaf, asisten AI sedang sibuk melayani banyak mahasiswa saat ini. Silakan coba kirim pertanyaanmu kembali dalam 1 menit.")
                 ], 429);
             }
 
             if (!$response->successful()) {
                 Log::error('Groq API Error: ' . $response->body());
                 return response()->json([
-                    'jawaban' => "Maaf, terjadi kesalahan saat menghubungi server AI. Silakan coba lagi nanti."
+                    'jawaban' => __("Maaf, terjadi kesalahan saat menghubungi server AI. Silakan coba lagi nanti.")
                 ], 500);
             }
 
@@ -85,7 +85,7 @@ class ChatbotController extends Controller
         } catch (\Exception $e) {
             Log::error('Groq Chatbot Exception: ' . $e->getMessage());
             return response()->json([
-                'jawaban' => "Maaf, asisten AI sedang sibuk melayani banyak mahasiswa saat ini. Silakan coba kirim pertanyaanmu kembali dalam 1 menit."
+                'jawaban' => __("Maaf, asisten AI sedang sibuk melayani banyak mahasiswa saat ini. Silakan coba kirim pertanyaanmu kembali dalam 1 menit.")
             ], 500);
         }
     }

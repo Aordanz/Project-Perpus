@@ -121,7 +121,7 @@
         <!-- Header (draggable) -->
         <div id="ai-chat-header" class="bg-[#106c38] text-white p-3.5 flex items-center justify-between shadow-sm cursor-grab active:cursor-grabbing select-none">
             <div class="flex items-center gap-2 sm:gap-3">
-                <button id="ai-expand-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none" title="Perbesar Layar">
+                <button id="ai-expand-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none" title="{{ __('Perbesar Layar') }}">
                     <i class="ph ph-corners-out text-lg" id="ai-expand-icon"></i>
                 </button>
                 <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -132,7 +132,7 @@
                     <p class="text-[9px] text-green-100">{{ __('Asisten Virtual Perpustakaan') }}</p>
                 </div>
             </div>
-            <button id="ai-close-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none" title="Tutup">
+            <button id="ai-close-btn" class="text-white/80 hover:text-white transition-colors focus:outline-none" title="{{ __('Tutup') }}">
                 <i class="ph ph-x text-lg"></i>
             </button>
         </div>
