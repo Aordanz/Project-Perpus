@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Official Public Access Catalog (OPAC) Universitas Sumatera Utara. Temukan koleksi buku, jurnal, dan karya ilmiah perpustakaan.">
+
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <title>{{ __('Masuk') }} - OPAC {{ __('Universitas Sumatera Utara') }}</title>
 
     <!-- Google Fonts: Inter -->
@@ -11,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
 
     <!-- Tailwind CSS (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -47,13 +50,14 @@
     </style>
 </head>
 <body class="text-slate-800 antialiased bg-slate-50 min-h-screen flex items-center justify-center p-4 md:p-0">
+    <main class="w-full flex items-center justify-center p-4">
 
     <div class="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-5xl w-full grid grid-cols-1 md:grid-cols-12 min-h-[600px]">
         
         <!-- Left Side: Hero Brand Area -->
         <div class="hidden md:flex md:col-span-5 login-gradient p-12 flex-col justify-between relative overflow-hidden text-white">
             <!-- Background Image with Overlay -->
-            <div class="absolute inset-0 z-0 bg-cover bg-center mix-blend-multiply opacity-25" style="background-image: url('{{ asset('kolam_perpustakaan.jpg') }}');"></div>
+            <div class="absolute inset-0 z-0 bg-cover bg-center mix-blend-multiply opacity-25" style="background-image: url('{{ asset('kolam_perpustakaan.webp') }}');"></div>
             
             <!-- Floating Circles -->
             <div class="absolute -top-24 -left-24 w-64 h-64 bg-green-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"></div>
@@ -61,7 +65,7 @@
 
             <div class="relative z-10">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 hover:opacity-90 transition">
-                    <img src="{{ asset('logousu.png') }}" alt="USU Logo" class="h-10 w-10 object-contain">
+                    <img src="{{ asset('logousu.webp') }}" alt="USU Logo" class="h-10 w-10 object-contain">
                     <div class="flex flex-col">
                         <span class="font-bold tracking-tight text-white leading-none text-xs uppercase">{{ __('Perpustakaan') }}</span>
                         <span class="font-bold tracking-tight text-white leading-none text-sm uppercase">USU OPAC</span>
@@ -312,5 +316,6 @@
             }
         });
     </script>
+</main>
 </body>
 </html>

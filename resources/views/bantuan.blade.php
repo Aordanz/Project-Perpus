@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Official Public Access Catalog (OPAC) Universitas Sumatera Utara. Temukan koleksi buku, jurnal, dan karya ilmiah perpustakaan.">
+
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <title>{{ __('Bantuan') }} - OPAC {{ __('Universitas Sumatera Utara') }}</title>
 
     <!-- Google Fonts: Inter -->
@@ -11,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
 
     <!-- Tailwind CSS (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -34,11 +37,13 @@
 
     @include('partials.navbar')
 
+    <main>
+
     <!-- Header Section with Image Background -->
     <div class="relative pt-24 pb-24 lg:pt-28 lg:pb-32 overflow-hidden bg-slate-900">
         <!-- Background Image -->
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('kolam_perpustakaan.jpg') }}" alt="Perpustakaan USU" class="w-full h-full object-cover opacity-40">
+            <img src="{{ asset('kolam_perpustakaan.webp') }}" alt="Perpustakaan USU" class="w-full h-full object-cover opacity-40">
             <div class="absolute inset-0 bg-gradient-to-b from-[#064e3b]/80 via-[#064e3b]/60 to-[#f8fafc]"></div>
         </div>
         
@@ -125,6 +130,8 @@
             </div>
         </div>
     </div>
+
+    </main>
 
     @include('partials.footer')
 

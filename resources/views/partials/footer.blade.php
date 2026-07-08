@@ -1,22 +1,22 @@
 <!-- Footer -->
-<footer class="bg-[#106c38] py-2.5 sm:py-4 text-white text-center text-[10px] sm:text-xs md:text-sm">
+<footer class="bg-[#106c38] py-2.5 sm:py-3.5 text-white text-center text-xs sm:text-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p class="mb-1 sm:mb-1.5 text-white/90">
+        <p class="mb-1.5 sm:mb-2 text-white/90">
             &copy; 2025 {{ __('University of Sumatera Utara Library') }} | OPAC. {{ __('All rights reserved.') }}
         </p>
-        <div class="flex flex-wrap justify-center gap-x-2 gap-y-1 items-center text-white/80">
-            <a href="https://www.usu.ac.id/" target="_blank" class="hover:text-white transition">{{ __('Universitas Sumatera Utara') }}</a>
+        <div class="flex flex-wrap justify-center gap-x-3 gap-y-1 sm:gap-x-2 sm:gap-y-1 items-center text-white/80">
+            <a href="https://www.usu.ac.id/" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Universitas Sumatera Utara') }}</a>
             <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id" target="_blank" class="hover:text-white transition">{{ __('Perpustakaan USU') }}</a>
+            <a href="https://library.usu.ac.id/id" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Perpustakaan USU') }}</a>
             <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://repositori.usu.ac.id/" target="_blank" class="hover:text-white transition">USU-IR</a>
+            <a href="https://repositori.usu.ac.id/" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">USU-IR</a>
             <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition">{{ __('Scientific eJournals') }}</a>
+            <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Scientific eJournals') }}</a>
             <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition">{{ __('Scientific eBooks') }}</a>
+            <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Scientific eBooks') }}</a>
             @guest
                 <span class="text-white/30 hidden sm:inline">|</span>
-                <a href="{{ route('login') }}" class="hover:text-white transition text-white/80 text-[10px] sm:text-xs">{{ __('Pustakawan') }}</a>
+                <a href="{{ route('login') }}" class="hover:text-white transition text-white/80 inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Pustakawan') }}</a>
             @endguest
         </div>
     </div>
