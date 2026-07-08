@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Official Public Access Catalog (OPAC) Universitas Sumatera Utara. Temukan koleksi buku, jurnal, dan karya ilmiah perpustakaan.">
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <title>OPAC - {{ __('Universitas Sumatera Utara') }}</title>
 
     <!-- Google Fonts: Inter & Outfit -->
