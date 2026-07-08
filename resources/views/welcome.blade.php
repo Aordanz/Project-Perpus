@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Official Public Access Catalog (OPAC) Universitas Sumatera Utara. Temukan koleksi buku, jurnal, dan karya ilmiah perpustakaan.">
     <title>OPAC - {{ __('Universitas Sumatera Utara') }}</title>
 
     <!-- Google Fonts: Inter & Outfit -->
@@ -10,8 +11,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;850;900&display=swap" rel="stylesheet">
     
+    <!-- Preload LCP Hero Background -->
+    <link rel="preload" as="image" href="{{ asset('kolam_perpustakaan.jpg') }}" fetchpriority="high">
+
     <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
 
     <!-- Tailwind CSS (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -240,9 +244,9 @@
     <div class="hero-gradient min-h-[74vh] pt-24 pb-0 relative overflow-hidden flex flex-col justify-start">
         <!-- Background Images Slideshow with Low Opacity Overlay -->
         <div id="hero-bg-slideshow" class="absolute inset-0 z-0">
-            <div class="hero-bg-slide absolute inset-0 bg-cover bg-center opacity-100" style="background-image: url('{{ asset('kolam_perpustakaan.jpg') }}');"></div>
-            <div class="hero-bg-slide absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('{{ asset('perpustakaan_depan.jpg') }}');"></div>
-            <div class="hero-bg-slide absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('{{ asset('perpustakaan_samping.jpg') }}');"></div>
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-100" src="{{ asset('kolam_perpustakaan.jpg') }}" fetchpriority="high" alt="Background OPAC USU 1">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('perpustakaan_depan.jpg') }}" alt="Background OPAC USU 2">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('perpustakaan_samping.jpg') }}" alt="Background OPAC USU 3">
             <!-- Dark green static overlay layer to emulate blend and keep it dark -->
             <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/90 via-[#084323]/85 to-[#0c542c]/90 z-10 pointer-events-none"></div>
         </div>
@@ -279,7 +283,7 @@
                         <button type="submit" class="bg-[#106c38] hover:bg-green-800 text-white font-bold text-sm sm:text-base px-6 py-3 sm:py-4 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
                             <i class="ph ph-magnifying-glass"></i> {{ __('Cari') }}
                         </button>
-                        <button type="button" id="open-modal-pencarian-spesifik" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base px-5 py-3 sm:py-4 rounded-xl transition border border-emerald-500/35 flex items-center justify-center gap-1.5 cursor-pointer">
+                        <button type="button" id="open-modal-pencarian-spesifik" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm sm:text-base px-5 py-3 sm:py-4 rounded-xl transition border border-emerald-600/35 flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="ph ph-sliders-horizontal"></i> {{ __('Spesifik') }}
                         </button>
                     </div>
@@ -297,7 +301,7 @@
                 <!-- Carousel Area -->
                 <div id="carousel-koleksi-area" class="relative w-full h-[280px] sm:h-[420px] md:h-[460px] flex items-center justify-center overflow-hidden">
                     <!-- Left Navigation Button -->
-                    <button id="prev-btn-koleksi" class="absolute hidden lg:flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="prev-btn-koleksi" aria-label="{{ __('Koleksi Sebelumnya') }}" class="absolute hidden lg:flex top-1/2 -translate-y-1/2 left-2 sm:left-6 md:left-10 lg:left-12 xl:left-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-left text-xl font-bold"></i>
                     </button>
 
@@ -321,7 +325,7 @@
                                             <span class="text-[9px] sm:text-xs font-semibold text-slate-500 text-center leading-tight">{{ __('Cover Buku') }}</span>
                                         </div>
                                     @endif
-                                    <span class="absolute top-3 left-3 bg-red-600 text-white text-[8px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded shadow">NEW</span>
+                                    <span class="absolute top-3 left-3 bg-red-700 text-white text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded shadow">NEW</span>
                                 </div>
 
                                 <!-- Info Panel -->
@@ -375,7 +379,7 @@
                     </div>
 
                     <!-- Right Navigation Button -->
-                    <button id="next-btn-koleksi" class="absolute hidden lg:flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
+                    <button id="next-btn-koleksi" aria-label="{{ __('Koleksi Selanjutnya') }}" class="absolute hidden lg:flex top-1/2 -translate-y-1/2 right-2 sm:right-6 md:right-10 lg:right-12 xl:right-16 z-40 w-8 h-8 sm:w-10 sm:h-10 bg-black/30 hover:bg-white text-white hover:text-[#106c38] border border-white/10 rounded-full items-center justify-center transition-all cursor-pointer">
                         <i class="ph ph-caret-right text-xl font-bold"></i>
                     </button>
                 </div>
