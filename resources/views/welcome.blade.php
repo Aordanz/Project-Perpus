@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;850;900&display=swap" rel="stylesheet">
     
     <!-- Preload LCP Hero Background -->
-    <link rel="preload" as="image" href="{{ asset('kolam_perpustakaan.jpg') }}" fetchpriority="high">
+    <link rel="preload" as="image" href="{{ asset('kolam_perpustakaan.webp') }}" fetchpriority="high">
 
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
@@ -240,13 +240,14 @@
 
     @include('partials.navbar')
 
-    <!-- Hero Section -->
-    <div class="hero-gradient min-h-[74vh] pt-24 pb-0 relative overflow-hidden flex flex-col justify-start">
+    <main>
+        <!-- Hero Section -->
+        <div class="hero-gradient min-h-[74vh] pt-24 pb-0 relative overflow-hidden flex flex-col justify-start">
         <!-- Background Images Slideshow with Low Opacity Overlay -->
         <div id="hero-bg-slideshow" class="absolute inset-0 z-0">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-100" src="{{ asset('kolam_perpustakaan.jpg') }}" fetchpriority="high" alt="Background OPAC USU 1">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('perpustakaan_depan.jpg') }}" alt="Background OPAC USU 2">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('perpustakaan_samping.jpg') }}" alt="Background OPAC USU 3">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-100" src="{{ asset('kolam_perpustakaan.webp') }}" fetchpriority="high" alt="Background OPAC USU 1">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('perpustakaan_depan.webp') }}" alt="Background OPAC USU 2">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('perpustakaan_samping.webp') }}" alt="Background OPAC USU 3">
             <!-- Dark green static overlay layer to emulate blend and keep it dark -->
             <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/90 via-[#084323]/85 to-[#0c542c]/90 z-10 pointer-events-none"></div>
         </div>
@@ -470,6 +471,7 @@
             </div>
         </div>
     </div>
+    </main>
 
 
     @include('partials.footer')

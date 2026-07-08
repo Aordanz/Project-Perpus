@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Official Public Access Catalog (OPAC) Universitas Sumatera Utara. Temukan koleksi buku, jurnal, dan karya ilmiah perpustakaan.">
+
     <title>{{ __('Galeri') }} - OPAC {{ __('Universitas Sumatera Utara') }}</title>
 
     <!-- Google Fonts: Inter -->
@@ -11,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
 
     <!-- Tailwind CSS (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -43,6 +45,8 @@
 <body class="text-slate-800 antialiased selection:bg-green-200 selection:text-green-900 flex flex-col min-h-screen">
 
     @include('partials.navbar')
+
+    <main>
 
     <!-- Header Section -->
     <div class="relative pt-24 pb-16 overflow-hidden bg-white shadow-sm mb-6">
@@ -171,6 +175,8 @@
             @include('partials.gallery_content')
         </div>
     </div>
+
+    </main>
 
     @include('partials.footer')
 

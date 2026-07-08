@@ -1,7 +1,7 @@
 <!-- Admin Sidebar Navigation -->
 <div class="md:hidden bg-[#106c38] text-white px-4 py-3.5 flex items-center justify-between border-b border-white/10 sticky top-0 z-[60] shadow-md">
     <a href="{{ route('home') }}" class="flex items-center gap-2.5">
-        <img src="{{ asset('logousu.png') }}" class="h-8 w-8 object-contain" alt="Logo USU">
+        <img src="{{ asset('logousu.webp') }}" class="h-8 w-8 object-contain" alt="Logo USU">
         <span class="font-extrabold text-xs tracking-wider font-sans uppercase">PORTAL ADMIN</span>
     </a>
     <button type="button" id="admin-sidebar-toggle" class="text-white hover:text-green-200 focus:outline-none cursor-pointer bg-transparent border-none">
@@ -13,7 +13,7 @@
     <!-- Brand Branding -->
     <div class="p-6 border-b border-white/10 flex items-center gap-3">
         <a href="{{ route('home') }}" class="flex items-center gap-3 hover:opacity-95 transition">
-            <img src="{{ asset('logousu.png') }}" alt="Logo USU" class="h-10 w-auto object-contain">
+            <img src="{{ asset('logousu.webp') }}" alt="Logo USU" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
                 <span class="font-black text-xs tracking-wide uppercase font-sans">PORTAL ADMIN</span>
                 <span class="text-[9px] font-semibold text-green-200/90 tracking-wider">Perpustakaan USU</span>

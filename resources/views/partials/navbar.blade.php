@@ -6,7 +6,7 @@
             <div class="flex items-center gap-4 lg:gap-6 flex-shrink-0">
                 <!-- USU Logo & Name -->
                 <a href="{{ route('home') }}" class="flex items-center gap-1.5 sm:gap-2 group">
-                    <img src="{{ asset('logousu.png') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain">
+                    <img src="{{ asset('logousu.webp') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain">
                     <div class="flex flex-col">
                         <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Perpustakaan ') }}</span>
                         <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas Sumatera Utara') }}</span>
@@ -75,7 +75,7 @@
             <!-- Close Button -->
             <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
                 <span class="text-white font-bold text-sm tracking-wide">Menu</span>
-                <button id="mobile-menu-close" class="w-9 h-9 rounded-lg flex items-center justify-center text-white hover:bg-white/10 transition cursor-pointer">
+                <button id="mobile-menu-close" aria-label="{{ __('Tutup Menu') }}" class="w-9 h-9 rounded-lg flex items-center justify-center text-white hover:bg-white/10 transition cursor-pointer">
                     <i class="ph ph-x text-xl"></i>
                 </button>
             </div>

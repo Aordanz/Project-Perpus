@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Official Public Access Catalog (OPAC) Universitas Sumatera Utara. Temukan koleksi buku, jurnal, dan karya ilmiah perpustakaan.">
+
     <title>{{ __('Hasil Pencarian') }} - OPAC USU Library</title>
 
     <!-- Google Fonts: Inter -->
@@ -11,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
 
     <!-- Tailwind CSS (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -71,7 +73,7 @@
                 <div class="flex items-center gap-6">
                 <!-- USU Logo & Name -->
                     <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                        <img src="{{ asset('logousu.png') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain">
+                        <img src="{{ asset('logousu.webp') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain">
                         <div class="flex flex-col hidden sm:flex">
                             <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas') }}</span>
                             <span class="font-bold text-white leading-none text-xs sm:text-sm group-hover:text-green-200 transition">{{ __('Sumatera Utara') }}</span>
@@ -91,7 +93,7 @@
         <!-- Search Header Banner with Background Image -->
         <div class="relative bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 sm:p-10 mb-8 overflow-hidden text-white shadow-lg">
             <!-- Background Image with Low Opacity -->
-            <div class="absolute inset-0 z-0 bg-cover bg-center mix-blend-multiply opacity-35" style="background-image: url('{{ asset('kolam_perpustakaan.jpg') }}');"></div>
+            <div class="absolute inset-0 z-0 bg-cover bg-center mix-blend-multiply opacity-35" style="background-image: url('{{ asset('kolam_perpustakaan.webp') }}');"></div>
             
             <div class="relative z-10">
                 <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ __('Hasil Pencarian Katalog') }}</h1>
