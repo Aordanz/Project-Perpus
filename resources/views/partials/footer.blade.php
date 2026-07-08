@@ -16,7 +16,7 @@
             <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition">{{ __('Scientific eBooks') }}</a>
             @guest
                 <span class="text-white/30 hidden sm:inline">|</span>
-                <a href="{{ route('login') }}" class="hover:text-white transition text-white/40 text-[10px] sm:text-xs">{{ __('Pustakawan') }}</a>
+                <a href="{{ route('login') }}" class="hover:text-white transition text-white/80 text-[10px] sm:text-xs">{{ __('Pustakawan') }}</a>
             @endguest
         </div>
     </div>
@@ -147,7 +147,7 @@
                 <div class="flex flex-col gap-1 w-full">
                     <div class="bg-white border border-slate-200 text-slate-700 pl-3 pr-3 pt-2 pb-7 rounded-2xl rounded-tl-sm shadow-sm text-[13px] leading-relaxed relative group">
                         <span>{{ __('Halo! Saya asisten virtual Perpustakaan USU. Ada yang bisa saya bantu mengenai informasi perpustakaan?') }}</span>
-                        <button id="ai-suggestions-toggle" class="absolute bottom-1 right-1 w-6 h-6 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors border border-slate-200 focus:outline-none flex-shrink-0 shadow-sm">
+                        <button id="ai-suggestions-toggle" aria-label="{{ __('Tampilkan Rekomendasi Pertanyaan') }}" class="absolute bottom-1 right-1 w-6 h-6 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors border border-slate-200 focus:outline-none flex-shrink-0 shadow-sm">
                             <i class="ph ph-caret-down text-xs transition-transform duration-300" id="ai-suggestions-icon"></i>
                         </button>
                     </div>
@@ -177,7 +177,7 @@
         <!-- Input Area -->
         <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
             <input type="text" id="ai-chat-input" placeholder="{{ __('Ketik pesan Anda...') }}" class="flex-grow px-3 py-2 bg-slate-100 border-none rounded-full text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#106c38]/30 transition-all">
-            <button id="ai-send-btn" class="w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center hover:bg-green-800 transition-colors shadow-sm focus:outline-none flex-shrink-0">
+            <button id="ai-send-btn" aria-label="{{ __('Kirim Pesan') }}" class="w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center hover:bg-green-800 transition-colors shadow-sm focus:outline-none flex-shrink-0">
                 <i class="ph ph-paper-plane-tilt text-sm"></i>
             </button>
         </div>
@@ -193,7 +193,7 @@
                 <p class="font-bold text-[#106c38] text-[11px] mb-0.5">{{ __('USU Library AI') }}</p>
                 <p class="text-slate-500 text-[10px] leading-relaxed">{{ __('Ada yang bisa dibantu? Tanya asisten AI di sini!') }}</p>
             </div>
-            <button id="ai-close-bubble-btn" class="text-slate-300 hover:text-slate-500 transition-colors focus:outline-none ml-0.5 cursor-pointer self-start mt-0.5">
+            <button id="ai-close-bubble-btn" aria-label="{{ __('Tutup Balon Info') }}" class="text-slate-300 hover:text-slate-500 transition-colors focus:outline-none ml-0.5 cursor-pointer self-start mt-0.5">
                 <i class="ph ph-x text-[10px]"></i>
             </button>
         </div>
@@ -206,7 +206,7 @@
     <!-- Toggle Button -->
     <div id="ai-toggle-wrapper" class="relative pointer-events-auto group">
         <!-- Main Button -->
-        <button id="ai-toggle-btn" class="relative w-14 h-14 rounded-full bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transition-all focus:outline-none border-4 border-white cursor-pointer z-10">
+        <button id="ai-toggle-btn" aria-label="{{ __('Buka Asisten AI') }}" class="relative w-14 h-14 rounded-full bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transition-all focus:outline-none border-4 border-white cursor-pointer z-10">
             <i class="ph ph-chat-circle-dots text-2xl"></i>
         </button>
     </div>
