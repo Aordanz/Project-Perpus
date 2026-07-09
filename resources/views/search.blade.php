@@ -27,19 +27,19 @@
             font-family: 'Inter', sans-serif !important;
         }
         .btn-cari {
-            background-color: #106c38 !important;
-            color: #ffffff !important;
+            background-color: #F3C300 !important;
+            color: #106c38 !important;
         }
         .btn-cari:hover {
-            background-color: #0b4b27 !important;
+            background-color: #e0b400 !important;
         }
         .btn-spesifik {
-            background-color: #059669 !important;
+            background-color: #106c38 !important;
             color: #ffffff !important;
-            border-color: rgba(16, 185, 129, 0.35) !important;
+            border: none !important;
         }
         .btn-spesifik:hover {
-            background-color: #047857 !important;
+            background-color: #0b4b27 !important;
         }
         .glass-nav {
             background: #106c38;
@@ -109,11 +109,11 @@
                         <input type="text" id="live-search-input" name="q" value="{{ request('q') }}" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full pl-11 pr-4 py-3 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm font-medium">
                     </div>
                     <div class="flex gap-2">
-                        <button type="submit" class="btn-cari bg-[#106c38] hover:bg-green-800 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
-                            <i class="ph ph-magnifying-glass"></i> {{ __('Cari') }}
+                        <button type="submit" class="btn-cari bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] font-bold text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
+                            <i class="ph ph-magnifying-glass"></i>{{ __('Cari') }}
                         </button>
-                        <button type="button" id="open-modal-pencarian-spesifik" class="btn-spesifik bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-5 py-3 rounded-xl transition border border-emerald-500/35 flex items-center justify-center gap-1.5 cursor-pointer">
-                            <i class="ph ph-sliders-horizontal"></i> {{ __('Spesifik') }}
+                        <button type="button" id="open-modal-pencarian-spesifik" class="btn-spesifik bg-[#106c38] hover:bg-[#0b4b27] text-white font-bold text-sm px-5 py-3 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="ph ph-sliders-horizontal"></i>{{ __('Spesifik') }}
                         </button>
                     </div>
                 </form>

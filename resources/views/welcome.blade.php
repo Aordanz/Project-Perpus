@@ -282,11 +282,11 @@
                         <input type="text" id="live-search-input" name="q" placeholder="{{ __('Cari buku, jurnal, penulis, atau kata kunci...') }}" class="w-full pl-11 pr-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:border-0 outline-none text-slate-800 placeholder-slate-400 text-sm sm:text-base font-medium">
                     </div>
                     <div class="flex gap-2">
-                        <button type="submit" class="bg-[#106c38] hover:bg-green-800 text-white font-bold text-sm sm:text-base px-6 py-3 sm:py-4 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
-                            <i class="ph ph-magnifying-glass"></i> {{ __('Cari') }}
+                        <button type="submit" class="bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] font-bold text-sm sm:text-base px-6 py-3 sm:py-4 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
+                            <i class="ph ph-magnifying-glass"></i>{{ __('Cari') }}
                         </button>
-                        <button type="button" id="open-modal-pencarian-spesifik" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm sm:text-base px-5 py-3 sm:py-4 rounded-xl transition border border-emerald-600/35 flex items-center justify-center gap-1.5 cursor-pointer">
-                            <i class="ph ph-sliders-horizontal"></i> {{ __('Spesifik') }}
+                        <button type="button" id="open-modal-pencarian-spesifik" class="bg-[#106c38] hover:bg-[#0b4b27] text-white font-bold text-sm sm:text-base px-5 py-3 sm:py-4 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="ph ph-sliders-horizontal"></i>{{ __('Spesifik') }}
                         </button>
                     </div>
                 </form>
