@@ -9,7 +9,21 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Location extends Model
 {
+    protected $table = 'tbllokasi';
+    protected $primaryKey = 'idlokasi';
+    const CREATED_AT = 'tglinput';
+    const UPDATED_AT = null;
+    
     protected $guarded = [];
+
+    // Accessors & Mutators
+    public function getIdAttribute() { return $this->idlokasi; }
+    public function getNameAttribute() { return $this->lokasi; }
+    public function setNameAttribute($value) { $this->attributes['lokasi'] = $value; }
+
+    public function getCodeAttribute() { return $this->lokasi; } // Map code to lokasi for now
+    public function setCodeAttribute($value) { $this->attributes['lokasi'] = $value; }
+
 
     /**
      * Get the university that owns the location.
@@ -24,7 +38,7 @@ class Location extends Model
      */
     public function items(): HasMany
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(Item::class, 'kodelokasi', 'idlokasi');
     }
 
     /**
@@ -32,6 +46,6 @@ class Location extends Model
      */
     public function books(): HasManyThrough
     {
-        return $this->hasManyThrough(Book::class, Item::class, 'location_id', 'id', 'id', 'book_id');
+        return $this->hasManyThrough(Book::class, Item::class, 'kodelokasi', 'idbuku', 'idlokasi', 'idmaster');
     }
 }

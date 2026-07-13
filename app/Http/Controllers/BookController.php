@@ -18,7 +18,7 @@ class BookController extends Controller
      * Apply advanced search logic to the query.
      * Supports: Exact Match, Semantic Search (Synonyms), Full-Text Search, Fuzzy Search
      */
-    private function applyAdvancedSearch($query, $q, $columns = ['title', 'author', 'publisher', 'subject', 'isbn', 'classification'])
+    private function applyAdvancedSearch($query, $q, $columns = ['judul_buku', 'pengarang', 'idpenerbit', 'subjek', 'isbn', 'noklasifikasi'])
     {
         // 1. EXACT MATCH (if query is wrapped in quotes)
         if (preg_match('/^"(.*)"$/', $q, $matches)) {
@@ -58,7 +58,7 @@ class BookController extends Controller
         $query->where(function($w) use ($columns, $searchTerms, $q) {
             // 3. FULL TEXT SEARCH (FTS) for exact keyword/phrase relevance
             // Hanya aktifkan FTS jika mencari di seluruh kolom utama yang di-index (yaitu ke-4 kolom bersama-sama)
-            $requiredFts = ['title', 'author', 'publisher', 'subject'];
+            $requiredFts = ['judul_buku', 'pengarang', 'idpenerbit', 'subjek'];
             $hasAllFts = count(array_intersect($requiredFts, $columns)) === count($requiredFts);
             if ($hasAllFts) {
                 $w->orWhereFullText($requiredFts, $q, ['mode' => 'boolean']);
@@ -108,8 +108,8 @@ class BookController extends Controller
     {
         $perPage = $request->input('per_page', 5);
         $query = Book::with(['items.location'])
-            ->where('title', 'like', $initial . '%')
-            ->orderBy('title', 'asc');
+            ->where('judul_buku', 'like', $initial . '%')
+            ->orderBy('judul_buku', 'asc');
 
         if ($perPage === 'all' || $perPage == 0) {
             $books = $query->get()->toArray();
@@ -141,30 +141,30 @@ class BookController extends Controller
 
         // 1.5 Starts with (Index Judul)
         if ($request->filled('starts_with')) {
-            $query->where('title', 'like', $request->starts_with . '%');
+            $query->where('judul_buku', 'like', $request->starts_with . '%');
         }
 
         // 2. Specific search modal parameters
         if ($request->filled('inJudul')) {
-            $this->applyAdvancedSearch($query, $request->inJudul, ['title']);
+            $this->applyAdvancedSearch($query, $request->inJudul, ['judul_buku']);
         }
         if ($request->filled('inPengarang1')) {
-            $this->applyAdvancedSearch($query, $request->inPengarang1, ['author']);
+            $this->applyAdvancedSearch($query, $request->inPengarang1, ['pengarang']);
         }
         if ($request->filled('inPenerbit')) {
-            $this->applyAdvancedSearch($query, $request->inPenerbit, ['publisher']);
+            $this->applyAdvancedSearch($query, $request->inPenerbit, ['idpenerbit']);
         }
         if ($request->filled('inSubyek')) {
-            $this->applyAdvancedSearch($query, $request->inSubyek, ['subject']);
+            $this->applyAdvancedSearch($query, $request->inSubyek, ['subjek']);
         }
         if ($request->filled('intahunterbit')) {
-            $query->where('publish_year', $request->intahunterbit);
+            $query->where('tahun', $request->intahunterbit);
         }
         if ($request->filled('inisbn')) {
             $this->applyAdvancedSearch($query, $request->inisbn, ['isbn']);
         }
         if ($request->filled('inKlasifikasi')) {
-            $this->applyAdvancedSearch($query, $request->inKlasifikasi, ['classification']);
+            $this->applyAdvancedSearch($query, $request->inKlasifikasi, ['noklasifikasi']);
         }
         if ($request->filled('inJenis')) {
             $query->where('jenis', $request->inJenis);
@@ -174,11 +174,11 @@ class BookController extends Controller
         if ($request->filled('inbarcode') || $request->filled('inLokasi')) {
             $query->whereHas('items', function ($itemQuery) use ($request) {
                 if ($request->filled('inbarcode')) {
-                    $itemQuery->where('barcode', 'like', "%{$request->inbarcode}%");
+                    $itemQuery->where('nomor_eksemplar', 'like', "%{$request->inbarcode}%");
                 }
                 if ($request->filled('inLokasi')) {
                     $itemQuery->whereHas('location', function ($locQuery) use ($request) {
-                        $locQuery->where('code', $request->inLokasi);
+                        $locQuery->where('lokasi', $request->inLokasi);
                     });
                 }
             });
@@ -218,7 +218,7 @@ class BookController extends Controller
         if ($request->filled('location')) {
             $locationCode = $request->location;
             $query->whereHas('items.location', function ($q) use ($locationCode) {
-                $q->where('code', $locationCode);
+                $q->where('lokasi', $locationCode);
             });
         }
 
@@ -234,8 +234,8 @@ class BookController extends Controller
      */
     public function galeri(Request $request)
     {
-        // Urutkan berdasarkan abjad (title) lalu berdasarkan ID (penomoran)
-        $query = Book::with(['items.location'])->orderBy('title', 'asc')->orderBy('id', 'asc');
+        // Urutkan berdasarkan abjad (judul_buku) lalu berdasarkan ID (penomoran)
+        $query = Book::with(['items.location'])->orderBy('judul_buku', 'asc')->orderBy('idbuku', 'asc');
         
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);

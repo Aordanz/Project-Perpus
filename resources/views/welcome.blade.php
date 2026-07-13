@@ -463,12 +463,12 @@
                             <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/20 to-transparent rounded-full blur-xl group-hover:from-orange-400/40 transition-all duration-300 pointer-events-none"></div>
 
                             <div class="flex flex-col z-10 max-w-[75%]">
-                                <h3 class="text-[26px] sm:text-[28px] font-extrabold text-white stat-card-text mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                                <p class="text-xs sm:text-[13px] font-extrabold text-emerald-100 stat-card-text leading-tight tracking-wide">{{ __($stat->name) }}</p>
+                                <h3 class="text-[26px] font-extrabold text-white mb-1 tracking-tight" style="text-shadow: -1px -1px 0 #106c38, 1px -1px 0 #106c38, -1px 1px 0 #106c38, 1px 1px 0 #106c38, 0 2px 4px rgba(0,0,0,0.5);">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                                <p class="text-xs font-bold text-white leading-tight" style="text-shadow: -1px -1px 0 #106c38, 1px -1px 0 #106c38, -1px 1px 0 #106c38, 1px 1px 0 #106c38, 0 1px 2px rgba(0,0,0,0.5);">{{ __($stat->name) }}</p>
                             </div>
                             
-                            <div class="text-[#F3C300] stat-card-text z-10 opacity-100">
-                                <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
+                            <div class="text-white z-10" style="filter: drop-shadow(1px 1px 0 #106c38) drop-shadow(-1px -1px 0 #106c38) drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+                                <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px] font-bold"></i>
                             </div>
                         </a>
                     @endforeach
@@ -523,12 +523,12 @@
                             <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/20 to-transparent rounded-full blur-xl group-hover:from-orange-400/40 transition-all duration-300 pointer-events-none"></div>
 
                             <div class="flex flex-col z-10 max-w-[75%]">
-                                <h3 class="text-[26px] sm:text-[28px] font-extrabold text-white stat-card-text mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                                <p class="text-xs sm:text-[13px] font-extrabold text-emerald-100 stat-card-text leading-tight tracking-wide">{{ __($stat->name) }}</p>
+                                <h3 class="text-[26px] font-extrabold text-[#106c38] mb-1 tracking-tight" style="text-shadow: -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff, -1.5px 1.5px 0 #fff, 1.5px 1.5px 0 #fff, 0 2px 4px rgba(0,0,0,0.2);">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                                <p class="text-xs font-bold text-[#106c38] leading-tight" style="text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 0 1px 2px rgba(0,0,0,0.2);">{{ __($stat->name) }}</p>
                             </div>
                             
-                            <div class="text-[#F3C300] stat-card-text z-10 opacity-100">
-                                <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
+                            <div class="text-[#106c38] z-10" style="filter: drop-shadow(1px 1px 0 #fff) drop-shadow(-1px -1px 0 #fff) drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                                <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px] font-bold"></i>
                             </div>
                         </a>
                     @endforeach
@@ -586,12 +586,12 @@
                         <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/20 to-transparent rounded-full blur-xl group-hover:from-orange-400/40 transition-all duration-300 pointer-events-none"></div>
 
                         <div class="flex flex-col z-10 max-w-[75%]">
-                            <h3 class="text-lg sm:text-[28px] font-extrabold text-white stat-card-text mb-0.5 sm:mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                            <p class="text-[11px] sm:text-sm font-extrabold text-emerald-100 stat-card-text leading-tight tracking-wide">{{ __($stat->name) }}</p>
+                            <h3 class="text-lg sm:text-[26px] font-extrabold text-[#F3C300] mb-0.5 sm:mb-1 tracking-tight" style="text-shadow: -1px -1px 0 #04331a, 1px -1px 0 #04331a, -1px 1px 0 #04331a, 1px 1px 0 #04331a, 0 2px 4px rgba(0,0,0,0.5);">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                            <p class="text-[10px] sm:text-xs font-bold text-[#F3C300] leading-tight" style="text-shadow: -1px -1px 0 #04331a, 1px -1px 0 #04331a, -1px 1px 0 #04331a, 1px 1px 0 #04331a, 0 1px 2px rgba(0,0,0,0.5);">{{ __($stat->name) }}</p>
                         </div>
                         
-                        <div class="text-[#F3C300] stat-card-text z-10 opacity-100">
-                            <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
+                        <div class="text-[#F3C300] z-10" style="filter: drop-shadow(1px 1px 0 #04331a) drop-shadow(-1px -1px 0 #04331a) drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+                            <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px] font-bold"></i>
                         </div>
                     </a>
                 @endforeach

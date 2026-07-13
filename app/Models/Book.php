@@ -8,14 +8,57 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Book extends Model
 {
+    protected $table = 'tblbuku';
+    protected $primaryKey = 'idbuku';
+    const CREATED_AT = 'tglinput';
+    const UPDATED_AT = 'tgledit';
+
     protected $guarded = [];
+
+    // Accessors & Mutators for compatibility with new web app
+    public function getIdAttribute() { return $this->idbuku; }
+    public function getTitleAttribute() { return $this->judul_buku; }
+    public function setTitleAttribute($value) { $this->attributes['judul_buku'] = $value; }
+
+    public function getAuthorAttribute() { return $this->pengarang; }
+    public function setAuthorAttribute($value) { $this->attributes['pengarang'] = $value; }
+
+    public function getPublisherAttribute() { return $this->idpenerbit; }
+    public function setPublisherAttribute($value) { $this->attributes['idpenerbit'] = $value; }
+
+    public function getSubjectAttribute() { return $this->subjek; }
+    public function setSubjectAttribute($value) { $this->attributes['subjek'] = $value; }
+
+    public function getPublishYearAttribute() { return $this->tahun; }
+    public function setPublishYearAttribute($value) { $this->attributes['tahun'] = $value; }
+
+    public function getEditionAttribute() { return $this->edisi; }
+    public function setEditionAttribute($value) { $this->attributes['edisi'] = $value; }
+
+    public function getLanguageAttribute() { return $this->idbahasa; }
+    public function setLanguageAttribute($value) { $this->attributes['idbahasa'] = $value; }
+
+    public function getPublicationCityAttribute() { return $this->idkota; }
+    public function setPublicationCityAttribute($value) { $this->attributes['idkota'] = $value; }
+
+    public function getClassificationAttribute() { return $this->noklasifikasi; }
+    public function setClassificationAttribute($value) { $this->attributes['noklasifikasi'] = $value; }
+
+    public function getCallNumberAttribute() { return $this->nopanggil; }
+    public function setCallNumberAttribute($value) { $this->attributes['nopanggil'] = $value; }
+
+    public function getPhysicalDescriptionAttribute() { return $this->deskripsi; }
+    public function setPhysicalDescriptionAttribute($value) { $this->attributes['deskripsi'] = $value; }
+
+    public function getGeneralNoteAttribute() { return $this->catatan_umum; }
+    public function setGeneralNoteAttribute($value) { $this->attributes['catatan_umum'] = $value; }
 
     /**
      * Get the physical copies (items) of the book.
      */
     public function items(): HasMany
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(Item::class, 'idmaster', 'idbuku');
     }
 
     /**
@@ -23,7 +66,7 @@ class Book extends Model
      */
     public function locations()
     {
-        return $this->hasManyThrough(Location::class, Item::class, 'book_id', 'id', 'id', 'location_id');
+        return $this->hasManyThrough(Location::class, Item::class, 'idmaster', 'idlokasi', 'idbuku', 'kodelokasi');
     }
 
     /**
@@ -31,6 +74,6 @@ class Book extends Model
      */
     public function images(): HasMany
     {
-        return $this->hasMany(BookImage::class);
+        return $this->hasMany(BookImage::class, 'book_id', 'idbuku');
     }
 }
