@@ -507,10 +507,35 @@
             const lightbox = document.getElementById('image-lightbox-modal');
             const lightboxImg = document.getElementById('lightbox-img');
             const closeBtn = document.getElementById('close-lightbox');
+            const lightboxPrev = document.getElementById('lightbox-prev');
+            const lightboxNext = document.getElementById('lightbox-next');
+
+            // Gather all image URLs from the main slideshow
+            const slideshowImgElements = document.querySelectorAll('.slideshow-slide');
+            const allImageSources = Array.from(slideshowImgElements).map(img => img.src);
+            let lightboxCurrentIdx = 0;
+
+            function updateLightboxImage() {
+                if (!lightboxImg || allImageSources.length === 0) return;
+                lightboxImg.src = allImageSources[lightboxCurrentIdx];
+                
+                // Show/hide navigation buttons in lightbox if there are multiple images
+                if (allImageSources.length > 1) {
+                    if (lightboxPrev) lightboxPrev.classList.remove('hidden');
+                    if (lightboxNext) lightboxNext.classList.remove('hidden');
+                } else {
+                    if (lightboxPrev) lightboxPrev.classList.add('hidden');
+                    if (lightboxNext) lightboxNext.classList.add('hidden');
+                }
+            }
 
             function openLightbox(src) {
                 if (!lightbox || !lightboxImg) return;
-                lightboxImg.src = src;
+                
+                // Match the current slide index
+                lightboxCurrentIdx = currentIdx;
+                updateLightboxImage();
+
                 lightbox.classList.remove('hidden');
                 lightbox.offsetHeight; // trigger reflow
                 lightbox.classList.add('opacity-100', 'flex');
@@ -529,8 +554,30 @@
                 }, 300);
             }
 
-            if (closeBtn) {
-                closeBtn.addEventListener('click', closeLightbox);
+            function nextLightboxSlide() {
+                if (allImageSources.length <= 1) return;
+                lightboxCurrentIdx = (lightboxCurrentIdx + 1) % allImageSources.length;
+                updateLightboxImage();
+            }
+
+            function prevLightboxSlide() {
+                if (allImageSources.length <= 1) return;
+                lightboxCurrentIdx = (lightboxCurrentIdx - 1 + allImageSources.length) % allImageSources.length;
+                updateLightboxImage();
+            }
+
+            if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+            if (lightboxPrev) {
+                lightboxPrev.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    prevLightboxSlide();
+                });
+            }
+            if (lightboxNext) {
+                lightboxNext.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    nextLightboxSlide();
+                });
             }
             if (lightbox) {
                 lightbox.addEventListener('click', (e) => {
@@ -539,9 +586,17 @@
                     }
                 });
             }
+
+            // Keyboard navigation inside lightbox
             document.addEventListener('keydown', (e) => {
+                if (!lightbox || lightbox.classList.contains('hidden')) return;
+                
                 if (e.key === 'Escape') {
                     closeLightbox();
+                } else if (e.key === 'ArrowRight') {
+                    nextLightboxSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevLightboxSlide();
                 }
             });
 
@@ -551,15 +606,26 @@
     </script>
 
     <!-- Lightbox Modal -->
-    <div id="image-lightbox-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+    <div id="image-lightbox-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 select-none">
         <!-- Close Button -->
-        <button id="close-lightbox" class="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition cursor-pointer">
+        <button id="close-lightbox" class="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition cursor-pointer z-[10000]">
             <i class="ph ph-x text-2xl font-bold"></i>
         </button>
+
+        <!-- Previous Button -->
+        <button id="lightbox-prev" class="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition cursor-pointer z-[10000] hidden">
+            <i class="ph ph-caret-left text-2xl font-bold"></i>
+        </button>
+
         <!-- Modal Content (Zoomed Image) -->
         <div class="relative max-w-full max-h-[85vh] flex flex-col items-center">
-            <img id="lightbox-img" src="" alt="Cover Zoom" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-white/10">
+            <img id="lightbox-img" src="" alt="Cover Zoom" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-white/10 transition-all duration-350">
         </div>
+
+        <!-- Next Button -->
+        <button id="lightbox-next" class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition cursor-pointer z-[10000] hidden">
+            <i class="ph ph-caret-right text-2xl font-bold"></i>
+        </button>
     </div>
 
     @include('partials.footer')
