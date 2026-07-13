@@ -56,20 +56,7 @@
                     @endphp
                     
                     <div class="mt-auto">
-                        <!-- Copies Info -->
-                        <div class="mb-2">
-                            @if($availableCopies > 0)
-                                <span class="inline-flex items-center gap-1 bg-green-50 text-green-700 font-bold px-2 py-0.5 rounded-full border border-green-200/50 text-[9px] sm:text-[10px]">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                    {{ $availableCopies }} / {{ $totalCopies }} {{ __('Eksemplar') }}
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1 bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded-full border border-slate-200/50 text-[9px] sm:text-[10px]">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                                    {{ __('Sedang Dipinjam') }}
-                                </span>
-                            @endif
-                        </div>
+
 
                         <!-- Publisher Row (acting as Store Name) -->
                         <div class="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-500">
