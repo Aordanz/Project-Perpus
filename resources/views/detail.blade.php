@@ -200,8 +200,8 @@
                         {{ __($bigCategoryName) }}
                     </span>
                     <h1 class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug mb-3">{{ $book->title }}</h1>
-                    <p class="text-sm font-semibold text-slate-500 flex items-center gap-1.5">
-                        <i class="ph ph-user text-base text-slate-400"></i> {{ __('Oleh:') }} <span class="text-slate-800">{{ $book->author }}</span>
+                    <p class="text-sm font-semibold text-slate-800">
+                        {{ $book->author }}
                     </p>
                 </div>
 

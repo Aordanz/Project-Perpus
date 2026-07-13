@@ -40,12 +40,12 @@
                 <!-- Content Container -->
                 <div class="p-2 sm:p-2.5 flex flex-col flex-grow">
                     <!-- Title -->
-                    <h3 class="text-[12px] sm:text-[13px] font-medium text-slate-800 line-clamp-2 leading-snug mb-1.5 group-hover:text-[#106c38] transition-colors" title="{{ $book->title }}">
+                    <h3 class="text-[13px] sm:text-[15px] font-extrabold text-slate-900 line-clamp-2 leading-snug mb-1.5 group-hover:text-[#106c38] transition-colors" title="{{ $book->title }}">
                         {{ $book->title }}
                     </h3>
 
                     <!-- Author (acting as Price visual) -->
-                    <div class="text-[13px] sm:text-[15px] font-extrabold text-slate-900 mb-0.5 truncate" title="{{ $book->author }}">
+                    <div class="text-[12px] sm:text-[13px] font-medium text-slate-500 mb-0.5 truncate" title="{{ $book->author }}">
                         {{ $book->author ?: '-' }}
                     </div>
 
