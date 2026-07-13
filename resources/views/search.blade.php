@@ -147,17 +147,35 @@
         <!-- Results List -->
         <div class="space-y-4 mb-8">
             @forelse($books as $book)
-                <div class="book-card result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
+                <div class="book-card result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex flex-col sm:flex-row gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
                      data-title="{{ strtolower($book->title) }}" 
                      data-author="{{ strtolower($book->author) }}" 
                      data-publisher="{{ strtolower($book->publisher) }}">
-                    <!-- Card Numbering Index -->
-                    <div class="flex-shrink-0 text-base sm:text-2xl font-black text-slate-200 group-hover:text-[#106c38]/30 transition-colors select-none w-6 sm:w-8 text-center pt-1.5 sm:pt-4">
+                    
+                    <!-- Mobile Top Section: Number & Title, with Category below -->
+                    <div class="flex sm:hidden flex-col w-full mb-2.5 flex-shrink-0">
+                        <div class="flex items-start gap-2.5 w-full">
+                            <div class="card-number-index text-sm font-black text-slate-500 select-none pt-0.5">
+                                {{ sprintf('%02d', $books->firstItem() + $loop->index) }}
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 hover:text-[#106c38] hover:underline transition leading-snug">
+                                <a href="{{ route('books.show', $book->id) }}">{{ $book->title }}</a>
+                            </h3>
+                        </div>
+                        <div class="mt-1 pl-[26px]">
+                            <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider uppercase">
+                                {{ __($book->category ?: 'Umum') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Card Numbering Index -->
+                    <div class="card-number-index hidden sm:block flex-shrink-0 text-base sm:text-2xl font-black text-slate-400 group-hover:text-[#106c38]/30 transition-colors select-none w-6 sm:w-8 text-center pt-1.5 sm:pt-4">
                         {{ sprintf('%02d', $books->firstItem() + $loop->index) }}
                     </div>
 
-                    <!-- Book Cover -->
-                    <div class="w-20 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
+                    <!-- Desktop Book Cover -->
+                    <div class="hidden sm:block w-20 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
                             <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                         @else
@@ -171,10 +189,11 @@
                         </span>
                     </div>
 
-                    <!-- Book Details -->
-                    <div class="flex-grow flex flex-col h-full">
-                        <div class="mb-2">
-                            <!-- Category Badge -->
+                    <!-- Book Details & Mobile Layout container -->
+                    <div class="flex-grow flex flex-col h-full w-full">
+                        <!-- Header (Desktop Title & Category - hidden on mobile) -->
+                        <div class="hidden sm:block mb-2 w-full">
+                            <!-- Category Badge (Desktop only) -->
                             <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[9px] font-bold px-2 py-0.5 rounded-full mb-1 tracking-wider uppercase">
                                 {{ __($book->category ?: 'Umum') }}
                             </span>
@@ -183,30 +202,48 @@
                             </h3>
                         </div>
 
-                        <!-- Author & Code -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 mb-4 text-xs font-medium text-slate-500">
-                            <div class="flex items-center gap-1.5">
-                                <i class="ph ph-user text-sm text-slate-400"></i>
-                                <span>{{ __('Pengarang:') }} <strong class="text-slate-700">{{ $book->author }}</strong></span>
+                        <!-- Content: Flex side-by-side on mobile, normal block on desktop -->
+                        <div class="flex flex-row sm:block gap-4 items-start w-full mt-1 sm:mt-0">
+                            <!-- Mobile Book Cover (Visible only on mobile) -->
+                            <div class="block sm:hidden w-20 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg overflow-hidden shadow-sm flex-shrink-0 relative">
+                                @if($book->cover_image)
+                                    <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-2">
+                                        <i class="ph ph-book-open text-2xl mb-1"></i>
+                                        <span class="text-[8px] font-bold text-center leading-tight">NO COVER</span>
+                                    </div>
+                                @endif
+                                <span class="absolute top-1.5 left-1.5 bg-[#106c38] text-white text-[7px] font-bold px-1.5 py-0.5 rounded shadow">
+                                    {{ strtoupper(__($book->jenis)) }}
+                                </span>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <i class="ph ph-hash text-sm text-slate-400"></i>
-                                <span>{{ __('No. Panggil:') }} <strong class="text-slate-700">{{ $book->call_number ?: '-' }}</strong></span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <i class="ph ph-buildings text-sm text-slate-400"></i>
-                                <span>{{ __('Penerbit:') }} <strong class="text-slate-700">{{ $book->publisher ?: '-' }}</strong></span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <i class="ph ph-calendar text-sm text-slate-400"></i>
-                                <span>{{ __('Tahun Terbit:') }} <strong class="text-slate-700">{{ $book->publish_year ?: '-' }}</strong></span>
+
+                            <!-- Author & Metadata details -->
+                            <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 mb-3 sm:mb-4 text-xs font-medium text-slate-500">
+                                <div class="flex items-start gap-1.5">
+                                    <i class="ph ph-user text-sm text-slate-400 mt-0.5"></i>
+                                    <span>{{ __('Pengarang:') }} <strong class="text-slate-700">{{ $book->author }}</strong></span>
+                                </div>
+                                <div class="flex items-start gap-1.5">
+                                    <i class="ph ph-hash text-sm text-slate-400 mt-0.5"></i>
+                                    <span>{{ __('No. Panggil:') }} <strong class="text-slate-700">{{ $book->call_number ?: '-' }}</strong></span>
+                                </div>
+                                <div class="flex items-start gap-1.5">
+                                    <i class="ph ph-buildings text-sm text-slate-400 mt-0.5"></i>
+                                    <span>{{ __('Penerbit:') }} <strong class="text-slate-700">{{ $book->publisher ?: '-' }}</strong></span>
+                                </div>
+                                <div class="flex items-start gap-1.5">
+                                    <i class="ph ph-calendar text-sm text-slate-400 mt-0.5"></i>
+                                    <span>{{ __('Tahun Terbit:') }} <strong class="text-slate-700">{{ $book->publish_year ?: '-' }}</strong></span>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Availability Pill -->
-                        <div class="mt-auto pt-3 border-t border-slate-50 flex flex-wrap gap-2 items-center justify-between text-xs">
-                            <div class="flex items-center gap-1.5 text-slate-400">
-                                <i class="ph ph-map-pin text-sm text-[#106c38]"></i>
+                        <div class="mt-auto pt-2.5 sm:pt-3 border-t border-slate-50 flex flex-wrap gap-2 items-center justify-between text-xs w-full">
+                            <div class="flex items-start gap-1.5 text-slate-400">
+                                <i class="ph ph-map-pin text-sm text-[#106c38] mt-0.5"></i>
                                 <span class="font-medium text-slate-500">
                                     {{ __('Lokasi:') }} 
                                     @php
@@ -215,8 +252,6 @@
                                     <strong class="text-slate-700">{{ $locNames->implode(', ') ?: __('Tidak ditentukan') }}</strong>
                                 </span>
                             </div>
-                            
-
                         </div>
                     </div>
                 </div>

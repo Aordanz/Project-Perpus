@@ -41,6 +41,9 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             border-color: #106c38;
         }
+        .stat-card-text {
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 2px rgba(0, 0, 0, 0.6);
+        }
 
         /* 3D Carousel Styles */
         .carousel-slide {
@@ -446,25 +449,25 @@
                                 $bgImage = 'kehutanan.jpeg';
                             }
                         @endphp
-                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
+                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#032514] rounded-xl p-6 border border-emerald-800/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.2)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.3)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
                             
                             <!-- Card background image with gradient transparency mask -->
                             <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
                                  style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
-                                        opacity: 0.75; 
+                                        opacity: 0.45; 
                                         mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
                                         -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
                             </div>
 
                             <!-- Orange glow at bottom right -->
-                            <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-full blur-xl group-hover:from-orange-400/50 transition-all duration-300 pointer-events-none"></div>
+                            <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/20 to-transparent rounded-full blur-xl group-hover:from-orange-400/40 transition-all duration-300 pointer-events-none"></div>
 
                             <div class="flex flex-col z-10 max-w-[75%]">
-                                <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                                <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
+                                <h3 class="text-[26px] sm:text-[28px] font-extrabold text-white stat-card-text mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                                <p class="text-xs sm:text-[13px] font-extrabold text-emerald-100 stat-card-text leading-tight tracking-wide">{{ __($stat->name) }}</p>
                             </div>
                             
-                            <div class="text-[#064e3b] z-10 opacity-90">
+                            <div class="text-[#F3C300] stat-card-text z-10 opacity-100">
                                 <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
                             </div>
                         </a>
@@ -506,25 +509,25 @@
                                 $bgImage = 'kehutanan.jpeg';
                             }
                         @endphp
-                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
+                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#032514] rounded-xl p-6 border border-emerald-800/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.2)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.3)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
                             
                             <!-- Card background image with gradient transparency mask -->
                             <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
                                  style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
-                                        opacity: 0.75; 
+                                        opacity: 0.45; 
                                         mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
                                         -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
                             </div>
 
                             <!-- Orange glow at bottom right -->
-                            <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-full blur-xl group-hover:from-orange-400/50 transition-all duration-300 pointer-events-none"></div>
+                            <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/20 to-transparent rounded-full blur-xl group-hover:from-orange-400/40 transition-all duration-300 pointer-events-none"></div>
 
                             <div class="flex flex-col z-10 max-w-[75%]">
-                                <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                                <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
+                                <h3 class="text-[26px] sm:text-[28px] font-extrabold text-white stat-card-text mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                                <p class="text-xs sm:text-[13px] font-extrabold text-emerald-100 stat-card-text leading-tight tracking-wide">{{ __($stat->name) }}</p>
                             </div>
                             
-                            <div class="text-[#064e3b] z-10 opacity-90">
+                            <div class="text-[#F3C300] stat-card-text z-10 opacity-100">
                                 <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
                             </div>
                         </a>
@@ -569,25 +572,25 @@
                             $bgImage = 'kehutanan.jpeg';
                         }
                     @endphp
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-3 sm:p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 h-[75px] sm:h-[100px] w-full">
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#032514] rounded-xl p-3 sm:p-6 border border-emerald-800/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.2)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.3)] hover:-translate-y-1 h-[75px] sm:h-[100px] w-full">
                         
                         <!-- Card background image with gradient transparency mask -->
                         <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
                              style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
-                                    opacity: 0.75; 
+                                    opacity: 0.45; 
                                     mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
                                     -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
                         </div>
 
                         <!-- Orange glow at bottom right -->
-                        <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-full blur-xl group-hover:from-orange-400/50 transition-all duration-300 pointer-events-none"></div>
+                        <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/20 to-transparent rounded-full blur-xl group-hover:from-orange-400/40 transition-all duration-300 pointer-events-none"></div>
 
                         <div class="flex flex-col z-10 max-w-[75%]">
-                            <h3 class="text-lg sm:text-[26px] font-bold text-[#064e3b] mb-0.5 sm:mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                            <p class="text-[10px] sm:text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
+                            <h3 class="text-lg sm:text-[28px] font-extrabold text-white stat-card-text mb-0.5 sm:mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                            <p class="text-[11px] sm:text-sm font-extrabold text-emerald-100 stat-card-text leading-tight tracking-wide">{{ __($stat->name) }}</p>
                         </div>
                         
-                        <div class="text-[#064e3b] z-10 opacity-90">
+                        <div class="text-[#F3C300] stat-card-text z-10 opacity-100">
                             <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
                         </div>
                     </a>
@@ -1403,13 +1406,13 @@
 
                 displayCards.forEach((card, index) => {
                     const cloned = card.cloneNode(true);
-                    const numberingEl = cloned.querySelector('.text-slate-200');
-                    if (numberingEl) {
+                    const numberingEls = cloned.querySelectorAll('.card-number-index');
+                    numberingEls.forEach(numberingEl => {
                         const itemNumber = (perPage === 'all') 
                             ? (index + 1) 
                             : ((currentPage - 1) * perPage + index + 1);
                         numberingEl.innerText = String(itemNumber).padStart(2, '0');
-                    }
+                    });
                     container.appendChild(cloned);
                 });
 
