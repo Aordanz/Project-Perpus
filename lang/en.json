@@ -287,5 +287,10 @@
     "Maaf, asisten AI sedang sibuk melayani banyak mahasiswa saat ini. Silakan coba kirim pertanyaanmu kembali dalam 1 menit.": "Sorry, the AI assistant is busy serving many students right now. Please try sending your question again in 1 minute.",
     "Maaf, terjadi kesalahan saat menghubungi server AI. Silakan coba lagi nanti.": "Sorry, an error occurred while contacting the AI server. Please try again later.",
     "Perbesar Layar": "Expand Screen",
-    "Tutup": "Close"
+    "Tutup": "Close",
+    "Tipe Koleksi:": "Collection Type:",
+    "Standard (Koleksi dengan jangka waktu pinjam normal)": "Standard (Collection with normal loan period)",
+    "Koleksi Pinjam Singkat (Koleksi dengan jangka waktu pinjam terbatas/singkat)": "Short Loan Collection (Collection with limited/short loan period)",
+    "Eksemplar:": "Copies:",
+    "Jumlah salinan atau unit fisik buku yang tersedia di perpustakaan.": "The number of physical copies or units of the book available in the library."
 }

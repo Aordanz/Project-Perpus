@@ -115,7 +115,7 @@
                         <div class="w-full h-full bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow relative">
                             @if(count($allImages) > 0)
                                 <!-- Slideshow wrapper -->
-                                <div class="w-full h-full relative shadow-inner {{ count($allImages) > 1 ? 'cursor-pointer' : '' }}" id="book-slideshow">
+                                <div class="w-full h-full relative shadow-inner cursor-zoom-in" id="book-slideshow">
                                     @foreach($allImages as $index => $imgUrl)
                                         <img src="{{ $imgUrl }}" 
                                              alt="Cover {{ $index + 1 }}" 
@@ -185,10 +185,23 @@
                 <!-- Contact / Help info (Desktop only) -->
                 <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 text-white shadow-sm hidden lg:flex flex-col gap-3">
                     <i class="ph ph-info text-2xl text-green-200"></i>
-                    <h4 class="font-bold text-sm">{{ __('Butuh bantuan mencari buku?') }}</h4>
-                    <p class="text-xs text-green-100/80 leading-relaxed">
-                        {{ __('Silakan hubungi pustakawan kami di meja informasi atau gunakan layanan pesan instan perpustakaan untuk memandu pencarian Anda di rak buku.') }}
+                    <!-- <h4 class="font-bold text-sm">{{ __('Butuh bantuan mencari buku?') }}</h4> -->
+                    <p class="text-xs text-green-100/85 leading-relaxed">
+                        <!-- {{ __('Silakan hubungi pustakawan kami di meja informasi atau gunakan layanan pesan instan perpustakaan untuk memandu pencarian Anda di rak buku.') }} -->
                     </p>
+                    <div class="mt-2 pt-2.5 border-t border-white/10 text-[10px] text-green-100/85 space-y-2">
+                        <div>
+                            <span class="font-bold block text-white mb-0.5">{{ __('Tipe Koleksi:') }}</span>
+                            <ul class="list-disc pl-3.5 space-y-0.5">
+                                <li><strong>STD:</strong> {{ __('Standard (Koleksi dengan jangka waktu pinjam normal)') }}</li>
+                                <li><strong>KPS:</strong> {{ __('Koleksi Pinjam Singkat (Koleksi dengan jangka waktu pinjam terbatas/singkat)') }}</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <span class="font-bold block text-white mb-0.5">{{ __('Eksemplar:') }}</span>
+                            <p>{{ __('Jumlah salinan atau unit fisik buku yang tersedia di perpustakaan.') }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -326,18 +339,7 @@
                                         <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Catatan Umum') }}</td>
                                         <td class="px-5 py-4 text-slate-700">{{ $book->general_note ?: '-' }}</td>
                                     </tr>
-                                    <tr class="hover:bg-slate-50/30 transition">
-                                        <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Jumlah Eksemplar') }}</td>
-                                        <td class="px-5 py-4 text-slate-700">{{ $totalCopies }}</td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50/30 transition">
-                                        <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Terpinjam') }}</td>
-                                        <td class="px-5 py-4 text-slate-700">{{ $borrowedCopies }}</td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50/30 transition">
-                                        <td class="px-5 py-4 bg-slate-50/50 text-slate-400 font-bold uppercase tracking-wider text-[11px] w-1/3">{{ __('Tersedia') }}</td>
-                                        <td class="px-5 py-4 text-slate-700">{{ $availableCopies }}</td>
-                                    </tr>
+
                                 </tbody>
                             </table>
                         </div>
@@ -348,9 +350,22 @@
                 <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 text-white shadow-sm flex lg:hidden flex-col gap-3">
                     <i class="ph ph-info text-2xl text-green-200"></i>
                     <h4 class="font-bold text-sm">{{ __('Butuh bantuan mencari buku?') }}</h4>
-                    <p class="text-xs text-green-100/80 leading-relaxed">
+                    <p class="text-xs text-green-100/85 leading-relaxed">
                         {{ __('Silakan hubungi pustakawan kami di meja informasi atau gunakan layanan pesan instan perpustakaan untuk memandu pencarian Anda di rak buku.') }}
                     </p>
+                    <div class="mt-2 pt-2.5 border-t border-white/10 text-[10px] text-green-100/85 space-y-2">
+                        <div>
+                            <span class="font-bold block text-white mb-0.5">{{ __('Tipe Koleksi:') }}</span>
+                            <ul class="list-disc pl-3.5 space-y-0.5">
+                                <li><strong>STD:</strong> {{ __('Standard (Koleksi dengan jangka waktu pinjam normal)') }}</li>
+                                <li><strong>KPS:</strong> {{ __('Koleksi Pinjam Singkat (Koleksi dengan jangka waktu pinjam terbatas/singkat)') }}</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <span class="font-bold block text-white mb-0.5">{{ __('Eksemplar:') }}</span>
+                            <p>{{ __('Jumlah salinan atau unit fisik buku yang tersedia di perpustakaan.') }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -450,10 +465,15 @@
                 }
             }
 
-            // Click on image container to advance to next slide
-            slideshow.addEventListener('click', () => {
-                nextSlide();
-                startAutoPlay(); // Restart timer
+            // Click on image container to open lightbox
+            slideshow.addEventListener('click', (e) => {
+                if (e.target.closest('#btn-slide-prev') || e.target.closest('#btn-slide-next') || e.target.closest('.slide-dot')) {
+                    return;
+                }
+                const activeImg = slides[currentIdx];
+                if (activeImg) {
+                    openLightbox(activeImg.src);
+                }
             });
 
             // Nav buttons
@@ -483,10 +503,64 @@
                 });
             });
 
+            // Lightbox functionality
+            const lightbox = document.getElementById('image-lightbox-modal');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const closeBtn = document.getElementById('close-lightbox');
+
+            function openLightbox(src) {
+                if (!lightbox || !lightboxImg) return;
+                lightboxImg.src = src;
+                lightbox.classList.remove('hidden');
+                lightbox.offsetHeight; // trigger reflow
+                lightbox.classList.add('opacity-100', 'flex');
+                lightbox.classList.remove('opacity-0');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                if (!lightbox) return;
+                lightbox.classList.add('opacity-0');
+                lightbox.classList.remove('opacity-100');
+                setTimeout(() => {
+                    lightbox.classList.add('hidden');
+                    lightbox.classList.remove('flex');
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeLightbox);
+            }
+            if (lightbox) {
+                lightbox.addEventListener('click', (e) => {
+                    if (e.target === lightbox || e.target.closest('#close-lightbox')) {
+                        closeLightbox();
+                    }
+                });
+            }
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                }
+            });
+
             // Auto-rotate
             startAutoPlay();
         });
     </script>
+
+    <!-- Lightbox Modal -->
+    <div id="image-lightbox-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <!-- Close Button -->
+        <button id="close-lightbox" class="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition cursor-pointer">
+            <i class="ph ph-x text-2xl font-bold"></i>
+        </button>
+        <!-- Modal Content (Zoomed Image) -->
+        <div class="relative max-w-full max-h-[85vh] flex flex-col items-center">
+            <img id="lightbox-img" src="" alt="Cover Zoom" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-white/10">
+        </div>
+    </div>
 
     @include('partials.footer')
 
