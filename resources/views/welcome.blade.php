@@ -413,39 +413,121 @@
                 <!-- Original Set -->
                 <div class="flex gap-6 shrink-0">
                     @foreach($locations as $stat)
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
-                        
-                        <!-- Orange glow at bottom right -->
-                        <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
+                        @php
+                            $bgImage = 'perpustakaan.webp';
+                            $nameLower = strtolower($stat->name);
+                            if (str_contains($nameLower, 'hukum')) {
+                                $bgImage = 'Hukum.jpg';
+                            } elseif (str_contains($nameLower, 'ilmu budaya')) {
+                                $bgImage = 'ilmu budaya.webp';
+                            } elseif (str_contains($nameLower, 'ekonomi')) {
+                                $bgImage = 'Fakultas Ekonomi Dan Bisnis.webp';
+                            } elseif (str_contains($nameLower, 'kesehatan masyarakat')) {
+                                $bgImage = 'Kesehatan Masyarakat.webp';
+                            } elseif (str_contains($nameLower, 'pascasarjana')) {
+                                $bgImage = 'sekolah-pascasarjana.jpg';
+                            } elseif (str_contains($nameLower, 'kedokteran gigi')) {
+                                $bgImage = 'Fakultas Kedokteran Gigi.jpg';
+                            } elseif (str_contains($nameLower, 'kedokteran')) {
+                                $bgImage = 'kedokteran.webp';
+                            } elseif (str_contains($nameLower, 'isip') || str_contains($nameLower, 'fisip')) {
+                                $bgImage = 'fisip.jpg';
+                            } elseif (str_contains($nameLower, 'pertanian')) {
+                                $bgImage = 'pertanian.jpg';
+                            } elseif (str_contains($nameLower, 'keperawatan')) {
+                                $bgImage = 'Keperawatan.jpg';
+                            } elseif (str_contains($nameLower, 'mipa')) {
+                                $bgImage = 'Fmipa.jpeg';
+                            } elseif (str_contains($nameLower, 'psikologi')) {
+                                $bgImage = 'psikologi.webp';
+                            } elseif (str_contains($nameLower, 'farmasi')) {
+                                $bgImage = 'Farmasi.webp';
+                            } elseif (str_contains($nameLower, 'kehutanan')) {
+                                $bgImage = 'kehutanan.jpeg';
+                            }
+                        @endphp
+                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
+                            
+                            <!-- Card background image with gradient transparency mask -->
+                            <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
+                                 style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                                        opacity: 0.75; 
+                                        mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
+                                        -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
+                            </div>
 
-                        <div class="flex flex-col z-10 max-w-[75%]">
-                            <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                            <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
-                        </div>
-                        
-                        <div class="text-[#064e3b] z-10 opacity-90">
-                            <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
-                        </div>
-                    </a>
+                            <!-- Orange glow at bottom right -->
+                            <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-full blur-xl group-hover:from-orange-400/50 transition-all duration-300 pointer-events-none"></div>
+
+                            <div class="flex flex-col z-10 max-w-[75%]">
+                                <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                                <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
+                            </div>
+                            
+                            <div class="text-[#064e3b] z-10 opacity-90">
+                                <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
+                            </div>
+                        </a>
                     @endforeach
                 </div>
                 <!-- Duplicated Set for Loop -->
                 <div class="flex gap-6 shrink-0">
                     @foreach($locations as $stat)
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
-                        
-                        <!-- Orange glow at bottom right -->
-                        <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
+                        @php
+                            $bgImage = 'perpustakaan.webp';
+                            $nameLower = strtolower($stat->name);
+                            if (str_contains($nameLower, 'hukum')) {
+                                $bgImage = 'Hukum.jpg';
+                            } elseif (str_contains($nameLower, 'ilmu budaya')) {
+                                $bgImage = 'ilmu budaya.webp';
+                            } elseif (str_contains($nameLower, 'ekonomi')) {
+                                $bgImage = 'Fakultas Ekonomi Dan Bisnis.webp';
+                            } elseif (str_contains($nameLower, 'kesehatan masyarakat')) {
+                                $bgImage = 'Kesehatan Masyarakat.webp';
+                            } elseif (str_contains($nameLower, 'pascasarjana')) {
+                                $bgImage = 'sekolah-pascasarjana.jpg';
+                            } elseif (str_contains($nameLower, 'kedokteran gigi')) {
+                                $bgImage = 'Fakultas Kedokteran Gigi.jpg';
+                            } elseif (str_contains($nameLower, 'kedokteran')) {
+                                $bgImage = 'kedokteran.webp';
+                            } elseif (str_contains($nameLower, 'isip') || str_contains($nameLower, 'fisip')) {
+                                $bgImage = 'fisip.jpg';
+                            } elseif (str_contains($nameLower, 'pertanian')) {
+                                $bgImage = 'pertanian.jpg';
+                            } elseif (str_contains($nameLower, 'keperawatan')) {
+                                $bgImage = 'Keperawatan.jpg';
+                            } elseif (str_contains($nameLower, 'mipa')) {
+                                $bgImage = 'Fmipa.jpeg';
+                            } elseif (str_contains($nameLower, 'psikologi')) {
+                                $bgImage = 'psikologi.webp';
+                            } elseif (str_contains($nameLower, 'farmasi')) {
+                                $bgImage = 'Farmasi.webp';
+                            } elseif (str_contains($nameLower, 'kehutanan')) {
+                                $bgImage = 'kehutanan.jpeg';
+                            }
+                        @endphp
+                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
+                            
+                            <!-- Card background image with gradient transparency mask -->
+                            <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
+                                 style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                                        opacity: 0.75; 
+                                        mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
+                                        -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
+                            </div>
 
-                        <div class="flex flex-col z-10 max-w-[75%]">
-                            <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                            <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
-                        </div>
-                        
-                        <div class="text-[#064e3b] z-10 opacity-90">
-                            <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
-                        </div>
-                    </a>
+                            <!-- Orange glow at bottom right -->
+                            <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-full blur-xl group-hover:from-orange-400/50 transition-all duration-300 pointer-events-none"></div>
+
+                            <div class="flex flex-col z-10 max-w-[75%]">
+                                <h3 class="text-[26px] font-bold text-[#064e3b] mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                                <p class="text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
+                            </div>
+                            
+                            <div class="text-[#064e3b] z-10 opacity-90">
+                                <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
+                            </div>
+                        </a>
                     @endforeach
                 </div>
             </div>
@@ -454,20 +536,61 @@
         <div id="expanded-locations-grid" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hidden transition-all duration-500 opacity-0 transform -translate-y-4">
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 pt-2">
                 @foreach($locations as $stat)
-                <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-3 sm:p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 h-[75px] sm:h-[100px] w-full">
-                    
-                    <!-- Orange glow at bottom right -->
-                    <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/50 to-transparent rounded-full blur-xl group-hover:from-orange-400/70 transition-all duration-300"></div>
+                    @php
+                        $bgImage = 'perpustakaan.webp';
+                        $nameLower = strtolower($stat->name);
+                        if (str_contains($nameLower, 'hukum')) {
+                            $bgImage = 'Hukum.jpg';
+                        } elseif (str_contains($nameLower, 'ilmu budaya')) {
+                            $bgImage = 'ilmu budaya.webp';
+                        } elseif (str_contains($nameLower, 'ekonomi')) {
+                            $bgImage = 'Fakultas Ekonomi Dan Bisnis.webp';
+                        } elseif (str_contains($nameLower, 'kesehatan masyarakat')) {
+                            $bgImage = 'Kesehatan Masyarakat.webp';
+                        } elseif (str_contains($nameLower, 'pascasarjana')) {
+                            $bgImage = 'sekolah-pascasarjana.jpg';
+                        } elseif (str_contains($nameLower, 'kedokteran gigi')) {
+                            $bgImage = 'Fakultas Kedokteran Gigi.jpg';
+                        } elseif (str_contains($nameLower, 'kedokteran')) {
+                            $bgImage = 'kedokteran.webp';
+                        } elseif (str_contains($nameLower, 'isip') || str_contains($nameLower, 'fisip')) {
+                            $bgImage = 'fisip.jpg';
+                        } elseif (str_contains($nameLower, 'pertanian')) {
+                            $bgImage = 'pertanian.jpg';
+                        } elseif (str_contains($nameLower, 'keperawatan')) {
+                            $bgImage = 'Keperawatan.jpg';
+                        } elseif (str_contains($nameLower, 'mipa')) {
+                            $bgImage = 'Fmipa.jpeg';
+                        } elseif (str_contains($nameLower, 'psikologi')) {
+                            $bgImage = 'psikologi.webp';
+                        } elseif (str_contains($nameLower, 'farmasi')) {
+                            $bgImage = 'Farmasi.webp';
+                        } elseif (str_contains($nameLower, 'kehutanan')) {
+                            $bgImage = 'kehutanan.jpeg';
+                        }
+                    @endphp
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-white rounded-xl p-3 sm:p-6 border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 h-[75px] sm:h-[100px] w-full">
+                        
+                        <!-- Card background image with gradient transparency mask -->
+                        <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
+                             style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                                    opacity: 0.75; 
+                                    mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
+                                    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
+                        </div>
 
-                    <div class="flex flex-col z-10 max-w-[75%]">
-                        <h3 class="text-lg sm:text-[26px] font-bold text-[#064e3b] mb-0.5 sm:mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                        <p class="text-[10px] sm:text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
-                    </div>
-                    
-                    <div class="text-[#064e3b] z-10 opacity-90">
-                        <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
-                    </div>
-                </a>
+                        <!-- Orange glow at bottom right -->
+                        <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-full blur-xl group-hover:from-orange-400/50 transition-all duration-300 pointer-events-none"></div>
+
+                        <div class="flex flex-col z-10 max-w-[75%]">
+                            <h3 class="text-lg sm:text-[26px] font-bold text-[#064e3b] mb-0.5 sm:mb-1 tracking-tight">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                            <p class="text-[10px] sm:text-xs font-semibold text-[#064e3b] leading-tight">{{ __($stat->name) }}</p>
+                        </div>
+                        
+                        <div class="text-[#064e3b] z-10 opacity-90">
+                            <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px]"></i>
+                        </div>
+                    </a>
                 @endforeach
             </div>
         </div>
