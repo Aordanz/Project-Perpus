@@ -40,12 +40,12 @@
                 <!-- Content Container -->
                 <div class="p-2 sm:p-2.5 flex flex-col flex-grow">
                     <!-- Title -->
-                    <h3 class="text-[12px] sm:text-[13px] font-medium text-slate-800 line-clamp-2 leading-snug mb-1.5 group-hover:text-[#106c38] transition-colors" title="{{ $book->title }}">
+                    <h3 class="text-[13px] sm:text-[15px] font-extrabold text-slate-900 line-clamp-2 leading-snug mb-1.5 group-hover:text-[#106c38] transition-colors" title="{{ $book->title }}">
                         {{ $book->title }}
                     </h3>
 
                     <!-- Author (acting as Price visual) -->
-                    <div class="text-[13px] sm:text-[15px] font-extrabold text-slate-900 mb-0.5 truncate" title="{{ $book->author }}">
+                    <div class="text-[12px] sm:text-[13px] font-medium text-slate-500 mb-0.5 truncate" title="{{ $book->author }}">
                         {{ $book->author ?: '-' }}
                     </div>
 
@@ -56,20 +56,7 @@
                     @endphp
                     
                     <div class="mt-auto">
-                        <!-- Copies Info -->
-                        <div class="mb-2">
-                            @if($availableCopies > 0)
-                                <span class="inline-flex items-center gap-1 bg-green-50 text-green-700 font-bold px-2 py-0.5 rounded-full border border-green-200/50 text-[9px] sm:text-[10px]">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                    {{ $availableCopies }} / {{ $totalCopies }} {{ __('Eksemplar') }}
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1 bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded-full border border-slate-200/50 text-[9px] sm:text-[10px]">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                                    {{ __('Sedang Dipinjam') }}
-                                </span>
-                            @endif
-                        </div>
+
 
                         <!-- Publisher Row (acting as Store Name) -->
                         <div class="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-500">

@@ -108,7 +108,8 @@ class BookController extends Controller
     {
         $perPage = $request->input('per_page', 5);
         $query = Book::with(['items.location'])
-            ->where('title', 'like', $initial . '%');
+            ->where('title', 'like', $initial . '%')
+            ->orderBy('title', 'asc');
 
         if ($perPage === 'all' || $perPage == 0) {
             $books = $query->get()->toArray();
