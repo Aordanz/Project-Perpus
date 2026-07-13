@@ -55,9 +55,9 @@ class AdminController extends Controller implements HasMiddleware
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('author', 'like', "%{$search}%")
-                  ->orWhere('publisher', 'like', "%{$search}%")
+                $q->where('judul_buku', 'like', "%{$search}%")
+                  ->orWhere('pengarang', 'like', "%{$search}%")
+                  ->orWhere('idpenerbit', 'like', "%{$search}%")
                   ->orWhere('isbn', 'like', "%{$search}%");
             });
         }
@@ -88,8 +88,8 @@ class AdminController extends Controller implements HasMiddleware
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('author', 'like', "%{$search}%");
+                $q->where('judul_buku', 'like', "%{$search}%")
+                  ->orWhere('pengarang', 'like', "%{$search}%");
             });
         }
 
@@ -147,7 +147,7 @@ class AdminController extends Controller implements HasMiddleware
             'images.*'             => 'image|mimes:jpeg,png,jpg,gif,svg|max:20480',
 
             // Validation for dynamic items
-            'items.*.barcode'     => 'required|string|unique:items,barcode|max:255',
+            'items.*.barcode'     => 'required|string|unique:tbleksemplar,nomor_eksemplar|max:255',
             'items.*.location_id' => 'required|exists:locations,id',
             'items.*.type'        => 'required|string|in:STD,KPS',
         ], [
@@ -284,7 +284,7 @@ class AdminController extends Controller implements HasMiddleware
             'items.*.type'         => 'required|string|in:STD,KPS',
 
             // New items to add
-            'new_items.*.barcode'      => 'nullable|string|unique:items,barcode|max:255',
+            'new_items.*.barcode'      => 'nullable|string|unique:tbleksemplar,nomor_eksemplar|max:255',
             'new_items.*.location_id'  => 'nullable|exists:locations,id',
             'new_items.*.type'         => 'nullable|string|in:STD,KPS',
         ], [
@@ -367,13 +367,13 @@ class AdminController extends Controller implements HasMiddleware
                     if (isset($itemData['status'])) {
                         $updateData['status'] = $itemData['status'];
                     }
-                    Item::where('barcode', (string) $barcode)->update($updateData);
+                    Item::where('nomor_eksemplar', (string) $barcode)->update($updateData);
                 }
             }
 
             // Delete items marked for removal
             if ($request->has('delete_items')) {
-                Item::whereIn('barcode', $request->delete_items)->delete();
+                Item::whereIn('nomor_eksemplar', $request->delete_items)->delete();
             }
 
             // Add new items
