@@ -219,7 +219,7 @@
                                 {{ __($bigCategoryName) }}
                             </span>
                             <h3 class="text-base sm:text-lg font-bold text-slate-800 group-hover:text-[#106c38] group-hover:underline transition leading-snug">
-                                {{ $book->title }}
+                                {{ $book->title ?: __('Judul Tidak Tersedia') }}
                             </h3>
                         </div>
 

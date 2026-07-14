@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Book extends Model
 {
@@ -23,7 +24,9 @@ class Book extends Model
     public function getAuthorAttribute() { return $this->pengarang; }
     public function setAuthorAttribute($value) { $this->attributes['pengarang'] = $value; }
 
-    public function getPublisherAttribute() { return $this->idpenerbit; }
+    public function getPublisherAttribute() { 
+        return $this->publisherRelation ? $this->publisherRelation->penerbit : $this->idpenerbit; 
+    }
     public function setPublisherAttribute($value) { $this->attributes['idpenerbit'] = $value; }
 
     public function getSubjectAttribute() { return $this->subjek; }
@@ -35,10 +38,14 @@ class Book extends Model
     public function getEditionAttribute() { return $this->edisi; }
     public function setEditionAttribute($value) { $this->attributes['edisi'] = $value; }
 
-    public function getLanguageAttribute() { return $this->idbahasa; }
+    public function getLanguageAttribute() { 
+        return $this->languageRelation ? $this->languageRelation->bahasa_dokumen : $this->idbahasa; 
+    }
     public function setLanguageAttribute($value) { $this->attributes['idbahasa'] = $value; }
 
-    public function getPublicationCityAttribute() { return $this->idkota; }
+    public function getPublicationCityAttribute() { 
+        return $this->cityRelation ? $this->cityRelation->tempat_terbit : ($this->attributes['publication_city'] ?? $this->idkota); 
+    }
     public function setPublicationCityAttribute($value) { $this->attributes['idkota'] = $value; }
 
     public function getClassificationAttribute() { return $this->noklasifikasi; }
@@ -75,5 +82,29 @@ class Book extends Model
     public function images(): HasMany
     {
         return $this->hasMany(BookImage::class, 'book_id', 'idbuku');
+    }
+
+    /**
+     * Get the publisher of the book.
+     */
+    public function publisherRelation(): BelongsTo
+    {
+        return $this->belongsTo(Publisher::class, 'idpenerbit', 'idpenerbit');
+    }
+
+    /**
+     * Get the language of the book.
+     */
+    public function languageRelation(): BelongsTo
+    {
+        return $this->belongsTo(Language::class, 'idbahasa', 'idbahasa_dokumen');
+    }
+
+    /**
+     * Get the publication city of the book.
+     */
+    public function cityRelation(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'idkota', 'idtempat');
     }
 }

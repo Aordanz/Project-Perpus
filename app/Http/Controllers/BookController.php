@@ -89,8 +89,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        // Get the main university (USU)
-        $university = University::where('code', 'usu')->first();
+        // Get the main university (usu) - disabled because legacy DB doesn't use this table
+        $university = null;
 
         // Get locations with count of items
         $locations = Location::withCount('items')->get();
