@@ -81,7 +81,7 @@
         $bigCategoryName = $book->category ?: 'Umum';
 
         $totalCopies = $book->items->count();
-        $availableCopies = $book->items->where('status', 'Tersedia')->count();
+        $availableCopies = $book->items->where('kodestatus_eksemplar', 'TSD')->count();
         $borrowedCopies = $totalCopies - $availableCopies;
     @endphp
     <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
@@ -157,7 +157,12 @@
                     <!-- Quick Stats -->
                     <div class="w-full text-center py-4 border-t border-slate-100">
                         <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __('Ketersediaan Fisik') }}</span>
-                        @if($availableCopies > 0)
+                        @if($totalCopies == 0)
+                            <div class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-700 font-bold px-4 py-1.5 rounded-full border border-slate-200/50 text-xs">
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                                {{ __('Belum Ada Salinan') }}
+                            </div>
+                        @elseif($availableCopies > 0)
                             <div class="inline-flex items-center gap-1.5 bg-green-50 text-green-700 font-bold px-4 py-1.5 rounded-full border border-green-200/50 text-xs">
                                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                                 {{ $availableCopies }} {{ __('dari') }} {{ $totalCopies }} {{ __('Eksemplar') }}
@@ -212,7 +217,7 @@
                     <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[10px] font-bold px-3 py-1 rounded-full mb-3 tracking-wider uppercase">
                         {{ __($bigCategoryName) }}
                     </span>
-                    <h1 class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug mb-3">{{ $book->title }}</h1>
+                    <h1 class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug mb-3">{{ $book->title ?: __('Judul Tidak Tersedia') }}</h1>
                     <p class="text-sm font-semibold text-slate-800">
                         {{ $book->author }}
                     </p>

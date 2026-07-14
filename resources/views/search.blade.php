@@ -159,7 +159,7 @@
                                 {{ sprintf('%02d', $books->firstItem() + $loop->index) }}
                             </div>
                             <h3 class="text-base font-bold text-slate-800 hover:text-[#106c38] hover:underline transition leading-snug">
-                                <a href="{{ route('books.show', $book->id) }}">{{ $book->title }}</a>
+                                <a href="{{ route('books.show', $book->id) }}">{{ $book->title ?: __('Judul Tidak Tersedia') }}</a>
                             </h3>
                         </div>
                         <div class="mt-1 pl-[26px]">
@@ -198,7 +198,7 @@
                                 {{ __($book->category ?: 'Umum') }}
                             </span>
                             <h3 class="text-base sm:text-lg font-bold text-slate-800 hover:text-[#106c38] hover:underline transition leading-snug">
-                                <a href="{{ route('books.show', $book->id) }}">{{ $book->title }}</a>
+                                <a href="{{ route('books.show', $book->id) }}">{{ $book->title ?: __('Judul Tidak Tersedia') }}</a>
                             </h3>
                         </div>
 
