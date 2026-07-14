@@ -276,7 +276,7 @@ class AdminController extends Controller implements HasMiddleware
             'pdf_file'             => 'nullable|file|mimes:pdf|max:20480',
             'delete_pdf'           => 'nullable|boolean',
             'additional_images.*'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
-            'delete_additional_images.*' => 'nullable|integer|exists:book_images,id',
+            'delete_additional_images.*' => 'nullable|integer|exists:galeri_buku,id',
 
             // Existing items update
             'items.*.barcode'      => 'required|string|max:255',
