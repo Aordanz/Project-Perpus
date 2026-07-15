@@ -100,8 +100,18 @@ class BookController extends Controller
         // Get the main university (usu) - disabled because legacy DB doesn't use this table
         $university = null;
 
-        // Get locations with count of items
-        $locations = Location::withCount('items')->get();
+        // Get locations with count of distinct book titles (judul) instead of physical items
+        $locationCounts = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+            ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+            ->where('tblbuku.status_tampil', 1)
+            ->select('tbleksemplar.kodelokasi', \Illuminate\Support\Facades\DB::raw('count(distinct tbleksemplar.idmaster) as total_judul'))
+            ->groupBy('tbleksemplar.kodelokasi')
+            ->pluck('total_judul', 'kodelokasi');
+
+        $locations = Location::all()->map(function ($location) use ($locationCounts) {
+            $location->items_count = $locationCounts[$location->idlokasi] ?? 0;
+            return $location;
+        });
 
         // Get 20 latest books with items.location eager loaded
         $latestBooks = Book::with('items.location')->latest()->take(20)->get();
