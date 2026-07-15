@@ -17,7 +17,7 @@ class Book extends Model
     protected $guarded = [];
 
     // Accessors & Mutators for compatibility with new web app
-    public function getIdAttribute() { return $this->idbuku; }
+    public function getIdAttribute() { return $this->idmaster; }
     public function getTitleAttribute() { return $this->judul_buku; }
     public function setTitleAttribute($value) { $this->attributes['judul_buku'] = $value; }
 
@@ -65,7 +65,7 @@ class Book extends Model
      */
     public function items(): HasMany
     {
-        return $this->hasMany(Item::class, 'idmaster', 'idbuku');
+        return $this->hasMany(Item::class, 'idmaster', 'idmaster');
     }
 
     /**
@@ -73,7 +73,7 @@ class Book extends Model
      */
     public function locations()
     {
-        return $this->hasManyThrough(Location::class, Item::class, 'idmaster', 'idlokasi', 'idbuku', 'kodelokasi');
+        return $this->hasManyThrough(Location::class, Item::class, 'idmaster', 'idlokasi', 'idmaster', 'kodelokasi');
     }
 
     /**
@@ -81,7 +81,7 @@ class Book extends Model
      */
     public function images(): HasMany
     {
-        return $this->hasMany(BookImage::class, 'book_id', 'idbuku');
+        return $this->hasMany(BookImage::class, 'book_id', 'idmaster');
     }
 
     /**
