@@ -35,7 +35,7 @@ class Item extends Model
      */
     public function book(): BelongsTo
     {
-        return $this->belongsTo(Book::class, 'idmaster', 'idbuku');
+        return $this->belongsTo(Book::class, 'idmaster', 'idmaster');
     }
 
     /**

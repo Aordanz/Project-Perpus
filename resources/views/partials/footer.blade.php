@@ -88,29 +88,6 @@
         return allWordsMatched;
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('live-search-input');
-        const bookCards = document.querySelectorAll('.book-card');
-
-        if(searchInput && bookCards.length > 0 && !window.location.pathname.includes('/galeri')) {
-            searchInput.addEventListener('input', function(e) {
-                const keyword = e.target.value.toLowerCase().trim();
-
-                bookCards.forEach(card => {
-                    const title = card.getAttribute('data-title') || '';
-                    const author = card.getAttribute('data-author') || '';
-                    const publisher = card.getAttribute('data-publisher') || '';
-
-                    // Cek apakah ada kecocokan typo di salah satu data
-                    if (window.isFuzzyMatch(title, keyword) || window.isFuzzyMatch(author, keyword) || window.isFuzzyMatch(publisher, keyword)) {
-                        card.classList.remove('!hidden');
-                    } else {
-                        card.classList.add('!hidden');
-                    }
-                });
-            });
-        }
-    });
 </script>
 
 <!-- AI Assistant Chatbot -->

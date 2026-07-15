@@ -69,13 +69,13 @@
                 </div>
 
                 <!-- Search -->
-                <div class="w-full md:w-96 relative">
-                    <input type="text" id="live-search" placeholder="{{ __('Cari Koleksi Terbaru...') }}" 
+                <form action="{{ route('search') }}" method="GET" class="w-full md:w-96 relative">
+                    <input type="text" name="q" placeholder="{{ __('Cari Koleksi...') }}" 
                            class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-0 rounded-xl focus:ring-2 focus:ring-[#106c38]/20 focus:bg-white transition-all text-sm font-medium outline-none">
-                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#106c38] transition cursor-pointer bg-transparent border-0 outline-none flex items-center justify-center">
                         <i class="ph ph-magnifying-glass text-lg font-bold"></i>
-                    </div>
-                </div>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

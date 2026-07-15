@@ -56,12 +56,20 @@ class BookController extends Controller
         $searchTerms = array_unique($searchTerms);
 
         $query->where(function($w) use ($columns, $searchTerms, $q) {
-            // 3. FULL TEXT SEARCH (FTS) for exact keyword/phrase relevance
-            // Hanya aktifkan FTS jika mencari di seluruh kolom utama yang di-index (yaitu ke-4 kolom bersama-sama)
-            $requiredFts = ['judul_buku', 'pengarang', 'idpenerbit', 'subjek'];
-            $hasAllFts = count(array_intersect($requiredFts, $columns)) === count($requiredFts);
-            if ($hasAllFts) {
-                $w->orWhereFullText($requiredFts, $q, ['mode' => 'boolean']);
+            // 3. MULTI-WORD SEARCH (Memastikan SEMUA kata ada, bukan sekadar salah satu kata)
+            if (str_contains($q, ' ')) {
+                $words = explode(' ', preg_replace('/\s+/', ' ', trim($q)));
+                $w->orWhere(function($queryMulti) use ($columns, $words) {
+                    foreach ($words as $word) {
+                        if (strlen($word) > 2) { // Abaikan kata hubung pendek
+                            $queryMulti->where(function($queryWord) use ($columns, $word) {
+                                foreach ($columns as $column) {
+                                    $queryWord->orWhere($column, 'like', "%{$word}%");
+                                }
+                            });
+                        }
+                    }
+                });
             }
 
             foreach ($searchTerms as $term) {
@@ -112,14 +120,8 @@ class BookController extends Controller
             ->orderBy('judul_buku', 'asc');
 
         if ($perPage === 'all' || $perPage == 0) {
-            $books = $query->get()->toArray();
-            // Wrap in a LengthAwarePaginator-like structure for view compatibility
-            $books = new \Illuminate\Pagination\LengthAwarePaginator(
-                $query->get(),
-                $query->count(),
-                $query->count() ?: 1,
-                1
-            );
+            // Membatasi maksimal 500 data agar tidak kehabisan memori server
+            $books = $query->paginate(500)->withQueryString();
         } else {
             $books = $query->paginate((int) $perPage)->withQueryString();
         }
@@ -187,7 +189,8 @@ class BookController extends Controller
         // Paginate results (supports dynamic per_page or custom limit)
         $perPage = request()->input('per_page', 10);
         if ($perPage === 'all') {
-            $books = $query->with(['items.location'])->paginate(999999)->withQueryString();
+            // Membatasi maksimal 500 data agar tidak kehabisan memori RAM server
+            $books = $query->with(['items.location'])->paginate(500)->withQueryString();
         } else {
             $books = $query->with(['items.location'])->paginate((int)$perPage)->withQueryString();
         }
@@ -203,7 +206,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $book = Book::with(['items.location'])->findOrFail($id);
+        $book = Book::with(['items.location'])->where('idmaster', $id)->firstOrFail();
         
         return view('detail', compact('book'));
     }
