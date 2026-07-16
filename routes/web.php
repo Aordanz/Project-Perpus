@@ -23,19 +23,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/kontak', [BookController::class, 'storeContact'])->name('kontak.store');
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-Route::get('/admin/koleksi-buku', [AdminController::class, 'koleksiBuku'])->name('admin.koleksi-buku');
-Route::get('/admin/galeri', [AdminController::class, 'galeri'])->name('admin.galeri');
-Route::get('/admin/pesan', [AdminController::class, 'pesan'])->name('admin.pesan');
+Route::get('/admin/tambah-cover', [AdminController::class, 'tambahCoverIndex'])->name('admin.tambah-cover');
 Route::post('/admin/books', [AdminController::class, 'store'])->name('admin.books.store');
 Route::get('/admin/books/{id}/edit', [AdminController::class, 'edit'])->name('admin.books.edit');
 Route::put('/admin/books/{id}', [AdminController::class, 'update'])->name('admin.books.update');
 Route::delete('/admin/books/{id}', [AdminController::class, 'destroy'])->name('admin.books.destroy');
 Route::delete('/admin/books/images/{id}', [AdminController::class, 'deleteImage'])->name('admin.books.delete-image');
-
-// Administrative Location Management Routes
-Route::get('/admin/lokasi', [AdminController::class, 'lokasiIndex'])->name('admin.lokasi.index');
-Route::post('/admin/lokasi', [AdminController::class, 'lokasiStore'])->name('admin.lokasi.store');
-Route::delete('/admin/lokasi/{id}', [AdminController::class, 'lokasiDestroy'])->name('admin.lokasi.destroy');
 
 
 Route::get('/lang/{locale}', function ($locale) {

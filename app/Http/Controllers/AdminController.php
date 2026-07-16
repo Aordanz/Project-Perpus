@@ -45,9 +45,9 @@ class AdminController extends Controller implements HasMiddleware
     }
 
     /**
-     * Show the admin book collection page.
+     * Show the admin 'Tambah Cover' page.
      */
-    public function koleksiBuku(Request $request)
+    public function tambahCoverIndex(Request $request)
     {
         // Query books with search
         $query = Book::with(['items.location'])->latest();
@@ -62,23 +62,39 @@ class AdminController extends Controller implements HasMiddleware
             });
         }
 
+        if ($request->filled('cover_filter')) {
+            $filter = $request->cover_filter;
+            if ($filter === 'no_cover') {
+                $query->where(function ($q) {
+                    $q->whereNull('cover_image')->orWhere('cover_image', '');
+                });
+            } elseif ($filter === 'has_cover') {
+                $query->whereNotNull('cover_image')->where('cover_image', '!=', '');
+            }
+        }
+
+        if ($request->filled('location_filter') && $request->location_filter !== 'all') {
+            $locFilter = $request->location_filter;
+            $query->whereHas('items', function ($itemQuery) use ($locFilter) {
+                $itemQuery->where('kodelokasi', $locFilter);
+            });
+        }
+
         $perPage = $request->input('limit', 10);
         if ($perPage === 'all') {
-            $perPage = $query->count() ?: 10;
+            $perPage = 500;
         } else {
-            $perPage = is_numeric($perPage) ? (int)$perPage : 10;
+            $perPage = is_numeric($perPage) ? min(500, (int)$perPage) : 10;
         }
 
         $books = $query->paginate($perPage)->withQueryString();
-
-        // Get locations for the copies form dropdown
-        $locations = Location::all();
+        $locations = Location::orderBy('lokasi', 'asc')->get();
 
         if ($request->ajax()) {
             return view('admin.partials.books_table', compact('books'));
         }
 
-        return view('admin.koleksi_buku', compact('books', 'locations'));
+        return view('admin.tambah_cover', compact('books', 'locations'));
     }
 
     public function galeri(Request $request)
@@ -190,8 +206,7 @@ class AdminController extends Controller implements HasMiddleware
                 
                 // First image is the main cover
                 $mainImage = $images[0];
-                $mainName  = time() . '_0_' . preg_replace('/\s+/', '_', $mainImage->getClientOriginalName());
-                $mainImage->move(public_path('covers'), $mainName);
+                $mainName = $this->saveImageAsAvif($mainImage);
                 $bookData['cover_image'] = $mainName;
 
                 // Save the book
@@ -200,8 +215,7 @@ class AdminController extends Controller implements HasMiddleware
                 // Save the rest as additional images
                 for ($i = 1; $i < count($images); $i++) {
                     $img = $images[$i];
-                    $imgName = time() . '_' . $i . '_' . preg_replace('/\s+/', '_', $img->getClientOriginalName());
-                    $img->move(public_path('covers'), $imgName);
+                    $imgName = $this->saveImageAsAvif($img);
                     
                     $book->images()->create([
                         'image_path' => $imgName,
@@ -242,7 +256,7 @@ class AdminController extends Controller implements HasMiddleware
      */
     public function edit($id)
     {
-        $book      = Book::with(['items.location', 'images'])->findOrFail($id);
+        $book      = Book::with(['items.location', 'images'])->where('idmaster', $id)->firstOrFail();
         $locations = Location::all();
 
         return view('admin.edit', compact('book', 'locations'));
@@ -253,7 +267,7 @@ class AdminController extends Controller implements HasMiddleware
      */
     public function update(Request $request, $id)
     {
-        $book = Book::findOrFail($id);
+        $book = Book::where('idmaster', $id)->firstOrFail();
 
         $request->validate([
             'title'                => 'required|string|max:255',
@@ -277,12 +291,14 @@ class AdminController extends Controller implements HasMiddleware
             'delete_pdf'           => 'nullable|boolean',
             'additional_images.*'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
             'delete_additional_images.*' => 'nullable|integer|exists:galeri_buku,id',
-
+            'image_order_json'     => 'nullable|string',
+            'new_files.*'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
+ 
             // Existing items update
             'items.*.barcode'      => 'required|string|max:255',
             'items.*.location_id'  => 'required|exists:locations,id',
             'items.*.type'         => 'required|string|in:STD,KPS',
-
+ 
             // New items to add
             'new_items.*.barcode'      => 'nullable|string|unique:tbleksemplar,nomor_eksemplar|max:255',
             'new_items.*.location_id'  => 'nullable|exists:locations,id',
@@ -290,6 +306,7 @@ class AdminController extends Controller implements HasMiddleware
         ], [
             'cover_image.max' => 'Ukuran sampul buku tidak boleh melebihi 20 MB.',
             'additional_images.*.max' => 'Ukuran setiap gambar tambahan tidak boleh melebihi 20 MB.',
+            'new_files.*.max' => 'Ukuran file gambar baru tidak boleh melebihi 20 MB.',
         ]);
 
         try {
@@ -315,24 +332,87 @@ class AdminController extends Controller implements HasMiddleware
                 $bookData['category'] = 'Umum';
             }
 
-            // Handle deleting the cover image
-            if ($request->boolean('delete_cover')) {
-                if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
-                    @unlink(public_path('covers/' . $book->cover_image));
-                }
-                $bookData['cover_image'] = null;
-            }
+            // Handle cover and additional images sequence using custom order JSON
+            if ($request->filled('image_order_json')) {
+                $order = json_decode($request->image_order_json, true);
+                
+                $oldCover = $book->cover_image;
+                $oldAddImages = $book->images->pluck('image_path')->toArray();
+                $keptFiles = [];
 
-            // Handle cover image upload (replace old one)
-            if ($request->hasFile('cover_image')) {
-                // Delete old cover
-                if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
-                    @unlink(public_path('covers/' . $book->cover_image));
+                $newFiles = $request->file('new_files') ?: [];
+                $finalCoverImage = null;
+                $finalAddImages = [];
+
+                foreach ($order as $index => $item) {
+                    if ($item['type'] === 'existing') {
+                        $filename = basename($item['path']);
+                        $keptFiles[] = $filename;
+                        if ($index === 0) {
+                            $finalCoverImage = $filename;
+                        } else {
+                            $finalAddImages[] = $filename;
+                        }
+                    } elseif ($item['type'] === 'new') {
+                        $fileIdx = $item['index'];
+                        if (isset($newFiles[$fileIdx])) {
+                            $file = $newFiles[$fileIdx];
+                            $name = $this->saveImageAsAvif($file);
+                            $keptFiles[] = $name;
+                            if ($index === 0) {
+                                $finalCoverImage = $name;
+                            } else {
+                                $finalAddImages[] = $name;
+                            }
+                        }
+                    }
                 }
-                $image = $request->file('cover_image');
-                $name  = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
-                $image->move(public_path('covers'), $name);
-                $bookData['cover_image'] = $name;
+
+                // Delete unused old main cover image file from disk
+                if ($oldCover && !in_array($oldCover, $keptFiles)) {
+                    if (file_exists(public_path('covers/' . $oldCover))) {
+                        @unlink(public_path('covers/' . $oldCover));
+                    }
+                }
+
+                // Delete unused old additional images from disk
+                foreach ($oldAddImages as $oldPath) {
+                    if ($oldPath && !in_array($oldPath, $keptFiles)) {
+                        if (file_exists(public_path('covers/' . $oldPath))) {
+                            @unlink(public_path('covers/' . $oldPath));
+                        }
+                    }
+                }
+
+                $bookData['cover_image'] = $finalCoverImage;
+                
+                // Clear old database entries for additional images
+                $book->images()->delete();
+                // Create new ordered additional images entries
+                foreach ($finalAddImages as $path) {
+                    $book->images()->create([
+                        'image_path' => $path
+                    ]);
+                }
+            } else {
+                // Handle deleting the cover image (Legacy)
+                if ($request->boolean('delete_cover')) {
+                    if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
+                        @unlink(public_path('covers/' . $book->cover_image));
+                    }
+                    $bookData['cover_image'] = null;
+                }
+
+                // Handle cover image upload (replace old one) (Legacy)
+                if ($request->hasFile('cover_image')) {
+                    // Delete old cover
+                    if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
+                        @unlink(public_path('covers/' . $book->cover_image));
+                    }
+                    $image = $request->file('cover_image');
+                    $name = $this->saveImageAsAvif($image);
+                    $bookData['cover_image'] = $name;
+                }
             }
 
             // Handle deleting the PDF file
@@ -392,34 +472,35 @@ class AdminController extends Controller implements HasMiddleware
                 }
             }
 
-            // Delete selected additional images
-            if ($request->has('delete_additional_images')) {
-                $imagesToDelete = \App\Models\BookImage::whereIn('id', $request->delete_additional_images)->get();
-                foreach ($imagesToDelete as $img) {
-                    if (file_exists(public_path('covers/' . $img->image_path))) {
-                        @unlink(public_path('covers/' . $img->image_path));
+            if (!$request->filled('image_order_json')) {
+                // Delete selected additional images
+                if ($request->has('delete_additional_images')) {
+                    $imagesToDelete = \App\Models\BookImage::whereIn('id', $request->delete_additional_images)->get();
+                    foreach ($imagesToDelete as $img) {
+                        if (file_exists(public_path('covers/' . $img->image_path))) {
+                            @unlink(public_path('covers/' . $img->image_path));
+                        }
+                        $img->delete();
                     }
-                    $img->delete();
                 }
-            }
 
-            // Upload new additional images (only if book has a cover or a new cover is uploaded)
-            if ($request->hasFile('additional_images')) {
-                $hasCover = ($book->cover_image && !$request->boolean('delete_cover')) || $request->hasFile('cover_image');
-                if (!$hasCover) {
-                    throw new \Exception('Unggah sampul default terlebih dahulu sebelum menambahkan gambar tambahan.');
-                }
-                foreach ($request->file('additional_images') as $file) {
-                    $name = time() . '_' . uniqid() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
-                    $file->move(public_path('covers'), $name);
-                    $book->images()->create([
-                        'image_path' => $name,
-                     ]);
+                // Upload new additional images (only if book has a cover or a new cover is uploaded)
+                if ($request->hasFile('additional_images')) {
+                    $hasCover = ($book->cover_image && !$request->boolean('delete_cover')) || $request->hasFile('cover_image');
+                    if (!$hasCover) {
+                        throw new \Exception('Unggah sampul default terlebih dahulu sebelum menambahkan gambar tambahan.');
+                    }
+                    foreach ($request->file('additional_images') as $file) {
+                        $name = $this->saveImageAsAvif($file);
+                        $book->images()->create([
+                            'image_path' => $name,
+                         ]);
+                    }
                 }
             }
 
             DB::commit();
-            return redirect()->route('admin.index')
+            return redirect()->route('admin.tambah-cover')
                 ->with('success', 'Buku "' . $book->title . '" berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -430,30 +511,26 @@ class AdminController extends Controller implements HasMiddleware
     }
 
     /**
-     * Delete a book and its physical copies.
+     * Delete only the cover image of a book.
      */
     public function destroy($id)
     {
         try {
-            $book = Book::findOrFail($id);
+            $book = Book::where('idmaster', $id)->firstOrFail();
 
             // Delete the cover image file if it exists
             if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
                 @unlink(public_path('covers/' . $book->cover_image));
             }
 
-            // Delete the PDF file if it exists
-            if ($book->pdf_file && file_exists(public_path('ebooks/' . $book->pdf_file))) {
-                @unlink(public_path('ebooks/' . $book->pdf_file));
-            }
+            $book->cover_image = null;
+            $book->save();
 
-            $book->delete(); // cascades to items via migration constraint
-
-            return redirect()->route('admin.index')
-                ->with('success', 'Buku dan semua eksemplarnya berhasil dihapus.');
+            return redirect()->route('admin.tambah-cover')
+                ->with('success', 'Gambar cover berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Gagal menghapus buku: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Gagal menghapus cover: ' . $e->getMessage()]);
         }
     }
 
@@ -572,5 +649,93 @@ class AdminController extends Controller implements HasMiddleware
             return redirect()->back()
                 ->withErrors(['error' => 'Gagal menghapus lokasi: ' . $e->getMessage()]);
         }
+    }
+
+    /**
+     * Compress and convert image to AVIF format, keeping it under 150KB.
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @return string Filename of the saved AVIF image
+     */
+    private function saveImageAsAvif($file)
+    {
+        $info = getimagesize($file->getRealPath());
+        if (!$info) {
+            throw new \Exception('Berkas yang diunggah bukan gambar valid.');
+        }
+
+        $mime = $info['mime'];
+        switch ($mime) {
+            case 'image/jpeg':
+                $image = imagecreatefromjpeg($file->getRealPath());
+                break;
+            case 'image/png':
+                $image = imagecreatefrompng($file->getRealPath());
+                break;
+            case 'image/webp':
+                $image = imagecreatefromwebp($file->getRealPath());
+                break;
+            case 'image/gif':
+                $image = imagecreatefromgif($file->getRealPath());
+                break;
+            default:
+                $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
+                break;
+        }
+
+        if (!$image) {
+            throw new \Exception('Tidak dapat membaca gambar.');
+        }
+
+        // Resize image if it exceeds 1200px width/height to save space
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $maxDimension = 1200;
+
+        if ($width > $maxDimension || $height > $maxDimension) {
+            if ($width > $height) {
+                $newWidth = $maxDimension;
+                $newHeight = (int)($height * ($maxDimension / $width));
+            } else {
+                $newHeight = $maxDimension;
+                $newWidth = (int)($width * ($maxDimension / $height));
+            }
+            $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+            
+            imagealphablending($resizedImage, false);
+            imagesavealpha($resizedImage, true);
+            
+            imagecopyresampled($resizedImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+            imagedestroy($image);
+            $image = $resizedImage;
+        }
+
+        // Save path
+        $filename = time() . '_' . uniqid() . '.avif';
+        $destination = public_path('covers/' . $filename);
+
+        // Ensure covers folder exists
+        if (!file_exists(public_path('covers'))) {
+            mkdir(public_path('covers'), 0777, true);
+        }
+
+        // Compress and save as AVIF (iteratively ensure it is < 150KB)
+        $quality = 65; // Good balance for AVIF
+        
+        do {
+            ob_start();
+            imageavif($image, null, $quality);
+            $data = ob_get_clean();
+            
+            $size = strlen($data);
+            if ($size <= 150 * 1024 || $quality <= 15) {
+                file_put_contents($destination, $data);
+                break;
+            }
+            $quality -= 10; // Decrease quality to reduce size
+        } while ($quality > 0);
+
+        imagedestroy($image);
+        return $filename;
     }
 }
