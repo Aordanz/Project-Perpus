@@ -5,21 +5,20 @@
         <div class="relative inline-block text-left" id="admin-limit-dropdown">
             <!-- Dropdown Trigger Button -->
             <button type="button" id="admin-limit-trigger" onclick="const menu = document.getElementById('admin-limit-menu'); if (menu) { menu.classList.toggle('hidden'); const caret = this.querySelector('.ph-caret-down'); if (caret) caret.classList.toggle('rotate-180'); } event.stopPropagation();" class="flex items-center justify-between gap-4 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-full pl-4 pr-3 py-2 outline-none cursor-pointer hover:border-[#106c38] focus:border-[#106c38] focus:ring-4 focus:ring-[#106c38]/10 transition-all shadow-sm min-w-[75px]">
-                <span id="admin-limit-label">{{ request('limit', 10) == 'all' ? 'Semua' : request('limit', 10) }}</span>
+                <span id="admin-limit-label">{{ request('limit', 10) }}</span>
                 <i class="ph ph-caret-down text-[10px] text-slate-400"></i>
             </button>
             
             <!-- Dropdown Options Menu -->
-            <div id="admin-limit-menu" class="hidden absolute left-0 bottom-full mb-2 w-28 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-30 transition-all">
-                @foreach([10, 25, 50, 'all'] as $val)
+            <div id="admin-limit-menu" class="hidden absolute left-0 bottom-full mb-2 w-28 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-30 transition-all max-h-48 overflow-y-auto">
+                @foreach([10, 25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500] as $val)
                     @php
                         $currentLimit = request('limit', 10);
                         $isSelected = $currentLimit == $val;
-                        $label = $val == 'all' ? 'Semua' : $val;
                         $url = request()->fullUrlWithQuery(['limit' => $val, 'page' => 1]);
                     @endphp
                     <a href="{{ $url }}" onclick="if(window.performSearch){ event.preventDefault(); const inp = document.getElementById('admin-limit-select'); if(inp) inp.value='{{ $val }}'; document.getElementById('admin-limit-menu').classList.add('hidden'); window.performSearch(); }" class="admin-limit-option w-full text-left px-4 py-2.5 text-xs transition flex items-center justify-between no-underline {{ $isSelected ? 'text-[#106c38] font-bold bg-green-50/50' : 'text-slate-600 font-semibold hover:bg-green-50 hover:text-[#106c38]' }}">
-                        <span>{{ $label }}</span>
+                        <span>{{ $val }}</span>
                         <i class="ph ph-check text-[12px] limit-active-check {{ $isSelected ? '' : 'hidden' }}"></i>
                     </a>
                 @endforeach

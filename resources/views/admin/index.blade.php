@@ -113,7 +113,7 @@
                     <i class="ph ph-book-open"></i>
                 </div>
                 <div>
-                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Judul</span>
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Buku</span>
                     <h3 class="text-2xl font-black text-slate-800 mt-0.5">{{ number_format($totalBooks) }}</h3>
                 </div>
             </div>

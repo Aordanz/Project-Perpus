@@ -198,12 +198,12 @@
 
                     <!-- Username / Email Input -->
                     <div>
-                        <label for="login" id="label-login" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Username / Email</label>
+                        <label for="login" id="label-login" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Username </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <i class="ph ph-user text-lg" id="icon-login"></i>
                             </div>
-                            <input type="text" name="login" id="login" value="{{ $savedLogin }}" autocomplete="username" required placeholder="username atau email" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
+                            <input type="text" name="login" id="login" value="{{ $savedLogin }}" autocomplete="username" required placeholder="username" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
                         </div>
                     </div>
 
@@ -260,8 +260,8 @@
                 formRoleBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 bg-green-50 text-[#106c38]";
                 formRoleBadge.innerHTML = '<i class="ph ph-user-gear"></i> Pustakawan';
                 formRoleTitle.textContent = "Masuk sebagai Pustakawan";
-                labelLogin.textContent = "Username / Email (Staf)";
-                loginInput.placeholder = "username atau admin@usu.ac.id";
+                labelLogin.textContent = "Username";
+                loginInput.placeholder = "Username";
                 loginInput.type = "text";
                 iconLogin.className = "ph ph-user-gear text-lg";
 
