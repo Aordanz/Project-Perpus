@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+<<<<<<< HEAD
+=======
+        // Tabel users tidak lagi digunakan sebagai tabel utama auth.
+        // Auth sekarang menggunakan tbluser (dari database OPAC lama).
+        // Tabel ini dibuat hanya jika belum ada, untuk menjaga kompatibilitas.
+>>>>>>> 7140eb2364163105fe8fcb9d1c7392c433787534
         if (!Schema::hasTable('users')) {
             Schema::create('users', function (Blueprint $table) {
                 $table->id();
@@ -18,7 +24,11 @@ return new class extends Migration
                 $table->string('email')->unique();
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password');
+<<<<<<< HEAD
                 $table->string('role')->default('anggota'); // pustakawan or anggota
+=======
+                $table->string('role')->default('anggota');
+>>>>>>> 7140eb2364163105fe8fcb9d1c7392c433787534
                 $table->rememberToken();
                 $table->timestamps();
             });

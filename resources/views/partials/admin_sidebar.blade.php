@@ -40,30 +40,11 @@
             <span>Dashboard</span>
         </a>
         
-        <a href="{{ route('admin.koleksi-buku') }}" 
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.koleksi-buku') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
-            <i class="ph ph-books text-lg"></i>
-            <span>Koleksi Buku</span>
+        <a href="{{ route('admin.tambah-cover') }}" 
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.tambah-cover') || request()->routeIs('admin.books.edit') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+            <i class="ph ph-image text-lg"></i>
+            <span>Tambah Cover</span>
         </a>
-        
-        <a href="{{ route('admin.lokasi.index') }}" 
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.lokasi.*') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
-            <i class="ph ph-map-pin text-lg"></i>
-            <span>Daftar Lokasi</span>
-        </a>
-        
-        <a href="{{ route('admin.galeri') }}" 
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.galeri') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
-            <i class="ph ph-images text-lg"></i>
-            <span>Galeri</span>
-        </a>
-        
-        <a href="{{ route('admin.pesan') }}" 
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.pesan') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
-            <i class="ph ph-envelope-open text-lg"></i>
-            <span>Pesan</span>
-        </a>
-
     </nav>
 
     <!-- Footer Action -->
