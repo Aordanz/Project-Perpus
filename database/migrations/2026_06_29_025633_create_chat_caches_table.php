@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chat_caches', function (Blueprint $table) {
-            $table->id();
-            $table->string('pertanyaan_hash')->index();
-            $table->text('pertanyaan');
-            $table->text('jawaban');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('chat_caches')) {
+            Schema::create('chat_caches', function (Blueprint $table) {
+                $table->id();
+                $table->string('pertanyaan_hash')->index();
+                $table->text('pertanyaan');
+                $table->text('jawaban');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

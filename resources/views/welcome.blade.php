@@ -1117,6 +1117,8 @@
             let filteredCards = [];
             let currentPage = 1;
             let perPage = 5;
+            let totalPages = 1;
+            let totalItems = 0;
 
             const searchInput = document.getElementById('modal-hasil-search');
             const clearSearchBtn = document.getElementById('modal-hasil-search-clear');
@@ -1307,55 +1309,32 @@
                 }
                 if (paginationEl) paginationEl.innerHTML = '';
 
-                // Request with per_page=all to get all books for client-side search/pagination
+                // Send AJAX header and request specific perPage / currentPage from server
                 const urlObj = new URL(url, window.location.origin);
-                urlObj.searchParams.set('per_page', 'all');
+                urlObj.searchParams.set('per_page', perPage);
+                urlObj.searchParams.set('page', currentPage);
 
-                fetch(urlObj.toString())
+                fetch(urlObj.toString(), {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
                     .then(response => response.text())
                     .then(html => {
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(html, 'text/html');
                         
-                        const resultsList = doc.querySelector('main > .space-y-4.mb-8');
+                        const resultsList = doc.querySelector('#search-results-container');
 
                         if (resultsList) {
+                            // Extract pagination variables from server attributes
+                            totalItems = parseInt(resultsList.getAttribute('data-total') || '0', 10);
+                            totalPages = parseInt(resultsList.getAttribute('data-last-page') || '1', 10);
+                            currentPage = parseInt(resultsList.getAttribute('data-current-page') || '1', 10);
+
                             const rawCards = resultsList.querySelectorAll('.result-card');
-                            allCards = Array.from(rawCards).map(card => {
-                                // Extract metadata fields for client-side search attributes
-                                const titleEl = card.querySelector('h3 a');
-                                const title = titleEl ? titleEl.innerText.trim().toLowerCase() : '';
-                                card.setAttribute('data-title', title);
-
-                                const spans = Array.from(card.querySelectorAll('span'));
-                                
-                                const authorSpan = spans.find(span => span.textContent.includes('Pengarang:'));
-                                const author = authorSpan && authorSpan.querySelector('strong') ? authorSpan.querySelector('strong').innerText.trim().toLowerCase() : '';
-                                card.setAttribute('data-author', author);
-
-                                const publisherSpan = spans.find(span => span.textContent.includes('Penerbit:'));
-                                const publisher = publisherSpan && publisherSpan.querySelector('strong') ? publisherSpan.querySelector('strong').innerText.trim().toLowerCase() : '';
-                                card.setAttribute('data-publisher', publisher);
-
-                                return card;
-                            });
-
-                            if (initialQuery !== '') {
-                                filteredCards = allCards.filter(card => {
-                                    const title = card.getAttribute('data-title') || '';
-                                    const author = card.getAttribute('data-author') || '';
-                                    const publisher = card.getAttribute('data-publisher') || '';
-                                    
-                                    if (typeof window.isFuzzyMatch === 'function') {
-                                        return window.isFuzzyMatch(title, initialQuery) || 
-                                               window.isFuzzyMatch(author, initialQuery) || 
-                                               window.isFuzzyMatch(publisher, initialQuery);
-                                    }
-                                    return title.includes(initialQuery) || author.includes(initialQuery) || publisher.includes(initialQuery);
-                                });
-                            } else {
-                                filteredCards = allCards;
-                            }
+                            allCards = Array.from(rawCards);
+                            filteredCards = allCards;
                             
                             renderResults();
                         } else {
@@ -1400,14 +1379,8 @@
                     return;
                 }
 
-                let displayCards = [];
-                if (perPage === 'all') {
-                    displayCards = filteredCards;
-                } else {
-                    const startIndex = (currentPage - 1) * perPage;
-                    const endIndex = startIndex + perPage;
-                    displayCards = filteredCards.slice(startIndex, endIndex);
-                }
+                // Server has already paginated the results, so rawCards contains exactly the cards for the current page
+                let displayCards = filteredCards;
 
                 displayCards.forEach((card, index) => {
                     const cloned = card.cloneNode(true);
@@ -1423,12 +1396,10 @@
 
                 if (paginationEl) {
                     paginationEl.innerHTML = '';
-                    if (perPage === 'all' || filteredCards.length <= perPage) {
+                    if (perPage === 'all' || totalItems <= perPage) {
                         return;
                     }
 
-                    const totalPages = Math.ceil(filteredCards.length / perPage);
-                    
                     // Prev button
                     const prevBtn = document.createElement('button');
                     prevBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
@@ -1438,7 +1409,7 @@
                     } else {
                         prevBtn.addEventListener('click', () => {
                             currentPage--;
-                            renderResults();
+                            loadLocationResults(currentSearchBaseUrl);
                             scrollToModalTop();
                         });
                     }
@@ -1464,7 +1435,7 @@
                             pageBtn.innerText = i;
                             pageBtn.addEventListener('click', () => {
                                 currentPage = i;
-                                renderResults();
+                                loadLocationResults(currentSearchBaseUrl);
                                 scrollToModalTop();
                             });
                         }
@@ -1480,7 +1451,7 @@
                     } else {
                         nextBtn.addEventListener('click', () => {
                             currentPage++;
-                            renderResults();
+                            loadLocationResults(currentSearchBaseUrl);
                             scrollToModalTop();
                         });
                     }
@@ -1546,7 +1517,7 @@
                         perPage = parseInt(val, 10);
                     }
                     currentPage = 1;
-                    renderResults();
+                    loadLocationResults(currentSearchBaseUrl);
                 });
             }
 

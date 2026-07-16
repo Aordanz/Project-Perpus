@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::rename('book_images', 'galeri_buku');
+        if (Schema::hasTable('book_images') && !Schema::hasTable('galeri_buku')) {
+            Schema::rename('book_images', 'galeri_buku');
+        } elseif (Schema::hasTable('book_images') && Schema::hasTable('galeri_buku')) {
+            Schema::dropIfExists('book_images');
+        }
     }
 
     /**

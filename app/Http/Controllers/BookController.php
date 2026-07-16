@@ -113,8 +113,8 @@ class BookController extends Controller
             return $location;
         });
 
-        // Get 20 latest books with items.location eager loaded
-        $latestBooks = Book::with('items.location')->latest()->take(20)->get();
+        // Get 20 latest books with items.location and publisherRelation eager loaded
+        $latestBooks = Book::with(['items.location', 'publisherRelation'])->latest()->take(20)->get();
 
         return view('welcome', compact('university', 'locations', 'latestBooks'));
     }
@@ -125,7 +125,7 @@ class BookController extends Controller
     public function indexJudulShow(Request $request, $initial)
     {
         $perPage = $request->input('per_page', 5);
-        $query = Book::with(['items.location'])
+        $query = Book::with(['items.location', 'publisherRelation'])
             ->where('judul_buku', 'like', $initial . '%')
             ->orderBy('judul_buku', 'asc');
 
@@ -189,9 +189,13 @@ class BookController extends Controller
                     $itemQuery->where('nomor_eksemplar', 'like', "%{$request->inbarcode}%");
                 }
                 if ($request->filled('inLokasi')) {
-                    $itemQuery->whereHas('location', function ($locQuery) use ($request) {
-                        $locQuery->where('lokasi', $request->inLokasi);
-                    });
+                    // Pre-resolve location to avoid nested whereHas inside correlated subquery
+                    $location = \App\Models\Location::where('lokasi', $request->inLokasi)->first();
+                    if ($location) {
+                        $itemQuery->where('kodelokasi', $location->idlokasi);
+                    } else {
+                        $itemQuery->whereRaw('1 = 0');
+                    }
                 }
             });
         }
@@ -200,9 +204,9 @@ class BookController extends Controller
         $perPage = request()->input('per_page', 10);
         if ($perPage === 'all') {
             // Membatasi maksimal 500 data agar tidak kehabisan memori RAM server
-            $books = $query->with(['items.location'])->paginate(500)->withQueryString();
+            $books = $query->with(['items.location', 'publisherRelation'])->paginate(500)->withQueryString();
         } else {
-            $books = $query->with(['items.location'])->paginate((int)$perPage)->withQueryString();
+            $books = $query->with(['items.location', 'publisherRelation'])->paginate((int)$perPage)->withQueryString();
         }
 
         // Get locations for the advanced search form in results page
@@ -226,7 +230,7 @@ class BookController extends Controller
      */
     public function latest(Request $request)
     {
-        $query = Book::with(['items.location'])->latest();
+        $query = Book::with(['items.location', 'publisherRelation'])->latest();
 
         if ($request->filled('location')) {
             $locationCode = $request->location;

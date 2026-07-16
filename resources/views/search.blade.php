@@ -1,3 +1,4 @@
+@if(!request()->ajax())
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -86,6 +87,7 @@
             </div>
         </div>
     </nav>
+@endif
 
     <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
@@ -145,7 +147,7 @@
         </div>
 
         <!-- Results List -->
-        <div class="space-y-4 mb-8">
+        <div class="space-y-4 mb-8" id="search-results-container" data-total="{{ $books->total() }}" data-current-page="{{ $books->currentPage() }}" data-last-page="{{ $books->lastPage() }}" data-per-page="{{ $books->perPage() }}">
             @forelse($books as $book)
                 <div class="book-card result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex flex-col sm:flex-row gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group"
                      data-title="{{ strtolower($book->title) }}" 
@@ -278,6 +280,7 @@
 
     </main>
 
+@if(!request()->ajax())
     @include('partials.footer')
 
     <!-- Advanced Search Modal -->
@@ -628,3 +631,4 @@
     </script>
 </body>
 </html>
+@endif
