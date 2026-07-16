@@ -188,7 +188,7 @@
                 <form id="login-form" action="{{ route('login.post') }}" method="POST" class="space-y-4">
                     @csrf
                     @php
-                        $savedEmail = request()->cookie('saved_email') ?: old('email');
+                        $savedLogin = request()->cookie('saved_login') ?: old('login');
                         $savedPassword = request()->cookie('saved_password') ?: '';
                         $rememberChecked = request()->cookie('remember_checked') === 'true' ? 'checked' : '';
                         $savedRole = request()->cookie('remember_role') ?: '';
@@ -196,14 +196,14 @@
                     @endphp
                     <input type="hidden" name="role" id="input-role" value="{{ $roleToUse }}">
 
-                    <!-- Email Input -->
+                    <!-- Username / Email Input -->
                     <div>
-                        <label for="email" id="label-email" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Email</label>
+                        <label for="login" id="label-login" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Username / Email</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                <i class="ph ph-envelope text-lg" id="icon-email"></i>
+                                <i class="ph ph-user text-lg" id="icon-login"></i>
                             </div>
-                            <input type="email" name="email" id="email" value="{{ $savedEmail }}" autocomplete="email" required placeholder="nama@usu.ac.id" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
+                            <input type="text" name="login" id="login" value="{{ $savedLogin }}" autocomplete="username" required placeholder="username atau email" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
                         </div>
                     </div>
 
@@ -247,9 +247,9 @@
         const inputRole = document.getElementById('input-role');
         const formRoleBadge = document.getElementById('form-role-badge');
         const formRoleTitle = document.getElementById('form-role-title');
-        const labelEmail = document.getElementById('label-email');
-        const emailInput = document.getElementById('email');
-        const iconEmail = document.getElementById('icon-email');
+        const labelLogin = document.getElementById('label-login');
+        const loginInput = document.getElementById('login');
+        const iconLogin = document.getElementById('icon-login');
         const warningBanner = document.getElementById('anggota-warning-banner');
         const submitBtn = document.getElementById('btn-login-submit');
 
@@ -260,10 +260,10 @@
                 formRoleBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 bg-green-50 text-[#106c38]";
                 formRoleBadge.innerHTML = '<i class="ph ph-user-gear"></i> Pustakawan';
                 formRoleTitle.textContent = "Masuk sebagai Pustakawan";
-                labelEmail.textContent = "Email Resmi (Staf)";
-                emailInput.placeholder = "admin@usu.ac.id";
-                emailInput.type = "email";
-                iconEmail.className = "ph ph-envelope text-lg";
+                labelLogin.textContent = "Username / Email (Staf)";
+                loginInput.placeholder = "username atau admin@usu.ac.id";
+                loginInput.type = "text";
+                iconLogin.className = "ph ph-user-gear text-lg";
 
                 if (warningBanner) warningBanner.classList.add('hidden');
                 if (submitBtn) {
@@ -274,10 +274,10 @@
                 formRoleBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 bg-emerald-50 text-emerald-700";
                 formRoleBadge.innerHTML = '<i class="ph ph-identification-card"></i> Anggota';
                 formRoleTitle.textContent = "Masuk sebagai Anggota";
-                labelEmail.textContent = "Email / Nomor Anggota";
-                emailInput.placeholder = "anggota@usu.ac.id";
-                emailInput.type = "text";
-                iconEmail.className = "ph ph-identification-card text-lg";
+                labelLogin.textContent = "Username / Email Anggota";
+                loginInput.placeholder = "username atau email";
+                loginInput.type = "text";
+                iconLogin.className = "ph ph-identification-card text-lg";
 
                 if (warningBanner) warningBanner.classList.remove('hidden');
                 if (submitBtn) {
