@@ -13,6 +13,7 @@
     
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <!-- Tailwind CSS (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -478,6 +479,31 @@
         let draggedSlotIndex = null;
         let activeReplaceIndex = null;
 
+        function initSortable() {
+            const grid = document.getElementById('image-slots-grid');
+            if (window.sortableInstance) {
+                window.sortableInstance.destroy();
+            }
+            window.sortableInstance = new Sortable(grid, {
+                animation: 150,
+                ghostClass: 'opacity-50',
+                onEnd: function (evt) {
+                    const oldIndex = evt.oldIndex;
+                    const newIndex = evt.newIndex;
+                    
+                    if (oldIndex !== newIndex) {
+                        // Swap or move items in slots array
+                        const movedItem = slots.splice(oldIndex, 1)[0];
+                        slots.splice(newIndex, 0, movedItem);
+                        
+                        // Re-render and update hidden inputs
+                        reRenderSlots();
+                        updateFormOrder();
+                    }
+                }
+            });
+        }
+
         function reRenderSlots() {
             const grid = document.getElementById('image-slots-grid');
             if (!grid) return;
@@ -499,7 +525,6 @@
                 const slotCard = document.createElement('div');
                 slotCard.className = `relative aspect-[3/4] rounded-2xl border border-slate-200 bg-slate-900 flex flex-col items-center justify-center overflow-hidden transition-all duration-200 select-none cursor-grab`;
                 slotCard.setAttribute('data-index', index);
-                slotCard.setAttribute('draggable', 'true');
 
                 // Slot header/badge text
                 let badgeText = "Gambar Tambahan";
@@ -541,47 +566,11 @@
                     document.getElementById('replace-file-picker').click();
                 });
 
-                // Drag event listeners for reordering
-                slotCard.addEventListener('dragstart', (e) => {
-                    draggedSlotIndex = index;
-                    slotCard.classList.add('opacity-50');
-                });
-
-                slotCard.addEventListener('dragend', () => {
-                    slotCard.classList.remove('opacity-50');
-                    draggedSlotIndex = null;
-                    
-                    // Remove highlights
-                    document.querySelectorAll('#image-slots-grid > div').forEach(c => {
-                        c.classList.remove('border-solid', 'border-[#106c38]', 'bg-green-50/50');
-                    });
-                });
-
-                slotCard.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    if (draggedSlotIndex !== null && draggedSlotIndex !== index) {
-                        slotCard.classList.add('border-solid', 'border-[#106c38]', 'bg-green-50/50');
-                    }
-                });
-
-                slotCard.addEventListener('dragleave', () => {
-                    slotCard.classList.remove('border-solid', 'border-[#106c38]', 'bg-green-50/50');
-                });
-
-                slotCard.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    if (draggedSlotIndex !== null && draggedSlotIndex !== index) {
-                        // Swap items in slots array
-                        const temp = slots[draggedSlotIndex];
-                        slots[draggedSlotIndex] = slots[index];
-                        slots[index] = temp;
-                        reRenderSlots();
-                        updateFormOrder();
-                    }
-                });
-
                 grid.appendChild(slotCard);
             });
+            
+            // Re-initialize Sortable after rendering
+            initSortable();
         }
 
         window.removeImageFromSlot = function(index) {
@@ -591,13 +580,19 @@
         };
 
         function updateFormOrder() {
-            // Serialize slot order list
+            // Re-index new files based on their current order in slots
+            // This is crucial because DataTransfer appends files in the loop order,
+            // so the backend index must match the loop index.
+            let newFileCounter = 0;
+            
             const orderData = slots.map(item => {
                 if (item.type === 'existing') {
                     return { type: 'existing', path: item.path };
                 }
                 if (item.type === 'new') {
-                    return { type: 'new', index: item.index };
+                    const currentIndex = newFileCounter;
+                    newFileCounter++;
+                    return { type: 'new', index: currentIndex };
                 }
             });
 
@@ -607,7 +602,7 @@
             const dt = new DataTransfer();
             slots.forEach(item => {
                 if (item.type === 'new') {
-                    const file = uploadedNewFiles[item.index];
+                    const file = item.file;
                     if (file) dt.items.add(file);
                 }
             });
@@ -700,12 +695,66 @@
                 });
             }
 
-            // Form Submit Validation: require at least 1 image
+            // Form Submit Validation & AJAX Submission
             if (uploadForm) {
-                uploadForm.addEventListener('submit', (e) => {
+                uploadForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
                     if (slots.length === 0) {
-                        e.preventDefault();
                         alert('Harap unggah minimal 1 gambar sebagai cover utama!');
+                        return;
+                    }
+
+                    const submitBtn = uploadForm.querySelector('button[type="submit"]');
+                    const originalBtnHTML = submitBtn.innerHTML;
+                    
+                    // Show Loading UI on button
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="ph ph-spinner animate-spin text-base"></i> Menyimpan...';
+                    
+                    // Show loading toast
+                    let toast = document.getElementById('loading-toast');
+                    if (!toast) {
+                        toast = document.createElement('div');
+                        toast.id = 'loading-toast';
+                        toast.className = 'fixed top-5 left-1/2 transform -translate-x-1/2 z-[99999] bg-white border border-blue-200 rounded-2xl shadow-xl flex items-center p-4 gap-3 transition-all duration-300 pointer-events-none';
+                        toast.innerHTML = `
+                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                                <i class="ph ph-spinner animate-spin text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-800">Menyimpan...</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Mohon tunggu sebentar, sedang mengunggah gambar.</p>
+                            </div>
+                        `;
+                        document.body.appendChild(toast);
+                    } else {
+                        toast.classList.remove('hidden');
+                    }
+
+                    // Perform AJAX Submission
+                    try {
+                        const formData = new FormData(uploadForm);
+                        // Add method spoofing for Laravel PUT
+                        formData.append('_method', 'PUT');
+
+                        const response = await fetch(uploadForm.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        if (response.ok || response.redirected) {
+                            window.location.reload();
+                        } else {
+                            throw new Error('Gagal menyimpan data.');
+                        }
+                    } catch (error) {
+                        alert(error.message);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnHTML;
+                        if (toast) toast.classList.add('hidden');
                     }
                 });
             }

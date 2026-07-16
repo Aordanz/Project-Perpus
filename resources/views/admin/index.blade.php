@@ -104,8 +104,8 @@
             </div>
         @endif
 
-        <!-- 4 Stats Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Stats Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Stat 1: Total Titles -->
             <div class="bg-white border border-slate-200/80 rounded-3xl p-6 relative overflow-hidden flex items-center gap-4 shadow-sm custom-card">
                 <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-green-50 to-transparent rounded-full blur-lg"></div>
@@ -137,7 +137,7 @@
                     <i class="ph ph-check-square"></i>
                 </div>
                 <div>
-                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Tersedia</span>
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Eksemplar Tersedia</span>
                     <h3 class="text-2xl font-black text-slate-800 mt-0.5 text-green-700">{{ number_format($availableItems) }}</h3>
                 </div>
             </div>
@@ -149,9 +149,107 @@
                     <i class="ph ph-user-minus"></i>
                 </div>
                 <div>
-                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Dipinjam</span>
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Eksemplar Dipinjam</span>
                     <h3 class="text-2xl font-black text-slate-800 mt-0.5 text-amber-700">{{ number_format($borrowedItems) }}</h3>
                 </div>
+            </div>
+
+            <!-- Stat 5: Books With Cover -->
+            <div class="bg-white border border-slate-200/80 rounded-3xl p-6 relative overflow-hidden flex items-center gap-4 shadow-sm custom-card">
+                <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-blue-50 to-transparent rounded-full blur-lg"></div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl">
+                    <i class="ph ph-image"></i>
+                </div>
+                <div>
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Buku Punya Cover</span>
+                    <div class="flex items-baseline gap-2 mt-0.5">
+                        <h3 class="text-2xl font-black text-slate-800">{{ number_format($totalBooksWithCover) }}</h3>
+                        <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-full">
+                            {{ $totalBooks > 0 ? round(($totalBooksWithCover / $totalBooks) * 100, 1) : 0 }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stat 6: Books Without Cover -->
+            <div class="bg-white border border-slate-200/80 rounded-3xl p-6 relative overflow-hidden flex items-center gap-4 shadow-sm custom-card">
+                <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-rose-50 to-transparent rounded-full blur-lg"></div>
+                <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-2xl">
+                    <i class="ph ph-image-broken"></i>
+                </div>
+                <div>
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Buku Tanpa Cover</span>
+                    <div class="flex items-baseline gap-2 mt-0.5">
+                        <h3 class="text-2xl font-black text-slate-800 text-rose-700">{{ number_format($totalBooksWithoutCover) }}</h3>
+                        <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-full">
+                            {{ $totalBooks > 0 ? round(($totalBooksWithoutCover / $totalBooks) * 100, 1) : 0 }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Faculty Cover Stats Table -->
+        <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-slate-100 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center text-xl">
+                    <i class="ph ph-buildings"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800 tracking-tight">Statistik Kelengkapan Cover per Fakultas</h2>
+                    <p class="text-xs text-slate-500 mt-0.5 font-medium">Memantau progres kelengkapan cover buku untuk setiap perpustakaan fakultas.</p>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50/50 border-b border-slate-100 text-slate-400 font-bold text-xs uppercase tracking-wider">
+                            <th class="px-6 py-4">Fakultas</th>
+                            <th class="px-6 py-4 text-center">Total Buku</th>
+                            <th class="px-6 py-4 text-center">Ber-Cover</th>
+                            <th class="px-6 py-4 text-center">Tanpa Cover</th>
+                            <th class="px-6 py-4 w-48">Progres Kelengkapan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm font-medium text-slate-600">
+                        @forelse($facultyStats as $stat)
+                            @php
+                                $percent = $stat->total_books > 0 ? round(($stat->with_cover / $stat->total_books) * 100, 1) : 0;
+                                $colorClass = $percent >= 80 ? 'bg-emerald-500' : ($percent >= 50 ? 'bg-amber-400' : 'bg-rose-500');
+                            @endphp
+                            <tr class="hover:bg-slate-50/30 transition">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-700">{{ $stat->faculty_name }}</div>
+                                </td>
+                                <td class="px-6 py-4 text-center text-slate-500">
+                                    {{ number_format($stat->total_books) }}
+                                </td>
+                                <td class="px-6 py-4 text-center font-bold text-blue-600">
+                                    {{ number_format($stat->with_cover) }}
+                                </td>
+                                <td class="px-6 py-4 text-center font-bold text-rose-500">
+                                    {{ number_format($stat->without_cover) }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex-grow bg-slate-100 rounded-full h-2 overflow-hidden">
+                                            <div class="{{ $colorClass }} h-full rounded-full" style="width: {{ $percent }}%"></div>
+                                        </div>
+                                        <span class="text-xs font-bold text-slate-600 w-10 text-right">{{ $percent }}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                    <i class="ph ph-warning-circle text-4xl mb-2 text-slate-300"></i>
+                                    <p class="text-sm font-semibold">Belum ada data fakultas yang ditemukan.</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
 

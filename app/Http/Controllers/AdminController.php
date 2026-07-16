@@ -33,14 +33,35 @@ class AdminController extends Controller implements HasMiddleware
         // Calculate dashboard statistics
         $totalBooks = Book::count();
         $totalItems = Item::count();
-        $availableItems = Item::where('status', 'Tersedia')->count();
-        $borrowedItems = $totalItems - $availableItems;
+        $availableItems = Item::where('kodestatus_eksemplar', 'TSD')->count();
+        $borrowedItems = Item::where('kodestatus_eksemplar', 'PJM')->count();
+        
+        $totalBooksWithCover = Book::whereNotNull('cover_image')->count();
+        $totalBooksWithoutCover = Book::whereNull('cover_image')->count();
+
+        // Calculate stats for each Faculty
+        $facultyStats = \Illuminate\Support\Facades\DB::table('tbllokasi')
+            ->join('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
+            ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+            ->where('tbllokasi.lokasi', 'LIKE', 'Fakultas%')
+            ->select(
+                'tbllokasi.lokasi as faculty_name',
+                \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as total_books'),
+                \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NOT NULL THEN tblbuku.idbuku END) as with_cover'),
+                \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NULL THEN tblbuku.idbuku END) as without_cover')
+            )
+            ->groupBy('tbllokasi.idlokasi', 'tbllokasi.lokasi')
+            ->orderBy('tbllokasi.lokasi')
+            ->get();
 
         return view('admin.index', compact(
             'totalBooks',
             'totalItems',
             'availableItems',
-            'borrowedItems'
+            'borrowedItems',
+            'totalBooksWithCover',
+            'totalBooksWithoutCover',
+            'facultyStats'
         ));
     }
 
@@ -511,7 +532,7 @@ class AdminController extends Controller implements HasMiddleware
     }
 
     /**
-     * Delete only the cover image of a book.
+     * Delete cover image and any additional images of a book.
      */
     public function destroy($id)
     {
@@ -526,8 +547,16 @@ class AdminController extends Controller implements HasMiddleware
             $book->cover_image = null;
             $book->save();
 
+            // Also delete all additional images so they don't persist
+            foreach ($book->images as $img) {
+                if (file_exists(public_path('covers/' . $img->image_path))) {
+                    @unlink(public_path('covers/' . $img->image_path));
+                }
+                $img->delete();
+            }
+
             return redirect()->route('admin.tambah-cover')
-                ->with('success', 'Gambar cover berhasil dihapus.');
+                ->with('success', 'Gambar cover dan tambahan berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => 'Gagal menghapus cover: ' . $e->getMessage()]);
