@@ -21,18 +21,16 @@ class Book extends Model
      * Digit pertama dari kolom `noklasifikasi` menentukan kategori utama buku.
      */
     const DDC_CATEGORIES = [
-        '0' => 'Karya Umum & Informasi',
-        '1' => 'Filsafat & Psikologi',
+        '0' => 'Karya umum, komputer, informasi',
+        '1' => 'Filsafat dan psikologi',
         '2' => 'Agama',
-        '3' => 'Ilmu Sosial',
+        '3' => 'Ilmu sosial',
         '4' => 'Bahasa',
-        '5' => 'Sains & Matematika',
-        '6' => 'Teknologi & Kedokteran',
-        '7' => 'Kesenian & Rekreasi',
+        '5' => 'Ilmu murni (sains)',
+        '6' => 'Teknologi (applied sciences)',
+        '7' => 'Seni dan rekreasi',
         '8' => 'Sastra',
-        '9' => 'Sejarah & Geografi',
-        'R' => 'Referensi',
-        'D' => 'Karya Ilmiah',
+        '9' => 'Sejarah dan geografi',
     ];
 
     const DDC_ICONS = [
@@ -46,8 +44,6 @@ class Book extends Model
         '7' => 'ph-palette',
         '8' => 'ph-book-open-text',
         '9' => 'ph-globe-hemisphere-west',
-        'R' => 'ph-bookmarks',
-        'D' => 'ph-scroll',
     ];
 
     /**
@@ -66,15 +62,15 @@ class Book extends Model
     }
 
     /**
-     * Mendapatkan kunci DDC (digit pertama noklasifikasi) untuk buku ini.
+     * Mendapatkan kunci DDC (digit pertama nopanggil) untuk buku ini.
      */
     public function getCategoryKeyAttribute(): ?string
     {
-        $klas = trim($this->noklasifikasi ?? '');
-        if (empty($klas)) {
+        $panggil = trim($this->nopanggil ?? '');
+        if (empty($panggil)) {
             return null;
         }
-        $firstChar = strtoupper(substr($klas, 0, 1));
+        $firstChar = strtoupper(substr($panggil, 0, 1));
         if (array_key_exists($firstChar, self::DDC_CATEGORIES)) {
             return $firstChar;
         }
