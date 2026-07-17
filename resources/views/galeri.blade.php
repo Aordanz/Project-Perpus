@@ -128,10 +128,11 @@
                         $visibilityClass = '';
                         
                         // Menyamakan jumlah baris yang tampil dengan halaman koleksi terbaru
-                        if ($index >= 2 && $index < 4) $visibilityClass = 'cat-collapsible sm-visible';
-                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'cat-collapsible md-visible';
-                        elseif ($index >= 6 && $index < 9) $visibilityClass = 'cat-collapsible lg-visible';
-                        elseif ($index >= 9) $visibilityClass = 'cat-collapsible';
+                        if ($index >= 1 && $index < 2) $visibilityClass = 'cat-collapsible sm-visible';
+                        elseif ($index >= 2 && $index < 3) $visibilityClass = 'cat-collapsible md-visible';
+                        elseif ($index >= 3 && $index < 4) $visibilityClass = 'cat-collapsible lg-visible';
+                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'cat-collapsible xl-visible';
+                        elseif ($index >= 6) $visibilityClass = 'cat-collapsible';
                     @endphp
                     <a href="{{ route('galeri', ['category' => $key, 'q' => request('q')]) }}" 
                        class="category-bubble {{ $visibilityClass ?: 'inline-flex' }} items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
