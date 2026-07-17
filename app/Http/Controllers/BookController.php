@@ -254,18 +254,23 @@ class BookController extends Controller
             $this->applyAdvancedSearch($query, $request->q);
         }
 
+        // Filter berdasarkan DDC category key (digit pertama noklasifikasi)
         if ($request->filled('category')) {
-            $query->where('category', $request->category);
+            $catKey = $request->category;
+            $query->where('noklasifikasi', 'like', $catKey . '%');
         }
 
         $perPage = $request->input('per', 24);
         $books = $query->paginate($perPage)->withQueryString();
 
+        // Kirim data kategori DDC ke view
+        $ddcCategories = Book::getDdcCategories();
+
         if ($request->ajax()) {
             return view('partials.gallery_content', compact('books', 'perPage'));
         }
 
-        return view('galeri', compact('books', 'perPage'));
+        return view('galeri', compact('books', 'perPage', 'ddcCategories'));
     }
 
     /**
