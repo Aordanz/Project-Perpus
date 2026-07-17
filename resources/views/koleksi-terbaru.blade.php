@@ -111,11 +111,16 @@
                         display: inline-flex !important;
                     }
                 }
+                @media (min-width: 1280px) {
+                    .chip-collapsible.xl-visible {
+                        display: inline-flex !important;
+                    }
+                }
                 .expanded-mode .chip-collapsible {
                     display: inline-flex !important;
                 }
             </style>
-            <div id="chips-container" class="flex flex-wrap gap-2 sm:gap-3 mb-2 justify-center items-center">
+            <div id="chips-container" class="flex flex-wrap gap-2 sm:gap-3 mb-2 justify-center items-center transition-all duration-300">
                 <button data-filter="all" class="filter-chip active-chip bg-green-50 border-[#106c38] text-[#106c38] font-bold inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all text-xs sm:text-sm shadow-sm whitespace-nowrap cursor-pointer">
                     <i class="ph ph-squares-four text-base sm:text-lg"></i> {{ __('Semua Kategori') }}
                 </button>
@@ -123,10 +128,11 @@
                 @foreach($existingBigCategories as $index => $cat)
                     @php
                         $visibilityClass = '';
-                        if ($index >= 2 && $index < 4) $visibilityClass = 'chip-collapsible sm-visible';
-                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'chip-collapsible md-visible';
-                        elseif ($index >= 6 && $index < 9) $visibilityClass = 'chip-collapsible lg-visible';
-                        elseif ($index >= 9) $visibilityClass = 'chip-collapsible';
+                        if ($index >= 1 && $index < 2) $visibilityClass = 'chip-collapsible sm-visible';
+                        elseif ($index >= 2 && $index < 3) $visibilityClass = 'chip-collapsible md-visible';
+                        elseif ($index >= 3 && $index < 4) $visibilityClass = 'chip-collapsible lg-visible';
+                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'chip-collapsible xl-visible';
+                        elseif ($index >= 6) $visibilityClass = 'chip-collapsible';
 
                         $iconClass = $iconMap[$cat] ?? 'ph-books';
                     @endphp
