@@ -109,57 +109,15 @@
                 <i class="ph ph-house text-base"></i> {{ __('Beranda') }}
             </a>
 
-            <!-- SECTION 1: ROLE SELECTION -->
-            <div id="section-role-select" class="{{ $selectedRole ? 'hidden' : '' }}">
-                <div class="mb-8">
-                    <span class="text-[#106c38] font-bold text-xs uppercase tracking-wider block mb-2">{{ __('Selamat Datang') }}</span>
-                    <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight mb-2">{{ __('Pilih Metode Masuk') }}</h1>
-                    <p class="text-slate-500 text-sm">{{ __('Masuk ke sistem OPAC untuk pengalaman penuh sesuai peran Anda.') }}</p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                    <!-- Option Pustakawan -->
-                    <button type="button" onclick="selectRole('pustakawan')" class="role-card w-full text-left p-6 rounded-2xl border-2 border-slate-100 bg-white hover:border-[#106c38] flex flex-col justify-between min-h-[170px] outline-none cursor-pointer">
-                        <div class="w-12 h-12 bg-green-50 text-[#106c38] rounded-xl flex items-center justify-center mb-4 transition-colors">
-                            <i class="ph ph-user-gear text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base mb-1">{{ __('Pustakawan') }}</h3>
-                            <p class="text-xs text-slate-550 leading-normal">{{ __('Kelola sirkulasi, data buku, anggota, dan administrasi perpus.') }}</p>
-                        </div>
-                    </button>
-
-                    <!-- Option Anggota -->
-                    <button type="button" onclick="selectRole('anggota')" class="role-card w-full text-left p-6 rounded-2xl border-2 border-slate-100 bg-white hover:border-[#106c38] flex flex-col justify-between min-h-[170px] outline-none cursor-pointer">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4 transition-colors">
-                            <i class="ph ph-identification-card text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base mb-1">{{ __('Anggota') }}</h3>
-                            <p class="text-xs text-slate-550 leading-normal">{{ __('Untuk Mahasiswa, Dosen, Alumni, dan Anggota Terdaftar.') }}</p>
-                        </div>
-                    </button>
-                </div>
-
-                <div class="text-center">
-                    <p class="text-slate-400 text-xs">{{ __('Butuh bantuan masuk?') }} <a href="#" class="text-[#106c38] font-semibold hover:underline">{{ __('Hubungi IT Helpdesk') }}</a></p>
-                </div>
-            </div>
-
             <!-- SECTION 2: LOGIN FORM -->
-            <div id="section-login-form" class="{{ $selectedRole ? '' : 'hidden' }}">
-                
-                <!-- Back to Role Selection -->
-                <button type="button" onclick="backToRoleSelect()" class="text-slate-400 hover:text-slate-600 flex items-center gap-1 text-xs font-semibold transition mb-6 bg-transparent border-none cursor-pointer p-0">
-                    <i class="ph ph-arrow-left text-sm"></i> Ganti Peran
-                </button>
+            <div id="section-login-form">
 
                 <div class="mb-6">
-                    <span id="form-role-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">
-                        <!-- Filled by JS -->
+                    <span id="form-role-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 bg-green-50 text-[#106c38]">
+                        <i class="ph ph-user-gear"></i> Pustakawan
                     </span>
                     <h2 id="form-role-title" class="text-2xl font-bold text-slate-800 tracking-tight">
-                        <!-- Filled by JS -->
+                        Masuk sebagai Pustakawan
                     </h2>
                     <p class="text-slate-500 text-xs mt-1">{{ __('Masukkan kredensial Anda untuk melanjutkan ke aplikasi.') }}</p>
                 </div>
@@ -176,14 +134,7 @@
                     </div>
                 @endif
 
-                <!-- Anggota Alert Banner -->
-                <div id="anggota-warning-banner" class="hidden mb-5 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3 text-amber-800">
-                    <i class="ph ph-warning-circle text-2xl flex-shrink-0 text-amber-600"></i>
-                    <div class="text-xs leading-normal">
-                        <p class="font-bold mb-1">{{ __('Pemberitahuan') }}</p>
-                        <p>{{ __('Login Anggota belum bisa digunakan. Silakan hubungi admin/pustakawan terlebih dahulu untuk mengurus aktivasi akun Anda.') }}</p>
-                    </div>
-                </div>
+
 
                 <form id="login-form" action="{{ route('login.post') }}" method="POST" class="space-y-4">
                     @csrf
@@ -191,10 +142,8 @@
                         $savedLogin = request()->cookie('saved_login') ?: old('login');
                         $savedPassword = request()->cookie('saved_password') ?: '';
                         $rememberChecked = request()->cookie('remember_checked') === 'true' ? 'checked' : '';
-                        $savedRole = request()->cookie('remember_role') ?: '';
-                        $roleToUse = $selectedRole ?? $savedRole;
                     @endphp
-                    <input type="hidden" name="role" id="input-role" value="{{ $roleToUse }}">
+                    <input type="hidden" name="role" id="input-role" value="pustakawan">
 
                     <!-- Username / Email Input -->
                     <div>
@@ -242,60 +191,6 @@
 
     <!-- Script for Dynamic Role Swapping -->
     <script>
-        const sectionRoleSelect = document.getElementById('section-role-select');
-        const sectionLoginForm = document.getElementById('section-login-form');
-        const inputRole = document.getElementById('input-role');
-        const formRoleBadge = document.getElementById('form-role-badge');
-        const formRoleTitle = document.getElementById('form-role-title');
-        const labelLogin = document.getElementById('label-login');
-        const loginInput = document.getElementById('login');
-        const iconLogin = document.getElementById('icon-login');
-        const warningBanner = document.getElementById('anggota-warning-banner');
-        const submitBtn = document.getElementById('btn-login-submit');
-
-        function selectRole(role) {
-            inputRole.value = role;
-
-            if (role === 'pustakawan') {
-                formRoleBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 bg-green-50 text-[#106c38]";
-                formRoleBadge.innerHTML = '<i class="ph ph-user-gear"></i> Pustakawan';
-                formRoleTitle.textContent = "Masuk sebagai Pustakawan";
-                labelLogin.textContent = "Username";
-                loginInput.placeholder = "Username";
-                loginInput.type = "text";
-                iconLogin.className = "ph ph-user-gear text-lg";
-
-                if (warningBanner) warningBanner.classList.add('hidden');
-                if (submitBtn) {
-                    submitBtn.removeAttribute('disabled');
-                    submitBtn.className = "w-full bg-gradient-to-r from-[#106c38] to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-xl py-3 font-semibold text-sm transition-all shadow-md shadow-green-700/20 hover:shadow-lg hover:shadow-green-700/30 flex items-center justify-center gap-1.5 cursor-pointer mt-6 border-none";
-                }
-            } else {
-                formRoleBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 bg-emerald-50 text-emerald-700";
-                formRoleBadge.innerHTML = '<i class="ph ph-identification-card"></i> Anggota';
-                formRoleTitle.textContent = "Masuk sebagai Anggota";
-                labelLogin.textContent = "Username / Email Anggota";
-                loginInput.placeholder = "username atau email";
-                loginInput.type = "text";
-                iconLogin.className = "ph ph-identification-card text-lg";
-
-                if (warningBanner) warningBanner.classList.remove('hidden');
-                if (submitBtn) {
-                    submitBtn.setAttribute('disabled', 'true');
-                    submitBtn.className = "w-full bg-slate-300 text-slate-500 rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-1.5 cursor-not-allowed mt-6 border-none";
-                }
-            }
-
-            sectionRoleSelect.classList.add('hidden');
-            sectionLoginForm.classList.remove('hidden');
-        }
-
-        function backToRoleSelect() {
-            sectionLoginForm.classList.add('hidden');
-            sectionRoleSelect.classList.remove('hidden');
-            inputRole.value = '';
-        }
-
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');
             const icon = document.getElementById('icon-toggle-password');
@@ -307,14 +202,6 @@
                 icon.className = 'ph ph-eye-slash text-lg';
             }
         }
-
-        // Initialize if role is already selected via query parameter
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentRole = inputRole.value;
-            if (currentRole === 'pustakawan' || currentRole === 'anggota') {
-                selectRole(currentRole);
-            }
-        });
     </script>
 </main>
 </body>

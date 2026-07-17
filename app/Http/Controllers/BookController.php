@@ -18,8 +18,15 @@ class BookController extends Controller
      * Apply advanced search logic to the query.
      * Supports: Exact Match, Semantic Search (Synonyms), Full-Text Search, Fuzzy Search
      */
-    private function applyAdvancedSearch($query, $q, $columns = ['judul_buku', 'pengarang', 'idpenerbit', 'subjek', 'isbn', 'noklasifikasi'])
+    private function applyAdvancedSearch($query, $q, $columns = ['judul_buku', 'pengarang', 'subjek', 'isbn', 'noklasifikasi'])
     {
+        // Bersihkan tanda kutip dari query untuk pencarian yang mengabaikan tanda baca
+        $qClean = str_replace(["'", '"', '`'], '', $q);
+        
+        // Normalisasi Typo / Leetspeak (misal: 1 -> i, 0 -> o, 4 -> a)
+        $typoMap = ['1' => 'i', '0' => 'o', '4' => 'a', '3' => 'e', '5' => 's', '8' => 'b'];
+        $qNormalized = strtr(strtolower($qClean), $typoMap);
+
         // 1. EXACT MATCH (if query is wrapped in quotes)
         if (preg_match('/^"(.*)"$/', $q, $matches)) {
             $exactTerm = $matches[1];
@@ -43,8 +50,9 @@ class BookController extends Controller
             'sastra' => ['bahasa', 'puisi', 'novel', 'linguistik', 'cerpen', 'drama'],
         ];
 
-        $searchTerms = [$q];
-        $qLower = strtolower($q);
+        // Kita gabungkan input asli, yang dibersihkan, dan yang dinormalisasi
+        $searchTerms = array_unique([$q, $qClean, $qNormalized]);
+        $qLower = strtolower($qNormalized);
         
         // Add related terms if keyword matches our dictionary
         foreach ($synonyms as $key => $relatedTerms) {
@@ -55,16 +63,17 @@ class BookController extends Controller
         }
         $searchTerms = array_unique($searchTerms);
 
-        $query->where(function($w) use ($columns, $searchTerms, $q) {
-            // 3. MULTI-WORD SEARCH (Memastikan SEMUA kata ada, bukan sekadar salah satu kata)
-            if (str_contains($q, ' ')) {
-                $words = explode(' ', preg_replace('/\s+/', ' ', trim($q)));
+        $query->where(function($w) use ($columns, $searchTerms, $qNormalized) {
+            // 3. MULTI-WORD SEARCH (Memastikan SEMUA kata ada)
+            if (str_contains($qNormalized, ' ')) {
+                $words = explode(' ', preg_replace('/\s+/', ' ', trim($qNormalized)));
                 $w->orWhere(function($queryMulti) use ($columns, $words) {
                     foreach ($words as $word) {
                         if (strlen($word) > 2) { // Abaikan kata hubung pendek
                             $queryMulti->where(function($queryWord) use ($columns, $word) {
                                 foreach ($columns as $column) {
-                                    $queryWord->orWhere($column, 'like', "%{$word}%");
+                                    // Menggunakan DB::raw untuk menghapus petik dari string database saat pencocokan
+                                    $queryWord->orWhereRaw("REPLACE(REPLACE({$column}, '''', ''), '\"', '') LIKE ?", ["%{$word}%"]);
                                 }
                             });
                         }
@@ -75,18 +84,16 @@ class BookController extends Controller
             foreach ($searchTerms as $term) {
                 // PARTIAL MATCH (Normal LIKE)
                 foreach ($columns as $column) {
-                    $w->orWhere($column, 'like', "%{$term}%");
+                    $w->orWhereRaw("REPLACE(REPLACE({$column}, '''', ''), '\"', '') LIKE ?", ["%{$term}%"]);
                 }
             }
             
-            // 4. FUZZY MATCH (mengubah spasi menjadi wildcard '%' contoh: 'Budi Santoso' -> '%Budi%Santoso%')
-            // Berguna jika ada typo spasi atau pencarian beberapa kata yang tidak berurutan
-            if (str_contains($q, ' ')) {
-                // Pastikan setiap spasi (bahkan multiple spasi) diubah menjadi % tunggal
-                $qClean = preg_replace('/\s+/', ' ', trim($q));
-                $fuzzyTerm = '%' . str_replace(' ', '%', $qClean) . '%';
+            // 4. FUZZY MATCH (mengubah spasi menjadi wildcard '%')
+            if (str_contains($qNormalized, ' ')) {
+                $qCleanSpaces = preg_replace('/\s+/', ' ', trim($qNormalized));
+                $fuzzyTerm = '%' . str_replace(' ', '%', $qCleanSpaces) . '%';
                 foreach ($columns as $column) {
-                    $w->orWhere($column, 'like', $fuzzyTerm);
+                    $w->orWhereRaw("REPLACE(REPLACE({$column}, '''', ''), '\"', '') LIKE ?", [$fuzzyTerm]);
                 }
             }
         });
@@ -164,13 +171,15 @@ class BookController extends Controller
             $this->applyAdvancedSearch($query, $request->inPengarang1, ['pengarang']);
         }
         if ($request->filled('inPenerbit')) {
-            $this->applyAdvancedSearch($query, $request->inPenerbit, ['idpenerbit']);
+            $query->whereHas('publisherRelation', function ($q) use ($request) {
+                $q->where('penerbit', 'like', "%{$request->inPenerbit}%");
+            });
         }
         if ($request->filled('inSubyek')) {
             $this->applyAdvancedSearch($query, $request->inSubyek, ['subjek']);
         }
         if ($request->filled('intahunterbit')) {
-            $query->where('tahun', $request->intahunterbit);
+            $query->where('tahun', 'like', "%{$request->intahunterbit}%");
         }
         if ($request->filled('inisbn')) {
             $this->applyAdvancedSearch($query, $request->inisbn, ['isbn']);
@@ -254,10 +263,10 @@ class BookController extends Controller
             $this->applyAdvancedSearch($query, $request->q);
         }
 
-        // Filter berdasarkan DDC category key (digit pertama noklasifikasi)
+        // Filter berdasarkan DDC category key (digit pertama nopanggil)
         if ($request->filled('category')) {
             $catKey = $request->category;
-            $query->where('noklasifikasi', 'like', $catKey . '%');
+            $query->where('nopanggil', 'like', $catKey . '%');
         }
 
         $perPage = $request->input('per', 24);

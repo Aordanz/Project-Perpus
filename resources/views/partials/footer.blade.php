@@ -14,10 +14,6 @@
             <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Scientific eJournals') }}</a>
             <span class="text-white/30 hidden sm:inline">|</span>
             <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Scientific eBooks') }}</a>
-            @guest
-                <span class="text-white/30 hidden sm:inline">|</span>
-                <a href="{{ route('login') }}" class="hover:text-white transition text-white/80 inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Pustakawan') }}</a>
-            @endguest
         </div>
     </div>
 </footer>

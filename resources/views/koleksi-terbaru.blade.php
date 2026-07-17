@@ -85,30 +85,9 @@
 
         <!-- Helper Functions and Subject Mapping -->
         @php
-            $preferredOrder = [
-                'Umum', 'Agama', 'Kesehatan & Kedokteran', 'Sains & Teknologi', 'Sosial & Humaniora',
-                'Hukum', 'Ekonomi & Bisnis', 'Pertanian & Kehutanan', 'Matematika & IPA', 'Teknik',
-                'Sastra & Bahasa', 'Komputer & Informatika', 'Seni & Desain', 'Sejarah & Geografi'
-            ];
-
-            $existingBigCategories = $preferredOrder;
-
-            $iconMap = [
-                'Umum' => 'ph-books',
-                'Agama' => 'ph-mosque',
-                'Kesehatan & Kedokteran' => 'ph-stethoscope',
-                'Sains & Teknologi' => 'ph-rocket',
-                'Sosial & Humaniora' => 'ph-users-three',
-                'Hukum' => 'ph-scales',
-                'Ekonomi & Bisnis' => 'ph-chart-line-up',
-                'Pertanian & Kehutanan' => 'ph-tree',
-                'Matematika & IPA' => 'ph-calculator',
-                'Teknik' => 'ph-wrench',
-                'Sastra & Bahasa' => 'ph-translate',
-                'Komputer & Informatika' => 'ph-desktop',
-                'Seni & Desain' => 'ph-palette',
-                'Sejarah & Geografi' => 'ph-globe',
-            ];
+            $ddcCategories = \App\Models\Book::getDdcCategories();
+            $existingBigCategories = array_values(array_map(fn($cat) => $cat['name'], $ddcCategories));
+            $iconMap = array_combine($existingBigCategories, array_column($ddcCategories, 'icon'));
         @endphp
 
         <!-- Dynamic Quick Filter Chips -->
