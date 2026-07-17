@@ -29,6 +29,35 @@ class Item extends Model
     public function getCallNumberAttribute() { return $this->nopemesanan; }
     public function setCallNumberAttribute($value) { $this->attributes['nopemesanan'] = $value; }
 
+    /**
+     * Override kolom 'status' dari database karena isinya semua 'Tersedia'.
+     * Gunakan 'kodestatus_eksemplar' untuk menentukan status aktual.
+     */
+    public function getStatusAttribute()
+    {
+        $kode = trim($this->kodestatus_eksemplar ?? '');
+        
+        switch (strtoupper($kode)) {
+            case 'TSD':
+                return 'Tersedia';
+            case 'PJM':
+                return 'Dipinjam';
+            case 'MIS':
+                return 'Hilang (Missing)';
+            case 'RSK':
+                return 'Rusak';
+            case 'WED':
+                return 'Ditarik (Weeded)';
+            case 'JLD':
+                return 'Sedang Dijilid';
+            case 'R':
+            case 'NL':
+                return 'Baca di Tempat';
+            default:
+                return 'Tidak Tersedia';
+        }
+    }
+
 
     /**
      * Get the book associated with this item copy.
