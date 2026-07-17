@@ -16,6 +16,84 @@ class Book extends Model
 
     protected $guarded = [];
 
+    /**
+     * DDC (Dewey Decimal Classification) — Sistem klasifikasi standar internasional perpustakaan.
+     * Digit pertama dari kolom `noklasifikasi` menentukan kategori utama buku.
+     */
+    const DDC_CATEGORIES = [
+        '0' => 'Karya Umum & Informasi',
+        '1' => 'Filsafat & Psikologi',
+        '2' => 'Agama',
+        '3' => 'Ilmu Sosial',
+        '4' => 'Bahasa',
+        '5' => 'Sains & Matematika',
+        '6' => 'Teknologi & Kedokteran',
+        '7' => 'Kesenian & Rekreasi',
+        '8' => 'Sastra',
+        '9' => 'Sejarah & Geografi',
+        'R' => 'Referensi',
+        'D' => 'Karya Ilmiah',
+    ];
+
+    const DDC_ICONS = [
+        '0' => 'ph-desktop',
+        '1' => 'ph-brain',
+        '2' => 'ph-mosque',
+        '3' => 'ph-users-three',
+        '4' => 'ph-translate',
+        '5' => 'ph-flask',
+        '6' => 'ph-stethoscope',
+        '7' => 'ph-palette',
+        '8' => 'ph-book-open-text',
+        '9' => 'ph-globe-hemisphere-west',
+        'R' => 'ph-bookmarks',
+        'D' => 'ph-scroll',
+    ];
+
+    /**
+     * Mendapatkan daftar semua kategori DDC beserta icon-nya.
+     */
+    public static function getDdcCategories(): array
+    {
+        $categories = [];
+        foreach (self::DDC_CATEGORIES as $key => $name) {
+            $categories[$key] = [
+                'name' => $name,
+                'icon' => self::DDC_ICONS[$key] ?? 'ph-books',
+            ];
+        }
+        return $categories;
+    }
+
+    /**
+     * Mendapatkan kunci DDC (digit pertama noklasifikasi) untuk buku ini.
+     */
+    public function getCategoryKeyAttribute(): ?string
+    {
+        $klas = trim($this->noklasifikasi ?? '');
+        if (empty($klas)) {
+            return null;
+        }
+        $firstChar = strtoupper(substr($klas, 0, 1));
+        if (array_key_exists($firstChar, self::DDC_CATEGORIES)) {
+            return $firstChar;
+        }
+        return null;
+    }
+
+    /**
+     * Override kolom `category` dari database.
+     * Mengembalikan nama kategori berdasarkan DDC (digit pertama noklasifikasi).
+     */
+    public function getCategoryAttribute(): string
+    {
+        $key = $this->category_key;
+        if ($key !== null && isset(self::DDC_CATEGORIES[$key])) {
+            return self::DDC_CATEGORIES[$key];
+        }
+        return 'Umum';
+    }
+
     // Accessors & Mutators for compatibility with new web app
     public function getIdAttribute() { return $this->idmaster; }
     public function getTitleAttribute() { return $this->judul_buku; }
