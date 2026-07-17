@@ -39,20 +39,33 @@ class AdminController extends Controller implements HasMiddleware
         $totalBooksWithCover = Book::whereNotNull('cover_image')->count();
         $totalBooksWithoutCover = Book::whereNull('cover_image')->count();
 
-        // Calculate stats for each Faculty
-        $facultyStats = \Illuminate\Support\Facades\DB::table('tbllokasi')
+        // Get list of all locations for the dropdown, ordered by book count, with "Belum Ada Lokasi" at the top
+        $locationsList = \Illuminate\Support\Facades\DB::table('tbllokasi')
+            ->leftJoin('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
+            ->leftJoin('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+            ->select('tbllokasi.lokasi', \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as book_count'))
+            ->groupBy('tbllokasi.idlokasi', 'tbllokasi.lokasi')
+            ->orderByRaw("CASE WHEN tbllokasi.lokasi = 'Belum Ada Lokasi' THEN 1 ELSE 2 END")
+            ->orderByDesc('book_count')
+            ->orderBy('tbllokasi.lokasi')
+            ->pluck('tbllokasi.lokasi');
+
+        // Calculate stats for each Location
+        $locationQuery = \Illuminate\Support\Facades\DB::table('tbllokasi')
             ->join('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
-            ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
-            ->where('tbllokasi.lokasi', 'LIKE', 'Fakultas%')
-            ->select(
-                'tbllokasi.lokasi as faculty_name',
+            ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster');
+
+        if ($request->filled('lokasi') && $request->lokasi !== 'all') {
+            $locationQuery->where('tbllokasi.lokasi', $request->lokasi);
+        }
+
+        $locationStats = $locationQuery->select(
                 \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as total_books'),
                 \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NOT NULL THEN tblbuku.idbuku END) as with_cover'),
                 \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NULL THEN tblbuku.idbuku END) as without_cover')
-            )
-            ->groupBy('tbllokasi.idlokasi', 'tbllokasi.lokasi')
-            ->orderBy('tbllokasi.lokasi')
-            ->get();
+            )->first();
+
+        $selectedLocation = ($request->filled('lokasi') && $request->lokasi !== 'all') ? $request->lokasi : 'Semua Lokasi';
 
         return view('admin.index', compact(
             'totalBooks',
@@ -61,7 +74,9 @@ class AdminController extends Controller implements HasMiddleware
             'borrowedItems',
             'totalBooksWithCover',
             'totalBooksWithoutCover',
-            'facultyStats'
+            'locationStats',
+            'locationsList',
+            'selectedLocation'
         ));
     }
 
@@ -109,7 +124,14 @@ class AdminController extends Controller implements HasMiddleware
         }
 
         $books = $query->paginate($perPage)->withQueryString();
-        $locations = Location::orderBy('lokasi', 'asc')->get();
+        $locations = Location::leftJoin('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
+            ->leftJoin('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+            ->select('tbllokasi.*', \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as book_count'))
+            ->groupBy('tbllokasi.idlokasi', 'tbllokasi.lokasi', 'tbllokasi.deskirpsi', 'tbllokasi.alamat_ip', 'tbllokasi.userinput', 'tbllokasi.tglinput', 'tbllokasi.icon')
+            ->orderByRaw("CASE WHEN tbllokasi.lokasi = 'Belum Ada Lokasi' THEN 1 ELSE 2 END")
+            ->orderByDesc('book_count')
+            ->orderBy('tbllokasi.lokasi', 'asc')
+            ->get();
 
         if ($request->ajax()) {
             return view('admin.partials.books_table', compact('books'));
