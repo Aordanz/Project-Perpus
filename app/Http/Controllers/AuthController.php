@@ -25,83 +25,117 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'login' => 'required|string',       // bisa username atau email
-            'password' => 'required|string',
-            'role' => 'required|string|in:pustakawan,anggota',
+        \Log::info('[LOGIN-DEBUG] Step 1: Request received', [
+            'login' => $request->input('login'),
+            'role'  => $request->input('role'),
+            'has_password' => !empty($request->input('password')),
         ]);
+
+        $credentials = $request->validate([
+            'login'    => 'required|string',
+            'password' => 'required|string',
+            'role'     => 'required|string|in:pustakawan,anggota',
+        ]);
+
+        \Log::info('[LOGIN-DEBUG] Step 2: Validation passed');
 
         $role = $credentials['role'];
         if ($role === 'anggota') {
+            \Log::info('[LOGIN-DEBUG] Blocked: role is anggota');
             return back()->withErrors([
                 'login' => 'Login Anggota belum bisa dilakukan. Akun Anda harus diurus terlebih dahulu ke pihak perpustakaan.',
             ])->withInput($request->only('login', 'role'));
         }
 
         $loginInput = $credentials['login'];
-        $password = $credentials['password'];
+        $password   = $credentials['password'];
 
         // Cari user berdasarkan username ATAU email
         $user = User::where('username', $loginInput)
             ->orWhere('email', $loginInput)
             ->first();
 
+        \Log::info('[LOGIN-DEBUG] Step 3: User lookup', [
+            'input'     => $loginInput,
+            'found'     => $user ? 'YES' : 'NO',
+            'user_role' => $user?->role,
+            'username'  => $user?->username,
+        ]);
+
         if (!$user) {
+            \Log::warning('[LOGIN-DEBUG] FAIL: User not found for input: ' . $loginInput);
             return back()->withErrors([
                 'login' => 'Username/email atau password yang Anda masukkan salah.',
             ])->withInput($request->only('login', 'role'));
         }
 
         // === PASSWORD VERIFICATION ===
-        // Cek apakah password di database sudah dalam format Bcrypt/modern
         $storedPassword = $user->getAttributes()['password']; // ambil raw, tanpa cast
-        $passwordValid = false;
+        $passwordValid  = false;
+
+        \Log::info('[LOGIN-DEBUG] Step 4: Password check', [
+            'stored_prefix' => substr($storedPassword, 0, 7),
+            'is_bcrypt'     => str_starts_with($storedPassword, '$2y$') || str_starts_with($storedPassword, '$2a$'),
+        ]);
 
         if (str_starts_with($storedPassword, '$2y$') || str_starts_with($storedPassword, '$2a$') || str_starts_with($storedPassword, '$argon2')) {
-            // Password sudah dalam format modern (Bcrypt/Argon2)
             $passwordValid = Hash::check($password, $storedPassword);
+            \Log::info('[LOGIN-DEBUG] Bcrypt check result: ' . ($passwordValid ? 'MATCH' : 'FAIL'));
         } else {
-            // Password lama (kemungkinan MD5, SHA1, atau plain text)
-            // Coba cocokkan dengan format lama yang umum digunakan OPAC
             if ($storedPassword === md5($password)) {
                 $passwordValid = true;
+                \Log::info('[LOGIN-DEBUG] MD5 match');
             } elseif ($storedPassword === sha1($password)) {
                 $passwordValid = true;
+                \Log::info('[LOGIN-DEBUG] SHA1 match');
             } elseif ($storedPassword === $password) {
-                // Plain text (sangat tidak aman, tapi mungkin ada di DB lama)
                 $passwordValid = true;
+                \Log::info('[LOGIN-DEBUG] Plaintext match');
+            } else {
+                \Log::warning('[LOGIN-DEBUG] FAIL: No legacy format matched');
             }
 
-            // Jika cocok, REHASH ke Bcrypt agar aman ke depannya
             if ($passwordValid) {
                 $user->forceFill(['password' => Hash::make($password)])->save();
+                \Log::info('[LOGIN-DEBUG] Password rehashed to bcrypt');
             }
         }
 
         if (!$passwordValid) {
+            \Log::warning('[LOGIN-DEBUG] FAIL: Password invalid');
             return back()->withErrors([
                 'login' => 'Username/email atau password yang Anda masukkan salah.',
             ])->withInput($request->only('login', 'role'));
         }
 
+        \Log::info('[LOGIN-DEBUG] Step 5: Password OK, checking role', [
+            'user_role'      => $user->role,
+            'requested_role' => $role,
+            'match'          => $user->role === $role,
+        ]);
+
         // Validate role
         if ($user->role !== $role) {
             $roleName = $role === 'pustakawan' ? 'Pustakawan' : 'Anggota';
+            \Log::warning('[LOGIN-DEBUG] FAIL: Role mismatch');
             return back()->withErrors([
                 'login' => "Akun Anda tidak terdaftar sebagai {$roleName}.",
             ])->withInput($request->only('login', 'role'));
         }
 
-        // Login manual (karena kita tidak bisa pakai Auth::attempt untuk password legacy)
+        // Login manual
+        \Log::info('[LOGIN-DEBUG] Step 6: Calling Auth::login...');
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
+        $request->session()->save(); // Force write session to DB before redirect
+        \Log::info('[LOGIN-DEBUG] Step 7: Auth::login done. auth()->check() = ' . (auth()->check() ? 'true' : 'false'));
 
-        // Store credentials in cookies for form auto-fill if remember is checked
+        // Store credentials in cookies if remember is checked
         if ($request->boolean('remember')) {
-            Cookie::queue('saved_login', $loginInput, 60 * 24 * 30); // 30 days
-            Cookie::queue('saved_password', $password, 60 * 24 * 30);
-            Cookie::queue('remember_role', $role, 60 * 24 * 30);
-            Cookie::queue('remember_checked', 'true', 60 * 24 * 30);
+            Cookie::queue('saved_login',    $loginInput, 60 * 24 * 30);
+            Cookie::queue('saved_password', $password,   60 * 24 * 30);
+            Cookie::queue('remember_role',  $role,       60 * 24 * 30);
+            Cookie::queue('remember_checked', 'true',    60 * 24 * 30);
         } else {
             Cookie::queue(Cookie::forget('saved_login'));
             Cookie::queue(Cookie::forget('saved_password'));
@@ -109,8 +143,10 @@ class AuthController extends Controller
             Cookie::queue(Cookie::forget('remember_checked'));
         }
 
-        $roleText = $role === 'pustakawan' ? 'Pustakawan' : 'Anggota';
+        $roleText      = $role === 'pustakawan' ? 'Pustakawan' : 'Anggota';
         $redirectRoute = $role === 'pustakawan' ? 'admin.index' : 'home';
+
+        \Log::info('[LOGIN-DEBUG] Step 8: Redirecting to ' . $redirectRoute);
         return redirect()->route($redirectRoute)->with('success', "Selamat datang kembali, {$user->name}! Anda masuk sebagai {$roleText}.");
     }
 

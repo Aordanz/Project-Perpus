@@ -498,12 +498,21 @@
                                         
                                         <!-- Choice Popover (Above Button) -->
                                         <div class="details-choices-menu absolute bottom-[105%] left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-xl p-1.5 hidden flex-col gap-1 z-[80] transition-all duration-200 transform translate-y-1 opacity-0 pointer-events-none">
-                                            <a href="${event.instagram_url || 'https://www.instagram.com/usu.library/'}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-[10.5px] font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-600 rounded-lg transition">
-                                                <i class="ph ph-instagram-logo text-sm text-rose-500"></i> Postingan Instagram
-                                            </a>
-                                            <a href="${event.library_url || 'https://library.usu.ac.id/id'}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-[10.5px] font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#106c38] rounded-lg transition">
-                                                <i class="ph ph-globe text-sm text-[#106c38]"></i> Link Library USU
-                                            </a>
+                                            ${(event.action_buttons && Array.isArray(event.action_buttons) && event.action_buttons.length > 0) 
+                                                ? event.action_buttons.map(btn => `
+                                                    <a href="${btn.url}" target="${btn.new_tab ? '_blank' : '_self'}" class="flex items-center gap-2 px-3 py-2 text-[10.5px] font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#106c38] rounded-lg transition">
+                                                        <i class="ph ph-link text-sm text-[#106c38]"></i> ${btn.name}
+                                                    </a>
+                                                `).join('')
+                                                : `
+                                                    <a href="${event.instagram_url || 'https://www.instagram.com/usu.library/'}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-[10.5px] font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-600 rounded-lg transition">
+                                                        <i class="ph ph-instagram-logo text-sm text-rose-500"></i> Postingan Instagram
+                                                    </a>
+                                                    <a href="${event.library_url || 'https://library.usu.ac.id/id'}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-[10.5px] font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#106c38] rounded-lg transition">
+                                                        <i class="ph ph-globe text-sm text-[#106c38]"></i> Link Library USU
+                                                    </a>
+                                                `
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -516,18 +525,12 @@
                     // Initialize slider
                     initSlider();
 
-                    // Check if popup should be shown automatically
-                    const todayString = new Date().toDateString();
-                    const hideDate = localStorage.getItem('event_popup_hide_date');
-                    
-                    if (hideDate !== todayString) {
-                        // Auto-show delay: 1.5 seconds
-                        autoShowTimeout = setTimeout(() => {
-                            openEventModal();
-                            // Auto-hide timing: 8 seconds
-                            startAutoHideTimer();
-                        }, 1500);
-                    }
+                    // Auto-show delay: 1.5 seconds
+                    autoShowTimeout = setTimeout(() => {
+                        openEventModal();
+                        // Auto-hide timing: 8 seconds
+                        startAutoHideTimer();
+                    }, 1500);
                 } else {
                     // Hide navbar triggers if no events
                     if (navbarEventBtn) navbarEventBtn.classList.add('hidden');

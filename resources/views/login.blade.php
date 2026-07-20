@@ -203,6 +203,45 @@
             }
         }
     </script>
+    
+    <!-- SweetAlert2 for Notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if ($errors->any())
+            let errorMessages = '';
+            @foreach ($errors->all() as $error)
+                errorMessages += '{{ $error }}<br>';
+            @endforeach
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                html: errorMessages,
+                confirmButtonColor: '#106c38',
+                confirmButtonText: 'Tutup'
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#106c38',
+                confirmButtonText: 'Tutup'
+            });
+        @endif
+
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#106c38',
+                confirmButtonText: 'Lanjut'
+            });
+        @endif
+    </script>
 </main>
 </body>
 </html>

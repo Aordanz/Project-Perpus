@@ -31,6 +31,12 @@ Route::put('/admin/books/{id}', [AdminController::class, 'update'])->name('admin
 Route::delete('/admin/books/{id}', [AdminController::class, 'destroy'])->name('admin.books.destroy');
 Route::delete('/admin/books/images/{id}', [AdminController::class, 'deleteImage'])->name('admin.books.delete-image');
 
+Route::get('admin/information-center/trash', [\App\Http\Controllers\Admin\InformationCenterController::class, 'trash'])->name('admin.information-center.trash');
+Route::post('admin/information-center/{id}/restore', [\App\Http\Controllers\Admin\InformationCenterController::class, 'restore'])->name('admin.information-center.restore');
+Route::delete('admin/information-center/{id}/force-delete', [\App\Http\Controllers\Admin\InformationCenterController::class, 'forceDelete'])->name('admin.information-center.force-delete');
+
+Route::resource('admin/information-center', \App\Http\Controllers\Admin\InformationCenterController::class)->names('admin.information-center');
+
 
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'id'])) {

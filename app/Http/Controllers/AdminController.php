@@ -18,7 +18,15 @@ class AdminController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(function ($request, $next) {
+                \Log::info('[ADMIN-DEBUG] Middleware hit', [
+                    'auth_check' => auth()->check(),
+                    'session_id' => session()->getId(),
+                    'user'       => auth()->check() ? auth()->user()->username : null,
+                    'role'       => auth()->check() ? auth()->user()->role : null,
+                ]);
+
                 if (!auth()->check() || auth()->user()->role !== 'pustakawan') {
+                    \Log::warning('[ADMIN-DEBUG] Access DENIED. auth()->check()=' . (auth()->check() ? 'true' : 'false'));
                     return redirect()->route('login')->withErrors(['email' => 'Silakan masuk sebagai Pustakawan terlebih dahulu.']);
                 }
                 return $next($request);
