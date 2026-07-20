@@ -13,9 +13,14 @@
     
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <!-- Tailwind CSS (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Tom Select CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 
     <style>
         body {
@@ -27,6 +32,100 @@
         }
         .text-usu-green {
             color: #106c38;
+        }
+        .ts-control {
+            display: flex !important;
+            align-items: center !important;
+            border-radius: 0.75rem !important; /* rounded-xl to match other inputs */
+            border: 1px solid #e2e8f0 !important;
+            background-color: #f8fafc !important; /* slate-50 to match others */
+            padding: 0.75rem 1rem !important; /* py-3 px-4 */
+            font-size: 0.875rem !important;
+            font-family: 'Inter', sans-serif !important;
+            color: #334155 !important;
+            font-weight: 600 !important;
+            min-height: 48px !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.2s ease !important;
+        }
+        .ts-control > input {
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+        }
+        .ts-control.focus {
+            border-color: #106c38 !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 4px rgba(16, 108, 56, 0.1) !important;
+        }
+        .ts-wrapper.dropdown-active .ts-control {
+            border-bottom-left-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-bottom-color: transparent !important;
+        }
+        .ts-dropdown {
+            border-bottom-left-radius: 1rem !important;
+            border-bottom-right-radius: 1rem !important;
+            border-top-left-radius: 0 !important;
+            border-top-right-radius: 0 !important;
+            border: 1px solid #e2e8f0 !important;
+            border-top: none !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 0.875rem !important;
+            margin-top: 0 !important;
+            overflow: hidden !important;
+            z-index: 100 !important;
+            padding: 0.5rem !important;
+        }
+        .ts-dropdown .ts-dropdown-content {
+            padding: 0 !important;
+        }
+        .ts-dropdown .ts-dropdown-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .ts-dropdown .ts-dropdown-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .ts-dropdown .ts-dropdown-content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .ts-dropdown .ts-dropdown-content::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .ts-dropdown .option {
+            padding: 0.75rem 1rem !important;
+            color: #475569 !important;
+            border-radius: 0.75rem !important;
+            margin-bottom: 2px !important;
+            transition: all 0.2s ease !important;
+        }
+        .ts-dropdown .option:last-child {
+            margin-bottom: 0 !important;
+        }
+        .ts-dropdown .active {
+            background-color: #106c38 !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+        .ts-wrapper.single .ts-control:after {
+            content: " ";
+            display: block !important;
+            position: absolute !important;
+            top: 50% !important;
+            margin-top: -3px !important;
+            border-color: #94a3b8 transparent transparent transparent !important;
+            border-width: 6px 5px 0 5px !important;
+            border-style: solid !important;
+            right: 1.25rem !important;
+        }
+        .ts-wrapper.single.dropdown-active .ts-control:after {
+            border-color: transparent transparent #94a3b8 transparent !important;
+            border-width: 0 5px 6px 5px !important;
+        }
+        /* Sembunyikan item yang dipilih saat sedang mencari/fokus */
+        .ts-wrapper.single.focus .ts-control .item {
+            display: none !important;
         }
     </style>
 </head>
@@ -144,53 +243,17 @@
                                     </div>
                                 </div>
 
-                                <!-- Custom Location Filter Dropdown -->
-                                <div class="w-full sm:w-56 relative custom-location-select-container">
+                                <!-- Location Filter Dropdown (Tom Select) -->
+                                <div class="w-full sm:w-64">
                                     <input type="hidden" name="location_filter" id="admin-location-filter" value="{{ request('location_filter', 'all') }}">
-                                    
-                                    <button type="button" id="location-filter-trigger" class="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none transition-all duration-200 focus:border-usu-green focus:ring-4 focus:ring-[#106c38]/10 cursor-pointer shadow-sm">
-                                        <span class="flex items-center gap-2" id="location-filter-label">
-                                            @php
-                                                $activeLoc = isset($locations) ? $locations->firstWhere('idlokasi', request('location_filter')) : null;
-                                            @endphp
-                                            @if($activeLoc)
-                                                <i class="ph {{ $activeLoc->icon ?: 'ph-map-pin' }} text-usu-green text-lg"></i>
-                                                <span>{{ $activeLoc->lokasi }}</span>
-                                            @else
-                                                <i class="ph ph-map-pin text-[#106c38] text-lg"></i>
-                                                <span>Semua Lokasi</span>
-                                            @endif
-                                        </span>
-                                        <i class="ph ph-caret-down text-slate-400 transition-transform duration-200" id="location-filter-caret"></i>
-                                    </button>
- 
-                                    <!-- Dropdown Menu -->
-                                    <div id="location-filter-menu" class="hidden absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 transition-all transform origin-top scale-95 opacity-0 duration-200 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-                                        <!-- Option: Semua Lokasi -->
-                                        <button type="button" class="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 text-slate-700 font-semibold text-sm transition-colors cursor-pointer border-none bg-transparent" data-value="all">
-                                            <div class="w-8 h-8 rounded-xl bg-blue-50 text-[#106c38] flex items-center justify-center">
-                                                <i class="ph ph-map-pin text-lg"></i>
-                                            </div>
-                                            <div class="flex-grow">
-                                                <span class="block">Semua Lokasi</span>
-                                            </div>
-                                            <i class="ph ph-check text-usu-green font-bold {{ request('location_filter', 'all') == 'all' ? '' : 'hidden' }} option-check"></i>
-                                        </button>
- 
+                                    <select id="lokasi-select" placeholder="Cari Lokasi..." onchange="document.getElementById('admin-location-filter').value = this.value; window.performSearch();">
+                                        <option value="all" {{ request('location_filter', 'all') == 'all' ? 'selected' : '' }}>Semua Lokasi</option>
                                         @if(isset($locations))
                                             @foreach($locations as $loc)
-                                                <button type="button" class="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 text-slate-700 font-semibold text-sm transition-colors cursor-pointer border-none bg-transparent" data-value="{{ $loc->idlokasi }}">
-                                                    <div class="w-8 h-8 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center">
-                                                        <i class="ph {{ $loc->icon ?: 'ph-map-pin' }} text-lg"></i>
-                                                    </div>
-                                                    <div class="flex-grow">
-                                                        <span class="block truncate max-w-[150px]" title="{{ $loc->lokasi }}">{{ $loc->lokasi }}</span>
-                                                    </div>
-                                                    <i class="ph ph-check text-usu-green font-bold {{ request('location_filter') == $loc->idlokasi ? '' : 'hidden' }} option-check"></i>
-                                                </button>
+                                                <option value="{{ $loc->idlokasi }}" {{ request('location_filter') == $loc->idlokasi ? 'selected' : '' }}>{{ $loc->lokasi }}</option>
                                             @endforeach
                                         @endif
-                                    </div>
+                                    </select>
                                 </div>
 
                                 <!-- Large Search Input -->
@@ -295,9 +358,6 @@
                     e.stopPropagation();
                     const isClosed = coverMenu.classList.contains('hidden');
                     
-                    // Close location menu if open
-                    closeLocationMenu();
-
                     if (isClosed) {
                         openCoverMenu();
                     } else {
@@ -357,85 +417,26 @@
                 window.closeCoverMenu = closeCoverMenu;
             }
 
-            // --- Custom Location Filter Dropdown ---
-            const locTrigger = document.getElementById('location-filter-trigger');
-            const locMenu = document.getElementById('location-filter-menu');
-            const locCaret = document.getElementById('location-filter-caret');
-            const locLabel = document.getElementById('location-filter-label');
-            const locInput = document.getElementById('admin-location-filter');
-
-            if (locTrigger && locMenu) {
-                const locOptions = locMenu.querySelectorAll('button');
-
-                locTrigger.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const isClosed = locMenu.classList.contains('hidden');
-
-                    // Close cover menu if open
-                    if (window.closeCoverMenu) window.closeCoverMenu();
-
-                    if (isClosed) {
-                        openLocationMenu();
-                    } else {
-                        closeLocationMenu();
+            // Initialize Tom Select for Location
+            if (document.getElementById('lokasi-select')) {
+                new TomSelect('#lokasi-select', {
+                    create: false,
+                    placeholder: "Cari Lokasi...",
+                    maxOptions: 100,
+                    render: {
+                        item: function(data, escape) {
+                            return '<div class="flex items-center gap-2"><i class="ph ph-map-pin text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
+                        },
+                        option: function(data, escape) {
+                            return '<div class="flex items-center gap-2"><i class="ph ph-map-pin text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
+                        }
                     }
                 });
-
-                function openLocationMenu() {
-                    locMenu.classList.remove('hidden');
-                    locMenu.offsetHeight; // trigger reflow
-                    locMenu.classList.remove('scale-95', 'opacity-0');
-                    locMenu.classList.add('scale-100', 'opacity-100');
-                    locCaret.classList.add('rotate-180');
-                }
-
-                function closeLocationMenu() {
-                    locMenu.classList.remove('scale-100', 'opacity-100');
-                    locMenu.classList.add('scale-95', 'opacity-0');
-                    locCaret.classList.remove('rotate-180');
-                    setTimeout(() => {
-                        locMenu.classList.add('hidden');
-                    }, 200);
-                }
-
-                locOptions.forEach(opt => {
-                    opt.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const val = opt.getAttribute('data-value');
-                        const optHtml = opt.querySelector('.flex-grow span').textContent.trim();
-                        const optIcon = opt.querySelector('i').className;
-
-                        locInput.value = val;
-
-                        let iconColor = 'text-usu-green';
-                        if (val === 'all') iconColor = 'text-[#106c38]';
-
-                        locLabel.innerHTML = `
-                            <i class="${optIcon} ${iconColor} text-lg"></i>
-                            <span>${optHtml}</span>
-                        `;
-
-                        locOptions.forEach(o => {
-                            const chk = o.querySelector('.option-check');
-                            if (o === opt) {
-                                chk.classList.remove('hidden');
-                            } else {
-                                chk.classList.add('hidden');
-                            }
-                        });
-
-                        closeLocationMenu();
-                        window.performSearch();
-                    });
-                });
-
-                window.closeLocationMenu = closeLocationMenu;
             }
 
             // Close all dropdowns when clicking outside
             document.addEventListener('click', () => {
                 if (window.closeCoverMenu) window.closeCoverMenu();
-                if (window.closeLocationMenu) window.closeLocationMenu();
             });
 
             if (searchInput) {
@@ -478,6 +479,31 @@
         let draggedSlotIndex = null;
         let activeReplaceIndex = null;
 
+        function initSortable() {
+            const grid = document.getElementById('image-slots-grid');
+            if (window.sortableInstance) {
+                window.sortableInstance.destroy();
+            }
+            window.sortableInstance = new Sortable(grid, {
+                animation: 150,
+                ghostClass: 'opacity-50',
+                onEnd: function (evt) {
+                    const oldIndex = evt.oldIndex;
+                    const newIndex = evt.newIndex;
+                    
+                    if (oldIndex !== newIndex) {
+                        // Swap or move items in slots array
+                        const movedItem = slots.splice(oldIndex, 1)[0];
+                        slots.splice(newIndex, 0, movedItem);
+                        
+                        // Re-render and update hidden inputs
+                        reRenderSlots();
+                        updateFormOrder();
+                    }
+                }
+            });
+        }
+
         function reRenderSlots() {
             const grid = document.getElementById('image-slots-grid');
             if (!grid) return;
@@ -499,7 +525,6 @@
                 const slotCard = document.createElement('div');
                 slotCard.className = `relative aspect-[3/4] rounded-2xl border border-slate-200 bg-slate-900 flex flex-col items-center justify-center overflow-hidden transition-all duration-200 select-none cursor-grab`;
                 slotCard.setAttribute('data-index', index);
-                slotCard.setAttribute('draggable', 'true');
 
                 // Slot header/badge text
                 let badgeText = "Gambar Tambahan";
@@ -541,47 +566,11 @@
                     document.getElementById('replace-file-picker').click();
                 });
 
-                // Drag event listeners for reordering
-                slotCard.addEventListener('dragstart', (e) => {
-                    draggedSlotIndex = index;
-                    slotCard.classList.add('opacity-50');
-                });
-
-                slotCard.addEventListener('dragend', () => {
-                    slotCard.classList.remove('opacity-50');
-                    draggedSlotIndex = null;
-                    
-                    // Remove highlights
-                    document.querySelectorAll('#image-slots-grid > div').forEach(c => {
-                        c.classList.remove('border-solid', 'border-[#106c38]', 'bg-green-50/50');
-                    });
-                });
-
-                slotCard.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    if (draggedSlotIndex !== null && draggedSlotIndex !== index) {
-                        slotCard.classList.add('border-solid', 'border-[#106c38]', 'bg-green-50/50');
-                    }
-                });
-
-                slotCard.addEventListener('dragleave', () => {
-                    slotCard.classList.remove('border-solid', 'border-[#106c38]', 'bg-green-50/50');
-                });
-
-                slotCard.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    if (draggedSlotIndex !== null && draggedSlotIndex !== index) {
-                        // Swap items in slots array
-                        const temp = slots[draggedSlotIndex];
-                        slots[draggedSlotIndex] = slots[index];
-                        slots[index] = temp;
-                        reRenderSlots();
-                        updateFormOrder();
-                    }
-                });
-
                 grid.appendChild(slotCard);
             });
+            
+            // Re-initialize Sortable after rendering
+            initSortable();
         }
 
         window.removeImageFromSlot = function(index) {
@@ -591,13 +580,19 @@
         };
 
         function updateFormOrder() {
-            // Serialize slot order list
+            // Re-index new files based on their current order in slots
+            // This is crucial because DataTransfer appends files in the loop order,
+            // so the backend index must match the loop index.
+            let newFileCounter = 0;
+            
             const orderData = slots.map(item => {
                 if (item.type === 'existing') {
                     return { type: 'existing', path: item.path };
                 }
                 if (item.type === 'new') {
-                    return { type: 'new', index: item.index };
+                    const currentIndex = newFileCounter;
+                    newFileCounter++;
+                    return { type: 'new', index: currentIndex };
                 }
             });
 
@@ -607,7 +602,7 @@
             const dt = new DataTransfer();
             slots.forEach(item => {
                 if (item.type === 'new') {
-                    const file = uploadedNewFiles[item.index];
+                    const file = item.file;
                     if (file) dt.items.add(file);
                 }
             });
@@ -700,12 +695,66 @@
                 });
             }
 
-            // Form Submit Validation: require at least 1 image
+            // Form Submit Validation & AJAX Submission
             if (uploadForm) {
-                uploadForm.addEventListener('submit', (e) => {
+                uploadForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
                     if (slots.length === 0) {
-                        e.preventDefault();
                         alert('Harap unggah minimal 1 gambar sebagai cover utama!');
+                        return;
+                    }
+
+                    const submitBtn = uploadForm.querySelector('button[type="submit"]');
+                    const originalBtnHTML = submitBtn.innerHTML;
+                    
+                    // Show Loading UI on button
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="ph ph-spinner animate-spin text-base"></i> Menyimpan...';
+                    
+                    // Show loading toast
+                    let toast = document.getElementById('loading-toast');
+                    if (!toast) {
+                        toast = document.createElement('div');
+                        toast.id = 'loading-toast';
+                        toast.className = 'fixed top-5 left-1/2 transform -translate-x-1/2 z-[99999] bg-white border border-blue-200 rounded-2xl shadow-xl flex items-center p-4 gap-3 transition-all duration-300 pointer-events-none';
+                        toast.innerHTML = `
+                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                                <i class="ph ph-spinner animate-spin text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-800">Menyimpan...</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Mohon tunggu sebentar, sedang mengunggah gambar.</p>
+                            </div>
+                        `;
+                        document.body.appendChild(toast);
+                    } else {
+                        toast.classList.remove('hidden');
+                    }
+
+                    // Perform AJAX Submission
+                    try {
+                        const formData = new FormData(uploadForm);
+                        // Add method spoofing for Laravel PUT
+                        formData.append('_method', 'PUT');
+
+                        const response = await fetch(uploadForm.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        if (response.ok || response.redirected) {
+                            window.location.reload();
+                        } else {
+                            throw new Error('Gagal menyimpan data.');
+                        }
+                    } catch (error) {
+                        alert(error.message);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnHTML;
+                        if (toast) toast.classList.add('hidden');
                     }
                 });
             }
@@ -719,6 +768,11 @@
                 multipleFilePicker.addEventListener('change', (e) => {
                     const files = Array.from(e.target.files);
                     if (files.length > 0) {
+                        if (slots.length + files.length > 4) {
+                            showErrorModal('Gagal menambahkan gambar. Maksimal total gambar untuk satu buku adalah 4 gambar.');
+                            multipleFilePicker.value = '';
+                            return;
+                        }
                         let slotsUpdated = false;
                         files.forEach(file => {
                             if (slots.length < 4 && file.type.startsWith('image/')) {
@@ -735,8 +789,6 @@
                         if (slotsUpdated) {
                             reRenderSlots();
                             updateFormOrder();
-                        } else if (slots.length >= 4) {
-                            alert('Maksimal total gambar adalah 4 foto buku!');
                         }
                     }
                     multipleFilePicker.value = ''; // Reset
@@ -764,6 +816,10 @@
                     if (e.dataTransfer.types.includes('Files')) {
                         const files = Array.from(e.dataTransfer.files);
                         if (files.length > 0) {
+                            if (slots.length + files.length > 4) {
+                                showErrorModal('Gagal menambahkan foto. Maksimal total gambar untuk satu buku adalah 4 foto.');
+                                return;
+                            }
                             let slotsUpdated = false;
                             files.forEach(file => {
                                 if (slots.length < 4 && file.type.startsWith('image/')) {
@@ -780,8 +836,6 @@
                             if (slotsUpdated) {
                                 reRenderSlots();
                                 updateFormOrder();
-                            } else if (slots.length >= 4) {
-                                alert('Maksimal total gambar adalah 4 foto buku!');
                             }
                         }
                     }
@@ -821,6 +875,36 @@
             setTimeout(() => {
                 modal.classList.add('hidden');
                 confirmCallback = null;
+            }, 200);
+        }
+
+        window.showErrorModal = function(message) {
+            const modal = document.getElementById('error-modal');
+            const card = document.getElementById('error-modal-card');
+            const msgEl = document.getElementById('error-modal-message');
+            
+            if (!modal || !card || !msgEl) return;
+            
+            msgEl.innerText = message;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        window.hideErrorModal = function() {
+            const modal = document.getElementById('error-modal');
+            const card = document.getElementById('error-modal-card');
+            
+            if (!modal || !card) return;
+            
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
             }, 200);
         }
 
@@ -923,6 +1007,35 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Error Modal -->
+    <div id="error-modal" class="fixed inset-0 z-[10001] hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="hideErrorModal()"></div>
+        
+        <!-- Modal Content Card -->
+        <div class="relative bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 transform transition-all scale-95 opacity-0 duration-200" id="error-modal-card">
+            <div class="flex flex-col items-center text-center">
+                <!-- Icon -->
+                <div class="w-14 h-14 rounded-full bg-red-50 text-red-500 flex items-center justify-center mb-4">
+                    <i class="ph ph-x-circle text-3xl"></i>
+                </div>
+                
+                <!-- Title -->
+                <h3 class="text-base font-bold text-slate-800 mb-2">Gagal Mengunggah</h3>
+                
+                <!-- Message -->
+                <p id="error-modal-message" class="text-xs text-slate-500 leading-relaxed mb-6">Maksimal total gambar adalah 4 foto buku!</p>
+                
+                <!-- Buttons -->
+                <div class="flex items-center gap-3 w-full">
+                    <button type="button" onclick="hideErrorModal()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-all border-none cursor-pointer">
+                        Mengerti
+                    </button>
+                </div>
             </div>
         </div>
     </div>

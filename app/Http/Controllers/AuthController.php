@@ -15,11 +15,6 @@ class AuthController extends Controller
      */
     public function showLogin(Request $request)
     {
-        // If already logged in, redirect to home
-        if (Auth::check()) {
-            return redirect()->route('home');
-        }
-
         $selectedRole = $request->query('role'); // can be 'pustakawan' or 'anggota'
         return view('login', compact('selectedRole'));
     }

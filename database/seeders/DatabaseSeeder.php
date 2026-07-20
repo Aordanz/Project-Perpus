@@ -413,5 +413,8 @@ class DatabaseSeeder extends Seeder
 
         // 5. Seed 150 buku nyata dari Digilib USU
         $this->call(DigilibBooksSeeder::class);
+        
+        // 6. Seed event popup
+        $this->call(EventSeeder::class);
     }
 }
