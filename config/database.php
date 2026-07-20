@@ -61,7 +61,10 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET autocommit=1; SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;',
+            ]) : [
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET autocommit=1; SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;',
+            ],
         ],
 
         'mariadb' => [
