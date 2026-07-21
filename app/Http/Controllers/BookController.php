@@ -123,7 +123,18 @@ class BookController extends Controller
         // Get 20 latest books with items.location eager loaded
         $latestBooks = Book::with('items.location')->latest()->take(20)->get();
 
-        return view('welcome', compact('university', 'locations', 'latestBooks'));
+        // Get Active Information Center data
+        $activeInfos = \App\Models\InformationCenter::where('status', 'published')
+            ->where('publish_start_at', '<=', now())
+            ->where(function ($q) {
+                $q->whereNull('publish_end_at')
+                  ->orWhere('publish_end_at', '>=', now());
+            })
+            ->orderBy('popup_priority', 'asc')
+            ->orderBy('publish_start_at', 'desc')
+            ->get();
+
+        return view('welcome', compact('university', 'locations', 'latestBooks', 'activeInfos'));
     }
 
     /**

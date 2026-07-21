@@ -10,6 +10,7 @@
             <span>Information Center</span>
         </h1>
         <p class="text-slate-500 text-xs sm:text-sm mt-1">Kelola seluruh informasi perpustakaan yang akan ditampilkan kepada pengguna.</p>
+    </div>
     <div class="flex items-center gap-2">
         <a href="{{ route('admin.information-center.trash') }}" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all shadow-sm flex items-center gap-2">
             <i class="ph ph-trash-simple text-lg"></i> History / Sampah

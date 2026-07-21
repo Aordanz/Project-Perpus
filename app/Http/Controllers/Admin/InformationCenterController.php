@@ -48,7 +48,8 @@ class InformationCenterController extends Controller
 
     public function create()
     {
-        return view('admin.information_center.create');
+        $totalPopups = InformationCenter::count();
+        return view('admin.information_center.create', compact('totalPopups'));
     }
 
     public function store(StoreInformationCenterRequest $request)
@@ -76,8 +77,13 @@ class InformationCenterController extends Controller
             }
             unset($data['action_buttons']);
 
-            if ($request->hasFile('image_path')) {
-                $data['image_path'] = $this->convertToAvif($request->file('image_path'));
+            if ($request->hasFile('images')) {
+                $uploadedImages = [];
+                foreach ($request->file('images') as $file) {
+                    $uploadedImages[] = $this->convertToAvif($file);
+                }
+                $data['images'] = $uploadedImages;
+                $data['image_path'] = $uploadedImages[0]; // Backward compatibility
             }
 
             // Proses data kustom kategori menjadi format JSON jika relevan
@@ -106,7 +112,8 @@ class InformationCenterController extends Controller
 
     public function edit(InformationCenter $informationCenter)
     {
-        return view('admin.information_center.edit', compact('informationCenter'));
+        $totalPopups = InformationCenter::count();
+        return view('admin.information_center.edit', compact('informationCenter', 'totalPopups'));
     }
 
     public function update(UpdateInformationCenterRequest $request, InformationCenter $informationCenter)
@@ -132,13 +139,24 @@ class InformationCenterController extends Controller
         }
         unset($data['action_buttons']);
 
-        if ($request->hasFile('image_path')) {
+        if ($request->hasFile('images')) {
             // Hapus gambar lama jika ada untuk menghemat disk
-            if ($informationCenter->image_path) {
+            if ($informationCenter->images) {
+                foreach ($informationCenter->images as $oldImage) {
+                    $oldPath = str_replace('/storage/', '', $oldImage);
+                    Storage::disk('public')->delete($oldPath);
+                }
+            } elseif ($informationCenter->image_path) {
                 $oldPath = str_replace('/storage/', '', $informationCenter->image_path);
                 Storage::disk('public')->delete($oldPath);
             }
-            $data['image_path'] = $this->convertToAvif($request->file('image_path'));
+            
+            $uploadedImages = [];
+            foreach ($request->file('images') as $file) {
+                $uploadedImages[] = $this->convertToAvif($file);
+            }
+            $data['images'] = $uploadedImages;
+            $data['image_path'] = $uploadedImages[0]; // Backward compatibility
         }
 
         // Proses data kustom kategori menjadi format JSON jika relevan
@@ -152,7 +170,12 @@ class InformationCenterController extends Controller
     public function destroy(InformationCenter $informationCenter)
     {
         // Hapus gambar terkait dari penyimpanan sebelum delete record
-        if ($informationCenter->image_path) {
+        if ($informationCenter->images) {
+            foreach ($informationCenter->images as $oldImage) {
+                $oldPath = str_replace('/storage/', '', $oldImage);
+                Storage::disk('public')->delete($oldPath);
+            }
+        } elseif ($informationCenter->image_path) {
             $oldPath = str_replace('/storage/', '', $informationCenter->image_path);
             Storage::disk('public')->delete($oldPath);
         }
@@ -248,17 +271,7 @@ class InformationCenterController extends Controller
             ];
             $data['content'] = json_encode($eventData);
 
-        } elseif ($category === 'maintenance') {
-            $maintenanceData = [
-                'is_custom_maintenance' => true,
-                'affected_services' => $request->maintenance_services,
-                'estimated_downtime' => $request->maintenance_downtime,
-                'alternative_link' => $request->maintenance_alternative,
-                'description' => $data['content'] ?? null,
-            ];
-            $data['content'] = json_encode($maintenanceData);
-
-        } elseif ($category === 'new_collection') {
+        } elseif ($category === 'new_collection' || $category === 'book_recommendation') {
             $collectionData = [
                 'is_custom_collection' => true,
                 'book_title' => $request->book_title,
@@ -268,24 +281,31 @@ class InformationCenterController extends Controller
                 'description' => $data['content'] ?? null,
             ];
             $data['content'] = json_encode($collectionData);
-
-        } elseif ($category === 'promotion') {
-            $promoData = [
-                'is_custom_promotion' => true,
-                'promo_period' => $request->promo_period,
-                'promo_benefit' => $request->promo_benefit,
+            
+        } elseif ($category === 'announcement') {
+            $announcementData = [
+                'is_custom_announcement' => true,
+                'time' => $request->announcement_time,
+                'location' => $request->announcement_location,
                 'description' => $data['content'] ?? null,
             ];
-            $data['content'] = json_encode($promoData);
+            $data['content'] = json_encode($announcementData);
+
+        } elseif ($category === 'library_news') {
+            $newsData = [
+                'is_custom_news' => true,
+                'date' => $request->news_date,
+                'description' => $data['content'] ?? null,
+            ];
+            $data['content'] = json_encode($newsData);
         }
 
         // Hapus field request kustom agar tidak mencoba di-insert langsung ke database
         $customFields = [
             'event_time', 'event_location', 'event_organizer', 'event_participants', 'event_facilities',
             'event_left_badge', 'event_left_title', 'event_left_subtitle', 'event_quota_tag', 'event_left_features',
-            'maintenance_services', 'maintenance_downtime', 'maintenance_alternative',
             'book_title', 'book_author', 'book_publisher', 'shelf_location',
-            'promo_period', 'promo_benefit'
+            'announcement_time', 'announcement_location', 'news_date'
         ];
         foreach ($customFields as $field) {
             if (isset($data[$field])) {
@@ -335,7 +355,12 @@ class InformationCenterController extends Controller
         $info = InformationCenter::onlyTrashed()->findOrFail($id);
         
         // Hapus gambar fisik
-        if ($info->image_path) {
+        if ($info->images) {
+            foreach ($info->images as $oldImage) {
+                $oldPath = str_replace('/storage/', '', $oldImage);
+                Storage::disk('public')->delete($oldPath);
+            }
+        } elseif ($info->image_path) {
             $oldPath = str_replace('/storage/', '', $info->image_path);
             Storage::disk('public')->delete($oldPath);
         }
