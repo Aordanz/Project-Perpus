@@ -64,7 +64,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // 'password' => 'hashed' -- DIHAPUS: AuthController menangani hashing secara manual.
+            // Cast ini menyebabkan password di-hash dua kali saat disimpan, sehingga login selalu gagal.
             'tglinput' => 'datetime',
         ];
     }

@@ -45,6 +45,12 @@
             <i class="ph ph-image text-lg"></i>
             <span>Tambah Cover</span>
         </a>
+
+        <a href="{{ route('admin.information-center.index') }}" 
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.information-center.*') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+            <i class="ph ph-megaphone text-lg"></i>
+            <span>Information Center</span>
+        </a>
     </nav>
 
     <!-- Footer Action -->
