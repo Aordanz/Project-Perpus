@@ -22,7 +22,7 @@
                 <a href="{{ route('index-judul') }}" class="{{ request()->routeIs('index-judul') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Index Judul') }}</a>
                 <a href="#" class="text-green-100 font-medium hover:text-white transition pb-1 whitespace-nowrap">{{ __('Cek Pinjaman') }}</a>
                 <a href="#" id="navbar-event-btn" class="text-green-100 font-medium hover:text-white transition pb-1 whitespace-nowrap cursor-pointer">
-                    {{ __('Event') }}
+                    {{ __('Informasi') }}
                 </a>
                 <div class="relative group">
                     <button class="text-green-100 font-medium hover:text-white transition flex items-center gap-1 pb-1 whitespace-nowrap cursor-pointer">
@@ -100,7 +100,7 @@
                     <i class="ph ph-clipboard-text text-lg"></i> {{ __('Cek Pinjaman') }}
                 </a>
                 <a href="#" id="mobile-navbar-event-btn" class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-green-100 hover:text-white hover:bg-white/5 transition cursor-pointer">
-                    <i class="ph ph-megaphone text-lg"></i> {{ __('Event') }}
+                    <i class="ph ph-megaphone text-lg"></i> {{ __('Informasi') }}
                 </a>
 
                 <div class="border-t border-white/10 my-2"></div>
@@ -196,16 +196,18 @@
 
 <!-- Event Popup Modal -->
 <div id="event-popup-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/45 backdrop-blur-[2px] p-4 transition-all duration-300">
-    <div class="bg-white border border-slate-200 rounded-[20px] shadow-2xl relative overflow-hidden w-full max-w-4xl h-[92vh] md:h-[550px] transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="event-popup-content">
+    <div class="bg-white border border-slate-200 rounded-[20px] shadow-2xl relative overflow-hidden w-full max-w-4xl h-[92vh] md:h-[550px] transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300" id="event-popup-content">
         <!-- Close Button (Fixed) -->
-        <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-400 hover:text-slate-600 bg-white hover:bg-slate-100 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/50 hover:scale-105">
+        <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-450 hover:text-slate-650 bg-white hover:bg-slate-50 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/50 hover:scale-105">
             <i class="ph ph-x text-lg font-bold"></i>
         </button>
+
+        <!-- Floating Navigation Buttons (< and >) removed from here and moved to footer -->
 
         <!-- Slider Track Container (Main Content Area) -->
         <div class="w-full flex-grow relative overflow-hidden">
             <!-- Slides Track -->
-            <div id="event-slider-track" class="flex h-full w-full">
+            <div id="event-slider-track" class="flex flex-nowrap h-full w-full">
                 <!-- Slides will be inserted dynamically -->
             </div>
         </div>
@@ -221,21 +223,22 @@
             </div>
 
             <!-- Dynamic Pagination Controls -->
-            <div id="event-pagination-container" class="flex items-center gap-2.5 z-20 mr-12 md:mr-32">
-                <button id="prev-event-btn" class="w-7 h-7 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center hover:scale-105 transition cursor-pointer">
-                    <i class="ph ph-caret-left text-sm font-bold"></i>
+            <div id="event-pagination-container" class="flex items-center gap-4 z-20 mr-6 md:mr-10 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm hidden">
+                <button id="prev-event-btn-floating" type="button" class="w-9 h-9 rounded-full bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white flex items-center justify-center transition-all cursor-pointer hidden shadow border border-[#106c38]/20 group">
+                    <i class="ph ph-caret-left font-bold text-lg group-hover:-translate-x-0.5 transition-transform"></i>
                 </button>
-                <span id="event-pagination-text" class="text-xs font-black text-slate-500 tracking-wider">1 / 3</span>
-                <button id="next-event-btn" class="w-7 h-7 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center hover:scale-105 transition cursor-pointer">
-                    <i class="ph ph-caret-right text-sm font-bold"></i>
+                <span id="event-pagination-text" class="text-[13px] font-black text-[#106c38] tracking-widest w-10 text-center">1 / 3</span>
+                <button id="next-event-btn-floating" type="button" class="w-9 h-9 rounded-full bg-[#106c38] hover:bg-[#0c562c] text-white flex items-center justify-center transition-all cursor-pointer hidden shadow-md shadow-[#106c38]/30 group animate-pulse hover:animate-none">
+                    <i class="ph ph-caret-right font-bold text-lg group-hover:translate-x-0.5 transition-transform"></i>
                 </button>
             </div>
 
-            <!-- Campus Building Illustration Overlay -->
-            <img src="{{ asset('perpustakaan_depan.webp') }}" alt="USU Library Building" class="absolute right-0 bottom-0 h-14 w-auto opacity-15 md:opacity-20 pointer-events-none select-none z-10 translate-y-1 object-contain grayscale mix-blend-multiply">
         </div>
     </div>
 </div>
+
+<!-- SweetAlert2 for empty notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -243,8 +246,8 @@
         const eventContent = document.getElementById('event-popup-content');
         const closeEventBtn = document.getElementById('close-event-popup');
         const sliderTrack = document.getElementById('event-slider-track');
-        const prevBtn = document.getElementById('prev-event-btn');
-        const nextBtn = document.getElementById('next-event-btn');
+        const prevBtn = document.getElementById('prev-event-btn-floating');
+        const nextBtn = document.getElementById('next-event-btn-floating');
         const paginationText = document.getElementById('event-pagination-text');
         const globalDontShowCheckbox = document.getElementById('global-dont-show-checkbox');
         
@@ -275,245 +278,278 @@
                     // Render slides
                     let slidesHtml = '';
 
-                    loadedEvents.forEach((event, index) => {
-                        // Calculate status
-                        let badgeText = 'PENDAFTARAN DIBUKA';
-                        let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
-                        let badgeIcon = '<i class="ph ph-circle-wavy-check text-sm animate-pulse"></i>';
-                        
-                        const now = new Date();
-                        if (event.start_date || event.end_date) {
-                            const startD = event.start_date ? new Date(event.start_date) : null;
-                            const endD = event.end_date ? new Date(event.end_date) : null;
+                    loadedEvents.forEach((event) => {
+                        const cat = event.category || 'general';
 
-                            if (startD && startD > now) {
-                                badgeText = 'AKAN DATANG';
-                                badgeClass = 'bg-amber-50 text-amber-700 border-amber-100';
-                                badgeIcon = '<i class="ph ph-calendar-plus text-sm"></i>';
-                            } else if (endD && endD < now) {
-                                badgeText = 'TELAH BERAKHIR';
-                                badgeClass = 'bg-rose-50 text-rose-700 border-rose-100';
-                                badgeIcon = '<i class="ph ph-calendar-x text-sm"></i>';
-                            }
+                        // ─── Category Theme Config ─────────────────────────────────
+                        let badgeLabel, badgeIcon, badgeCls, rightGrad, rightOverlay, accentColor;
+
+                        if (cat === 'event') {
+                            badgeLabel = 'EVENT / KEGIATAN'; badgeIcon = 'ph-calendar-check';
+                            badgeCls = 'bg-emerald-50 text-[#106c38] border-emerald-200';
+                            rightGrad = 'linear-gradient(150deg,#04200f,#0c4825,#167c45)';
+                            rightOverlay = 'rgba(4,32,15,0.18)'; accentColor = 'green';
+                        } else if (cat === 'announcement') {
+                            badgeLabel = 'PENGUMUMAN'; badgeIcon = 'ph-megaphone-simple';
+                            badgeCls = 'bg-blue-50 text-blue-700 border-blue-200';
+                            rightGrad = 'linear-gradient(150deg,#0c1e5c,#1d4ed8,#3b82f6)';
+                            rightOverlay = 'rgba(12,30,92,0.3)'; accentColor = 'blue';
+                        } else if (cat === 'maintenance') {
+                            badgeLabel = 'PEMELIHARAAN'; badgeIcon = 'ph-wrench';
+                            badgeCls = 'bg-red-50 text-red-700 border-red-200';
+                            rightGrad = 'linear-gradient(150deg,#500c0c,#b91c1c,#f87171)';
+                            rightOverlay = 'rgba(80,12,12,0.35)'; accentColor = 'red';
+                        } else if (cat === 'new_collection') {
+                            badgeLabel = 'BUKU BARU'; badgeIcon = 'ph-book-open';
+                            badgeCls = 'bg-purple-50 text-purple-700 border-purple-200';
+                            rightGrad = 'linear-gradient(150deg,#1e0640,#5b21b6,#8b5cf6)';
+                            rightOverlay = 'rgba(30,6,64,0.45)'; accentColor = 'purple';
+                        } else if (cat === 'tips') {
+                            badgeLabel = 'TIPS & TRIK'; badgeIcon = 'ph-lightbulb-filament';
+                            badgeCls = 'bg-amber-50 text-amber-700 border-amber-200';
+                            rightGrad = 'linear-gradient(150deg,#431407,#c2410c,#f59e0b)';
+                            rightOverlay = 'rgba(67,20,7,0.3)'; accentColor = 'amber';
+                        } else if (cat === 'promotion') {
+                            badgeLabel = 'PROMO SPESIAL'; badgeIcon = 'ph-tag';
+                            badgeCls = 'bg-orange-50 text-orange-700 border-orange-200';
+                            rightGrad = 'linear-gradient(150deg,#7c1d0c,#c2410c,#fb923c)';
+                            rightOverlay = 'rgba(124,29,12,0.28)'; accentColor = 'orange';
+                        } else {
+                            badgeLabel = 'INFORMASI'; badgeIcon = 'ph-info';
+                            badgeCls = 'bg-slate-100 text-slate-600 border-slate-200';
+                            rightGrad = 'linear-gradient(150deg,#0f172a,#1e293b,#334155)';
+                            rightOverlay = 'rgba(15,23,42,0.2)'; accentColor = 'green';
                         }
-                        
-                        // Features HTML
-                        let featuresHtml = '';
-                        const featureIcons = [
-                            'ph-book-open-text',
-                            'ph-briefcase',
-                            'ph-certificate',
-                            'ph-gift'
-                        ];
-                        if (event.left_features && Array.isArray(event.left_features)) {
-                            featuresHtml = event.left_features.map((feature, idx) => {
-                                const iconClass = featureIcons[idx] || 'ph-check-circle';
-                                return `
-                                    <div class="flex flex-col items-center text-center gap-1 select-none">
-                                        <div class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-[#fbbf24] transition duration-200">
-                                            <i class="ph ${iconClass} text-lg"></i>
-                                        </div>
-                                        <span class="text-[9px] font-bold text-white/90 leading-tight">${feature}</span>
+
+                        // ─── Accent Button Color ───────────────────────────────────
+                        let accentBtnCls = 'bg-[#106c38] hover:bg-[#0e5e30] text-white';
+                        if (accentColor === 'blue')   accentBtnCls = 'bg-blue-600 hover:bg-blue-700 text-white';
+                        if (accentColor === 'purple') accentBtnCls = 'bg-purple-600 hover:bg-purple-700 text-white';
+                        if (accentColor === 'amber')  accentBtnCls = 'bg-amber-500 hover:bg-amber-600 text-white';
+                        if (accentColor === 'orange') accentBtnCls = 'bg-orange-600 hover:bg-orange-700 text-white';
+                        if (accentColor === 'red')    accentBtnCls = 'bg-red-600 hover:bg-red-700 text-white';
+
+                        // ─── Category Detail Content ───────────────────────────────
+                        let detailHtml = '';
+                        let showDesc = true;
+                        let actionLinks = (event.action_buttons && Array.isArray(event.action_buttons) && event.action_buttons.length > 0)
+                            ? event.action_buttons : null;
+
+                        if (cat === 'event') {
+                            detailHtml = `
+                                <div class="grid grid-cols-2 gap-2 mb-3">
+                                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                                        <div class="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0"><i class="ph ph-calendar-blank text-[#106c38] text-sm"></i></div>
+                                        <div class="min-w-0"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Tanggal</p><p class="text-[10.5px] font-bold text-slate-800 leading-tight truncate">${event.date_text || '-'}</p></div>
                                     </div>
-                                `;
-                            }).join('');
-                        }
-
-                        // Title highlight: Mendeley, LKTIN, AI
-                        let displayLeftTitle = event.left_title || event.title;
-                        displayLeftTitle = displayLeftTitle.replace(/(WORKSHOP|MENDELEY|LKTIN|AI)/gi, function(match) {
-                            if (match.toUpperCase() === 'MENDELEY' || match.toUpperCase() === 'LKTIN' || match.toUpperCase() === 'AI') {
-                                return `<span class="text-[#fbbf24] font-black">${match}</span>`;
-                            }
-                            return match;
-                        });
-
-                        slidesHtml += `
-                            <div class="w-full shrink-0 flex flex-col md:flex-row h-full overflow-hidden select-none">
-                                <!-- Left Flyer Pane -->
-                                <div class="w-full md:w-[46%] h-48 md:h-full relative overflow-hidden bg-[#0c3c22] flex flex-col justify-between p-5 md:p-6 text-white shrink-0">
-                                    <div class="absolute inset-0 bg-[url('${window.assetRoot}perpustakaan_depan.webp')] bg-cover bg-center opacity-10 pointer-events-none mix-blend-overlay"></div>
-                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#062414]/90 via-[#0a351d]/90 to-[#0e4827]/80 pointer-events-none"></div>
-
-                                    <!-- Top Logo -->
-                                    <div class="relative z-20 flex items-center gap-2">
-                                        <img src="${window.logoUsuUrl}" alt="USU Logo" class="h-8 w-8 object-contain">
-                                        <div class="flex flex-col leading-none">
-                                            <span class="font-black text-[9px] uppercase tracking-wide text-white">Perpustakaan</span>
-                                            <span class="font-medium text-[8px] text-green-200">Universitas Sumatera Utara</span>
-                                        </div>
+                                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                                        <div class="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0"><i class="ph ph-clock text-[#106c38] text-sm"></i></div>
+                                        <div class="min-w-0"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Waktu</p><p class="text-[10.5px] font-bold text-slate-800 leading-tight truncate">${event.time || '-'}</p></div>
                                     </div>
-
-                                    <!-- Center Elements -->
-                                    <div class="relative z-20 my-auto flex flex-col gap-2 md:gap-3 py-1">
-                                        <div class="inline-flex self-start items-center gap-1 bg-[#d97706] text-white text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full uppercase">
-                                            <i class="ph ph-megaphone text-[9px]"></i> <span>${event.left_badge || 'EVENT PERPUSTAKAAN'}</span>
-                                        </div>
-                                        
-                                        <h1 class="text-sm md:text-xl font-black tracking-tight leading-tight uppercase font-sans text-white">
-                                            ${displayLeftTitle}
-                                        </h1>
-                                        
-                                        <p class="text-[9px] md:text-[10px] text-green-100/80 leading-relaxed font-medium line-clamp-2 md:line-clamp-none">
-                                            ${event.left_subtitle || event.description}
-                                        </p>
-
-                                        <!-- Image with Quota Sticker -->
-                                        <div class="relative w-full max-w-[200px] mx-auto md:max-w-none mt-2 select-none group">
-                                            <img src="${event.image_url}" alt="Banner" class="w-full h-24 md:h-32 object-cover rounded-lg shadow-md border border-white/10 group-hover:scale-102 transition duration-300">
-                                            ${event.quota_tag ? `
-                                            <div class="absolute -top-3 -right-3 md:-top-4 md:-right-4 bg-[#facc15] text-[#0c3c22] font-black rounded-full w-14 h-14 md:w-16 md:h-16 flex flex-col items-center justify-center text-center p-1.5 text-[7px] leading-tight rotate-12 shadow-lg border border-dashed border-[#0c3c22]/30 select-none animate-pulse">
-                                                ${event.quota_tag}
-                                            </div>
-                                            ` : ''}
-                                        </div>
+                                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                                        <div class="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0"><i class="ph ph-map-pin text-[#106c38] text-sm"></i></div>
+                                        <div class="min-w-0"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Lokasi</p><p class="text-[10.5px] font-bold text-slate-800 leading-tight truncate">${event.location || '-'}</p></div>
                                     </div>
-
-                                    <!-- Bottom Features -->
-                                    <div class="relative z-20 border-t border-white/15 pt-3 mt-auto grid grid-cols-4 gap-1">
-                                        ${featuresHtml}
-                                    </div>
-
-                                    <!-- Wave Divider Gold Accent (Only visible on MD+) -->
-                                    <div class="absolute top-0 right-0 h-full w-10 translate-x-1/2 pointer-events-none hidden md:block z-30">
-                                        <svg class="h-full w-full" viewBox="0 0 40 500" preserveAspectRatio="none">
-                                            <path d="M 0,0 Q 25,150 5,280 T 15,500 L 40,500 L 40,0 Z" fill="#ffffff" />
-                                            <path d="M 0,0 Q 25,150 5,280 T 15,500" fill="none" stroke="#facc15" stroke-width="2" />
-                                        </svg>
+                                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                                        <div class="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0"><i class="ph ph-users text-[#106c38] text-sm"></i></div>
+                                        <div class="min-w-0"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Penyelenggara</p><p class="text-[10.5px] font-bold text-slate-800 leading-tight truncate">${event.organizer || '-'}</p></div>
                                     </div>
                                 </div>
+                                ${(event.contact_whatsapp || event.contact_email) ? `<div class="flex items-center gap-2.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 mb-1"><span class="text-[8px] font-black text-slate-400 uppercase tracking-wide shrink-0">Hubungi Kami</span><div class="flex flex-wrap gap-3 min-w-0">${event.contact_whatsapp ? `<a href="https://wa.me/${event.contact_whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center"><i class="ph ph-whatsapp-logo text-emerald-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_whatsapp}</span></a>` : ''}${event.contact_email ? `<a href="mailto:${event.contact_email}" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center"><i class="ph ph-envelope-simple text-blue-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_email}</span></a>` : ''}</div></div>` : ''}
+                            `;
+                            if (!actionLinks) actionLinks = [{name: 'Lihat Detail', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
 
-                                <!-- Right Details Pane -->
-                                <div class="w-full md:w-[54%] p-5 md:p-8 flex flex-col justify-between h-full bg-white relative overflow-y-auto shrink-0 select-none">
-                                    <div>
-                                        <!-- Status Badge -->
-                                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2 border ${badgeClass}">
-                                            ${badgeIcon} <span>${badgeText}</span>
+                        } else if (cat === 'announcement') {
+                            detailHtml = `
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    ${event.date_text ? `<div class="flex items-center gap-1.5 bg-blue-50 border border-blue-100 rounded-lg px-2.5 py-1.5"><i class="ph ph-calendar-blank text-blue-600 text-xs"></i><span class="text-[10.5px] font-bold text-blue-800">${event.date_text}</span></div>` : ''}
+                                    ${event.time ? `<div class="flex items-center gap-1.5 bg-blue-50 border border-blue-100 rounded-lg px-2.5 py-1.5"><i class="ph ph-clock text-blue-600 text-xs"></i><span class="text-[10.5px] font-bold text-blue-800">${event.time}</span></div>` : ''}
+                                </div>
+                                ${event.affected_services ? `<div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-blue-400 uppercase tracking-wide mb-1">Dampak Layanan</p><p class="text-[11px] font-bold text-blue-900">${event.affected_services}</p></div>` : ''}
+                            `;
+
+                        } else if (cat === 'maintenance') {
+                            detailHtml = `
+                                <div class="flex items-start gap-2.5 bg-red-50 border border-red-100 rounded-xl p-3 mb-3">
+                                    <i class="ph ph-warning text-red-500 text-xl animate-pulse shrink-0 mt-0.5"></i>
+                                    <div><p class="text-[8px] font-black text-red-400 uppercase tracking-wide mb-0.5">Layanan Terdampak</p><p class="text-[11px] font-bold text-red-900">${event.affected_services || 'Sistem Perpustakaan'}</p></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 mb-2">
+                                    ${event.date_text ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Tanggal</p><p class="text-[10.5px] font-bold text-slate-800">${event.date_text}</p></div>` : ''}
+                                    ${event.time ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Waktu</p><p class="text-[10.5px] font-bold text-slate-800">${event.time}</p></div>` : ''}
+                                    ${event.estimated_downtime ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 col-span-2"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Perkiraan Selesai</p><p class="text-[10.5px] font-bold text-slate-800">${event.estimated_downtime}</p></div>` : ''}
+                                </div>
+                                ${event.alternative_link ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 mb-1"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Akses Alternatif</p><a href="${event.alternative_link}" target="_blank" class="text-[10.5px] font-bold text-blue-600 hover:underline truncate block">${event.alternative_link}</a></div>` : ''}
+                            `;
+
+                        } else if (cat === 'new_collection') {
+                            detailHtml = `
+                                <div class="bg-slate-50 border border-slate-100 rounded-xl overflow-hidden mb-3">
+                                    ${event.book_author ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-user-circle text-purple-500 text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penulis</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_author}</span></div>` : ''}
+                                    ${event.book_publisher ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-buildings text-purple-500 text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penerbit</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_publisher}</span></div>` : ''}
+                                    ${event.shelf_location ? `<div class="flex items-center gap-2.5 px-3 py-2"><i class="ph ph-map-pin text-purple-500 text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Lokasi Rak</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.shelf_location}</span></div>` : ''}
+                                </div>
+                            `;
+                            if (!actionLinks) actionLinks = [{name: 'Lihat Detail Buku', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
+
+                        } else if (cat === 'tips') {
+                            const bullets = Array.isArray(event.tips_bullets) && event.tips_bullets.length > 0
+                                ? event.tips_bullets
+                                : (event.description || '').split(/\n+/).map(l => l.trim()).filter(l => l.length > 8);
+                            showDesc = bullets.length < 2;
+                            if (bullets.length >= 2) {
+                                detailHtml = `<ul class="space-y-2 mb-1">${bullets.slice(0, 5).map(tip => `<li class="flex items-start gap-2.5"><div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5" style="min-width:20px"><i class="ph ph-check-fat text-amber-600" style="font-size:9px"></i></div><span class="text-[11px] text-slate-700 leading-relaxed">${tip}</span></li>`).join('')}</ul>`;
+                            }
+
+                        } else if (cat === 'promotion') {
+                            detailHtml = `
+                                ${event.promo_period ? `<div class="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-xl px-3 py-2 mb-3"><i class="ph ph-calendar text-orange-500 text-base"></i><div><p class="text-[8px] font-black text-orange-400 uppercase tracking-wide leading-none mb-0.5">Periode Promo</p><p class="text-[11px] font-bold text-orange-900">${event.promo_period}</p></div></div>` : ''}
+                                ${event.promo_benefit ? `<div class="bg-orange-50 border border-orange-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-orange-400 uppercase tracking-wide mb-1.5">Yang Kamu Dapatkan &#127873;</p><p class="text-sm font-black text-orange-900">${event.promo_benefit}</p></div>` : ''}
+                            `;
+                            if (!actionLinks) actionLinks = [{name: 'Lihat Penawaran', url: event.link_url || event.library_url || '#', new_tab: true}];
+                        }
+
+                        // ─── Action Buttons ────────────────────────────────────────
+                        let actionsHtml = '';
+                        if (actionLinks && actionLinks.length > 0) {
+                            actionsHtml = actionLinks.slice(0, 2).map((btn, i) => `
+                                <a href="${btn.url}" target="${btn.new_tab !== false ? '_blank' : '_self'}"
+                                   class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl font-bold text-[11.5px] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-px ${i === 0 ? accentBtnCls : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+                                    <span>${btn.name}</span>
+                                    <i class="ph ph-arrow-right text-xs"></i>
+                                </a>
+                            `).join('');
+                        }
+
+                        // ─── Description text ──────────────────────────────────────
+                        const cleanDesc = (event.description || '').replace(/\n+/g, ' ').trim();
+                        const hasDetails = detailHtml && detailHtml.trim().length > 0;
+                        const descId = 'desc-' + event.id;
+                        
+                        let descHtml = '';
+                        if (showDesc && cleanDesc) {
+                            if (hasDetails && cleanDesc.length > 200) {
+                                descHtml = `
+                                    <div class="mb-4 text-[11.5px] text-slate-500 leading-relaxed text-justify pr-2">
+                                        <p id="${descId}-short" class="line-clamp-3">${cleanDesc}</p>
+                                        <p id="${descId}-full" class="hidden">${cleanDesc}</p>
+                                        <button type="button" onclick="
+                                            document.getElementById('${descId}-short').classList.add('hidden');
+                                            document.getElementById('${descId}-full').classList.remove('hidden');
+                                            this.classList.add('hidden');
+                                        " class="text-[#106c38] font-bold hover:underline mt-1 inline-block text-[10.5px]">Lihat Selengkapnya</button>
+                                    </div>
+                                `;
+                            } else {
+                                descHtml = `<p class="text-[11.5px] text-slate-500 leading-relaxed mb-3 text-justify pr-2">${cleanDesc}</p>`;
+                            }
+                        }
+
+                        // ─── Slide HTML ────────────────────────────────────────────
+                        slidesHtml += `
+                            <div class="w-full shrink-0 h-full overflow-hidden">
+                                <div class="flex h-full">
+
+                                    <!-- ══ LEFT CONTENT PANEL ══ -->
+                                    <div class="w-full md:w-[58%] flex flex-col h-full bg-white z-10">
+
+                                        <!-- Scrollable body -->
+                                        <div class="flex-1 overflow-y-auto pr-5 pl-12 pt-5 pb-2 md:pr-7 md:pl-16 md:pt-6 min-h-0">
+
+                                            <!-- Logo USU (Removed per user request) -->
+
+
+                                            <!-- Category Badge -->
+                                            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black uppercase tracking-wide text-[10px] mb-3 border w-fit ${badgeCls}">
+                                                <i class="ph ${badgeIcon} text-sm"></i>
+                                                <span>${badgeLabel}</span>
+                                            </div>
+
+                                            <!-- Title -->
+                                            <h2 class="text-[18px] md:text-[20px] font-black text-slate-900 leading-snug tracking-tight mb-2">
+                                                ${event.title}
+                                            </h2>
+
+                                            <!-- Description -->
+                                            ${descHtml}
+
+                                            <!-- Category Detail -->
+                                            ${detailHtml}
+
                                         </div>
 
-                                        <!-- Title -->
-                                        <h2 class="text-sm md:text-base lg:text-[17px] font-black text-slate-800 tracking-tight leading-snug mb-2 font-sans">
-                                            ${event.title}
-                                        </h2>
-
-                                        <!-- Description -->
-                                        <p class="text-[11px] text-slate-500 leading-relaxed mb-3 line-clamp-3">
-                                            ${event.description}
-                                        </p>
-
-                                        <!-- Details Grid -->
-                                        <div class="grid grid-cols-2 border border-slate-100 rounded-xl overflow-hidden mb-3 bg-slate-50/50">
-                                            <div class="p-2 flex items-start gap-1.5 border-r border-b border-slate-100">
-                                                <div class="w-7 h-7 rounded-lg bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
-                                                    <i class="ph ph-calendar-blank text-base"></i>
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <span class="block text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-1">Tanggal</span>
-                                                    <span class="text-[10px] font-bold text-slate-700 leading-tight block truncate">${event.date_text || '22 Juni 2026'}</span>
-                                                </div>
-                                            </div>
-                                            <div class="p-2 flex items-start gap-1.5 border-b border-slate-100">
-                                                <div class="w-7 h-7 rounded-lg bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
-                                                    <i class="ph ph-clock text-base"></i>
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <span class="block text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-1">Waktu</span>
-                                                    <span class="text-[10px] font-bold text-slate-700 leading-tight block truncate">${event.time}</span>
-                                                </div>
-                                            </div>
-                                            <div class="p-2 flex items-start gap-1.5 border-r border-b border-slate-100">
-                                                <div class="w-7 h-7 rounded-lg bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
-                                                    <i class="ph ph-map-pin text-base"></i>
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <span class="block text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-1">Lokasi</span>
-                                                    <span class="text-[10px] font-bold text-slate-700 leading-tight block truncate" title="${event.location}">${event.location}</span>
-                                                </div>
-                                            </div>
-                                            <div class="p-2 flex items-start gap-1.5 border-b border-slate-100">
-                                                <div class="w-7 h-7 rounded-lg bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
-                                                    <i class="ph ph-users text-base"></i>
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <span class="block text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-1">Penyelenggara</span>
-                                                    <span class="text-[10px] font-bold text-slate-700 leading-tight block truncate" title="${event.organizer}">${event.organizer}</span>
-                                                </div>
-                                            </div>
-                                            <div class="p-2 flex items-start gap-1.5 border-r border-slate-100">
-                                                <div class="w-7 h-7 rounded-lg bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
-                                                    <i class="ph ph-user-circle text-base"></i>
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <span class="block text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-1">Peserta</span>
-                                                    <span class="text-[10px] font-bold text-slate-700 leading-tight block truncate">${event.participants || 'Mahasiswa'}</span>
-                                                </div>
-                                            </div>
-                                            <div class="p-2 flex items-start gap-1.5">
-                                                <div class="w-7 h-7 rounded-lg bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
-                                                    <i class="ph ph-star text-base"></i>
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <span class="block text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-1">Fasilitas</span>
-                                                    <span class="text-[10px] font-bold text-slate-700 leading-tight block truncate" title="${event.facilities}">${event.facilities}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Hubungi Kami -->
-                                        <div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 mb-3 flex flex-col gap-1.5">
-                                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-wider">HUBUNGI KAMI</span>
-                                            <div class="flex flex-col sm:flex-row gap-2">
-                                                ${event.contact_whatsapp ? `
-                                                <a href="https://wa.me/${event.contact_whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="flex items-center gap-1.5 hover:opacity-80 transition min-w-0 flex-1">
-                                                    <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                                                        <i class="ph ph-whatsapp-logo text-xs font-bold"></i>
-                                                    </div>
-                                                    <div class="min-w-0">
-                                                        <span class="text-[9px] font-bold text-slate-700 block truncate leading-none mb-0.5">${event.contact_whatsapp}</span>
-                                                        <span class="text-[7.5px] text-slate-400 block truncate leading-none">${event.contact_whatsapp_name || 'Admin'}</span>
-                                                    </div>
-                                                </a>
-                                                ` : ''}
-                                                ${event.contact_email ? `
-                                                <a href="mailto:${event.contact_email}" class="flex items-center gap-1.5 hover:opacity-80 transition min-w-0 flex-1">
-                                                    <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 shrink-0">
-                                                        <i class="ph ph-envelope-simple text-xs font-bold"></i>
-                                                    </div>
-                                                    <div class="min-w-0">
-                                                        <span class="text-[9px] font-bold text-slate-700 block truncate leading-none mb-0.5">${event.contact_email}</span>
-                                                        <span class="text-[7.5px] text-slate-400 block truncate leading-none">${event.contact_email_name || 'Email'}</span>
-                                                    </div>
-                                                </a>
-                                                ` : ''}
-                                            </div>
-                                        </div>
+                                        <!-- Pinned Action Footer -->
+                                        ${actionsHtml ? `
+                                        <div class="pr-5 pl-12 md:pr-7 md:pl-16 py-4 border-t border-slate-100 bg-white shrink-0 flex flex-col gap-2 shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
+                                            ${actionsHtml}
+                                        </div>` : `<div class="h-4 shrink-0"></div>`}
                                     </div>
 
-                                    <!-- Action Buttons -->
-                                    <div class="relative w-full border-t border-slate-100 pt-2.5 select-none">
-                                        <!-- Lihat Detail Button (Full Width) -->
-                                        <button class="lihat-detail-trigger w-full py-2.5 bg-[#106c38] hover:bg-[#0c532b] text-white rounded-xl font-bold text-[11px] transition shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 cursor-pointer">
-                                            Lihat Detail <i class="ph ph-caret-up text-xs"></i>
-                                        </button>
-                                        
-                                        <!-- Choice Popover (Above Button) -->
-                                        <div class="details-choices-menu absolute bottom-[105%] left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-xl p-1.5 hidden flex-col gap-1 z-[80] transition-all duration-200 transform translate-y-1 opacity-0 pointer-events-none">
-                                            ${(event.action_buttons && Array.isArray(event.action_buttons) && event.action_buttons.length > 0) 
-                                                ? event.action_buttons.map(btn => `
-                                                    <a href="${btn.url}" target="${btn.new_tab ? '_blank' : '_self'}" class="flex items-center gap-2 px-3 py-2 text-[10.5px] font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#106c38] rounded-lg transition">
-                                                        <i class="ph ph-link text-sm text-[#106c38]"></i> ${btn.name}
-                                                    </a>
-                                                `).join('')
-                                                : `
-                                                    <a href="${event.instagram_url || 'https://www.instagram.com/usu.library/'}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-[10.5px] font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-600 rounded-lg transition">
-                                                        <i class="ph ph-instagram-logo text-sm text-rose-500"></i> Postingan Instagram
-                                                    </a>
-                                                    <a href="${event.library_url || 'https://library.usu.ac.id/id'}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-[10.5px] font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#106c38] rounded-lg transition">
-                                                        <i class="ph ph-globe text-sm text-[#106c38]"></i> Link Library USU
-                                                    </a>
-                                                `
-                                            }
+                                    <!-- ══ RIGHT IMAGE PANEL ══ -->
+                                    <div class="hidden md:block md:w-[42%] relative overflow-hidden shrink-0"
+                                         style="background:${rightGrad}">
+
+                                        <!-- Wavy left-edge divider with golden accent -->
+                                        <div class="absolute left-0 top-0 h-full z-10 pointer-events-none" style="width:160px; transform: translateX(-1px);">
+                                            <svg class="h-full w-full drop-shadow-sm" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <!-- Golden Edge Layer -->
+                                                <path d="M 65,0 C -10,35 85,65 100,100 L 0,100 L 0,0 Z" fill="#eab308" />
+                                                <!-- White Fill Layer -->
+                                                <path d="M 58,0 C -17,35 78,65 100,100 L 0,100 L 0,0 Z" fill="white" />
+                                            </svg>
                                         </div>
+
+                                        <!-- Images Slider -->
+                                        <div class="absolute inset-0 w-full h-full" id="img-slider-${event.id}">
+                                            ${(event.images_url || [event.image_url]).map((img, idx) => `
+                                                <img src="${img}"
+                                                     alt="${event.title}"
+                                                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                                                     loading="lazy"
+                                                     id="img-${event.id}-${idx}"
+                                                     onerror="this.style.opacity=0">
+                                            `).join('')}
+                                        </div>
+
+                                        <!-- Image Navigation Dots (Only if multiple images) -->
+                                        ${(event.images_url && event.images_url.length > 1) ? `
+                                            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+                                                ${event.images_url.map((_, idx) => `
+                                                    <button type="button" onclick="
+                                                        const container = document.getElementById('img-slider-${event.id}');
+                                                        const images = container.querySelectorAll('img');
+                                                        const dots = this.parentElement.querySelectorAll('button');
+                                                        images.forEach((img, i) => {
+                                                            if (i === ${idx}) {
+                                                                img.classList.remove('opacity-0', 'z-0');
+                                                                img.classList.add('opacity-100', 'z-10');
+                                                            } else {
+                                                                img.classList.add('opacity-0', 'z-0');
+                                                                img.classList.remove('opacity-100', 'z-10');
+                                                            }
+                                                        });
+                                                        dots.forEach((dot, i) => {
+                                                            if (i === ${idx}) {
+                                                                dot.classList.add('bg-white', 'scale-110');
+                                                                dot.classList.remove('bg-white/50');
+                                                            } else {
+                                                                dot.classList.remove('bg-white', 'scale-110');
+                                                                dot.classList.add('bg-white/50');
+                                                            }
+                                                        });
+                                                    " class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/75'}"></button>
+                                                `).join('')}
+                                            </div>
+                                        ` : ''}
+
+                                        <!-- Overlay -->
+                                        <div class="absolute inset-0 pointer-events-none z-20 mix-blend-multiply" style="background:${rightOverlay}"></div>
+                                        
+                                        <!-- Decorative Elements Bottom Right -->
+                                        <div class="absolute -bottom-10 -right-10 w-48 h-48 rounded-full border-[8px] border-yellow-400 opacity-25 z-20 pointer-events-none"></div>
+                                        <div class="absolute -bottom-6 right-8 w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-300 to-yellow-100 opacity-40 shadow-lg z-20 pointer-events-none"></div>
+                                        <div class="absolute bottom-12 right-24 w-8 h-8 rounded-full border-2 border-white opacity-50 z-20 pointer-events-none"></div>
+
                                     </div>
                                 </div>
                             </div>
@@ -528,13 +564,31 @@
                     // Auto-show delay: 1.5 seconds
                     autoShowTimeout = setTimeout(() => {
                         openEventModal();
-                        // Auto-hide timing: 8 seconds
-                        startAutoHideTimer();
+                        // Auto-hide timing: 8 seconds (only for single slide, otherwise let user navigate)
+                        if (loadedEvents.length <= 1) {
+                            startAutoHideTimer();
+                        }
                     }, 1500);
                 } else {
-                    // Hide navbar triggers if no events
-                    if (navbarEventBtn) navbarEventBtn.classList.add('hidden');
-                    if (mobileNavbarEventBtn) mobileNavbarEventBtn.classList.add('hidden');
+                    // Tampilkan pemberitahuan kosong jika tidak ada informasi
+                    sliderTrack.innerHTML = `
+                        <div class="w-full shrink-0 h-full overflow-hidden flex flex-col items-center justify-center p-8 bg-white">
+                            <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                                <i class="ph ph-info text-5xl text-slate-300"></i>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-black text-slate-800 mb-3 text-center">Belum Ada Informasi</h3>
+                            <p class="text-slate-500 text-[13px] md:text-sm text-center max-w-sm mx-auto leading-relaxed">
+                                Saat ini belum ada pengumuman, event, atau informasi terbaru dari Perpustakaan Universitas Sumatera Utara.
+                            </p>
+                        </div>
+                    `;
+                    // Sembunyikan navigasi slider & checkbox karena tidak diperlukan
+                    if (document.getElementById('event-pagination-container')) document.getElementById('event-pagination-container').classList.add('hidden');
+                    if (globalDontShowCheckbox) globalDontShowCheckbox.parentElement.classList.add('hidden');
+                    
+                    // Pastikan tombol informasi di navbar tetap tampil
+                    if (navbarEventBtn) navbarEventBtn.classList.remove('hidden');
+                    if (mobileNavbarEventBtn) mobileNavbarEventBtn.classList.remove('hidden');
                 }
             })
             .catch(err => {
@@ -580,7 +634,7 @@
         if (eventContent) {
             eventContent.addEventListener('mouseenter', pauseAutoHideTimer);
             eventContent.addEventListener('mouseleave', () => {
-                if (eventModal.classList.contains('flex')) {
+                if (eventModal.classList.contains('flex') && loadedEvents.length <= 1) {
                     startResumedAutoHideTimer();
                 }
             });
@@ -595,10 +649,14 @@
 
             if (totalSlides <= 1) {
                 document.getElementById('event-pagination-container').classList.add('hidden');
+                if (prevBtn) prevBtn.classList.add('hidden');
+                if (nextBtn) nextBtn.classList.add('hidden');
                 return;
             }
 
             document.getElementById('event-pagination-container').classList.remove('hidden');
+            if (prevBtn) prevBtn.classList.remove('hidden');
+            if (nextBtn) nextBtn.classList.remove('hidden');
 
             // Clone first and last slide
             const firstClone = originalSlides[0].cloneNode(true);
@@ -636,19 +694,22 @@
                 updatePagination();
             }
 
-            prevBtn.onclick = function() {
+            prevBtn.onclick = function(e) {
+                e.stopPropagation();
                 if (isTransitioning) return;
                 clearAutoHideTimer();
                 moveToSlide(slideIndex - 1);
             };
 
-            nextBtn.onclick = function() {
+            nextBtn.onclick = function(e) {
+                e.stopPropagation();
                 if (isTransitioning) return;
                 clearAutoHideTimer();
                 moveToSlide(slideIndex + 1);
             };
 
-            sliderTrack.addEventListener('transitionend', () => {
+            sliderTrack.addEventListener('transitionend', (e) => {
+                if (e.target !== sliderTrack) return;
                 isTransitioning = false;
                 if (slideIndex === 0) {
                     sliderTrack.style.transition = 'none';
@@ -660,6 +721,37 @@
                     sliderTrack.style.transform = `translateX(-${slideIndex * 100}%)`;
                 }
             });
+
+            // Touch Swipe Support
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            sliderTrack.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            sliderTrack.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const swipeThreshold = 50; // minimum distance in pixels
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Swipe left -> Next slide
+                    if (!isTransitioning) {
+                        clearAutoHideTimer();
+                        moveToSlide(slideIndex + 1);
+                    }
+                }
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // Swipe right -> Prev slide
+                    if (!isTransitioning) {
+                        clearAutoHideTimer();
+                        moveToSlide(slideIndex - 1);
+                    }
+                }
+            }
         }
 
         function openEventModal() {
@@ -760,10 +852,44 @@
             });
         }
 
+        // Helper function for beautiful empty notification popup
+        function showEmptyInformationPopup() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    html: `
+                        <div class="flex flex-col items-center justify-center pt-6 pb-2">
+                            <div class="w-20 h-20 bg-emerald-50 rounded-[22px] flex items-center justify-center mb-5 shadow-sm border border-emerald-100">
+                                <i class="ph-fill ph-info text-[42px] text-[#106c38]"></i>
+                            </div>
+                            <h3 class="text-[22px] font-black text-slate-800 mb-3 tracking-tight">Belum Ada Informasi</h3>
+                            <p class="text-[13.5px] text-slate-500 leading-relaxed max-w-[280px] mx-auto">
+                                Saat ini belum ada pengumuman, event, atau informasi terbaru dari Perpustakaan USU.
+                            </p>
+                        </div>
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Tutup',
+                    buttonsStyling: false,
+                    customClass: {
+                        popup: '!rounded-[28px] !shadow-2xl border border-slate-100/50 !pb-5',
+                        confirmButton: 'bg-[#106c38] hover:bg-[#0c562c] hover:scale-[1.02] active:scale-95 text-white px-8 py-2.5 rounded-full font-bold text-[13px] transition-all shadow-md shadow-[#106c38]/20 focus:ring-4 focus:ring-emerald-50 focus:outline-none w-full sm:w-auto',
+                    },
+                    width: '24em',
+                    backdrop: `rgba(15, 23, 42, 0.4)`
+                });
+            } else {
+                alert('Saat ini belum ada pengumuman, event, atau informasi terbaru dari Perpustakaan USU.');
+            }
+        }
+
         // Navbar trigger handlers
         if (navbarEventBtn) {
             navbarEventBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                if (loadedEvents.length === 0) {
+                    showEmptyInformationPopup();
+                    return;
+                }
                 clearAutoHideTimer(); // User clicked, disable auto-hide
                 openEventModal();
             });
@@ -772,6 +898,12 @@
         if (mobileNavbarEventBtn) {
             mobileNavbarEventBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                
+                if (loadedEvents.length === 0) {
+                    showEmptyInformationPopup();
+                    return;
+                }
+                
                 clearAutoHideTimer(); // User clicked, disable auto-hide
                 // Close mobile menu drawer first
                 if (typeof window.closeMobileMenu === 'function') {

@@ -392,6 +392,7 @@
         </div>
     </div>
 
+
     <!-- Statistics Section (Marquee) -->
     <div id="statistics-section" class="pt-6 pb-6 w-full overflow-hidden bg-[#f8fafc]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-10 relative flex flex-col items-center justify-center text-center">
@@ -1889,5 +1890,6 @@
             }
         });
     </script>
+
 </body>
 </html>

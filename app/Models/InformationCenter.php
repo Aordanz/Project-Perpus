@@ -18,6 +18,7 @@ class InformationCenter extends Model
         'is_featured' => 'boolean',
         'is_action_open_in_new_tab' => 'boolean',
         'action_button_url' => 'array', // ditambahkan untuk multi-tombol aksi (menyimpan JSON array)
+        'images' => 'array',
     ];
 
     public function getComputedStatusAttribute()

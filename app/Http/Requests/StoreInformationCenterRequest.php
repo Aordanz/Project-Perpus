@@ -31,18 +31,19 @@ class StoreInformationCenterRequest extends FormRequest
 
     public function rules(): array
     {
+        $maxSortOrder = \App\Models\InformationCenter::count() + 1;
         return [
             'title' => 'required|string|max:255',
             'summary' => 'nullable|string',
             'content' => 'nullable|string',
-            'category' => 'required|in:event,announcement,maintenance,new_collection,tips,promotion,general',
+            'category' => 'required|in:event,announcement,book_recommendation,tips,library_news',
             'image_path' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'status' => 'required|in:draft,published,archived',
             'show_popup' => 'boolean',
             'show_navbar' => 'boolean',
             'is_featured' => 'boolean',
             'popup_priority' => 'required|integer|min:1',
-            'sort_order' => 'required|integer|min:0',
+            'sort_order' => 'required|integer|min:1|max:' . $maxSortOrder,
             'publish_start_date' => 'required|date',
             'publish_start_time' => 'required|string',
             'publish_end_date' => 'nullable|date|after_or_equal:publish_start_date',
@@ -66,15 +67,13 @@ class StoreInformationCenterRequest extends FormRequest
             'event_left_subtitle' => 'nullable|string|max:1000',
             'event_quota_tag' => 'nullable|string|max:255',
             'event_left_features' => 'nullable|string',
-            'maintenance_services' => 'nullable|string|max:255',
-            'maintenance_downtime' => 'nullable|string|max:255',
-            'maintenance_alternative' => 'nullable|url|max:255',
             'book_title' => 'nullable|string|max:255',
             'book_author' => 'nullable|string|max:255',
             'book_publisher' => 'nullable|string|max:255',
             'shelf_location' => 'nullable|string|max:255',
-            'promo_period' => 'nullable|string|max:255',
-            'promo_benefit' => 'nullable|string|max:255',
+            'announcement_time' => 'nullable|string|max:255',
+            'announcement_location' => 'nullable|string|max:255',
+            'news_date' => 'nullable|string|max:255',
         ];
     }
 
@@ -98,6 +97,7 @@ class StoreInformationCenterRequest extends FormRequest
             'publish_end_date.after_or_equal' => 'Tanggal selesai tayang tidak boleh mendahului tanggal mulai tayang.',
             'popup_priority.integer' => 'Prioritas popup harus berupa angka bulat.',
             'sort_order.integer' => 'Urutan pengurutan harus berupa angka bulat.',
+            'sort_order.max' => 'Urutan pengurutan tidak boleh lebih dari jumlah maksimal informasi yang tersedia.',
             'image_path.image' => 'File yang diunggah harus berupa gambar.',
             'image_path.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
             'image_path.max' => 'Ukuran gambar tidak boleh melebihi 5MB.',
