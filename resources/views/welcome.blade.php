@@ -949,10 +949,6 @@
                                     <span>100</span>
                                     <i class="ph ph-check text-[12px] modal-active-check hidden"></i>
                                 </button>
-                                <button type="button" data-value="all" class="modal-dropdown-option w-full text-left px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition flex items-center justify-between">
-                                    <span>{{ __('Semua') }}</span>
-                                    <i class="ph ph-check text-[12px] modal-active-check hidden"></i>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -1013,8 +1009,6 @@
             const specJenisValue = document.getElementById('spec-dropdown-jenis-value');
             const specJenisOpts = document.querySelectorAll('.spec-dropdown-jenis-option');
 
-            // Store the base URL for modal searches
-            let currentSearchBaseUrl = '';
 
             function syncCheckIcons(options, activeVal) {
                 options.forEach(o => {
@@ -1113,11 +1107,12 @@
                 }
             });
 
-            // State variables for Live Search & Client-side Pagination
-            let allCards = [];
-            let filteredCards = [];
+            // State variables for Server-side Pagination
             let currentPage = 1;
             let perPage = 5;
+            let totalBooks = 0;
+            let totalPages = 0;
+            let currentSearchBaseUrl = '';
 
             const searchInput = document.getElementById('modal-hasil-search');
             const clearSearchBtn = document.getElementById('modal-hasil-search-clear');
@@ -1128,6 +1123,28 @@
             const modalHasilTitle = document.getElementById('modal-hasil-title');
             const modalHasilSubtitle = document.getElementById('modal-hasil-subtitle');
             const modalHasilIcon = document.getElementById('modal-hasil-icon');
+
+            function resetDropdownUI(value) {
+                if (perPageSelect) {
+                    perPageSelect.value = String(value);
+                    const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
+                    if (modalDropdownLabel) modalDropdownLabel.textContent = String(value);
+                    const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
+                    modalDropdownOptions.forEach(o => {
+                        const val = o.getAttribute('data-value');
+                        const check = o.querySelector('.modal-active-check');
+                        if (val === String(value)) {
+                            o.classList.remove('text-slate-600', 'font-semibold');
+                            o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                            if (check) check.classList.remove('hidden');
+                        } else {
+                            o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
+                            o.classList.add('text-slate-600', 'font-semibold');
+                            if (check) check.classList.add('hidden');
+                        }
+                    });
+                }
+            }
 
             locationCards.forEach(card => {
                 card.addEventListener('click', function (e) {
@@ -1143,29 +1160,9 @@
                     if (modalHasilSubtitle) modalHasilSubtitle.innerText = '{{ __("Daftar koleksi buku yang tersedia di lokasi ini") }}';
 
                     // Reset search state
-                    allCards = [];
-                    filteredCards = [];
                     currentPage = 1;
                     perPage = 5;
-                    if (perPageSelect) {
-                        perPageSelect.value = "5";
-                        const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
-                        const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
-                        modalDropdownOptions.forEach(o => {
-                            const val = o.getAttribute('data-value');
-                            const check = o.querySelector('.modal-active-check');
-                            if (val === "5") {
-                                o.classList.remove('text-slate-600', 'font-semibold');
-                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                if (check) check.classList.remove('hidden');
-                            } else {
-                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                o.classList.add('text-slate-600', 'font-semibold');
-                                if (check) check.classList.add('hidden');
-                            }
-                        });
-                    }
+                    resetDropdownUI(5);
                     if (searchInput) searchInput.value = '';
                     if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
 
@@ -1179,51 +1176,29 @@
             if (mainSearchForm) {
                 mainSearchForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    e.stopPropagation(); // Prevents app.js from intercepting the form submission
+                    e.stopPropagation();
                     
                     const qInput = this.querySelector('input[name="q"]');
                     const queryVal = qInput ? qInput.value.trim() : '';
-                    if (queryVal === '') return; // Don't search if empty
+                    if (queryVal === '') return;
 
-                    // Set modal info
                     if (modalHasilTitle) modalHasilTitle.innerText = '{{ __("Hasil Pencarian: ") }}' + '"' + queryVal + '"';
                     if (modalHasilSubtitle) modalHasilSubtitle.innerText = '{{ __("Daftar koleksi buku dari semua lokasi") }}';
                     if (modalHasilIcon) modalHasilIcon.className = 'ph ph-magnifying-glass text-2xl';
 
                     // Reset search state
-                    allCards = [];
-                    filteredCards = [];
                     currentPage = 1;
                     perPage = 5;
-                    if (perPageSelect) {
-                        perPageSelect.value = "5";
-                        const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
-                        const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
-                        modalDropdownOptions.forEach(o => {
-                            const val = o.getAttribute('data-value');
-                            const check = o.querySelector('.modal-active-check');
-                            if (val === "5") {
-                                o.classList.remove('text-slate-600', 'font-semibold');
-                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                if (check) check.classList.remove('hidden');
-                            } else {
-                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                o.classList.add('text-slate-600', 'font-semibold');
-                                if (check) check.classList.add('hidden');
-                            }
-                        });
-                    }
+                    resetDropdownUI(5);
                     if (searchInput) searchInput.value = '';
                     if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
 
                     openModalHasil();
                     
-                    // Construct search URL and let the backend handle the search!
                     const searchUrl = new URL(this.action, window.location.origin);
                     searchUrl.searchParams.set('q', queryVal);
                     
-                    loadLocationResults(searchUrl.toString(), '');
+                    loadLocationResults(searchUrl.toString());
                 });
             }
 
@@ -1234,14 +1209,11 @@
                     e.preventDefault();
                     e.stopPropagation();
 
-                    // Close input modal
                     closeModal();
 
-                    // Set modal title & icon
                     if (modalHasilTitle) modalHasilTitle.innerText = '{{ __("Hasil Pencarian Spesifik") }}';
                     if (modalHasilIcon) modalHasilIcon.className = 'ph ph-sliders-horizontal text-2xl';
 
-                    // Check if specific location is selected
                     const specLokasiInput = document.getElementById('spec-dropdown-lokasi-value');
                     const specLokasiLabel = document.getElementById('spec-dropdown-lokasi-label');
                     if (modalHasilSubtitle) {
@@ -1253,35 +1225,14 @@
                     }
 
                     // Reset search state
-                    allCards = [];
-                    filteredCards = [];
                     currentPage = 1;
                     perPage = 5;
-                    if (perPageSelect) {
-                        perPageSelect.value = "5";
-                        const modalDropdownLabel = document.getElementById('modal-dropdown-selected-label');
-                        if (modalDropdownLabel) modalDropdownLabel.textContent = "5";
-                        const modalDropdownOptions = document.querySelectorAll('.modal-dropdown-option');
-                        modalDropdownOptions.forEach(o => {
-                            const val = o.getAttribute('data-value');
-                            const check = o.querySelector('.modal-active-check');
-                            if (val === "5") {
-                                o.classList.remove('text-slate-600', 'font-semibold');
-                                o.classList.add('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                if (check) check.classList.remove('hidden');
-                            } else {
-                                o.classList.remove('text-[#106c38]', 'font-bold', 'bg-green-50/50');
-                                o.classList.add('text-slate-600', 'font-semibold');
-                                if (check) check.classList.add('hidden');
-                            }
-                        });
-                    }
+                    resetDropdownUI(5);
                     if (searchInput) searchInput.value = '';
                     if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
 
                     openModalHasil();
 
-                    // Construct search URL from form data
                     const formData = new FormData(specificSearchForm);
                     const params = new URLSearchParams();
                     for (const [key, value] of formData.entries()) {
@@ -1291,12 +1242,22 @@
                     }
                     const searchUrl = `${specificSearchForm.action}?${params.toString()}`;
 
-                    loadLocationResults(searchUrl, '');
+                    loadLocationResults(searchUrl);
                 });
             }
 
-            function loadLocationResults(url, initialQuery = '') {
-                currentSearchBaseUrl = url;
+            function loadLocationResults(url) {
+                // Save the base URL (without page/per_page) for subsequent pagination fetches
+                const urlObj = new URL(url, window.location.origin);
+                // Remove page/per_page from base URL — these are added dynamically on each fetch
+                urlObj.searchParams.delete('page');
+                urlObj.searchParams.delete('per_page');
+                currentSearchBaseUrl = urlObj.toString();
+
+                fetchPage(currentPage);
+            }
+
+            function fetchPage(page) {
                 const loading = document.getElementById('modal-hasil-loading');
                 const container = document.getElementById('modal-hasil-container');
                 const paginationEl = document.getElementById('modal-hasil-pagination');
@@ -1308,61 +1269,145 @@
                 }
                 if (paginationEl) paginationEl.innerHTML = '';
 
-                // Request with per_page=all to get all books for client-side search/pagination
-                const urlObj = new URL(url, window.location.origin);
-                urlObj.searchParams.set('per_page', 'all');
+                // Build URL with per_page and page parameters
+                const urlObj = new URL(currentSearchBaseUrl, window.location.origin);
+                urlObj.searchParams.set('per_page', perPage);
+                urlObj.searchParams.set('page', page);
 
-                fetch(urlObj.toString())
-                    .then(response => response.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        
-                        const resultsList = doc.querySelector('main > .space-y-4.mb-8');
+                // Add modal search input query if present
+                if (searchInput && searchInput.value.trim() !== '') {
+                    urlObj.searchParams.set('q', searchInput.value.trim());
+                }
 
-                        if (resultsList) {
-                            const rawCards = resultsList.querySelectorAll('.result-card');
-                            allCards = Array.from(rawCards).map(card => {
-                                // Extract metadata fields for client-side search attributes
-                                const titleEl = card.querySelector('h3 a');
-                                const title = titleEl ? titleEl.innerText.trim().toLowerCase() : '';
-                                card.setAttribute('data-title', title);
+                fetch(urlObj.toString(), {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(json => {
+                        totalBooks = json.total || 0;
+                        totalPages = json.last_page || 1;
 
-                                const spans = Array.from(card.querySelectorAll('span'));
+                        container.innerHTML = '';
+
+                        if (!json.data || json.data.length === 0) {
+                            container.innerHTML = `
+                                <div class="bg-white rounded-3xl border border-slate-100 p-12 text-center shadow-sm">
+                                    <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                                        <i class="ph ph-warning-circle"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-slate-800 mb-1">{{ __("Koleksi Tidak Ditemukan") }}</h3>
+                                    <p class="text-sm text-slate-500 max-w-md mx-auto">
+                                        {{ __("Maaf, kami tidak dapat menemukan buku atau referensi yang cocok dengan kata kunci pencarian Anda di lokasi ini.") }}
+                                    </p>
+                                </div>
+                            `;
+                            if (paginationEl) paginationEl.innerHTML = '';
+                        } else {
+                            json.data.forEach((book, index) => {
+                                const itemNumber = String((currentPage - 1) * perPage + index + 1).padStart(2, '0');
                                 
-                                const authorSpan = spans.find(span => span.textContent.includes('Pengarang:'));
-                                const author = authorSpan && authorSpan.querySelector('strong') ? authorSpan.querySelector('strong').innerText.trim().toLowerCase() : '';
-                                card.setAttribute('data-author', author);
+                                const coverHtml = book.cover_image 
+                                    ? `<img src="${book.cover_image}" alt="Cover" class="w-full h-full object-cover">`
+                                    : `<div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-2">
+                                        <i class="ph ph-book-open text-3xl sm:text-2xl mb-1"></i>
+                                        <span class="text-[9px] sm:text-[8px] font-bold text-center leading-tight">NO COVER</span>
+                                       </div>`;
 
-                                const publisherSpan = spans.find(span => span.textContent.includes('Penerbit:'));
-                                const publisher = publisherSpan && publisherSpan.querySelector('strong') ? publisherSpan.querySelector('strong').innerText.trim().toLowerCase() : '';
-                                card.setAttribute('data-publisher', publisher);
+                                const cardEl = document.createElement('div');
+                                cardEl.className = 'book-card result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex flex-col sm:flex-row gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group';
+                                
+                                cardEl.innerHTML = `
+                                    <!-- Mobile Top Section: Number & Title, with Category below -->
+                                    <div class="flex sm:hidden flex-col w-full mb-2.5 flex-shrink-0">
+                                        <div class="flex items-start gap-2.5 w-full">
+                                            <div class="card-number-index text-sm font-black text-slate-500 select-none pt-0.5">${itemNumber}</div>
+                                            <h3 class="text-base font-bold text-slate-800 hover:text-[#106c38] hover:underline transition leading-snug">
+                                                <a href="${book.detail_url}">${book.title}</a>
+                                            </h3>
+                                        </div>
+                                        <div class="mt-1 pl-[26px]">
+                                            <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider uppercase">
+                                                ${book.category}
+                                            </span>
+                                        </div>
+                                    </div>
 
-                                return card;
+                                    <!-- Desktop Card Numbering Index -->
+                                    <div class="card-number-index hidden sm:block flex-shrink-0 text-base sm:text-2xl font-black text-slate-400 group-hover:text-[#106c38]/30 transition-colors select-none w-6 sm:w-8 text-center pt-1.5 sm:pt-4">
+                                        ${itemNumber}
+                                    </div>
+
+                                    <!-- Desktop Book Cover -->
+                                    <div class="hidden sm:block w-20 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
+                                        ${coverHtml}
+                                        <span class="absolute top-2 left-2 bg-[#106c38] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
+                                            ${book.jenis}
+                                        </span>
+                                    </div>
+
+                                    <!-- Book Details & Mobile Layout container -->
+                                    <div class="flex-grow flex flex-col h-full w-full">
+                                        <!-- Header (Desktop Title & Category - hidden on mobile) -->
+                                        <div class="hidden sm:block mb-2 w-full">
+                                            <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[9px] font-bold px-2 py-0.5 rounded-full mb-1 tracking-wider uppercase">
+                                                ${book.category}
+                                            </span>
+                                            <h3 class="text-base sm:text-lg font-bold text-slate-800 hover:text-[#106c38] hover:underline transition leading-snug">
+                                                <a href="${book.detail_url}">${book.title}</a>
+                                            </h3>
+                                        </div>
+
+                                        <!-- Content: Flex side-by-side on mobile, normal block on desktop -->
+                                        <div class="flex flex-row sm:block gap-4 items-start w-full mt-1 sm:mt-0">
+                                            <!-- Mobile Book Cover (Visible only on mobile) -->
+                                            <div class="block sm:hidden w-20 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg overflow-hidden shadow-sm flex-shrink-0 relative">
+                                                ${coverHtml}
+                                                <span class="absolute top-1.5 left-1.5 bg-[#106c38] text-white text-[7px] font-bold px-1.5 py-0.5 rounded shadow">
+                                                    ${book.jenis}
+                                                </span>
+                                            </div>
+
+                                            <!-- Author & Metadata details -->
+                                            <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 mb-3 sm:mb-4 text-xs font-medium text-slate-500">
+                                                <div class="flex items-start gap-1.5">
+                                                    <i class="ph ph-user text-sm text-slate-400 mt-0.5"></i>
+                                                    <span>{{ __('Pengarang:') }} <strong class="text-slate-700">${book.author}</strong></span>
+                                                </div>
+                                                <div class="flex items-start gap-1.5">
+                                                    <i class="ph ph-hash text-sm text-slate-400 mt-0.5"></i>
+                                                    <span>{{ __('No. Panggil:') }} <strong class="text-slate-700">${book.call_number}</strong></span>
+                                                </div>
+                                                <div class="flex items-start gap-1.5">
+                                                    <i class="ph ph-buildings text-sm text-slate-400 mt-0.5"></i>
+                                                    <span>{{ __('Penerbit:') }} <strong class="text-slate-700">${book.publisher}</strong></span>
+                                                </div>
+                                                <div class="flex items-start gap-1.5">
+                                                    <i class="ph ph-calendar text-sm text-slate-400 mt-0.5"></i>
+                                                    <span>{{ __('Tahun Terbit:') }} <strong class="text-slate-700">${book.publish_year}</strong></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Availability Pill -->
+                                        <div class="mt-auto pt-2.5 sm:pt-3 border-t border-slate-50 flex flex-wrap gap-2 items-center justify-between text-xs w-full">
+                                            <div class="flex items-start gap-1.5 text-slate-400">
+                                                <i class="ph ph-map-pin text-sm text-[#106c38] mt-0.5"></i>
+                                                <span class="font-medium text-slate-500">
+                                                    {{ __('Lokasi:') }} 
+                                                    <strong class="text-slate-700">${book.locations}</strong>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+
+                                container.appendChild(cardEl);
                             });
 
-                            if (initialQuery !== '') {
-                                filteredCards = allCards.filter(card => {
-                                    const title = card.getAttribute('data-title') || '';
-                                    const author = card.getAttribute('data-author') || '';
-                                    const publisher = card.getAttribute('data-publisher') || '';
-                                    
-                                    if (typeof window.isFuzzyMatch === 'function') {
-                                        return window.isFuzzyMatch(title, initialQuery) || 
-                                               window.isFuzzyMatch(author, initialQuery) || 
-                                               window.isFuzzyMatch(publisher, initialQuery);
-                                    }
-                                    return title.includes(initialQuery) || author.includes(initialQuery) || publisher.includes(initialQuery);
-                                });
-                            } else {
-                                filteredCards = allCards;
-                            }
-                            
-                            renderResults();
-                        } else {
-                            if (container) {
-                                container.innerHTML = '<div class="text-center py-12 text-slate-500 font-medium">{{ __("Gagal memuat data koleksi.") }}</div>';
-                            }
+                            renderPagination();
                         }
 
                         if (loading) loading.classList.add('hidden');
@@ -1378,115 +1423,69 @@
                     });
             }
 
-            function renderResults() {
-                const container = document.getElementById('modal-hasil-container');
+            function renderPagination() {
                 const paginationEl = document.getElementById('modal-hasil-pagination');
-                if (!container) return;
+                if (!paginationEl) return;
+                paginationEl.innerHTML = '';
 
-                container.innerHTML = '';
-                
-                if (filteredCards.length === 0) {
-                    container.innerHTML = `
-                        <div class="bg-white rounded-3xl border border-slate-100 p-12 text-center shadow-sm">
-                            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-                                <i class="ph ph-warning-circle"></i>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-800 mb-1">{{ __("Koleksi Tidak Ditemukan") }}</h3>
-                            <p class="text-sm text-slate-500 max-w-md mx-auto">
-                                {{ __("Maaf, kami tidak dapat menemukan buku atau referensi yang cocok dengan kata kunci pencarian Anda di lokasi ini.") }}
-                            </p>
-                        </div>
-                    `;
-                    if (paginationEl) paginationEl.innerHTML = '';
-                    return;
-                }
+                if (totalPages <= 1) return;
 
-                let displayCards = [];
-                if (perPage === 'all') {
-                    displayCards = filteredCards;
+                // Prev button
+                const prevBtn = document.createElement('button');
+                prevBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
+                prevBtn.innerHTML = `<i class="ph ph-caret-left"></i> {{ __('Sebelumnya') }}`;
+                if (currentPage === 1) {
+                    prevBtn.classList.add('opacity-50', 'pointer-events-none');
                 } else {
-                    const startIndex = (currentPage - 1) * perPage;
-                    const endIndex = startIndex + perPage;
-                    displayCards = filteredCards.slice(startIndex, endIndex);
-                }
-
-                displayCards.forEach((card, index) => {
-                    const cloned = card.cloneNode(true);
-                    const numberingEls = cloned.querySelectorAll('.card-number-index');
-                    numberingEls.forEach(numberingEl => {
-                        const itemNumber = (perPage === 'all') 
-                            ? (index + 1) 
-                            : ((currentPage - 1) * perPage + index + 1);
-                        numberingEl.innerText = String(itemNumber).padStart(2, '0');
+                    prevBtn.addEventListener('click', () => {
+                        currentPage--;
+                        fetchPage(currentPage);
+                        scrollToModalTop();
                     });
-                    container.appendChild(cloned);
-                });
-
-                if (paginationEl) {
-                    paginationEl.innerHTML = '';
-                    if (perPage === 'all' || filteredCards.length <= perPage) {
-                        return;
-                    }
-
-                    const totalPages = Math.ceil(filteredCards.length / perPage);
-                    
-                    // Prev button
-                    const prevBtn = document.createElement('button');
-                    prevBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
-                    prevBtn.innerHTML = `<i class="ph ph-caret-left"></i> {{ __('Sebelumnya') }}`;
-                    if (currentPage === 1) {
-                        prevBtn.classList.add('opacity-50', 'pointer-events-none');
-                    } else {
-                        prevBtn.addEventListener('click', () => {
-                            currentPage--;
-                            renderResults();
-                            scrollToModalTop();
-                        });
-                    }
-                    paginationEl.appendChild(prevBtn);
-
-                    // Page buttons (max 5 buttons on desktop, 4 on mobile/HP)
-                    const isMobile = window.innerWidth < 640;
-                    const maxButtons = isMobile ? 4 : 5;
-                    const half = Math.floor(maxButtons / 2);
-                    let startPage = Math.max(1, currentPage - (maxButtons - 1 - half));
-                    let endPage = Math.min(totalPages, startPage + (maxButtons - 1));
-                    if (endPage - startPage < (maxButtons - 1)) {
-                        startPage = Math.max(1, endPage - (maxButtons - 1));
-                    }
-
-                    for (let i = startPage; i <= endPage; i++) {
-                        const pageBtn = document.createElement('button');
-                        if (i === currentPage) {
-                            pageBtn.className = `w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center font-bold text-xs border-none cursor-default`;
-                            pageBtn.innerText = i;
-                        } else {
-                            pageBtn.className = `w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-700 flex items-center justify-center font-semibold text-xs cursor-pointer hover:bg-slate-50 transition`;
-                            pageBtn.innerText = i;
-                            pageBtn.addEventListener('click', () => {
-                                currentPage = i;
-                                renderResults();
-                                scrollToModalTop();
-                            });
-                        }
-                        paginationEl.appendChild(pageBtn);
-                    }
-
-                    // Next button
-                    const nextBtn = document.createElement('button');
-                    nextBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
-                    nextBtn.innerHTML = `{{ __('Berikutnya') }} <i class="ph ph-caret-right"></i>`;
-                    if (currentPage === totalPages) {
-                        nextBtn.classList.add('opacity-50', 'pointer-events-none');
-                    } else {
-                        nextBtn.addEventListener('click', () => {
-                            currentPage++;
-                            renderResults();
-                            scrollToModalTop();
-                        });
-                    }
-                    paginationEl.appendChild(nextBtn);
                 }
+                paginationEl.appendChild(prevBtn);
+
+                // Page buttons (max 5 on desktop, 4 on mobile)
+                const isMobile = window.innerWidth < 640;
+                const maxButtons = isMobile ? 4 : 5;
+                const half = Math.floor(maxButtons / 2);
+                let startPage = Math.max(1, currentPage - (maxButtons - 1 - half));
+                let endPage = Math.min(totalPages, startPage + (maxButtons - 1));
+                if (endPage - startPage < (maxButtons - 1)) {
+                    startPage = Math.max(1, endPage - (maxButtons - 1));
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    if (i === currentPage) {
+                        pageBtn.className = `w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center font-bold text-xs border-none cursor-default`;
+                        pageBtn.innerText = i;
+                    } else {
+                        pageBtn.className = `w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-700 flex items-center justify-center font-semibold text-xs cursor-pointer hover:bg-slate-50 transition`;
+                        pageBtn.innerText = i;
+                        pageBtn.addEventListener('click', () => {
+                            currentPage = i;
+                            fetchPage(currentPage);
+                            scrollToModalTop();
+                        });
+                    }
+                    paginationEl.appendChild(pageBtn);
+                }
+
+                // Next button
+                const nextBtn = document.createElement('button');
+                nextBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
+                nextBtn.innerHTML = `{{ __('Berikutnya') }} <i class="ph ph-caret-right"></i>`;
+                if (currentPage === totalPages) {
+                    nextBtn.classList.add('opacity-50', 'pointer-events-none');
+                } else {
+                    nextBtn.addEventListener('click', () => {
+                        currentPage++;
+                        fetchPage(currentPage);
+                        scrollToModalTop();
+                    });
+                }
+                paginationEl.appendChild(nextBtn);
             }
 
             function scrollToModalTop() {
@@ -1499,7 +1498,7 @@
             // Variables for debounced search
             let searchTimeout = null;
 
-            // Live Search input listener
+            // Live Search input listener — server-side search
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     const query = this.value.trim();
@@ -1513,15 +1512,9 @@
                     
                     searchTimeout = setTimeout(() => {
                         if (!currentSearchBaseUrl) return;
-                        const urlObj = new URL(currentSearchBaseUrl, window.location.origin);
-                        if (query !== '') {
-                            urlObj.searchParams.set('q', query);
-                        } else {
-                            urlObj.searchParams.delete('q');
-                        }
-                        // Reset pagination to page 1 for a new search
-                        currentPage = 1; 
-                        loadLocationResults(urlObj.toString(), '');
+                        // Reset to page 1 for new search
+                        currentPage = 1;
+                        fetchPage(currentPage);
                     }, 500);
                 });
             }
@@ -1537,17 +1530,13 @@
                 });
             }
 
-            // PerPage dropdown listener
+            // PerPage dropdown listener — re-fetch from server
             if (perPageSelect) {
                 perPageSelect.addEventListener('change', function() {
                     const val = this.value;
-                    if (val === 'all') {
-                        perPage = 'all';
-                    } else {
-                        perPage = parseInt(val, 10);
-                    }
+                    perPage = parseInt(val, 10) || 5;
                     currentPage = 1;
-                    renderResults();
+                    fetchPage(currentPage);
                 });
             }
 

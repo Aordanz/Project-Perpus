@@ -163,7 +163,7 @@ class BookController extends Controller
         });
 
         // Get 20 latest books with items.location eager loaded
-        $latestBooks = Book::with('items.location')->latest()->take(20)->get();
+        $latestBooks = Book::with(['items.location', 'publisherRelation'])->latest()->take(20)->get();
 
         // Get Active Information Center data
         $activeInfos = \App\Models\InformationCenter::where('status', 'published')
@@ -185,13 +185,12 @@ class BookController extends Controller
     public function indexJudulShow(Request $request, $initial)
     {
         $perPage = $request->input('per_page', 5);
-        $query = Book::with(['items.location'])
+        $query = Book::with(['items.location', 'publisherRelation'])
             ->where('judul_buku', 'like', $initial . '%')
             ->orderBy('judul_buku', 'asc');
 
         if ($perPage === 'all' || $perPage == 0) {
-            // Membatasi maksimal 100 data agar pemuatan sangat kencang & tanpa lag
-            $books = $query->paginate(100)->withQueryString();
+            $books = $query->paginate(20)->withQueryString();
         } else {
             $books = $query->paginate((int) $perPage)->withQueryString();
         }
@@ -258,19 +257,45 @@ class BookController extends Controller
             });
         }
 
-        // Paginate results (supports dynamic per_page or custom limit)
-        $perPage = request()->input('per_page', 10);
-        if ($perPage === 'all') {
-            // Membatasi maksimal 100 data agar pemuatan sangat kencang & tanpa lag
-            $books = $query->with(['items.location'])->paginate(100)->withQueryString();
-        } else {
-            $books = $query->with(['items.location'])->paginate((int)$perPage)->withQueryString();
+        // Paginate results
+        $perPage = (int) $request->input('per_page', 10);
+        if ($perPage <= 0) $perPage = 10;
+        
+        $books = $query->with(['items.location', 'publisherRelation'])->paginate($perPage)->withQueryString();
+
+        // If AJAX/JSON requested, return JSON API response
+        if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest' || $request->has('json')) {
+            $transformedBooks = collect($books->items())->map(function ($book) {
+                $locNames = $book->items->map(function($i) { 
+                    return __($i->location->name ?? ''); 
+                })->filter()->unique()->values()->all();
+
+                return [
+                    'id' => $book->id,
+                    'title' => $book->title ?: __('Judul Tidak Tersedia'),
+                    'author' => $book->author ?: '-',
+                    'publisher' => $book->publisher ?: '-',
+                    'publish_year' => $book->publish_year ?: '-',
+                    'call_number' => $book->call_number ?: '-',
+                    'category' => __($book->category ?: 'Umum'),
+                    'jenis' => strtoupper(__($book->jenis ?: 'BUKU')),
+                    'cover_image' => $book->cover_image ? asset('covers/' . $book->cover_image) : null,
+                    'locations' => !empty($locNames) ? implode(', ', $locNames) : __('Tidak ditentukan'),
+                    'detail_url' => route('books.show', $book->id),
+                ];
+            });
+
+            return response()->json([
+                'data' => $transformedBooks,
+                'total' => $books->total(),
+                'per_page' => $books->perPage(),
+                'current_page' => $books->currentPage(),
+                'last_page' => $books->lastPage(),
+            ]);
         }
 
-        // Get locations for the advanced search form in results page
-        $locations = Location::all();
-
-        return view('search', compact('books', 'locations'));
+        // Direct browser visits to /search redirect to homepage
+        return redirect()->route('home');
     }
 
     /**
@@ -278,7 +303,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $book = Book::with(['items.location'])->where('idmaster', $id)->firstOrFail();
+        $book = Book::with(['items.location', 'publisherRelation'])->where('idmaster', $id)->firstOrFail();
         
         return view('detail', compact('book'));
     }
@@ -288,7 +313,7 @@ class BookController extends Controller
      */
     public function latest(Request $request)
     {
-        $query = Book::with(['items.location'])->latest();
+        $query = Book::with(['items.location', 'publisherRelation'])->latest();
 
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);
@@ -314,7 +339,7 @@ class BookController extends Controller
     public function galeri(Request $request)
     {
         // Urutkan berdasarkan abjad (judul_buku) lalu berdasarkan ID (penomoran)
-        $query = Book::with(['items.location'])->orderBy('judul_buku', 'asc')->orderBy('idbuku', 'asc');
+        $query = Book::with(['items.location', 'publisherRelation'])->orderBy('judul_buku', 'asc')->orderBy('idbuku', 'asc');
         
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);
