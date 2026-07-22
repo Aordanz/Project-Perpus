@@ -561,14 +561,23 @@
                     // Initialize slider
                     initSlider();
 
-                    // Auto-show delay: 1.5 seconds
-                    autoShowTimeout = setTimeout(() => {
-                        openEventModal();
-                        // Auto-hide timing: 8 seconds (only for single slide, otherwise let user navigate)
-                        if (loadedEvents.length <= 1) {
-                            startAutoHideTimer();
-                        }
-                    }, 1500);
+                    // Check if user chose "Jangan tampilkan lagi hari ini" for today
+                    const todayString = new Date().toDateString();
+                    let hideToday = false;
+                    try {
+                        hideToday = (localStorage.getItem('event_popup_hide_date') === todayString);
+                    } catch (e) {}
+
+                    // Auto-show delay: 1.5 seconds (only if not hidden for today)
+                    if (!hideToday) {
+                        autoShowTimeout = setTimeout(() => {
+                            openEventModal();
+                            // Auto-hide timing: 8 seconds (only for single slide, otherwise let user navigate)
+                            if (loadedEvents.length <= 1) {
+                                startAutoHideTimer();
+                            }
+                        }, 1500);
+                    }
                 } else {
                     // Tampilkan pemberitahuan kosong jika tidak ada informasi
                     sliderTrack.innerHTML = `
@@ -756,6 +765,15 @@
 
         function openEventModal() {
             if (loadedEvents.length === 0) return;
+
+            // Sync checkbox state with localStorage
+            if (globalDontShowCheckbox) {
+                const todayString = new Date().toDateString();
+                try {
+                    globalDontShowCheckbox.checked = (localStorage.getItem('event_popup_hide_date') === todayString);
+                } catch (e) {}
+            }
+
             eventModal.classList.remove('hidden');
             eventModal.classList.add('flex');
             // Force reflow
@@ -773,9 +791,15 @@
             }
             
             // Check if global don't show checkbox is checked
-            if (globalDontShowCheckbox && globalDontShowCheckbox.checked) {
+            if (globalDontShowCheckbox) {
                 const todayString = new Date().toDateString();
-                localStorage.setItem('event_popup_hide_date', todayString);
+                try {
+                    if (globalDontShowCheckbox.checked) {
+                        localStorage.setItem('event_popup_hide_date', todayString);
+                    } else {
+                        localStorage.removeItem('event_popup_hide_date');
+                    }
+                } catch (e) {}
             }
             
             eventContent.classList.remove('scale-100', 'opacity-100');
@@ -786,6 +810,19 @@
                 eventModal.classList.add('hidden');
                 document.body.style.overflow = '';
             }, 300);
+        }
+
+        if (globalDontShowCheckbox) {
+            globalDontShowCheckbox.addEventListener('change', function() {
+                const todayString = new Date().toDateString();
+                try {
+                    if (this.checked) {
+                        localStorage.setItem('event_popup_hide_date', todayString);
+                    } else {
+                        localStorage.removeItem('event_popup_hide_date');
+                    }
+                } catch (e) {}
+            });
         }
 
         // Toggle active status for event detail choices

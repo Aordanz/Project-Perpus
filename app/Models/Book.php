@@ -68,12 +68,20 @@ class Book extends Model
     {
         $panggil = trim($this->nopanggil ?? '');
         if (empty($panggil)) {
+            $panggil = trim($this->noklasifikasi ?? '');
+        }
+        if (empty($panggil)) {
             return null;
         }
-        $firstChar = strtoupper(substr($panggil, 0, 1));
-        if (array_key_exists($firstChar, self::DDC_CATEGORIES)) {
-            return $firstChar;
+
+        // Match first digit character (0-9) in the call number or classification
+        if (preg_match('/[0-9]/', $panggil, $matches)) {
+            $firstDigit = $matches[0];
+            if (array_key_exists($firstDigit, self::DDC_CATEGORIES)) {
+                return $firstDigit;
+            }
         }
+
         return null;
     }
 
