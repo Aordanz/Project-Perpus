@@ -69,8 +69,8 @@
                 </div>
 
                 <!-- Search -->
-                <form action="{{ route('search') }}" method="GET" class="w-full md:w-96 relative">
-                    <input type="text" name="q" placeholder="{{ __('Cari Koleksi...') }}" 
+                <form action="{{ route('koleksi.terbaru') }}" method="GET" class="w-full md:w-96 relative">
+                    <input type="text" name="q" id="live-search" value="{{ request('q') }}" placeholder="{{ __('Cari Koleksi...') }}" 
                            class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-0 rounded-xl focus:ring-2 focus:ring-[#106c38]/20 focus:bg-white transition-all text-sm font-medium outline-none">
                     <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#106c38] transition cursor-pointer bg-transparent border-0 outline-none flex items-center justify-center">
                         <i class="ph ph-magnifying-glass text-lg font-bold"></i>
@@ -127,17 +127,16 @@
 
                 @foreach($existingBigCategories as $index => $cat)
                     @php
-                        $visibilityClass = '';
-                        if ($index >= 1 && $index < 2) $visibilityClass = 'chip-collapsible sm-visible';
-                        elseif ($index >= 2 && $index < 3) $visibilityClass = 'chip-collapsible md-visible';
-                        elseif ($index >= 3 && $index < 4) $visibilityClass = 'chip-collapsible lg-visible';
-                        elseif ($index >= 4 && $index < 6) $visibilityClass = 'chip-collapsible xl-visible';
-                        elseif ($index >= 6) $visibilityClass = 'chip-collapsible';
+                        $visibilityClass = 'chip-collapsible';
+                        if ($index < 1) $visibilityClass = 'chip-collapsible sm-visible';
+                        elseif ($index < 2) $visibilityClass = 'chip-collapsible md-visible';
+                        elseif ($index < 3) $visibilityClass = 'chip-collapsible lg-visible';
+                        elseif ($index < 4) $visibilityClass = 'chip-collapsible xl-visible';
 
                         $iconClass = $iconMap[$cat] ?? 'ph-books';
                     @endphp
                     <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
-                        class="filter-chip {{ $visibilityClass ?: 'inline-flex' }} bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38] items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all text-xs sm:text-sm shadow-sm whitespace-nowrap cursor-pointer">
+                        class="filter-chip {{ $visibilityClass }} bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38] items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all text-xs sm:text-sm shadow-sm whitespace-nowrap cursor-pointer">
                         <i class="ph {{ $iconClass }} text-base sm:text-lg"></i> {{ __($cat) }}
                     </button>
                 @endforeach
@@ -344,7 +343,7 @@
                 });
             }
 
-            let activeSearch = '';
+            let activeSearch = searchInput ? searchInput.value.toLowerCase().trim() : '';
             let activeFilter = 'all'; // 'all', 'available', or 'subject'
             let activeSubjectValue = '';
 
@@ -384,6 +383,25 @@
                         card.classList.add('!hidden');
                     }
                 });
+
+                if (activeSearch) {
+                    matchedCards.sort((a, b) => {
+                        const titleA = (a.getAttribute('data-title') || '').toLowerCase();
+                        const titleB = (b.getAttribute('data-title') || '').toLowerCase();
+                        const authorA = (a.getAttribute('data-author') || '').toLowerCase();
+                        const authorB = (b.getAttribute('data-author') || '').toLowerCase();
+
+                        const scoreA = titleA.startsWith(activeSearch) ? 100 : (titleA.includes(' ' + activeSearch) ? 80 : (authorA.startsWith(activeSearch) ? 60 : 10));
+                        const scoreB = titleB.startsWith(activeSearch) ? 100 : (titleB.includes(' ' + activeSearch) ? 80 : (authorB.startsWith(activeSearch) ? 60 : 10));
+
+                        return scoreB - scoreA;
+                    });
+
+                    const listContainer = document.getElementById('collections-list');
+                    if (listContainer) {
+                        matchedCards.forEach(card => listContainer.appendChild(card));
+                    }
+                }
 
                 const totalMatched = matchedCards.length;
 
@@ -457,7 +475,8 @@
                 prevBtn.addEventListener('click', () => {
                     currentPage--;
                     applyFilters();
-                    document.getElementById('live-search').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    const liveSearchEl = document.getElementById('live-search');
+                    if (liveSearchEl) liveSearchEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 });
                 buttonsContainer.appendChild(prevBtn);
 
@@ -474,7 +493,8 @@
                         if (i !== currentPage) {
                             currentPage = i;
                             applyFilters();
-                            document.getElementById('live-search').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            const liveSearchEl = document.getElementById('live-search');
+                            if (liveSearchEl) liveSearchEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         }
                     });
                     buttonsContainer.appendChild(pageBtn);
@@ -488,17 +508,20 @@
                 nextBtn.addEventListener('click', () => {
                     currentPage++;
                     applyFilters();
-                    document.getElementById('live-search').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    const liveSearchEl = document.getElementById('live-search');
+                    if (liveSearchEl) liveSearchEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 });
                 buttonsContainer.appendChild(nextBtn);
             }
 
             // Live Search Input Handler
-            searchInput.addEventListener('input', (e) => {
-                activeSearch = e.target.value.toLowerCase().trim();
-                currentPage = 1;
-                applyFilters();
-            });
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    activeSearch = e.target.value.toLowerCase().trim();
+                    currentPage = 1;
+                    applyFilters();
+                });
+            }
 
             // Filter Chip Click Handler
             filterChips.forEach(chip => {

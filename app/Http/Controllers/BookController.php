@@ -97,6 +97,19 @@ class BookController extends Controller
                 }
             }
         });
+
+        // 5. RELEVANCE SORTING (Prioritaskan buku yang diawali kata kunci)
+        $qTrimmed = trim($qNormalized);
+        if (!empty($qTrimmed)) {
+            $query->orderByRaw("
+                CASE 
+                    WHEN LOWER(REPLACE(REPLACE(judul_buku, '''', ''), '\"', '')) LIKE ? THEN 1
+                    WHEN LOWER(REPLACE(REPLACE(judul_buku, '''', ''), '\"', '')) LIKE ? THEN 2
+                    WHEN LOWER(REPLACE(REPLACE(pengarang, '''', ''), '\"', '')) LIKE ? THEN 3
+                    ELSE 4
+                END ASC
+            ", ["{$qTrimmed}%", "% {$qTrimmed}%", "{$qTrimmed}%"]);
+        }
     }
 
     /**
@@ -248,6 +261,10 @@ class BookController extends Controller
     {
         $query = Book::with(['items.location'])->latest();
 
+        if ($request->filled('q')) {
+            $this->applyAdvancedSearch($query, $request->q);
+        }
+
         if ($request->filled('location')) {
             $locationCode = $request->location;
             $query->whereHas('items.location', function ($q) use ($locationCode) {
@@ -255,7 +272,7 @@ class BookController extends Controller
             });
         }
 
-        $latestBooks = $query->take(20)->get();
+        $latestBooks = $query->take(50)->get();
         
         $locations = Location::all();
         
