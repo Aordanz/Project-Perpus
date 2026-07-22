@@ -23,8 +23,8 @@ class BookController extends Controller
         // Bersihkan tanda kutip dari query untuk pencarian yang mengabaikan tanda baca
         $qClean = str_replace(["'", '"', '`'], '', $q);
         
-        // Normalisasi Typo / Leetspeak (misal: 1 -> i, 0 -> o, 4 -> a)
-        $typoMap = ['1' => 'i', '0' => 'o', '4' => 'a', '3' => 'e', '5' => 's', '8' => 'b'];
+        // Normalisasi Typo / Leetspeak (misal: 1 -> i, 0 -> o, 4 -> a, 3 -> e, 5 -> s, 7 -> t, 8 -> b, @ -> a)
+        $typoMap = ['1' => 'i', '0' => 'o', '4' => 'a', '3' => 'e', '5' => 's', '7' => 't', '8' => 'b', '@' => 'a'];
         $qNormalized = strtr(strtolower($qClean), $typoMap);
 
         // 1. EXACT MATCH (if query is wrapped in quotes)
@@ -38,7 +38,7 @@ class BookController extends Controller
             return;
         }
 
-        // 2. SEMANTIC SEARCH (Synonyms Mapping)
+        // 2. SEMANTIC SEARCH & TYPO CORRECTION (Levenshtein & Synonyms)
         $synonyms = [
             'komputer' => ['it', 'teknologi', 'sistem informasi', 'laptop', 'informatika', 'software', 'hardware', 'jaringan'],
             'skripsi' => ['tugas akhir', 'tesis', 'disertasi', 'penelitian', 'jurnal', 'karya ilmiah'],
@@ -50,10 +50,39 @@ class BookController extends Controller
             'sastra' => ['bahasa', 'puisi', 'novel', 'linguistik', 'cerpen', 'drama'],
         ];
 
+        // Dictionary for Levenshtein typo correction
+        $dictionary = [
+            'ekonomi', 'manajemen', 'akuntansi', 'komputer', 'teknologi', 'informatika', 
+            'sistem', 'informasi', 'hukum', 'pidana', 'perdata', 'agama', 'islam', 
+            'kedokteran', 'kesehatan', 'keperawatan', 'sejarah', 'sastra', 'bahasa', 
+            'indonesia', 'pendidikan', 'psikologi', 'filsafat', 'metode', 'penelitian', 
+            'analisis', 'pengantar', 'teori', 'aplikasi', 'pemrograman', 'algoritma', 
+            'database', 'jaringan', 'biologi', 'kimia', 'fisika', 'matematika', 'teknik', 
+            'mesin', 'elektro', 'arsitektur', 'politik', 'sosial', 'komunikasi', 
+            'administrasi', 'bisnis', 'pemasaran', 'organisasi', 'keuangan', 'investasi', 
+            'perbankan', 'pajak', 'audit', 'kategori', 'koleksi', 'logika', 'laporan'
+        ];
+
         // Kita gabungkan input asli, yang dibersihkan, dan yang dinormalisasi
         $searchTerms = array_unique([$q, $qClean, $qNormalized]);
         $qLower = strtolower($qNormalized);
         
+        // Auto-correct typos using Levenshtein distance
+        $qWords = explode(' ', $qLower);
+        foreach ($qWords as $w) {
+            $wClean = trim($w);
+            if (strlen($wClean) >= 4) {
+                $maxDist = strlen($wClean) <= 5 ? 1 : 2;
+                foreach ($dictionary as $dictWord) {
+                    if (abs(strlen($dictWord) - strlen($wClean)) <= $maxDist) {
+                        if (levenshtein($wClean, $dictWord) <= $maxDist) {
+                            $searchTerms[] = $dictWord;
+                        }
+                    }
+                }
+            }
+        }
+
         // Add related terms if keyword matches our dictionary
         foreach ($synonyms as $key => $relatedTerms) {
             if (str_contains($qLower, $key) || in_array($qLower, $relatedTerms)) {
