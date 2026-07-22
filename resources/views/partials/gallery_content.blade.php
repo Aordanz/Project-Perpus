@@ -60,8 +60,8 @@
 
                         <!-- Publisher Row (acting as Store Name) -->
                         <div class="flex items-center gap-1 text-[9px] sm:text-[10px] text-slate-500">
-                            <div class="w-3.5 h-3.5 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0">
-                                <i class="ph-fill ph-seal-check text-[9px]"></i>
+                            <div class="w-3.5 h-3.5 rounded-full bg-emerald-50 text-[#106c38] flex items-center justify-center flex-shrink-0 border border-emerald-100/60">
+                                <i class="ph ph-buildings text-[9px]"></i>
                             </div>
                             <span class="truncate font-medium">{{ $book->publisher ?: '-' }}</span>
                         </div>

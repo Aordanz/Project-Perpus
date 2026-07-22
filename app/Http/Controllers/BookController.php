@@ -190,8 +190,8 @@ class BookController extends Controller
             ->orderBy('judul_buku', 'asc');
 
         if ($perPage === 'all' || $perPage == 0) {
-            // Membatasi maksimal 500 data agar tidak kehabisan memori server
-            $books = $query->paginate(500)->withQueryString();
+            // Membatasi maksimal 100 data agar pemuatan sangat kencang & tanpa lag
+            $books = $query->paginate(100)->withQueryString();
         } else {
             $books = $query->paginate((int) $perPage)->withQueryString();
         }
@@ -261,8 +261,8 @@ class BookController extends Controller
         // Paginate results (supports dynamic per_page or custom limit)
         $perPage = request()->input('per_page', 10);
         if ($perPage === 'all') {
-            // Membatasi maksimal 500 data agar tidak kehabisan memori RAM server
-            $books = $query->with(['items.location'])->paginate(500)->withQueryString();
+            // Membatasi maksimal 100 data agar pemuatan sangat kencang & tanpa lag
+            $books = $query->with(['items.location'])->paginate(100)->withQueryString();
         } else {
             $books = $query->with(['items.location'])->paginate((int)$perPage)->withQueryString();
         }
