@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Official Public Access Catalog (OPAC) Universitas Sumatera Utara. Temukan koleksi buku, jurnal, dan karya ilmiah perpustakaan.">
+    <meta name="description" content="Pusat Informasi & Kontak Resmi Perpustakaan Universitas Sumatera Utara. Temukan lokasi, telepon, email, jam operasional, dan panduan kunjungan.">
 
-        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <title>{{ __('Kontak Kami') }} - OPAC {{ __('Universitas Sumatera Utara') }}</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
@@ -34,288 +34,321 @@
 
     @include('partials.navbar')
 
-    <main>
+    <main class="flex-grow">
 
-    <!-- Header Section with Image Background -->
-    <div class="relative pt-24 pb-24 lg:pt-28 lg:pb-32 overflow-hidden bg-slate-900">
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('kolam_perpustakaan.webp') }}" alt="Perpustakaan USU" class="w-full h-full object-cover opacity-40">
-            <div class="absolute inset-0 bg-gradient-to-b from-[#064e3b]/80 via-[#064e3b]/60 to-[#f8fafc]"></div>
-        </div>
-        
-
-
-        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white mb-6 shadow-xl">
-                <i class="ph ph-phone-call text-3xl"></i>
+        <!-- Hero Header Section -->
+        <div class="relative pt-28 pb-24 lg:pt-32 lg:pb-36 overflow-hidden bg-slate-900">
+            <!-- Background Image with Layered Gradients -->
+            <div class="absolute inset-0 z-0">
+                <img src="{{ asset('kolam_perpustakaan.webp') }}" alt="Perpustakaan USU" class="w-full h-full object-cover opacity-35 scale-105 transform">
+                <div class="absolute inset-0 bg-gradient-to-b from-[#064e3b]/90 via-[#064e3b]/75 to-[#f8fafc]"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,108,56,0.4),transparent_50%)]"></div>
             </div>
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">{{ __('Hubungi Kami') }}</h1>
-            <p class="text-lg md:text-xl text-green-50/90 max-w-2xl mx-auto font-light leading-relaxed">
-                {{ __('Punya pertanyaan atau butuh bantuan? Kami siap membantu melayani kebutuhan informasi dan literatur Anda.') }}
-            </p>
-        </div>
-    </div>
-
-    <!-- Content Section -->
-    <div class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
-            <!-- Info Cards (Left Side) -->
-            <div class="lg:col-span-5 flex flex-col space-y-6">
-                <!-- Main Info Card -->
-                <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-full -mr-16 -mt-16 opacity-50"></div>
+            <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <!-- Pill Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-green-100 text-xs sm:text-sm font-medium mb-6 shadow-lg">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>{{ __('Pusat Layanan & Informasi Publik') }}</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight">
+                    {{ __('Hubungi & Kunjungi Kami') }}
+                </h1>
+                
+                <p class="text-base sm:text-lg md:text-xl text-green-50/90 max-w-3xl mx-auto font-light leading-relaxed mb-8">
+                    {{ __('Perpustakaan Universitas Sumatera Utara selalu siap membantu melayani kebutuhan literatur, riset akademik, konsultasi referensi, dan fasilitas belajar Anda.') }}
+                </p>
+
+                <!-- Quick Action Buttons -->
+                <div class="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+                    <a href="https://maps.google.com/?q=Perpustakaan+Universitas+Sumatera+Utara" target="_blank" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-white text-[#106c38] font-semibold text-sm hover:bg-green-50 transition-all duration-200 shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5">
+                        <i class="ph ph-map-pin text-lg text-[#106c38]"></i>
+                        <span>{{ __('Petunjuk Lokasi (Google Maps)') }}</span>
+                    </a>
+                    <a href="mailto:library@usu.ac.id" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-800/60 backdrop-blur-md border border-white/20 text-white font-semibold text-sm hover:bg-emerald-800/80 transition-all duration-200 shadow-lg hover:-translate-y-0.5">
+                        <i class="ph ph-envelope-simple text-lg text-emerald-300"></i>
+                        <span>{{ __('Kirim Email Resmi') }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20 space-y-16">
+            
+            <!-- Section 1: Top 4 Contact Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Card 1: Alamat Utama -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-[#106c38] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                            <i class="ph ph-map-pin-line text-2xl"></i>
+                        </div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ __('Lokasi Utama') }}</h3>
+                        <h4 class="text-lg font-bold text-slate-800 mb-2">{{ __('Alamat Kampus') }}</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Jl. Perpustakaan No. 1<br>
+                            Kampus USU Medan 20155<br>
+                            Sumatera Utara, Indonesia
+                        </p>
+                    </div>
+                    <a href="https://maps.google.com/?q=Perpustakaan+Universitas+Sumatera+Utara" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#106c38] hover:text-emerald-800 transition group-hover:translate-x-1 duration-200">
+                        <span>{{ __('Buka di Google Maps') }}</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Card 2: Telepon & Fax -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-[#106c38] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                            <i class="ph ph-phone-call text-2xl"></i>
+                        </div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ __('Hotline & Telefon') }}</h3>
+                        <h4 class="text-lg font-bold text-slate-800 mb-2">{{ __('Telepon & Fax') }}</h4>
+                        <div class="text-slate-600 text-sm leading-relaxed mb-4 space-y-1">
+                            <p><span class="font-semibold text-slate-700">Phone:</span> (+62)61 813526</p>
+                            <p><span class="font-semibold text-slate-700">Line 2:</span> (+62)61 811112, 811113</p>
+                            <p><span class="font-semibold text-slate-700">Fax:</span> (+62)61 813108</p>
+                        </div>
+                    </div>
+                    <a href="tel:+6261813526" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#106c38] hover:text-emerald-800 transition group-hover:translate-x-1 duration-200">
+                        <span>{{ __('Hubungi Telepon') }}</span>
+                        <i class="ph ph-phone text-sm"></i>
+                    </a>
+                </div>
+
+                <!-- Card 3: Email & Website -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-[#106c38] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                            <i class="ph ph-envelope-simple-open text-2xl"></i>
+                        </div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ __('Korespondensi Digital') }}</h3>
+                        <h4 class="text-lg font-bold text-slate-800 mb-2">{{ __('Email & Portal') }}</h4>
+                        <div class="text-slate-600 text-sm leading-relaxed mb-4 space-y-1">
+                            <p class="truncate"><span class="font-semibold text-slate-700">Email:</span> <a href="mailto:library@usu.ac.id" class="text-[#106c38] hover:underline">library@usu.ac.id</a></p>
+                            <p class="truncate"><span class="font-semibold text-slate-700">Web:</span> <a href="https://library.usu.ac.id" target="_blank" class="text-[#106c38] hover:underline">library.usu.ac.id</a></p>
+                        </div>
+                    </div>
+                    <a href="mailto:library@usu.ac.id" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#106c38] hover:text-emerald-800 transition group-hover:translate-x-1 duration-200">
+                        <span>{{ __('Kirim Email') }}</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Card 4: Jam Operasional -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-[#106c38] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                            <i class="ph ph-clock text-2xl"></i>
+                        </div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ __('Waktu Kunjungan') }}</h3>
+                        <h4 class="text-lg font-bold text-slate-800 mb-2">{{ __('Jam Operasional') }}</h4>
+                        <div class="text-slate-600 text-xs leading-relaxed mb-4 space-y-1.5">
+                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
+                                <span class="font-medium text-slate-700">{{ __('Senin - Kamis') }}</span>
+                                <span class="font-bold text-emerald-700">08.00 - 16.00</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
+                                <span class="font-medium text-slate-700">{{ __('Jumat') }}</span>
+                                <span class="font-bold text-emerald-700">08.00 - 16.30</span>
+                            </div>
+                            <div class="flex justify-between items-center py-1">
+                                <span class="font-medium text-slate-500">{{ __('Sabtu, Minggu & Libur') }}</span>
+                                <span class="font-semibold text-rose-500 bg-rose-50 px-2 py-0.5 rounded">{{ __('Tutup') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inline-flex items-center gap-1.5 text-xs text-slate-400">
+                        <i class="ph ph-info text-sm text-emerald-600"></i>
+                        <span>{{ __('Istirahat Jumat: 12.00 - 13.30') }}</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Section 2: Interactive Map & Visiting Access Guide -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-slate-100 shadow-[0_10px_40px_rgb(0,0,0,0.06)]">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     
-                    <h3 class="text-2xl font-bold text-slate-800 mb-6">{{ __('Informasi Kontak') }}</h3>
-                    
-                    <div class="space-y-6">
-                        <!-- Address -->
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center flex-shrink-0">
-                                <i class="ph ph-map-pin text-xl"></i>
+                    <!-- Map Frame (Lg: 7 Cols) -->
+                    <div class="lg:col-span-7 flex flex-col space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-[#106c38] flex items-center justify-center font-bold">
+                                    <i class="ph ph-map-trifold text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-800">{{ __('Peta Lokasi Interaktif') }}</h3>
+                                    <p class="text-xs text-slate-500">{{ __('Gedung Utama Perpustakaan USU Medan') }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="font-bold text-sm text-slate-400 uppercase tracking-wider mb-1">{{ __('Alamat Utama') }}</h4>
-                                <p class="text-slate-700 font-medium leading-snug">
-                                    Jl. Perpustakaan No. 1<br>
-                                    Kampus USU Medan 20155<br>
-                                    Sumatera Utara, Indonesia
-                                </p>
-                            </div>
+                            <a href="https://maps.google.com/?q=Perpustakaan+Universitas+Sumatera+Utara" target="_blank" class="text-xs font-semibold text-[#106c38] hover:underline inline-flex items-center gap-1">
+                                <span>{{ __('Layar Penuh') }}</span>
+                                <i class="ph ph-arrow-square-out text-sm"></i>
+                            </a>
                         </div>
 
-                        <!-- Phone -->
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center flex-shrink-0">
-                                <i class="ph ph-phone text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-sm text-slate-400 uppercase tracking-wider mb-1">{{ __('Telepon & Fax') }}</h4>
-                                <p class="text-slate-700 font-medium leading-snug">
-                                    Phone: (+62)61 813526, 811112, 811113<br>
-                                    Fax: (+62)61 813108
-                                </p>
-                            </div>
+                        <div class="relative w-full h-[360px] sm:h-[420px] rounded-2xl overflow-hidden border border-slate-200 shadow-inner group">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.1158654877713!2d98.65349547501755!3d3.560756796414163!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312fe016a243d9%3A0x6b7724a682f64f43!2sPerpustakaan%20Universitas%20Sumatera%20Utara!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
+                                class="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                    </div>
+
+                    <!-- Access & Visit Guide (Lg: 5 Cols) -->
+                    <div class="lg:col-span-5 flex flex-col justify-center space-y-6">
+                        <div>
+                            <span class="text-xs font-bold text-[#106c38] tracking-widest uppercase bg-green-50 px-3 py-1 rounded-full">{{ __('Panduan Pengunjung') }}</span>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-3 mb-2">{{ __('Petunjuk Akses Kunjungan') }}</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">{{ __('Ikuti panduan ringkas berikut untuk mempermudah alur kunjungan Anda ke Gedung Perpustakaan USU:') }}</p>
                         </div>
 
-                        <!-- Email & Web -->
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center flex-shrink-0">
-                                <i class="ph ph-envelope-simple text-xl"></i>
+                        <div class="space-y-4">
+                            <!-- Step 1 -->
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 transition">
+                                <div class="w-8 h-8 rounded-lg bg-[#106c38] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                    1
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-0.5">{{ __('Akses Pintu Masuk Kampus') }}</h4>
+                                    <p class="text-slate-600 text-xs leading-normal">{{ __('Masuk melalui Pintu Utama 1 atau Pintu 3 Kampus USU Medan, lalu menuju area bundaran perpustakaan.') }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="font-bold text-sm text-slate-400 uppercase tracking-wider mb-1">{{ __('Email & Website') }}</h4>
-                                <p class="text-slate-700 font-medium leading-snug">
-                                    Email: <a href="mailto:library@usu.ac.id" class="text-[#106c38] hover:underline">library@usu.ac.id</a><br>
-                                    Website: <a href="http://library.usu.ac.id" target="_blank" class="text-[#106c38] hover:underline">library.usu.ac.id</a>
-                                </p>
+
+                            <!-- Step 2 -->
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 transition">
+                                <div class="w-8 h-8 rounded-lg bg-[#106c38] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                    2
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-0.5">{{ __('Area Parkir Pengunjung') }}</h4>
+                                    <p class="text-slate-600 text-xs leading-normal">{{ __('Parkir kendaraan roda dua dan roda empat tersedia tepat di area parkir depan dan samping gedung.') }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 transition">
+                                <div class="w-8 h-8 rounded-lg bg-[#106c38] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                    3
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-0.5">{{ __('Registrasi Presensi Masuk') }}</h4>
+                                    <p class="text-slate-600 text-xs leading-normal">{{ __('Tunjukkan Kartu Tanda Mahasiswa (KTM) atau scan identitas pengunjung di gate presensi lobby utama.') }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 transition">
+                                <div class="w-8 h-8 rounded-lg bg-[#106c38] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                    4
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-0.5">{{ __('Meja Informasi & Layanan') }}</h4>
+                                    <p class="text-slate-600 text-xs leading-normal">{{ __('Petunjuk sirkulasi, penyerahan skripsi/tesis, dan penelusuran koleksi siap dilayani di Lantai 1.') }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Google Maps Embed -->
-                <div class="bg-white rounded-3xl p-3 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex-grow min-h-[300px] overflow-hidden group">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.1158654877713!2d98.65349547501755!3d3.560756796414163!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312fe016a243d9%3A0x6b7724a682f64f43!2sPerpustakaan%20Universitas%20Sumatera%20Utara!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
-                        class="w-full h-full rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-500 border-0" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
                 </div>
             </div>
 
-            <!-- Contact Form (Right Side) -->
-            <div class="lg:col-span-7 bg-white rounded-3xl p-8 md:p-10 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex flex-col">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-slate-800 mb-2">{{ __('Kirim Pesan') }}</h2>
-                    <p class="text-slate-500">{{ __('Isi formulir di bawah ini dan tim kami akan merespons secepat mungkin.') }}</p>
+            <!-- Section 3: Official Social Media & Online Portals -->
+            <div class="space-y-6">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2">{{ __('Kanal Layanan Digital & Media Sosial') }}</h2>
+                    <p class="text-slate-500 text-sm">{{ __('Terhubung dengan Perpustakaan USU melalui berbagai media informasi dan repositori ilmiah resmi.') }}</p>
                 </div>
 
-                @if (session('success'))
-                    <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl flex gap-3 text-sm font-medium shadow-sm">
-                        <i class="ph ph-check-circle text-xl flex-shrink-0"></i>
-                        <div class="leading-normal">{{ session('success') }}</div>
-                    </div>
-                @endif
-
-                <form action="{{ route('kontak.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 flex flex-col flex-grow">
-                    @csrf
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Nama -->
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-slate-600">{{ __('Nama Lengkap') }}</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                                    <i class="ph ph-user text-lg"></i>
-                                </div>
-                                <input type="text" name="name" required placeholder="{{ __('Masukkan nama Anda') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
-                            </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <!-- Portal 1: TikTok -->
+                    <a href="https://www.tiktok.com/@usulibrary?is_from_webapp=1&sender_device=pc" target="_blank" class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition group flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-black flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-sm">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 1 1-2.896-2.896c.244 0 .484.03.715.086V9.38a6.34 6.34 0 0 0-.715-.04 6.341 6.341 0 1 0 6.341 6.341V9.756a8.214 8.214 0 0 0 4.77 1.516V7.828a4.83 4.83 0 0 1-1.000-1.142z" fill="#FE2C55" transform="translate(0.7, 0.7)"/>
+                                <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 1 1-2.896-2.896c.244 0 .484.03.715.086V9.38a6.34 6.34 0 0 0-.715-.04 6.341 6.341 0 1 0 6.341 6.341V9.756a8.214 8.214 0 0 0 4.77 1.516V7.828a4.83 4.83 0 0 1-1.000-1.142z" fill="#25F4EE" transform="translate(-0.7, -0.7)"/>
+                                <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 1 1-2.896-2.896c.244 0 .484.03.715.086V9.38a6.34 6.34 0 0 0-.715-.04 6.341 6.341 0 1 0 6.341 6.341V9.756a8.214 8.214 0 0 0 4.77 1.516V7.828a4.83 4.83 0 0 1-1.000-1.142z" fill="#FFFFFF"/>
+                            </svg>
                         </div>
-                        
-                        <!-- Email -->
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-slate-600">{{ __('Alamat Email') }}</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                                    <i class="ph ph-envelope text-lg"></i>
-                                </div>
-                                <input type="email" name="email" required placeholder="{{ __('contoh@email.com') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
-                            </div>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-[#106c38] transition truncate">TikTok Official</h4>
+                            <p class="text-slate-400 text-xs truncate">@usulibrary</p>
                         </div>
-                    </div>
+                    </a>
 
-                    <!-- Subjek -->
-                    <div class="space-y-2">
-                        <label class="text-sm font-bold text-slate-600">{{ __('Subjek Pesan') }}</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                                <i class="ph ph-text-aa text-lg"></i>
-                            </div>
-                            <input type="text" name="subject" required placeholder="{{ __('Apa yang ingin Anda tanyakan?') }}" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400">
+                    <!-- Portal 2: X (Twitter) -->
+                    <a href="https://x.com/usulibrary" target="_blank" class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition group flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
                         </div>
-                    </div>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-[#106c38] transition truncate">X (Twitter) Official</h4>
+                            <p class="text-slate-400 text-xs truncate">@usulibrary</p>
+                        </div>
+                    </a>
 
-                    <!-- Pesan -->
-                    <div class="space-y-2 flex-grow flex flex-col">
-                        <label class="text-sm font-bold text-slate-600">{{ __('Pesan Anda') }}</label>
-                        <textarea name="message" required placeholder="{{ __('Tuliskan detail pertanyaan atau keluhan Anda di sini...') }}" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] outline-none transition text-slate-700 placeholder-slate-400 resize-none flex-grow min-h-[150px]"></textarea>
-                    </div>
+                    <!-- Portal 3: Instagram -->
+                    <a href="https://www.instagram.com/usulibraryofficial?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition group flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="ph ph-instagram-logo"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-[#106c38] transition truncate">Instagram Official</h4>
+                            <p class="text-slate-400 text-xs truncate">@usulibraryofficial</p>
+                        </div>
+                    </a>
 
-                    <!-- Lampiran Gambar -->
-                    <div class="space-y-2">
-                        <label class="text-sm font-bold text-slate-600">{{ __('Lampiran Gambar (Opsional, Maks 3)') }}</label>
-                        <input type="file" name="attachments[]" id="attachments" accept="image/*" multiple class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-[#106c38] hover:file:bg-green-100 cursor-pointer w-full">
-                        <div id="attachment-bubbles" class="flex flex-wrap gap-2 mt-3 empty:hidden"></div>
-                        @error('attachments.*')
-                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Tombol Kirim -->
-                    <div class="pt-2">
-                        <button type="submit" class="w-full sm:w-auto bg-[#106c38] hover:bg-green-800 text-white px-10 py-4 rounded-xl font-bold tracking-wide transition-all shadow-lg shadow-green-900/20 hover:shadow-green-900/40 hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                            {{ __('Kirim Pesan') }} <i class="ph ph-paper-plane-tilt text-lg"></i>
-                        </button>
-                    </div>
-                </form>
+                    <!-- Portal 4: Website Utama USU -->
+                    <a href="https://www.usu.ac.id/" target="_blank" class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition group flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-[#106c38] flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="ph ph-globe"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-[#106c38] transition truncate">Universitas Sumatera Utara</h4>
+                            <p class="text-slate-400 text-xs truncate">www.usu.ac.id</p>
+                        </div>
+                    </a>
+                </div>
             </div>
-            
-            
+
+            <!-- Section 4: AI Chatbot / Assistance Banner -->
+            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#064e3b] to-[#106c38] text-white p-8 sm:p-10 lg:p-12 shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+                    <div class="space-y-3 text-center lg:text-left max-w-2xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-xs font-semibold backdrop-blur-md">
+                            <i class="ph ph-robot text-sm"></i>
+                            <span>{{ __('Asisten AI Virtual') }}</span>
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight">{{ __('Butuh Bantuan Cepat atau Informasi Tambahan?') }}</h3>
+                        <p class="text-green-100/90 text-sm sm:text-base font-light leading-relaxed">
+                            {{ __('Asisten AI kami siap membantu Anda 24/7 mencari informasi katalog buku, syarat bebas pustaka, hingga lokasi rak koleksi. Klik widget obrolan di pojok kanan bawah!') }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-4 flex-shrink-0">
+                        <a href="{{ route('bantuan') }}" class="px-6 py-3.5 rounded-xl bg-white text-[#106c38] font-bold text-sm hover:bg-green-50 transition shadow-lg hover:-translate-y-0.5 inline-flex items-center gap-2">
+                            <i class="ph ph-info text-lg"></i>
+                            <span>{{ __('Pusat Bantuan') }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>
-
-    <!-- Custom Toast Notification Container -->
-    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-3 pointer-events-none items-center"></div>
 
     </main>
 
     @include('partials.footer')
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('attachments');
-            const bubblesContainer = document.getElementById('attachment-bubbles');
-            
-            // Menggunakan DataTransfer untuk memanipulasi file yang dipilih (bisa dihapus)
-            let dt = new DataTransfer();
-
-            // Custom Toast Function
-            function showToast(message, type = 'error') {
-                const toast = document.createElement('div');
-                toast.className = `max-w-xs w-full bg-white border ${type === 'error' ? 'border-rose-200' : 'border-green-200'} rounded-2xl shadow-xl flex items-center p-4 gap-3 transform transition-all duration-300 -translate-y-full opacity-0 pointer-events-auto`;
-                
-                const icon = type === 'error' 
-                    ? '<div class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center flex-shrink-0"><i class="ph ph-warning-circle text-xl"></i></div>'
-                    : '<div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0"><i class="ph ph-check-circle text-xl"></i></div>';
-                
-                toast.innerHTML = `
-                    ${icon}
-                    <div class="flex-grow">
-                        <p class="text-sm font-semibold text-slate-800">${type === 'error' ? '{{ __('Peringatan') }}' : '{{ __('Berhasil') }}'}</p>
-                        <p class="text-xs text-slate-500 leading-snug">${message}</p>
-                    </div>
-                    <button class="text-slate-400 hover:text-slate-600 transition focus:outline-none" onclick="this.parentElement.remove()">
-                        <i class="ph ph-x text-lg"></i>
-                    </button>
-                `;
-
-                document.getElementById('toast-container').appendChild(toast);
-
-                // Animate in
-                requestAnimationFrame(() => {
-                    toast.classList.remove('-translate-y-full', 'opacity-0');
-                    toast.classList.add('translate-y-0');
-                });
-
-                // Auto remove after 3 seconds
-                setTimeout(() => {
-                    toast.classList.remove('translate-y-0');
-                    toast.classList.add('-translate-y-full', 'opacity-0');
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            }
-
-            fileInput.addEventListener('change', function(e) {
-                const newFiles = Array.from(fileInput.files);
-                let overLimit = false;
-                
-                // Tambahkan file baru ke DataTransfer (maks 3 total)
-                newFiles.forEach(file => {
-                    if (dt.items.length < 3) {
-                        dt.items.add(file);
-                    } else {
-                        overLimit = true;
-                    }
-                });
-
-                if (overLimit) {
-                    showToast('{{ __('Maksimal hanya 3 gambar yang dapat dilampirkan.') }}', 'error');
-                }
-
-                // Update input file dengan isi dt yang baru
-                fileInput.files = dt.files;
-                renderBubbles();
-            });
-
-            function renderBubbles() {
-                bubblesContainer.innerHTML = '';
-                
-                Array.from(dt.files).forEach((file, index) => {
-                    const bubble = document.createElement('div');
-                    bubble.className = "inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 border border-green-200 text-[#106c38] rounded-full text-xs font-semibold shadow-sm";
-                    
-                    const fileName = document.createElement('span');
-                    fileName.className = "truncate max-w-[150px]";
-                    fileName.textContent = file.name;
-                    
-                    const removeBtn = document.createElement('button');
-                    removeBtn.type = "button";
-                    removeBtn.className = "hover:text-red-500 transition-colors ml-1 focus:outline-none";
-                    removeBtn.innerHTML = '<i class="ph ph-x-circle text-base"></i>';
-                    removeBtn.onclick = function() {
-                        removeFile(index);
-                    };
-                    
-                    bubble.appendChild(fileName);
-                    bubble.appendChild(removeBtn);
-                    bubblesContainer.appendChild(bubble);
-                });
-            }
-
-            function removeFile(indexToRemove) {
-                const newDt = new DataTransfer();
-                Array.from(dt.files).forEach((file, index) => {
-                    if (index !== indexToRemove) {
-                        newDt.items.add(file);
-                    }
-                });
-                dt = newDt;
-                fileInput.files = dt.files;
-                renderBubbles();
-            }
-        });
-    </script>
 </body>
 </html>
