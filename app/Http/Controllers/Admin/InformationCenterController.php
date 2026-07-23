@@ -15,7 +15,45 @@ class InformationCenterController extends Controller
 {
     public function index(Request $request)
     {
+        $tab = $request->query('tab', 'active');
+
+        // Hitung total item aktif dan history/kadaluwarsa
+        $countActive = InformationCenter::where('status', '!=', 'archived')
+            ->where(function ($q) {
+                $q->whereNull('publish_end_at')
+                  ->orWhere('publish_end_at', '>=', now());
+            })->count();
+
+        $countHistory = InformationCenter::where(function ($q) {
+            $q->where('status', 'archived')
+              ->orWhere('status', 'expired')
+              ->orWhere(function ($sub) {
+                  $sub->whereNotNull('publish_end_at')
+                      ->where('publish_end_at', '<', now());
+              });
+        })->count();
+
+        $countTrash = InformationCenter::onlyTrashed()->count();
+
         $query = InformationCenter::query();
+
+        if ($tab === 'history') {
+            $query->where(function ($q) {
+                $q->where('status', 'archived')
+                  ->orWhere('status', 'expired')
+                  ->orWhere(function ($sub) {
+                      $sub->whereNotNull('publish_end_at')
+                          ->where('publish_end_at', '<', now());
+                  });
+            });
+        } else {
+            // Default tab: active
+            $query->where('status', '!=', 'archived')
+                  ->where(function ($q) {
+                      $q->whereNull('publish_end_at')
+                        ->orWhere('publish_end_at', '>=', now());
+                  });
+        }
 
         if ($request->has('search') && $request->search != '') {
             $query->where('title', 'like', '%' . $request->search . '%');
@@ -43,13 +81,19 @@ class InformationCenterController extends Controller
 
         $informationCenters = $query->latest()->paginate(10)->withQueryString();
 
-        return view('admin.information_center.index', compact('informationCenters'));
+        return view('admin.information_center.index', compact('informationCenters', 'tab', 'countActive', 'countHistory', 'countTrash'));
     }
 
     public function create()
     {
-        $totalPopups = InformationCenter::count();
-        return view('admin.information_center.create', compact('totalPopups'));
+        $activeCount = InformationCenter::where('status', '!=', 'archived')
+            ->where(function ($q) {
+                $q->whereNull('publish_end_at')
+                  ->orWhere('publish_end_at', '>=', now());
+            })->count();
+
+        $maxSortOrder = max(1, $activeCount + 1);
+        return view('admin.information_center.create', compact('maxSortOrder'));
     }
 
     public function store(StoreInformationCenterRequest $request)
@@ -58,10 +102,16 @@ class InformationCenterController extends Controller
             $data = $request->validated();
             
             $data['slug'] = Str::slug($data['title']) . '-' . uniqid();
-            $data['created_by'] = Auth::id() ?? 1;
+            $data['created_by'] = $this->getValidUserId();
 
             // Merangkai tanggal & waktu menjadi datetime
-            $data['publish_start_at'] = $data['publish_start_date'] . ' ' . $data['publish_start_time'];
+            if ($data['status'] === 'published') {
+                $data['publish_start_at'] = now()->format('Y-m-d H:i:s');
+            } else {
+                $startDate = $data['publish_start_date'] ?? date('Y-m-d');
+                $startTime = $data['publish_start_time'] ?? date('H:i');
+                $data['publish_start_at'] = $startDate . ' ' . $startTime;
+            }
             if (!empty($data['publish_end_date']) && !empty($data['publish_end_time'])) {
                 $data['publish_end_at'] = $data['publish_end_date'] . ' ' . $data['publish_end_time'];
             } else {
@@ -84,6 +134,10 @@ class InformationCenterController extends Controller
                 }
                 $data['images'] = $uploadedImages;
                 $data['image_path'] = $uploadedImages[0]; // Backward compatibility
+            } else {
+                $defaultImg = 'perpustakaan_depan.webp';
+                $data['images'] = [$defaultImg];
+                $data['image_path'] = $defaultImg;
             }
 
             // Proses data kustom kategori menjadi format JSON jika relevan
@@ -112,18 +166,30 @@ class InformationCenterController extends Controller
 
     public function edit(InformationCenter $informationCenter)
     {
-        $totalPopups = InformationCenter::count();
-        return view('admin.information_center.edit', compact('informationCenter', 'totalPopups'));
+        $activeCount = InformationCenter::where('status', '!=', 'archived')
+            ->where(function ($q) {
+                $q->whereNull('publish_end_at')
+                  ->orWhere('publish_end_at', '>=', now());
+            })->count();
+
+        $maxSortOrder = max(1, $activeCount);
+        return view('admin.information_center.edit', compact('informationCenter', 'maxSortOrder'));
     }
 
     public function update(UpdateInformationCenterRequest $request, InformationCenter $informationCenter)
     {
         $data = $request->validated();
         
-        $data['updated_by'] = Auth::id() ?? 1;
+        $data['updated_by'] = $this->getValidUserId();
 
         // Merangkai tanggal & waktu menjadi datetime
-        $data['publish_start_at'] = $data['publish_start_date'] . ' ' . $data['publish_start_time'];
+        if ($data['status'] === 'published') {
+            $data['publish_start_at'] = $informationCenter->publish_start_at ?? now()->format('Y-m-d H:i:s');
+        } else {
+            $startDate = $data['publish_start_date'] ?? date('Y-m-d');
+            $startTime = $data['publish_start_time'] ?? date('H:i');
+            $data['publish_start_at'] = $startDate . ' ' . $startTime;
+        }
         if (!empty($data['publish_end_date']) && !empty($data['publish_end_time'])) {
             $data['publish_end_at'] = $data['publish_end_date'] . ' ' . $data['publish_end_time'];
         } else {
@@ -333,8 +399,25 @@ class InformationCenterController extends Controller
             $query->where('category', $category);
         }
 
+        $countActive = InformationCenter::where('status', '!=', 'archived')
+            ->where(function ($q) {
+                $q->whereNull('publish_end_at')
+                  ->orWhere('publish_end_at', '>=', now());
+            })->count();
+
+        $countHistory = InformationCenter::where(function ($q) {
+            $q->where('status', 'archived')
+              ->orWhere('status', 'expired')
+              ->orWhere(function ($sub) {
+                  $sub->whereNotNull('publish_end_at')
+                      ->where('publish_end_at', '<', now());
+              });
+        })->count();
+
+        $countTrash = InformationCenter::onlyTrashed()->count();
+
         $trashItems = $query->latest('deleted_at')->paginate(10);
-        return view('admin.information_center.trash', compact('trashItems'));
+        return view('admin.information_center.trash', compact('trashItems', 'countActive', 'countHistory', 'countTrash'));
     }
 
     /**
@@ -367,5 +450,187 @@ class InformationCenterController extends Controller
 
         $info->forceDelete();
         return redirect()->route('admin.information-center.trash')->with('success', 'Informasi berhasil dihapus permanen dari database!');
+    }
+
+    /**
+     * Menerbitkan kembali informasi yang telah kadaluarsa dengan jadwal tanggal & waktu baru.
+     */
+    public function republish(Request $request, $id)
+    {
+        $informationCenter = InformationCenter::findOrFail($id);
+
+        $request->validate([
+            'publish_start_date' => 'required|date',
+            'publish_start_time' => 'required|string',
+            'publish_end_date'   => 'nullable|date|after_or_equal:publish_start_date',
+            'publish_end_time'   => 'nullable|string',
+        ], [
+            'publish_start_date.required' => 'Tanggal mulai tayang wajib diisi.',
+            'publish_start_date.date'     => 'Format tanggal mulai tayang tidak valid.',
+            'publish_start_time.required' => 'Jam mulai tayang wajib diisi.',
+            'publish_end_date.date'       => 'Format tanggal selesai tayang tidak valid.',
+            'publish_end_date.after_or_equal' => 'Tanggal selesai tayang tidak boleh mendahului tanggal mulai tayang.',
+        ]);
+
+        $publishStartAt = $request->publish_start_date . ' ' . $request->publish_start_time;
+        $publishEndAt = null;
+        if (!empty($request->publish_end_date) && !empty($request->publish_end_time)) {
+            $publishEndAt = $request->publish_end_date . ' ' . $request->publish_end_time;
+        }
+
+        $informationCenter->update([
+            'publish_start_at' => $publishStartAt,
+            'publish_end_at'   => $publishEndAt,
+            'status'           => 'published',
+            'updated_by'       => $this->getValidUserId(),
+        ]);
+
+        return redirect()->route('admin.information-center.index', ['tab' => 'active'])
+            ->with('success', 'Informasi "' . $informationCenter->title . '" berhasil ditampilkan kembali dengan jadwal tayang baru!');
+    }
+
+    /**
+     * Memindahkan informasi aktif/draf ke status diarsipkan.
+     */
+    public function archive($id)
+    {
+        $info = InformationCenter::findOrFail($id);
+        $info->update(['status' => 'archived']);
+
+        return redirect()->route('admin.information-center.index', ['tab' => 'active'])
+            ->with('success', 'Informasi "' . $info->title . '" berhasil dipindahkan ke arsip!');
+    }
+
+    /**
+     * Memulihkan (Tampilkan Kembali) beberapa data history sekaligus.
+     */
+    public function bulkRepublishHistory(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer',
+        ], [
+            'ids.required' => 'Pilih setidaknya satu data informasi untuk dipulihkan.',
+        ]);
+
+        $count = InformationCenter::whereIn('id', $request->ids)->update([
+            'status'           => 'published',
+            'publish_start_at' => now()->format('Y-m-d H:i:s'),
+            'publish_end_at'   => null,
+            'updated_by'       => $this->getValidUserId(),
+        ]);
+
+        return redirect()->route('admin.information-center.index', ['tab' => 'history'])
+            ->with('success', "Berhasil menampilkan kembali {$count} data informasi ke status Aktif!");
+    }
+
+    /**
+     * Menghapus beberapa data history sekaligus (Bulk Delete History).
+     */
+    public function bulkDeleteHistory(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer',
+        ], [
+            'ids.required' => 'Pilih setidaknya satu data informasi untuk dihapus.',
+        ]);
+
+        $items = InformationCenter::whereIn('id', $request->ids)->get();
+        $count = $items->count();
+
+        foreach ($items as $info) {
+            if ($info->images) {
+                foreach ($info->images as $oldImage) {
+                    $oldPath = str_replace('/storage/', '', $oldImage);
+                    Storage::disk('public')->delete($oldPath);
+                }
+            } elseif ($info->image_path) {
+                $oldPath = str_replace('/storage/', '', $info->image_path);
+                Storage::disk('public')->delete($oldPath);
+            }
+            $info->delete();
+        }
+
+        return redirect()->route('admin.information-center.index', ['tab' => 'history'])
+            ->with('success', "Berhasil menghapus {$count} data informasi!");
+    }
+
+    /**
+     * Memulihkan beberapa data sekaligus (Bulk Restore).
+     */
+    public function bulkRestore(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer',
+        ], [
+            'ids.required' => 'Pilih setidaknya satu data informasi untuk dipulihkan.',
+        ]);
+
+        $items = InformationCenter::onlyTrashed()->whereIn('id', $request->ids)->get();
+        $count = $items->count();
+
+        foreach ($items as $item) {
+            $item->restore();
+        }
+
+        return redirect()->route('admin.information-center.trash')
+            ->with('success', "Berhasil memulihkan {$count} data informasi!");
+    }
+
+    /**
+     * Menghapus beberapa data secara permanen sekaligus (Bulk Force Delete).
+     */
+    public function bulkForceDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer',
+        ], [
+            'ids.required' => 'Pilih setidaknya satu data informasi untuk dihapus permanen.',
+        ]);
+
+        $items = InformationCenter::onlyTrashed()->whereIn('id', $request->ids)->get();
+        $count = $items->count();
+
+        foreach ($items as $info) {
+            if ($info->images) {
+                foreach ($info->images as $oldImage) {
+                    $oldPath = str_replace('/storage/', '', $oldImage);
+                    Storage::disk('public')->delete($oldPath);
+                }
+            } elseif ($info->image_path) {
+                $oldPath = str_replace('/storage/', '', $info->image_path);
+                Storage::disk('public')->delete($oldPath);
+            }
+
+            $info->forceDelete();
+        }
+
+        return redirect()->route('admin.information-center.trash')
+            ->with('success', "Berhasil menghapus permanen {$count} data informasi dari database!");
+    }
+
+    /**
+     * Mengambil ID user yang valid dari tabel 'users' untuk menghindari kesalahan Foreign Key Constraint MySQL.
+     */
+    private function getValidUserId(): ?int
+    {
+        try {
+            $userId = Auth::id();
+            if ($userId && \Illuminate\Support\Facades\DB::table('users')->where('id', $userId)->exists()) {
+                return (int) $userId;
+            }
+
+            $firstUser = \Illuminate\Support\Facades\DB::table('users')->first();
+            if ($firstUser && isset($firstUser->id)) {
+                return (int) $firstUser->id;
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('[getValidUserId] Exception: ' . $e->getMessage());
+        }
+
+        return null;
     }
 }

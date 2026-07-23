@@ -30,8 +30,14 @@ Route::delete('/admin/books/{id}', [AdminController::class, 'destroy'])->name('a
 Route::delete('/admin/books/images/{id}', [AdminController::class, 'deleteImage'])->name('admin.books.delete-image');
 
 Route::get('admin/information-center/trash', [\App\Http\Controllers\Admin\InformationCenterController::class, 'trash'])->name('admin.information-center.trash');
+Route::post('admin/information-center/bulk-restore', [\App\Http\Controllers\Admin\InformationCenterController::class, 'bulkRestore'])->name('admin.information-center.bulk-restore');
+Route::delete('admin/information-center/bulk-force-delete', [\App\Http\Controllers\Admin\InformationCenterController::class, 'bulkForceDelete'])->name('admin.information-center.bulk-force-delete');
+Route::post('admin/information-center/bulk-republish-history', [\App\Http\Controllers\Admin\InformationCenterController::class, 'bulkRepublishHistory'])->name('admin.information-center.bulk-republish-history');
+Route::post('admin/information-center/bulk-delete-history', [\App\Http\Controllers\Admin\InformationCenterController::class, 'bulkDeleteHistory'])->name('admin.information-center.bulk-delete-history');
+Route::post('admin/information-center/{id}/archive', [\App\Http\Controllers\Admin\InformationCenterController::class, 'archive'])->name('admin.information-center.archive');
 Route::post('admin/information-center/{id}/restore', [\App\Http\Controllers\Admin\InformationCenterController::class, 'restore'])->name('admin.information-center.restore');
 Route::delete('admin/information-center/{id}/force-delete', [\App\Http\Controllers\Admin\InformationCenterController::class, 'forceDelete'])->name('admin.information-center.force-delete');
+Route::post('admin/information-center/{id}/republish', [\App\Http\Controllers\Admin\InformationCenterController::class, 'republish'])->name('admin.information-center.republish');
 
 Route::resource('admin/information-center', \App\Http\Controllers\Admin\InformationCenterController::class)->names('admin.information-center');
 

@@ -21,32 +21,42 @@ class UpdateInformationCenterRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'popup_priority' => (int) ($this->popup_priority ?? 1),
-            'sort_order' => (int) ($this->sort_order ?? 0),
-            'show_popup' => $this->has('show_popup') ? 1 : 0,
-            'show_navbar' => $this->has('show_navbar') ? 1 : 0,
-            'is_featured' => $this->has('is_featured') ? 1 : 0,
+            'popup_priority' => 1,
+            'sort_order' => (int) ($this->sort_order ?? 1),
+            'show_popup' => 1,
+            'show_navbar' => 1,
+            'is_featured' => 0,
         ]);
     }
 
     public function rules(): array
     {
-        $maxSortOrder = max(1, \App\Models\InformationCenter::count());
+        $activeCount = \App\Models\InformationCenter::where('status', '!=', 'archived')
+            ->where(function ($q) {
+                $q->whereNull('publish_end_at')
+                  ->orWhere('publish_end_at', '>=', now());
+            })->count();
+        $maxSortOrder = max(1, $activeCount);
         return [
             'title' => 'required|string|max:255',
             'summary' => 'nullable|string',
             'content' => 'nullable|string',
             'category' => 'required|in:event,announcement,book_recommendation,tips,library_news',
             'image_path' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'status' => 'required|in:draft,published,archived',
+            'image_fit' => 'nullable|in:cover,contain,fill',
+            'image_position' => 'nullable|in:center,top,bottom',
+            'image_scale' => 'nullable|integer|min:50|max:300',
+            'image_x' => 'nullable|integer|min:0|max:100',
+            'image_y' => 'nullable|integer|min:0|max:100',
+            'status' => 'required|in:draft,published',
             'show_popup' => 'boolean',
             'show_navbar' => 'boolean',
             'is_featured' => 'boolean',
             'popup_priority' => 'required|integer|min:1',
             'sort_order' => 'required|integer|min:1|max:' . $maxSortOrder,
-            'publish_start_date' => 'required|date',
-            'publish_start_time' => 'required|string',
-            'publish_end_date' => 'nullable|date|after_or_equal:publish_start_date',
+            'publish_start_date' => 'required_if:status,draft|nullable|date',
+            'publish_start_time' => 'required_if:status,draft|nullable|string',
+            'publish_end_date' => 'nullable|date',
             'publish_end_time' => 'nullable|string',
             'action_buttons' => 'nullable|array',
             'action_buttons.*.name' => 'required_with:action_buttons|string|max:255',
@@ -106,5 +116,24 @@ class UpdateInformationCenterRequest extends FormRequest
             'action_buttons.*.url.url' => 'Format Link URL tombol aksi tidak valid (contoh: https://google.com).',
             'contact_email.email' => 'Format alamat email narahubung tidak valid.',
         ];
+    }
+
+    /**
+     * Additional validation rules after standard validation.
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->status === 'draft') {
+                $startDate = $this->publish_start_date;
+                $startTime = $this->publish_start_time;
+                if ($startDate && $startTime) {
+                    $startDateTime = \Carbon\Carbon::parse($startDate . ' ' . $startTime);
+                    if ($startDateTime->isPast()) {
+                        $validator->errors()->add('publish_start_time', 'Waktu mulai tayang untuk draf/jadwal tidak boleh sebelum jam saat ini.');
+                    }
+                }
+            }
+        });
     }
 }

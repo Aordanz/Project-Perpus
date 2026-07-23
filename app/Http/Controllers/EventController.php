@@ -69,10 +69,15 @@ class EventController extends Controller
                 'title' => $event->title,
                 'category' => $event->category,
                 'description' => $cleanDescription,
-                'image_url' => $event->image_path ? asset($event->image_path) : asset('perpustakaan_samping.webp'),
+                'image_url' => $event->image_path ? asset($event->image_path) : asset('perpustakaan_depan.webp'),
+                'image_fit' => $event->image_fit ?? 'cover',
+                'image_position' => $event->image_position ?? 'center',
+                'image_scale' => $event->image_scale ?? 100,
+                'image_x' => $event->image_x ?? 50,
+                'image_y' => $event->image_y ?? 50,
                 'images_url' => is_array($event->images) && count($event->images) > 0 
                     ? array_map(fn($img) => asset($img), $event->images) 
-                    : ($event->image_path ? [asset($event->image_path)] : [asset('perpustakaan_samping.webp')]),
+                    : ($event->image_path ? [asset($event->image_path)] : [asset('perpustakaan_depan.webp')]),
                 'link_url' => $primaryLink,
                 'instagram_url' => 'https://www.instagram.com/usu.library/',
                 'library_url' => $primaryLink,

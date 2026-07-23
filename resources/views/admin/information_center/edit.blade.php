@@ -1,593 +1,1082 @@
 @extends('admin.information_center.layout')
 
-@php
-    $contentDecoded = json_decode($informationCenter->content, true);
-    $isJson = is_array($contentDecoded);
-@endphp
-
-@section('title', 'Edit Informasi')
+@section('title', 'Edit Informasi - ' . $informationCenter->title)
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <style>
+    /* ─── CATEGORY CHIPS ────────────────────────────────────────────── */
+    .cat-chip-btn {
+        position: relative; display: flex; flex-direction: column;
+        align-items: center; gap: 10px; padding: 18px 12px 14px;
+        border-radius: 14px; border: 2px solid #e2e8f0; background: white;
+        cursor: pointer; transition: all 0.18s cubic-bezier(.4,0,.2,1);
+        text-align: center; user-select: none; width: 100%;
+    }
+    .cat-chip-btn * { pointer-events: none; }
+    .cat-chip-btn:hover {
+        border-color: var(--chip-color, #106c38);
+        background: var(--chip-bg, #f0fdf4);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    .cat-chip-btn.selected {
+        border-color: var(--chip-color, #106c38);
+        background: var(--chip-bg, #f0fdf4);
+        box-shadow: 0 0 0 4px var(--chip-ring, rgba(16,108,56,0.12));
+        transform: translateY(-1px);
+    }
+    .chip-check {
+        display: none; position: absolute; top: -7px; right: -7px;
+        width: 20px; height: 20px;
+        background: var(--chip-color, #106c38); border-radius: 50%;
+        color: white; font-size: 10px; align-items: center; justify-content: center;
+        border: 2.5px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .cat-chip-btn.selected .chip-check { display: flex; }
+    .cat-chip-icon {
+        width: 48px; height: 48px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px; transition: transform 0.18s ease;
+    }
+    .cat-chip-btn.selected .cat-chip-icon { transform: scale(1.08); }
+    .cat-chip-label { font-size: 12px; font-weight: 800; color: #334155; line-height: 1.3; }
+    .cat-chip-sub { font-size: 9.5px; color: #94a3b8; font-weight: 500; line-height: 1.3; margin-top: 2px; }
+
+    /* ─── CARDS ─────────────────────────────────────────────────────── */
+    .form-card {
+        background: white; border-radius: 16px;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+        overflow: hidden;
+    }
+    .form-card-header {
+        padding: 18px 24px; border-bottom: 1px solid #f8fafc;
+        display: flex; align-items: center; gap: 14px;
+        background: linear-gradient(to bottom, #ffffff, #fafcff);
+    }
+    .form-card-icon {
+        width: 42px; height: 42px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .form-card-body { padding: 24px; }
+
+    /* ─── SIDEBAR ───────────────────────────────────────────────────── */
+    .sidebar-card {
+        background: white; border-radius: 14px;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden;
+    }
+    .sidebar-card-header {
+        padding: 13px 18px; border-bottom: 1px solid #f8fafc;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .sidebar-card-body { padding: 16px 18px; }
+
+    /* ─── INPUTS ────────────────────────────────────────────────────── */
+    .fi {
+        display: block; width: 100%; padding: 10px 14px;
+        background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px;
+        font-size: 13.5px; color: #1e293b; outline: none; line-height: 1.5;
+        transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .fi:focus { border-color: #106c38; background: white; box-shadow: 0 0 0 3px rgba(16,108,56,0.08); }
+    .fi-sm { padding: 8px 12px; font-size: 12.5px; }
+    .fl {
+        display: block; font-size: 11px; font-weight: 700; color: #64748b;
+        text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
+    }
+
+    /* ─── TOGGLES ───────────────────────────────────────────────────── */
+    .tog-opt {
+        display: flex; align-items: flex-start; gap: 11px;
+        padding: 12px 14px; border-radius: 10px;
+        background: #f8fafc; border: 1.5px solid #e2e8f0;
+        cursor: pointer; transition: all .15s ease;
+    }
+    .tog-opt:has(input:checked) { background: #f0fdf4; border-color: #bbf7d0; }
+    .tog-opt input[type="checkbox"] {
+        width: 15px; height: 15px; margin-top: 2px;
+        flex-shrink: 0; accent-color: #106c38; cursor: pointer;
+    }
+
+    /* ─── IMAGE DROPZONE ────────────────────────────────────────────── */
+    .img-drop {
+        border: 2px dashed #cbd5e1; border-radius: 12px;
+        padding: 22px 16px; text-align: center; cursor: pointer;
+        transition: all .18s ease; background: #f8fafc;
+    }
+    .img-drop:hover { border-color: #106c38; background: #f0fdf4; }
+
+    /* ─── SUBMIT BUTTON ─────────────────────────────────────────────── */
+    .btn-pub {
+        width: 100%; padding: 13px 20px;
+        background: linear-gradient(135deg, #106c38 0%, #0d5a2f 100%);
+        color: white; font-weight: 800; font-size: 14px;
+        border-radius: 12px; border: none; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        transition: all .2s ease; letter-spacing: .01em;
+        box-shadow: 0 4px 14px rgba(16,108,56,0.28);
+    }
+    .btn-pub:hover {
+        background: linear-gradient(135deg, #0d5a2f 0%, #0a4826 100%);
+        box-shadow: 0 6px 18px rgba(16,108,56,0.35); transform: translateY(-1px);
+    }
+    .btn-pub:active { transform: translateY(0); }
+
+    .sec-num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 22px; height: 22px; border-radius: 50%;
+        font-size: 11px; font-weight: 900; flex-shrink: 0;
+    }
+    @media (min-width: 1280px) {
+        .xl-sticky { position: sticky; top: 24px; }
+    }
 </style>
 @endpush
 
 @section('content')
-<!-- Header Area -->
-<div class="flex items-center gap-4 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm mb-6">
-    <a href="{{ route('admin.information-center.index') }}" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 transition-colors">
-        <i class="ph ph-arrow-left text-xl"></i>
+
+@php
+    $contentDecoded = [];
+    if (!empty($informationCenter->content)) {
+        if (is_array($informationCenter->content)) {
+            $contentDecoded = $informationCenter->content;
+        } else {
+            $decoded = json_decode($informationCenter->content, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $contentDecoded = $decoded;
+            }
+        }
+    }
+    $selectedCategory = old('category', $informationCenter->category);
+@endphp
+
+{{-- PAGE HEADER --}}
+<div class="flex items-start sm:items-center gap-4 mb-6">
+    <a href="{{ route('admin.information-center.index') }}"
+       class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-500 flex items-center justify-center hover:bg-slate-50 hover:text-slate-800 transition-all shadow-sm shrink-0 mt-0.5 sm:mt-0">
+        <i class="ph ph-arrow-left text-lg"></i>
     </a>
-    <div>
-        <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">Edit Informasi</h1>
-        <p class="text-slate-500 text-xs sm:text-sm mt-1">Perbarui data informasi "{{ $informationCenter->title }}".</p>
+    <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium mb-1">
+            <a href="{{ route('admin.information-center.index') }}" class="hover:text-slate-600 transition">Information Center</a>
+            <i class="ph ph-caret-right text-[9px]"></i>
+            <span class="text-slate-600 font-semibold">Edit Informasi</span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight leading-tight">Edit Informasi</h1>
+        <p class="text-slate-500 text-xs sm:text-sm mt-0.5">Perbarui data informasi "{{ $informationCenter->title }}".</p>
     </div>
 </div>
 
-<form action="{{ route('admin.information-center.update', $informationCenter->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.information-center.update', $informationCenter->id) }}" method="POST" enctype="multipart/form-data" id="edit-info-form" novalidate>
     @csrf
     @method('PUT')
-    
-    <!-- CARD 0: PILIH KATEGORI TERLEBIH DAHULU -->
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 mb-6">
-        <label class="block text-sm font-bold text-slate-800 uppercase mb-3 flex items-center gap-2">
-            <i class="ph ph-tag text-usu-green text-xl"></i> Kategori Informasi <span class="text-red-500">*</span>
-        </label>
-        <select name="category" id="category-select" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-usu-green/20 focus:border-usu-green transition-all cursor-pointer">
-            <option value="">-- Silakan Pilih Kategori Informasi --</option>
-            <option value="announcement" {{ old('category', $informationCenter->category) == 'announcement' ? 'selected' : '' }}>Pengumuman</option>
-            <option value="event" {{ old('category', $informationCenter->category) == 'event' ? 'selected' : '' }}>Event / Kegiatan</option>
-            <option value="book_recommendation" {{ old('category', $informationCenter->category) == 'book_recommendation' ? 'selected' : '' }}>Buku Rekomendasi</option>
-            <option value="library_news" {{ old('category', $informationCenter->category) == 'library_news' ? 'selected' : '' }}>Berita Perpustakaan</option>
-            <option value="tips" {{ old('category', $informationCenter->category) == 'tips' ? 'selected' : '' }}>Tips & Trik</option>
-        </select>
 
-        {{-- Category Helper Box --}}
-        <div id="category-helper-box" class="hidden mt-4 bg-blue-50/50 border border-blue-100 rounded-xl px-4 py-3">
-            <div class="flex items-start gap-2.5">
-                <i class="ph ph-info text-blue-500 text-lg mt-0.5 shrink-0"></i>
-                <div>
-                    <h4 id="category-helper-title" class="text-xs font-bold text-blue-800 mb-1">Panduan Kategori</h4>
-                    <p id="category-helper-desc" class="text-[11px] text-blue-700 leading-relaxed">Deskripsi panduan akan muncul di sini.</p>
-                </div>
+    {{-- ═══ STEP 1: PILIH KATEGORI ═══ --}}
+    <div class="form-card mb-6">
+        <div class="form-card-header">
+            <span class="sec-num bg-[#106c38] text-white">1</span>
+            <div class="flex-1 min-w-0">
+                <h2 class="text-sm font-black text-slate-800">Kategori Informasi</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Kategori konten informasi ini dapat diubah jika diperlukan</p>
             </div>
+            <span class="text-[10px] font-bold text-red-400 shrink-0">Wajib ✱</span>
         </div>
-    </div>
+        <div class="form-card-body">
 
-    <!-- AREA FORM UTAMA -->
-    <div id="main-form-area" class="hidden opacity-0 transform translate-y-4 transition-all duration-500 space-y-6">
-        <!-- Grid Layout Utama -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Kolom Kiri: Konten Utama & Pengaturan Tambahan -->
-            <div class="lg:col-span-2 space-y-6">
-            
-            <!-- CARD 1: KONTEN UTAMA -->
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-8">
-                <h2 class="text-base font-black text-slate-800 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <i class="ph ph-text-aa text-usu-green text-lg"></i> Konten Utama Informasi
-                </h2>
-                <div class="space-y-5">
-                    <div>
-                        <p class="block text-xs font-bold text-slate-700 uppercase mb-2">Judul Informasi / Kegiatan <span class="text-red-500">*</span></p>
-                        <input type="text" name="title" value="{{ old('title', $informationCenter->title) }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-usu-green/20 focus:border-usu-green transition-all" placeholder="Contoh: Pemeliharaan Server Web Perpustakaan...">
-                    </div>
+            {{-- Hidden select --}}
+            <select name="category" id="category-select"
+                    style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;overflow:hidden;"
+                    tabindex="-1" aria-hidden="true" required>
+                <option value="">-- Pilih Kategori --</option>
+                <option value="announcement"       {{ $selectedCategory == 'announcement'       ? 'selected' : '' }}>Pengumuman</option>
+                <option value="event"              {{ $selectedCategory == 'event'              ? 'selected' : '' }}>Event / Kegiatan</option>
+                <option value="book_recommendation"{{ $selectedCategory == 'book_recommendation'? 'selected' : '' }}>Buku Rekomendasi</option>
+                <option value="tips"               {{ $selectedCategory == 'tips'               ? 'selected' : '' }}>Tips &amp; Trick</option>
+                <option value="library_news"       {{ $selectedCategory == 'library_news'       ? 'selected' : '' }}>Berita Perpustakaan</option>
+            </select>
 
-                    <div>
-                        <p class="block text-xs font-bold text-slate-700 uppercase mb-2">Ringkasan Singkat (Penjelasan Singkat di Halaman Depan)</p>
-                        <textarea name="summary" rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-usu-green/20 focus:border-usu-green transition-all" placeholder="Tuliskan ringkasan 1-2 kalimat untuk mempermudah pembaca...">{{ old('summary', $informationCenter->summary) }}</textarea>
-                    </div>
+            {{-- Visual Category Chip Grid --}}
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" id="category-grid">
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2" for="content">Isi Informasi Lengkap <span class="text-red-500">*</span></label>
-                        <textarea name="content" id="content" rows="6" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-usu-green/20 focus:border-usu-green transition-all resize-none" placeholder="Tuliskan isi informasi lengkap di sini...">{{ old('content', $informationCenter->content) }}</textarea>
-                        @error('content') <p class="text-xs text-red-500 mt-1 font-bold">{{ $message }}</p> @enderror
-                    </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD BARU: DETAIL SPESIFIK KATEGORI -->
-            <div id="custom-category-fields-card" class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-8 hidden">
-                <h2 id="custom-fields-title" class="text-base font-black text-slate-800 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <i class="ph ph-gear text-usu-green text-lg"></i> Detail Informasi Spesifik
-                </h2>
-                
-                <!-- Section Form Dinamis berdasarkan Kategori -->
-                <div id="dynamic-fields-container">
-                    <!-- Event / Kegiatan Fields -->
-                    <div id="fields-event" class="category-fields-section hidden space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Waktu Kegiatan <span class="text-red-500">*</span></p>
-                                <input type="text" name="event_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: 09.00 - 12.00 WIB" value="{{ old('event_time', $isJson ? ($contentDecoded['time'] ?? '09.00 - 12.00 WIB') : '09.00 - 12.00 WIB') }}">
-                            </div>
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Lokasi Kegiatan <span class="text-red-500">*</span></p>
-                                <input type="text" name="event_location" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: Ruang Seminar Lantai 3" value="{{ old('event_location', $isJson ? ($contentDecoded['location'] ?? 'Gedung UPT Perpustakaan USU') : 'Gedung UPT Perpustakaan USU') }}">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Penyelenggara</p>
-                                <input type="text" name="event_organizer" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: UPT Perpustakaan USU" value="{{ old('event_organizer', $isJson ? ($contentDecoded['organizer'] ?? 'UPT Perpustakaan Universitas Sumatera Utara') : 'UPT Perpustakaan Universitas Sumatera Utara') }}">
-                            </div>
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Sasaran Peserta</p>
-                                <input type="text" name="event_participants" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: Mahasiswa & Umum" value="{{ old('event_participants', $isJson ? ($contentDecoded['participants'] ?? 'Civitas Akademika USU & Umum') : 'Civitas Akademika USU & Umum') }}">
-                            </div>
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Fasilitas Acara</p>
-                                <input type="text" name="event_facilities" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: E-Sertifikat, Snack" value="{{ old('event_facilities', $isJson ? ($contentDecoded['facilities'] ?? 'Ilmu Bermanfaat, E-Sertifikat') : 'Ilmu Bermanfaat, E-Sertifikat') }}">
-                            </div>
-                        </div>
-                        <div class="border-t border-slate-100 pt-4 mt-2">
-                            <h4 class="text-xs font-black text-slate-700 uppercase mb-3">Tampilan Brosur Kiri (Flyer Slider)</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <p class="block text-[10px] font-bold text-slate-500 mb-2">Label Badge Flyer</p>
-                                    <input type="text" name="event_left_badge" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs" placeholder="Contoh: EVENT PERPUSTAKAAN" value="{{ old('event_left_badge', $isJson ? ($contentDecoded['left_badge'] ?? 'EVENT PERPUSTAKAAN') : 'EVENT PERPUSTAKAAN') }}">
-                                </div>
-                                <div>
-                                    <p class="block text-[10px] font-bold text-slate-500 mb-2">Judul Besar Flyer (Kiri)</p>
-                                    <input type="text" name="event_left_title" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs" placeholder="Kosongkan untuk samakan judul" value="{{ old('event_left_title', $isJson ? ($contentDecoded['left_title'] ?? '') : '') }}">
-                                </div>
-                                <div>
-                                    <p class="block text-[10px] font-bold text-slate-500 mb-2">Subjudul Flyer (Kiri)</p>
-                                    <input type="text" name="event_left_subtitle" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs" placeholder="Teks singkat penarik minat" value="{{ old('event_left_subtitle', $isJson ? ($contentDecoded['left_subtitle'] ?? '') : '') }}">
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                                <div>
-                                    <p class="block text-[10px] font-bold text-slate-500 mb-2">Stiker / Quota Tag</p>
-                                    <input type="text" name="event_quota_tag" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs" placeholder="Contoh: PENDAFTARAN DIBUKA!<br>Kuota Terbatas!" value="{{ old('event_quota_tag', $isJson ? ($contentDecoded['quota_tag'] ?? 'PENDAFTARAN DIBUKA!<br>Jangan sampai ketinggalan!') : 'PENDAFTARAN DIBUKA!<br>Jangan sampai ketinggalan!') }}">
-                                </div>
-                                <div>
-                                    <p class="block text-[10px] font-bold text-slate-500 mb-2">Fitur / Benefit Flyer (Tulis 1 poin per baris, maks 4 baris)</p>
-                                    <textarea name="event_left_features" rows="3" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs" placeholder="Materi Praktis&#10;Studi Kasus Nyata&#10;E-Sertifikat&#10;Doorprize Menarik">{{ old('event_left_features', $isJson && !empty($contentDecoded['left_features']) ? implode("\n", $contentDecoded['left_features']) : "Materi Praktis\nStudi Kasus Nyata\nE-Sertifikat\nDoorprize Menarik") }}</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pengumuman Fields -->
-                    <div id="fields-announcement" class="category-fields-section hidden space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Jadwal / Waktu <span class="font-normal text-slate-400">(Opsional)</span></p>
-                                <input type="text" name="announcement_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: 08.00 - Selesai" value="{{ old('announcement_time', $isJson && ($contentDecoded['is_custom_announcement'] ?? false) ? ($contentDecoded['time'] ?? '') : '') }}">
-                            </div>
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Lokasi / Tempat <span class="font-normal text-slate-400">(Opsional)</span></p>
-                                <input type="text" name="announcement_location" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: Gedung A" value="{{ old('announcement_location', $isJson && ($contentDecoded['is_custom_announcement'] ?? false) ? ($contentDecoded['location'] ?? '') : '') }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Berita Perpustakaan Fields -->
-                    <div id="fields-library_news" class="category-fields-section hidden space-y-4">
-                        <div>
-                            <p class="block text-xs font-bold text-slate-700 mb-2">Tanggal Berita / Kegiatan <span class="font-normal text-slate-400">(Opsional)</span></p>
-                            <input type="text" name="news_date" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: 17 Agustus 2026" value="{{ old('news_date', $isJson && ($contentDecoded['is_custom_news'] ?? false) ? ($contentDecoded['date'] ?? '') : '') }}">
-                        </div>
-                    </div>
-
-                    <!-- Buku / Koleksi Baru Fields -->
-                    <div id="fields-book_recommendation" class="category-fields-section hidden space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Judul Buku / Koleksi <span class="text-red-500">*</span></p>
-                                <input type="text" name="book_title" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: Algoritma & Pemrograman" value="{{ old('book_title', $isJson && ($contentDecoded['is_custom_collection'] ?? false) ? ($contentDecoded['book_title'] ?? '') : '') }}">
-                            </div>
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Penulis / Pencipta <span class="text-red-500">*</span></p>
-                                <input type="text" name="book_author" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: Prof. Dr. Budi Luhur" value="{{ old('book_author', $isJson && ($contentDecoded['is_custom_collection'] ?? false) ? ($contentDecoded['book_author'] ?? '') : '') }}">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Penerbit & Tahun Terbit</p>
-                                <input type="text" name="book_publisher" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: Erlangga, 2024" value="{{ old('book_publisher', $isJson && ($contentDecoded['is_custom_collection'] ?? false) ? ($contentDecoded['book_publisher'] ?? '') : '') }}">
-                            </div>
-                            <div>
-                                <p class="block text-xs font-bold text-slate-700 mb-2">Lokasi Rak / Klasifikasi Buku</p>
-                                <input type="text" name="shelf_location" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: Rak 4B - Umum atau Klasifikasi DDC 005.1" value="{{ old('shelf_location', $isJson && ($contentDecoded['is_custom_collection'] ?? false) ? ($contentDecoded['shelf_location'] ?? '') : '') }}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 2: TOMBOL AKSI (LINK / TAUTAN) -->
-            <!-- CARD 2: TOMBOL AKSI (LINK / TAUTAN) -->
-            <div id="card-tombol-aksi" class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-8">
-                <h2 class="text-base font-black text-slate-800 mb-2 pb-2 border-b border-slate-100 flex items-center justify-between">
-                    <span class="flex items-center gap-2"><i class="ph ph-link-simple text-usu-green text-lg"></i> Tombol Aksi / Tautan</span>
-                </h2>
-                <p class="text-xs text-slate-500 mb-4">Anda dapat membuat tombol khusus (seperti "Daftar Lomba", "Baca Selengkapnya") yang mengarah ke link eksternal (Google Form, Instagram, dll).</p>
-                
-                <div id="action-buttons-container" class="space-y-4">
-                    <!-- Dinamis ditambah lewat JS -->
-                </div>
-                
-                <button type="button" id="btn-add-action-button" class="mt-3 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition flex items-center gap-1">
-                    <i class="ph ph-plus-circle text-base"></i> Tambah Tombol Baru
+                {{-- 1. Pengumuman --}}
+                <button type="button" class="cat-chip-btn {{ $selectedCategory == 'announcement' ? 'selected' : '' }}" data-value="announcement"
+                        style="--chip-color:#2563eb;--chip-bg:#eff6ff;--chip-ring:rgba(37,99,235,0.13)">
+                    <div class="chip-check"><i class="ph ph-check text-[9px]"></i></div>
+                    <div class="cat-chip-icon bg-blue-50"><i class="ph ph-megaphone-simple text-blue-600"></i></div>
+                    <div><div class="cat-chip-label">Pengumuman</div><div class="cat-chip-sub">Pemberitahuan resmi</div></div>
                 </button>
+
+                {{-- 2. Event / Kegiatan --}}
+                <button type="button" class="cat-chip-btn {{ $selectedCategory == 'event' ? 'selected' : '' }}" data-value="event"
+                        style="--chip-color:#106c38;--chip-bg:#f0fdf4;--chip-ring:rgba(16,108,56,0.14)">
+                    <div class="chip-check"><i class="ph ph-check text-[9px]"></i></div>
+                    <div class="cat-chip-icon bg-emerald-50"><i class="ph ph-calendar-check text-[#106c38]"></i></div>
+                    <div><div class="cat-chip-label">Event</div><div class="cat-chip-sub">Kegiatan &amp; Workshop</div></div>
+                </button>
+
+                {{-- 3. Buku Rekomendasi --}}
+                <button type="button" class="cat-chip-btn {{ $selectedCategory == 'book_recommendation' ? 'selected' : '' }}" data-value="book_recommendation"
+                        style="--chip-color:#b45309;--chip-bg:#fefce8;--chip-ring:rgba(180,83,9,0.13)">
+                    <div class="chip-check"><i class="ph ph-check text-[9px]"></i></div>
+                    <div class="cat-chip-icon bg-yellow-50"><i class="ph ph-star text-yellow-600"></i></div>
+                    <div><div class="cat-chip-label">Buku Rekomendasi</div><div class="cat-chip-sub">Pilihan terbaik</div></div>
+                </button>
+                
+                {{-- 4. Berita Perpustakaan --}}
+                <button type="button" class="cat-chip-btn {{ $selectedCategory == 'library_news' ? 'selected' : '' }}" data-value="library_news"
+                        style="--chip-color:#4f46e5;--chip-bg:#eef2ff;--chip-ring:rgba(79,70,229,0.13)">
+                    <div class="chip-check"><i class="ph ph-check text-[9px]"></i></div>
+                    <div class="cat-chip-icon bg-indigo-50"><i class="ph ph-newspaper text-indigo-600"></i></div>
+                    <div><div class="cat-chip-label">Berita Perpustakaan</div><div class="cat-chip-sub">Info &amp; kabar terkini</div></div>
+                </button>
+
+                {{-- 5. Tips & Trick --}}
+                <button type="button" class="cat-chip-btn {{ $selectedCategory == 'tips' ? 'selected' : '' }}" data-value="tips"
+                        style="--chip-color:#d97706;--chip-bg:#fffbeb;--chip-ring:rgba(217,119,6,0.13)">
+                    <div class="chip-check"><i class="ph ph-check text-[9px]"></i></div>
+                    <div class="cat-chip-icon bg-amber-50"><i class="ph ph-lightbulb-filament text-amber-600"></i></div>
+                    <div><div class="cat-chip-label">Tips &amp; Trick</div><div class="cat-chip-sub">Panduan bermanfaat</div></div>
+                </button>
+
             </div>
 
-            <!-- CARD 3: NARAHUBUNG (CONTACT PERSON) -->
-            <div id="card-narahubung" class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-8">
-                <h2 class="text-base font-black text-slate-800 mb-2 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <i class="ph ph-user-circle text-usu-green text-lg"></i> Narahubung / Kontak Informasi
-                </h2>
-                <p class="text-xs text-slate-500 mb-4">Cantumkan informasi kontak yang dapat dihubungi oleh pengunjung jika ada pertanyaan.</p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {{-- Selected Category Indicator --}}
+            <div id="category-indicator" class="mt-4">
+                <div class="flex items-center gap-2.5 text-xs bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5">
+                    <i class="ph ph-check-circle-fill text-[#106c38] text-base shrink-0"></i>
+                    <span class="text-emerald-800 font-medium">Kategori aktif: <strong id="category-indicator-name" class="font-black"></strong></span>
+                </div>
+            </div>
+
+            {{-- Category Helper Box --}}
+            <div id="category-helper-box" class="mt-3 bg-blue-50/50 border border-blue-100 rounded-xl px-4 py-3">
+                <div class="flex items-start gap-2.5">
+                    <i class="ph ph-info text-blue-500 text-lg mt-0.5 shrink-0"></i>
                     <div>
-                        <p class="block text-xs font-bold text-slate-700 mb-2">Nama Kontak</p>
-                        <input type="text" name="contact_name" value="{{ old('contact_name', $informationCenter->contact_name) }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: Ibu Mawar Harahap">
-                    </div>
-                    <div>
-                        <p class="block text-xs font-bold text-slate-700 mb-2">Nomor WhatsApp</p>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-slate-500 font-bold pointer-events-none">+62</span>
-                            <input type="text" name="contact_phone" value="{{ old('contact_phone', $informationCenter->contact_phone) }}" class="w-full pl-[34px] pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="8123456789">
-                        </div>
-                    </div>
-                    <div>
-                        <p class="block text-xs font-bold text-slate-700 mb-2">Alamat Email</p>
-                        <input type="email" name="contact_email" value="{{ old('contact_email', $informationCenter->contact_email) }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="Contoh: mawar@usu.ac.id">
+                        <h4 id="category-helper-title" class="text-xs font-bold text-blue-800 mb-1">Panduan Kategori</h4>
+                        <p id="category-helper-desc" class="text-[11px] text-blue-700 leading-relaxed">Deskripsi panduan akan muncul di sini.</p>
                     </div>
                 </div>
             </div>
 
         </div>
+    </div>
 
-        <!-- Kolom Kanan: Pengaturan Penerbitan & Tampilan -->
-        <div class="space-y-6">
-            
-            <!-- CARD 4: PENGATURAN PUBLIKASI (STATUS & WAKTU TAYANG) -->
-            <div id="card-jadwal-tampil" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                <h3 class="text-base font-black text-slate-800 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <i class="ph ph-calendar text-usu-green text-lg"></i> Jadwal Tampil & Status
-                </h3>
-                
-                <div class="space-y-4">
-                    <div>
-                        <p class="block text-xs font-bold text-slate-700 mb-2">Status Publikasi <span class="text-red-500">*</span></p>
-                        <select name="status" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-                            <option value="draft" {{ old('status', $informationCenter->status) == 'draft' ? 'selected' : '' }}>Draf (Disimpan Dulu)</option>
-                            <option value="published" {{ old('status', $informationCenter->status) == 'published' ? 'selected' : '' }}>Diterbitkan (Langsung Tayang)</option>
-                            <option value="archived" {{ old('status', $informationCenter->status) == 'archived' ? 'selected' : '' }}>Diarsipkan (Dihilangkan Dari Web)</option>
-                        </select>
+    {{-- ═══ MAIN FORM AREA (2-Column) ═══ --}}
+    <div id="main-form-area">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+            {{-- ── LEFT COLUMN ─────────────────────────────────────────── --}}
+            <div class="xl:col-span-8 space-y-5">
+
+                {{-- SECTION 1: Informasi Utama --}}
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-icon bg-emerald-50">
+                            <i class="ph ph-text-aa text-[#106c38] text-xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h2 class="text-sm font-black text-slate-800">Informasi Utama</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Judul, ringkasan singkat, dan konten lengkap informasi</p>
+                        </div>
                     </div>
+                    <div class="form-card-body space-y-5">
 
-                    <!-- Pemisahan Tanggal dan Jam agar Mudah Di-Klik Orang Tua -->
-                    <div id="publish-time-container" class="space-y-4 border-t border-slate-100 pt-3">
                         <div>
-                            <p class="block text-xs font-bold text-slate-700 mb-2">Waktu Mulai Tayang <span class="text-red-500">*</span></p>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <span class="block text-[10px] text-slate-500 mb-1">Tanggal Mulai</span>
-                                    <input type="date" name="publish_start_date" id="publish_start_date_input" value="{{ old('publish_start_date', $informationCenter->publish_start_at->format('Y-m-d')) }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                                </div>
-                                <div>
-                                    <span class="block text-[10px] text-slate-500 mb-1">Jam Mulai</span>
-                                    <input type="time" name="publish_start_time" id="publish_start_time_input" value="{{ old('publish_start_time', $informationCenter->publish_start_at->format('H:i')) }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                                </div>
-                            </div>
+                            <label class="fl" for="title">Judul Informasi / Kegiatan <span class="text-red-500 normal-case">*</span></label>
+                            <input type="text" name="title" id="title" value="{{ old('title', $informationCenter->title) }}" required
+                                   class="fi" placeholder="Contoh: Workshop Mendeley untuk Mahasiswa USU...">
                         </div>
 
                         <div>
-                            <p class="block text-xs font-bold text-slate-700 mb-2">Waktu Selesai Tayang (Opsional)</p>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <span class="block text-[10px] text-slate-500 mb-1">Tanggal Selesai</span>
-                                    <input type="date" name="publish_end_date" value="{{ old('publish_end_date', $informationCenter->publish_end_at ? $informationCenter->publish_end_at->format('Y-m-d') : '') }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                            <label class="fl" for="summary">Ringkasan Singkat
+                                <span class="normal-case font-medium text-slate-400 ml-1">(tampil di halaman depan)</span>
+                            </label>
+                            <textarea name="summary" id="summary" rows="3" class="fi resize-none"
+                                      placeholder="Tulis 1–2 kalimat menarik yang menggambarkan isi informasi ini...">{{ old('summary', $informationCenter->summary) }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="fl" for="content">Isi Informasi Lengkap <span class="text-red-500 normal-case">*</span></label>
+                            <textarea name="content" id="content" rows="6" class="fi resize-none" placeholder="Tuliskan isi informasi lengkap di sini...">{{ old('content', is_string($informationCenter->content) ? $informationCenter->content : '') }}</textarea>
+                            @error('content') <p class="text-xs text-red-500 mt-1 font-bold">{{ $message }}</p> @enderror
+                        </div>
+
+                    </div>
+                </div>
+
+                {{-- SECTION 2: Detail Spesifik Kategori --}}
+                <div id="custom-category-fields-card" class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-icon bg-violet-50">
+                            <i class="ph ph-sliders text-violet-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h2 id="custom-fields-title" class="text-sm font-black text-slate-800 flex items-center gap-2">
+                                <i class="ph ph-gear text-[#106c38] text-base"></i> Detail Spesifik Kategori
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Field ini berubah otomatis sesuai kategori yang dipilih</p>
+                        </div>
+                    </div>
+                    <div class="form-card-body">
+                        <div id="dynamic-fields-container">
+
+                            {{-- Event / Kegiatan Fields --}}
+                            <div id="fields-event" class="category-fields-section hidden space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="fl" for="event_time">Waktu Kegiatan <span class="text-red-500">*</span></label>
+                                        <input type="text" name="event_time" id="event_time" class="fi" placeholder="Contoh: 09.00 - 12.00 WIB" value="{{ old('event_time', $contentDecoded['time'] ?? '09.00 - 12.00 WIB') }}">
+                                    </div>
+                                    <div>
+                                        <label class="fl" for="event_location">Lokasi Kegiatan <span class="text-red-500">*</span></label>
+                                        <input type="text" name="event_location" id="event_location" class="fi" placeholder="Ruang Seminar Lantai 3" value="{{ old('event_location', $contentDecoded['location'] ?? 'Gedung UPT Perpustakaan USU') }}">
+                                    </div>
                                 </div>
-                                <div>
-                                    <span class="block text-[10px] text-slate-500 mb-1">Jam Selesai</span>
-                                    <input type="time" name="publish_end_time" value="{{ old('publish_end_time', $informationCenter->publish_end_at ? $informationCenter->publish_end_at->format('H:i') : '') }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="fl" for="event_organizer">Penyelenggara</label>
+                                        <input type="text" name="event_organizer" id="event_organizer" class="fi" placeholder="UPT Perpustakaan USU" value="{{ old('event_organizer', $contentDecoded['organizer'] ?? 'UPT Perpustakaan USU') }}">
+                                    </div>
+                                    <div>
+                                        <label class="fl" for="event_participants">Sasaran Peserta</label>
+                                        <input type="text" name="event_participants" id="event_participants" class="fi" placeholder="Mahasiswa & Umum" value="{{ old('event_participants', $contentDecoded['participants'] ?? 'Civitas Akademika USU & Umum') }}">
+                                    </div>
+                                    <div>
+                                        <label class="fl" for="event_facilities">Fasilitas Acara</label>
+                                        <input type="text" name="event_facilities" id="event_facilities" class="fi" placeholder="E-Sertifikat, Snack" value="{{ old('event_facilities', $contentDecoded['facilities'] ?? 'Ilmu Bermanfaat, E-Sertifikat') }}">
+                                    </div>
+                                </div>
+                                <div class="pt-4 border-t border-slate-50">
+                                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                        <i class="ph ph-image-square text-slate-300 text-base"></i>
+                                        Brosur / Flyer Slider (Opsional)
+                                    </p>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <label class="fl text-[10px]" for="event_left_badge">Label Badge Flyer</label>
+                                            <input type="text" name="event_left_badge" id="event_left_badge" class="fi fi-sm" placeholder="EVENT PERPUSTAKAAN" value="{{ old('event_left_badge', $contentDecoded['left_badge'] ?? 'EVENT PERPUSTAKAAN') }}">
+                                        </div>
+                                        <div>
+                                            <label class="fl text-[10px]" for="event_left_title">Judul Besar Flyer</label>
+                                            <input type="text" name="event_left_title" id="event_left_title" class="fi fi-sm" placeholder="Kosongkan = ikuti judul" value="{{ old('event_left_title', $contentDecoded['left_title'] ?? '') }}">
+                                        </div>
+                                        <div>
+                                            <label class="fl text-[10px]" for="event_left_subtitle">Subjudul Flyer</label>
+                                            <input type="text" name="event_left_subtitle" id="event_left_subtitle" class="fi fi-sm" placeholder="Teks singkat penarik minat" value="{{ old('event_left_subtitle', $contentDecoded['left_subtitle'] ?? '') }}">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="fl text-[10px]" for="event_quota_tag">Stiker / Quota Tag</label>
+                                            <input type="text" name="event_quota_tag" id="event_quota_tag" class="fi fi-sm" placeholder="PENDAFTARAN DIBUKA!" value="{{ old('event_quota_tag', $contentDecoded['quota_tag'] ?? 'PENDAFTARAN DIBUKA!') }}">
+                                        </div>
+                                        <div>
+                                            <label class="fl text-[10px]" for="event_left_features">Fitur / Benefit Flyer <span class="normal-case font-medium text-slate-400">(1 poin/baris, maks 4)</span></label>
+                                            <textarea name="event_left_features" id="event_left_features" rows="3" class="fi fi-sm resize-none" placeholder="Materi Praktis&#10;Studi Kasus Nyata&#10;E-Sertifikat">{{ old('event_left_features', is_array($contentDecoded['left_features'] ?? null) ? implode("\n", $contentDecoded['left_features']) : ($contentDecoded['left_features'] ?? '')) }}</textarea>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <span class="text-[10px] text-slate-500 mt-2 block">Biarkan kosong jika informasi ini ingin ditayangkan selamanya tanpa batas waktu.</span>
+
+                            {{-- Pengumuman Fields --}}
+                            <div id="fields-announcement" class="category-fields-section hidden space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="fl" for="announcement_time">Jadwal / Waktu <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                        <input type="text" name="announcement_time" id="announcement_time" class="fi" placeholder="Contoh: 08.00 - Selesai" value="{{ old('announcement_time', $contentDecoded['time'] ?? '') }}">
+                                    </div>
+                                    <div>
+                                        <label class="fl" for="announcement_location">Lokasi / Tempat <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                        <input type="text" name="announcement_location" id="announcement_location" class="fi" placeholder="Contoh: Gedung A" value="{{ old('announcement_location', $contentDecoded['location'] ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Berita Perpustakaan Fields --}}
+                            <div id="fields-library_news" class="category-fields-section hidden space-y-5">
+                                <div>
+                                    <label class="fl" for="news_date">Tanggal Berita / Kegiatan <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                    <input type="text" name="news_date" id="news_date" class="fi" placeholder="Contoh: 17 Agustus 2026" value="{{ old('news_date', $contentDecoded['date'] ?? '') }}">
+                                </div>
+                            </div>
+
+                            {{-- Buku / Koleksi Fields --}}
+                            <div id="fields-book_recommendation" class="category-fields-section hidden space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="fl" for="book_title">Judul Buku / Koleksi <span class="text-red-500">*</span></label>
+                                        <input type="text" name="book_title" id="book_title" class="fi" placeholder="Algoritma & Pemrograman" value="{{ old('book_title', $contentDecoded['book_title'] ?? '') }}">
+                                    </div>
+                                    <div>
+                                        <label class="fl" for="book_author">Penulis / Pencipta <span class="text-red-500">*</span></label>
+                                        <input type="text" name="book_author" id="book_author" class="fi" placeholder="Prof. Dr. Budi Luhur" value="{{ old('book_author', $contentDecoded['book_author'] ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="fl" for="book_publisher">Penerbit &amp; Tahun Terbit</label>
+                                        <input type="text" name="book_publisher" id="book_publisher" class="fi" placeholder="Erlangga, 2024" value="{{ old('book_publisher', $contentDecoded['book_publisher'] ?? '') }}">
+                                    </div>
+                                    <div>
+                                        <label class="fl" for="shelf_location">Lokasi Rak / Klasifikasi</label>
+                                        <input type="text" name="shelf_location" id="shelf_location" class="fi" placeholder="Rak 4B - Umum / DDC 005.1" value="{{ old('shelf_location', $contentDecoded['shelf_location'] ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- CARD 5: PENGATURAN TAMPILAN (DENGAN PENJELASAN SEDERHANA) -->
-            <div id="card-pengaturan-tampilan" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                <h3 class="text-base font-black text-slate-800 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <i class="ph ph-desktop-tower text-usu-green text-lg"></i> Pengaturan Tampilan
-                </h3>
-                
-                <div class="space-y-4">
-                    <!-- Popup -->
-                    <div id="popup-option-container" class="p-3 bg-slate-50 rounded-2xl border border-slate-150">
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" name="show_popup" value="1" {{ old('show_popup', $informationCenter->show_popup) ? 'checked' : '' }} class="rounded border-slate-300 text-usu-green focus:ring-usu-green">
-                            <span class="text-sm font-bold text-slate-800">Tampilkan Popup</span>
-                        </label>
-                        <span class="text-[10px] text-slate-500 mt-1 block">Jika dicentang, informasi ini akan langsung **muncul melayang** sebagai iklan/pengumuman di layar depan pengunjung saat pertama kali membuka website perpustakaan.</span>
-                        
-                        <div class="mt-2.5 pt-2.5 border-t border-slate-200/60">
-                            <label class="block text-[10px] font-bold text-slate-700 mb-1 uppercase">Prioritas Popup (Urutan Keutamaan)</label>
-                            <input type="number" name="popup_priority" value="{{ old('popup_priority', $informationCenter->popup_priority) }}" min="1" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs">
-                            <span class="text-[9px] text-slate-400 mt-1 block">Angka lebih tinggi (misal: 5) akan diutamakan muncul di atas angka rendah (misal: 1) jika ada lebih dari satu popup aktif bersamaan.</span>
+                {{-- SECTION 3: Tombol Aksi --}}
+                <div id="card-tombol-aksi" class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-icon bg-blue-50">
+                            <i class="ph ph-link-simple text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h2 class="text-sm font-black text-slate-800">Tombol Aksi &amp; Tautan <span class="font-bold text-slate-400 text-xs">(Opsional)</span></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Tambahkan tombol menuju link eksternal — Google Form, Instagram, website, dll. (Opsional)</p>
+                        </div>
+                    </div>
+                    <div class="form-card-body">
+                        <div id="action-buttons-container" class="space-y-3">
+                            {{-- Diisi dinamis oleh JS --}}
+                        </div>
+                        <button type="button" id="btn-add-action-button"
+                                class="mt-3 flex items-center justify-center gap-2 w-full px-4 py-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 border-dashed hover:border-blue-300 text-slate-500 hover:text-blue-600 text-xs font-bold rounded-xl transition-all">
+                            <i class="ph ph-plus-circle text-base"></i> Tambah Tombol Baru
+                        </button>
+                    </div>
+                </div>
+
+                {{-- SECTION 4: Narahubung --}}
+                <div id="card-narahubung" class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-icon bg-amber-50">
+                            <i class="ph ph-user-circle text-amber-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h2 class="text-sm font-black text-slate-800">Narahubung (Contact Person) <span class="font-bold text-slate-400 text-xs">(Opsional)</span></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Informasi kontak yang dapat dihubungi terkait kegiatan ini. (Opsional)</p>
+                        </div>
+                    </div>
+                    <div class="form-card-body space-y-4">
+                        <div>
+                            <label class="fl" for="contact_name">Nama Kontak</label>
+                            <input type="text" name="contact_name" id="contact_name" value="{{ old('contact_name', $informationCenter->contact_name) }}" class="fi" placeholder="Ibu Mawar Harahap">
+                        </div>
+                        <div>
+                            <label class="fl" for="contact_phone">Nomor WhatsApp</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-slate-500 font-bold pointer-events-none">+62</span>
+                                <input type="text" name="contact_phone" id="contact_phone" value="{{ old('contact_phone', $informationCenter->contact_phone) }}" class="fi !pl-[34px]" placeholder="8123456789">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="fl" for="contact_email">Alamat Email</label>
+                            <input type="email" name="contact_email" id="contact_email" value="{{ old('contact_email', $informationCenter->contact_email) }}" class="fi" placeholder="mawar@usu.ac.id">
+                        </div>
+                    </div>
+                </div>
+
+            </div>{{-- END LEFT COLUMN --}}
+
+
+            {{-- ── RIGHT SIDEBAR ────────────────────────────────────────────── --}}
+            <div class="xl:col-span-4">
+                <div class="xl-sticky space-y-4">
+
+
+
+                    {{-- Jadwal & Status --}}
+                    <div id="card-jadwal-tampil" class="sidebar-card">
+                        <div class="sidebar-card-header">
+                            <i class="ph ph-calendar-check text-[#106c38] text-base"></i>
+                            <h3 class="text-xs font-black text-slate-700 uppercase tracking-wider">Jadwal &amp; Status</h3>
+                        </div>
+                        <div class="sidebar-card-body space-y-4">
+
+                            <div>
+                                <label class="fl text-[10px]">Status Publikasi <span class="text-red-500">*</span></label>
+                                <select name="status" id="status_select" class="fi fi-sm">
+                                    <option value="published" {{ old('status', $informationCenter->status) == 'published' ? 'selected' : '' }}>🟢  Diterbitkan — Langsung tayang</option>
+                                    <option value="draft"     {{ old('status', $informationCenter->status) == 'draft'     ? 'selected' : '' }}>📝  Draf — Jadwalkan tayang nanti</option>
+                                </select>
+                            </div>
+
+                            <div id="live_publish_badge" class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-xs font-semibold flex items-center gap-2">
+                                <i class="ph ph-check-circle text-base"></i> Ditayangkan langsung saat di-upload (Tanggal & Jam tayang otomatis saat ini).
+                            </div>
+
+                            <div id="publish-time-container" class="space-y-4 pt-3 border-t border-slate-50">
+                                <div id="start_time_wrapper">
+                                    <label class="fl text-[10px]">Mulai Tayang <span class="text-red-500">*</span></label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
+                                            <input type="date" name="publish_start_date" id="publish_start_date_input"
+                                                   value="{{ old('publish_start_date', $informationCenter->publish_start_at ? $informationCenter->publish_start_at->format('Y-m-d') : date('Y-m-d')) }}"
+                                                   class="fi fi-sm px-3 py-2">
+                                        </div>
+                                        <div>
+                                            <span class="block text-[10px] text-slate-400 mb-1.5">Jam</span>
+                                            <input type="time" name="publish_start_time" id="publish_start_time_input"
+                                                   value="{{ old('publish_start_time', $informationCenter->publish_start_at ? $informationCenter->publish_start_at->format('H:i') : date('H:i')) }}"
+                                                   class="fi fi-sm px-3 py-2">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="fl text-[10px]">Selesai Tayang
+                                        <span class="normal-case font-medium text-slate-400 ml-1">(Opsional)</span>
+                                    </label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
+                                            <input type="date" name="publish_end_date"
+                                                   value="{{ old('publish_end_date', $informationCenter->publish_end_at ? $informationCenter->publish_end_at->format('Y-m-d') : '') }}"
+                                                   class="fi fi-sm px-3 py-2">
+                                        </div>
+                                        <div>
+                                            <span class="block text-[10px] text-slate-400 mb-1.5">Jam</span>
+                                            <input type="time" name="publish_end_time"
+                                                   value="{{ old('publish_end_time', $informationCenter->publish_end_at ? $informationCenter->publish_end_at->format('H:i') : '') }}"
+                                                   class="fi fi-sm px-3 py-2">
+                                        </div>
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Biarkan kosong untuk tayang tanpa batas waktu.</p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
-                    <!-- Navbar -->
-                    <div class="p-3 bg-slate-50 rounded-2xl border border-slate-150">
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" name="show_navbar" value="1" {{ old('show_navbar', $informationCenter->show_navbar) ? 'checked' : '' }} class="rounded border-slate-300 text-usu-green focus:ring-usu-green">
-                            <span class="text-sm font-bold text-slate-800">Tampilkan di Navbar</span>
-                        </label>
-                        <span class="text-[10px] text-slate-500 mt-1 block">Jika dicentang, informasi ini akan muncul di menu **Pusat Informasi** pada bar navigasi atas website, memudahkan pengunjung mencarinya kembali.</span>
-                    </div>
-
-                    <!-- Featured -->
-                    <div class="p-3 bg-slate-50 rounded-2xl border border-slate-150">
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $informationCenter->is_featured) ? 'checked' : '' }} class="rounded border-slate-300 text-usu-green focus:ring-usu-green">
-                            <span class="text-sm font-bold text-slate-800">Sorotan / Highlight</span>
-                        </label>
-                        <span class="text-[10px] text-slate-500 mt-1 block">Jika dicentang, informasi ini akan menjadi sorotan utama perpustakaan dan ditampilkan secara khusus.</span>
-                    </div>
-                    
-                    <!-- Sort Order -->
-                    <div>
-                        <p class="block text-xs font-bold text-slate-700 mb-1.5">Urutan Pengurutan (Sort Order)</p>
-                        <input type="number" name="sort_order" min="1" max="{{ max(1, \App\Models\InformationCenter::count()) }}" value="{{ old('sort_order', $informationCenter->sort_order) }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-                        <span class="text-[10px] text-slate-400 mt-1 block">Angka kecil (misal: 1) akan ditampilkan paling pertama dibandingkan angka yang lebih besar.</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 6: POSTER / BANNER (MEDIA PENDUKUNG) -->
-            <div id="card-poster" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                <h3 class="text-base font-black text-slate-800 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <i class="ph ph-image text-usu-green text-lg"></i> Poster / Banner Kegiatan
-                </h3>
-                
-                <div class="text-center">
-                    <img id="image-preview" src="{{ $informationCenter->image_path ? asset($informationCenter->image_path) : '#' }}" alt="Pratinjau Gambar" class="{{ $informationCenter->image_path ? '' : 'hidden' }} w-full h-auto rounded-xl object-cover border border-slate-200 mb-4">
-                    
-                    <label class="block w-full cursor-pointer bg-slate-50 border border-dashed border-slate-300 hover:border-usu-green p-4 rounded-xl transition-colors">
-                        <div class="flex flex-col items-center justify-center gap-2">
-                            <i class="ph ph-upload-simple text-2xl text-slate-400"></i>
-                            <span class="text-xs text-slate-600 font-bold">Klik untuk Pilih Gambar</span>
-                            <span class="text-[9px] text-slate-400">Maks. 5MB (JPG, JPEG, PNG, WEBP)</span>
+                    {{-- Pengaturan Tampilan --}}
+                    <div id="card-pengaturan-tampilan" class="sidebar-card">
+                        <div class="sidebar-card-header">
+                            <i class="ph ph-layout text-violet-500 text-base"></i>
+                            <h3 class="text-xs font-black text-slate-700 uppercase tracking-wider">Pengaturan Tampilan</h3>
                         </div>
-                        <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
-                    </label>
+                        <div class="sidebar-card-body space-y-3">
+                            <input type="hidden" name="show_popup" value="1">
+                            <input type="hidden" name="show_navbar" value="1">
+                            <input type="hidden" name="is_featured" value="0">
+                            <input type="hidden" name="popup_priority" value="1">
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil (Sort Order)</label>
+                                <input type="number" name="sort_order" min="1" value="{{ old('sort_order', $informationCenter->sort_order ?? 1) }}" class="fi fi-sm">
+                                <p class="text-[9.5px] text-slate-400 mt-1">Angka kecil = tampil paling awal.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Poster / Banner --}}
+                    <div id="card-poster" class="sidebar-card">
+                        <div class="sidebar-card-header flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-image text-pink-500 text-base"></i>
+                                <h3 class="text-xs font-black text-slate-700 uppercase tracking-wider">Poster / Banner</h3>
+                            </div>
+                            <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold uppercase">Frame Editor</span>
+                        </div>
+                        <div class="sidebar-card-body space-y-4">
+                            
+                            @php
+                                $hasExistingImage = !empty($informationCenter->image_url) || (!empty($informationCenter->images_url) && count($informationCenter->images_url) > 0);
+                            @endphp
+
+                            <!-- Dropzone Upload -->
+                            <div id="dropzone-wrapper" class="{{ $hasExistingImage ? 'hidden' : '' }}">
+                                <label class="img-drop block cursor-pointer">
+                                    <div class="flex flex-col items-center justify-center gap-2.5">
+                                        <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                                            <i class="ph ph-upload-simple text-2xl text-slate-400"></i>
+                                        </div>
+                                        <div class="text-center">
+                                            <span class="text-xs font-bold text-slate-600 block">Klik / Unggah Gambar Baru</span>
+                                            <span class="text-[10px] text-slate-400 mt-1 block">JPG, PNG, WEBP — Maks. 5MB</span>
+                                        </div>
+                                    </div>
+                                    <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
+                                </label>
+                            </div>
+
+                            <!-- Button Ganti Foto (Tampil jika foto sudah ada) -->
+                            <button type="button" id="btn-change-image" class="{{ $hasExistingImage ? '' : 'hidden' }} w-full py-2.5 px-4 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#106c38] border border-slate-200 hover:border-emerald-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer">
+                                <i class="ph ph-image text-base text-[#106c38]"></i> Ganti Foto / Unggah Ulang
+                            </button>
+                            
+                            <div id="image-preview-container" class="grid grid-cols-3 gap-2 hidden">
+                                <!-- Previews will be injected here -->
+                            </div>
+
+                            <!-- Hidden Inputs for Frame Customization -->
+                            <input type="hidden" name="image_scale" id="image_scale_input" value="{{ old('image_scale', $informationCenter->image_scale ?? 100) }}">
+                            <input type="hidden" name="image_x" id="image_x_input" value="{{ old('image_x', $informationCenter->image_x ?? 50) }}">
+                            <input type="hidden" name="image_y" id="image_y_input" value="{{ old('image_y', $informationCenter->image_y ?? 50) }}">
+
+                            <!-- Interactive Simulasi Frame Beranda -->
+                            <div class="pt-3 border-t border-slate-100 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="ph ph-crop text-slate-400"></i> Simulasi Frame Beranda
+                                    </span>
+                                    <button type="button" id="btn-reset-frame" class="text-[10px] font-bold text-emerald-700 hover:underline">
+                                        Reset Pengaturan
+                                    </button>
+                                </div>
+
+                                <div class="relative w-full aspect-[4/5] bg-slate-900 rounded-2xl overflow-hidden shadow-inner cursor-grab group select-none border border-slate-200" id="frame-simulator-container">
+                                    @php
+                                        $initialImgSrc = asset('perpustakaan_depan.webp');
+                                        if (!empty($informationCenter->images_url) && is_array($informationCenter->images_url) && count($informationCenter->images_url) > 0) {
+                                            $initialImgSrc = $informationCenter->images_url[0];
+                                        } elseif (!empty($informationCenter->image_url)) {
+                                            $initialImgSrc = $informationCenter->image_url;
+                                        }
+                                    @endphp
+                                    <img id="frame-sim-image" src="{{ $initialImgSrc }}"
+                                         alt="Poster Preview"
+                                         class="w-full h-full pointer-events-none transition-transform duration-75 origin-center"
+                                         style="object-fit: {{ old('image_fit', $informationCenter->image_fit ?? 'cover') }}; object-position: {{ old('image_x', $informationCenter->image_x ?? 50) }}% {{ old('image_y', $informationCenter->image_y ?? 50) }}%; transform: scale({{ old('image_scale', $informationCenter->image_scale ?? 100) / 100 }});">
+
+                                    {{-- Drag Guide Overlay --}}
+                                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white pointer-events-none p-3 text-center">
+                                        <i class="ph ph-hand-grabbing text-3xl mb-1 drop-shadow"></i>
+                                        <span class="text-[11px] font-bold drop-shadow">Geser untuk Posisi Foto</span>
+                                        <span class="text-[9px] text-white/80 drop-shadow">Scroll untuk Zoom In / Out</span>
+                                    </div>
+
+                                    <div class="absolute bottom-2 left-2 right-2 bg-slate-900/80 backdrop-blur-md px-2.5 py-1.5 rounded-lg flex items-center justify-between text-[10px] text-white">
+                                        <span>Zoom: <strong id="badge-scale-val">{{ old('image_scale', $informationCenter->image_scale ?? 100) }}%</strong></span>
+                                        <span class="text-white/60">Geser atau Atur Slider</span>
+                                    </div>
+                                </div>
+
+                                {{-- Sliders Control Panel --}}
+                                <div class="space-y-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <div>
+                                        <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 mb-1">
+                                            <span>Mode Fit Foto</span>
+                                        </div>
+                                        <select name="image_fit" id="image_fit_select" class="fi fi-sm">
+                                            <option value="cover"   {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'cover'   ? 'selected' : '' }}>Cover (Isi Penuh Frame)</option>
+                                            <option value="contain" {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'contain' ? 'selected' : '' }}>Contain (Tampilkan Utuh Tanpa Terpotong)</option>
+                                            <option value="fill"    {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'fill'    ? 'selected' : '' }}>Stretch (Tarik Pas Frame)</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 mb-1">
+                                            <span>Perbesar / Zoom</span>
+                                            <span id="zoom-slider-val" class="text-emerald-700 font-extrabold">{{ old('image_scale', $informationCenter->image_scale ?? 100) }}%</span>
+                                        </div>
+                                        <input type="range" id="zoom-slider" min="50" max="250" value="{{ old('image_scale', $informationCenter->image_scale ?? 100) }}" class="w-full accent-[#106c38] cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 mb-1">
+                                                <span>Posisi X</span>
+                                                <span id="posx-slider-val" class="text-emerald-700 font-extrabold">{{ old('image_x', $informationCenter->image_x ?? 50) }}%</span>
+                                            </div>
+                                            <input type="range" id="posx-slider" min="0" max="100" value="{{ old('image_x', $informationCenter->image_x ?? 50) }}" class="w-full accent-[#106c38] cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 mb-1">
+                                                <span>Posisi Y</span>
+                                                <span id="posy-slider-val" class="text-emerald-700 font-extrabold">{{ old('image_y', $informationCenter->image_y ?? 50) }}%</span>
+                                            </div>
+                                            <input type="range" id="posy-slider" min="0" max="100" value="{{ old('image_y', $informationCenter->image_y ?? 50) }}" class="w-full accent-[#106c38] cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {{-- Tombol Submit --}}
+                    <div class="space-y-2.5">
+                        <button type="submit" class="btn-pub"
+                                onclick="this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i>&nbsp;Menyimpan...'; this.form.submit(); this.disabled=true;">
+                            <i class="ph ph-floppy-disk text-lg"></i>
+                            Perbarui Informasi
+                        </button>
+                        <a href="{{ route('admin.information-center.index') }}"
+                           class="flex items-center justify-center gap-2 w-full px-5 py-3 bg-white hover:bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-700 text-xs font-bold rounded-xl transition-colors">
+                            <i class="ph ph-x text-sm"></i> Batal
+                        </a>
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- Tombol Simpan -->
-    <div class="mt-6 pt-6 border-t border-slate-150 flex justify-end gap-4">
-        <a href="{{ route('admin.information-center.index') }}" class="px-6 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Batal</a>
-        <button type="submit" class="btn-gold px-8 py-3 rounded-xl transition-all shadow-sm flex items-center gap-2" onclick="this.innerHTML = '<i class=\'ph ph-spinner animate-spin\'></i> Menyimpan...'; this.form.submit(); this.disabled = true;">
-            <i class="ph ph-floppy-disk text-lg font-bold"></i> Perbarui Informasi
-        </button>
-    </div>
-</div>
 </form>
+
 @endsection
 
 @push('scripts')
 <script>
-    // Image Preview
-    const imageInput = document.getElementById('image-input');
-    const previewContainer = document.getElementById('image-preview-container');
-
-    if(imageInput) {
-        imageInput.addEventListener('change', function() {
-            previewContainer.innerHTML = '';
-            
-            if (this.files && this.files.length > 0) {
-                previewContainer.classList.remove('hidden');
-                
-                if (this.files.length > 3) {
-                    Swal.fire('Batas Upload', 'Maksimal 3 gambar yang dapat diunggah!', 'warning');
-                    this.value = '';
-                    previewContainer.classList.add('hidden');
-                    return;
-                }
-                
-                Array.from(this.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = e => {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'w-full h-24 object-cover rounded-lg border border-slate-200';
-                        previewContainer.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            } else {
-                @if($informationCenter->images)
-                    let html = '';
-                    @foreach($informationCenter->images as $img)
-                        html += '<img src="{{ asset($img) }}" alt="Pratinjau Gambar" class="w-full h-24 object-cover rounded-lg border border-slate-200">';
-                    @endforeach
-                    previewContainer.innerHTML = html;
-                    previewContainer.classList.remove('hidden');
-                @elseif($informationCenter->image_path)
-                    previewContainer.innerHTML = '<img src="{{ asset($informationCenter->image_path) }}" alt="Pratinjau Gambar" class="w-full h-24 object-cover rounded-lg border border-slate-200">';
-                    previewContainer.classList.remove('hidden');
-                @else
-                    previewContainer.classList.add('hidden');
-                @endif
-            }
-        });
-    }
-
-
-
-    // Dynamic Multi Action Buttons
+    // ─── Multi Action Buttons Dynamic Generator ──────────────────────────────
     const container = document.getElementById('action-buttons-container');
     const btnAdd = document.getElementById('btn-add-action-button');
     let btnIndex = 0;
 
-    function addRow(name = '', url = '', newTab = false) {
-        const rowId = `row-btn-${btnIndex}`;
+    function addRow(name = '', url = '', newTab = true) {
+        if (!container) return;
         const html = `
-            <div id="${rowId}" class="flex flex-col sm:flex-row gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 relative pt-7 sm:pt-4">
-                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-600 flex items-center justify-center border border-rose-200 text-[10px]" title="Hapus Tombol">
-                    <i class="ph ph-trash"></i>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200/60 transition-all hover:border-slate-300 relative group">
+                <button type="button" onclick="this.closest('.flex').remove()" class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-[10px] shadow hover:bg-red-600 transition" title="Hapus Tombol">
+                    <i class="ph ph-x font-bold"></i>
                 </button>
-                <div class="flex-1">
-                    <p class="block text-[10px] font-black text-slate-500 mb-1">LABEL/NAMA TOMBOL</p>
-                    <input type="text" name="action_buttons[${btnIndex}][name]" value="${name}" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs" placeholder="Contoh: Daftar Lomba">
+                <div class="w-full sm:w-2/5">
+                    <p class="fl text-[10px] mb-1">Label Tombol</p>
+                    <input type="text" name="action_buttons[${btnIndex}][name]" value="${name}" required class="fi fi-sm" placeholder="Contoh: Daftar Lomba">
                 </div>
                 <div class="flex-1">
-                    <p class="block text-[10px] font-black text-slate-500 mb-1">LINK TAUTAN (URL)</p>
-                    <input type="url" name="action_buttons[${btnIndex}][url]" value="${url}" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs" placeholder="https://google.form/...">
+                    <p class="fl text-[10px] mb-1">Link (URL)</p>
+                    <input type="url" name="action_buttons[${btnIndex}][url]" value="${url}" required class="fi fi-sm" placeholder="https://forms.google.com/...">
                 </div>
-                <div class="flex items-center gap-1.5 pt-2 sm:pt-4">
-                    <input type="checkbox" name="action_buttons[${btnIndex}][new_tab]" value="1" ${newTab ? 'checked' : ''} id="new_tab_${btnIndex}" class="rounded border-slate-300 text-usu-green focus:ring-usu-green">
-                    <label for="new_tab_${btnIndex}" class="text-[10px] font-bold text-slate-600 cursor-pointer">Buka di Tab Baru</label>
+                <div class="flex items-center gap-1.5 pt-2 sm:pt-4 shrink-0">
+                    <input type="checkbox" name="action_buttons[${btnIndex}][new_tab]" value="1" ${newTab ? 'checked' : ''} id="new_tab_${btnIndex}" style="accent-color:#106c38">
+                    <label for="new_tab_${btnIndex}" class="text-[10px] font-bold text-slate-500 cursor-pointer whitespace-nowrap">Tab Baru</label>
                 </div>
-            </div>
-        `;
+            </div>`;
         container.insertAdjacentHTML('beforeend', html);
         btnIndex++;
     }
 
-    btnAdd.addEventListener('click', () => addRow());
+    if (btnAdd) {
+        btnAdd.addEventListener('click', () => addRow());
+    }
 
-    // Render existing buttons from database
-    @if(is_array($informationCenter->action_button_url) && count($informationCenter->action_button_url) > 0)
-        @foreach($informationCenter->action_button_url as $btn)
-            addRow('{!! addslashes($btn['name']) !!}', '{!! addslashes($btn['url']) !!}', {{ isset($btn['new_tab']) && $btn['new_tab'] ? 'true' : 'false' }});
-        @endforeach
-    @endif
+    // Render existing buttons from database safely
+    try {
+        const existingButtons = @json($informationCenter->action_button_url ?? []);
+        if (Array.isArray(existingButtons) && existingButtons.length > 0) {
+            existingButtons.forEach(btn => {
+                if (btn && typeof btn === 'object') {
+                    addRow(btn.name || '', btn.url || '', btn.new_tab !== false);
+                } else if (typeof btn === 'string' && btn.trim() !== '') {
+                    addRow('Tautan', btn, true);
+                }
+            });
+        } else if (typeof existingButtons === 'string' && existingButtons.trim() !== '') {
+            addRow('Tautan', existingButtons, true);
+        }
+    } catch (e) {
+        console.error("Error rendering action buttons:", e);
+    }
 
-    // Toggle Category Specific Fields
-    const categorySelect = document.getElementById('category-select');
-    const mainFormArea = document.getElementById('main-form-area');
-    
-    // Cards & Containers
-    const customFieldsCard = document.getElementById('custom-category-fields-card');
-    const customFieldsTitle = document.getElementById('custom-fields-title');
-    const allSections = document.querySelectorAll('.category-fields-section');
-    
-    const cardTombolAksi = document.getElementById('card-tombol-aksi');
-    const cardNarahubung = document.getElementById('card-narahubung');
-    const publishTimeContainer = document.getElementById('publish-time-container');
-    const popupOptionContainer = document.getElementById('popup-option-container');
-    const cardPoster = document.getElementById('card-poster');
+    // ─── Visual Category Chips & Elements ──────────────────────────────────────
+    const categorySelect        = document.getElementById('category-select');
+    const categoryChips         = document.querySelectorAll('.cat-chip-btn');
+    const categoryGrid          = document.getElementById('category-grid');
+    const categoryIndicator     = document.getElementById('category-indicator');
+    const categoryIndicatorName = document.getElementById('category-indicator-name');
+    const categoryHelperBox     = document.getElementById('category-helper-box');
+    const categoryHelperDesc    = document.getElementById('category-helper-desc');
 
-    // Inputs inside publish time container to toggle required attribute
+    const mainFormArea          = document.getElementById('main-form-area');
+    const customFieldsCard      = document.getElementById('custom-category-fields-card');
+    const customFieldsTitle     = document.getElementById('custom-fields-title');
+    const allSections           = document.querySelectorAll('.category-fields-section');
+    const cardTombolAksi        = document.getElementById('card-tombol-aksi');
+    const cardNarahubung        = document.getElementById('card-narahubung');
+    const publishTimeContainer  = document.getElementById('publish-time-container');
+    const popupOptionContainer  = document.getElementById('popup-option-container');
+    const cardPoster            = document.getElementById('card-poster');
     const publishStartDateInput = document.getElementById('publish_start_date_input');
     const publishStartTimeInput = document.getElementById('publish_start_time_input');
 
+    const catLabels = {
+        announcement:       'Pengumuman',
+        event:              'Event / Kegiatan',
+        book_recommendation:'Buku Rekomendasi',
+        library_news:       'Berita Perpustakaan',
+        tips:               'Tips & Trick'
+    };
+
+    const catHelpers = {
+        announcement: 'Digunakan untuk informasi resmi dari perpustakaan. Contoh: Perubahan Jam Operasional, Maintenance Sistem, Libur Nasional, Layanan Baru, dan Pengingat Pengembalian Buku.',
+        event: 'Digunakan untuk menginformasikan kegiatan perpustakaan. Contoh: Workshop, Seminar, Pelatihan, Lomba, Bedah Buku, dan kegiatan lainnya.',
+        book_recommendation: 'Digunakan untuk memberikan informasi atau rekomendasi mengenai koleksi buku. Contoh: Rekomendasi Buku Minggu Ini, Buku Pilihan Pustakawan, Buku Terpopuler, Buku Referensi Skripsi, dan Rekomendasi Bacaan berdasarkan tema.',
+        library_news: 'Digunakan untuk berita dan dokumentasi kegiatan perpustakaan. Contoh: Dokumentasi Kegiatan, Prestasi, Kerja Sama, dan Peresmian Fasilitas Baru.',
+        tips: 'Digunakan untuk memberikan panduan kepada pengguna. Contoh: Cara Meminjam Buku, Cara Menggunakan OPAC, Tips Mencari Jurnal, Panduan Akses Repository, serta FAQ.'
+    };
+
     function handleCategoryChange() {
+        if (!categorySelect) return;
         const val = categorySelect.value;
         
-        if (!val) {
-            // Sembunyikan seluruh form jika kategori kosong
-            mainFormArea.classList.add('hidden');
-            mainFormArea.classList.add('opacity-0');
-            mainFormArea.classList.add('translate-y-4');
-            return;
-        }
-
-        // Tampilkan form utama
-        mainFormArea.classList.remove('hidden');
-        // Trigger reflow for transition animation
-        setTimeout(() => {
-            mainFormArea.classList.remove('opacity-0');
-            mainFormArea.classList.remove('translate-y-4');
-            mainFormArea.classList.add('opacity-100');
-        }, 50);
-        
-        // Sembunyikan semua dynamic custom fields section dulu
         if (allSections) allSections.forEach(sec => sec.classList.add('hidden'));
         if (customFieldsCard) customFieldsCard.classList.add('hidden');
-
         if (cardTombolAksi) cardTombolAksi.classList.remove('hidden');
         if (cardNarahubung) cardNarahubung.classList.remove('hidden');
         if (publishTimeContainer) publishTimeContainer.classList.remove('hidden');
         if (popupOptionContainer) popupOptionContainer.classList.remove('hidden');
         if (cardPoster) cardPoster.classList.remove('hidden');
 
-        // Set inputs as required by default
-        if (publishStartDateInput) publishStartDateInput.required = true;
-        if (publishStartTimeInput) publishStartTimeInput.required = true;
-
         if (val === 'event') {
             const fieldsEvent = document.getElementById('fields-event');
             if (fieldsEvent) fieldsEvent.classList.remove('hidden');
-            if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-calendar text-usu-green text-lg"></i> Detail Event / Kegiatan';
+            if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-calendar-check text-[#106c38] text-base"></i> Detail Event / Kegiatan';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-        } 
-        else if (val === 'announcement') {
-            // Pengumuman: form khusus pengumuman
+        } else if (val === 'announcement') {
             const fieldsAnnouncement = document.getElementById('fields-announcement');
             if (fieldsAnnouncement) fieldsAnnouncement.classList.remove('hidden');
-            if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-megaphone-simple text-blue-500 text-lg"></i> Detail Tambahan Pengumuman';
+            if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-megaphone-simple text-blue-500 text-base"></i> Detail Tambahan Pengumuman';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-            
-            if (cardTombolAksi) cardTombolAksi.classList.add('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
-        }
-        else if (val === 'book_recommendation') {
+        } else if (val === 'book_recommendation') {
             const fieldsBook = document.getElementById('fields-book_recommendation');
             if (fieldsBook) fieldsBook.classList.remove('hidden');
-            if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-book-open text-yellow-500 text-lg"></i> Detail Buku Rekomendasi';
+            if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-star text-yellow-500 text-base"></i> Detail Buku Rekomendasi';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-            
-            // Rekomendasi buku tidak butuh narahubung dan tombol aksi
-            if (cardTombolAksi) cardTombolAksi.classList.add('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
-        }
-        else if (val === 'library_news') {
+        } else if (val === 'tips') {
+            if (cardNarahubung) cardNarahubung.classList.add('hidden');
+        } else if (val === 'library_news') {
             const fieldsNews = document.getElementById('fields-library_news');
             if (fieldsNews) fieldsNews.classList.remove('hidden');
-            if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-newspaper text-indigo-500 text-lg"></i> Detail Berita Perpustakaan';
+            if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-newspaper text-indigo-500 text-base"></i> Detail Berita Perpustakaan';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-            
-            // Berita tidak butuh tombol aksi dan narahubung
-            if (cardTombolAksi) cardTombolAksi.classList.add('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
-        }
-        else if (val === 'tips') {
-            // Tips: butuh Judul + Ringkasan + Trix Editor lengkap (artikel)
-            // Tips tidak butuh tombol aksi, dan narahubung
-            if (cardTombolAksi) cardTombolAksi.classList.add('hidden');
-            if (cardNarahubung) cardNarahubung.classList.add('hidden');
-        }
-        
-        // Helper Box Logic
-        const catHelpers = {
-            announcement: 'Digunakan untuk informasi resmi dari perpustakaan. Contoh: Perubahan Jam Operasional, Maintenance Sistem, Libur Nasional, Layanan Baru, dan Pengingat Pengembalian Buku.',
-            event: 'Digunakan untuk menginformasikan kegiatan perpustakaan. Contoh: Workshop, Seminar, Pelatihan, Lomba, Bedah Buku, dan kegiatan lainnya.',
-            book_recommendation: 'Digunakan untuk memberikan informasi atau rekomendasi mengenai koleksi buku. Contoh: Rekomendasi Buku Minggu Ini, Buku Pilihan Pustakawan, Buku Terpopuler, Buku Referensi Skripsi, dan Rekomendasi Bacaan berdasarkan tema.',
-            library_news: 'Digunakan untuk berita dan dokumentasi kegiatan perpustakaan. Contoh: Dokumentasi Kegiatan, Prestasi, Kerja Sama, dan Peresmian Fasilitas Baru.',
-            tips: 'Digunakan untuk memberikan panduan kepada pengguna. Contoh: Cara Meminjam Buku, Cara Menggunakan OPAC, Tips Mencari Jurnal, Panduan Akses Repository, serta FAQ.'
-        };
-
-        const helperBox = document.getElementById('category-helper-box');
-        const helperDesc = document.getElementById('category-helper-desc');
-        
-        if (catHelpers[val]) {
-            helperDesc.textContent = catHelpers[val];
-            helperBox.classList.remove('hidden');
-        } else {
-            helperBox.classList.add('hidden');
         }
     }
 
     if (categorySelect) {
         categorySelect.addEventListener('change', handleCategoryChange);
-        // Jalankan saat load awal jika ada old() value
-        handleCategoryChange();
     }
+
+    categoryChips.forEach(chip => {
+        chip.addEventListener('click', (e) => {
+            e.preventDefault();
+            categoryChips.forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            if (categorySelect) categorySelect.value = chip.dataset.value;
+            if (categoryIndicatorName) categoryIndicatorName.textContent = catLabels[chip.dataset.value] || chip.dataset.value;
+            if (categoryIndicator) categoryIndicator.classList.remove('hidden');
+            
+            if (catHelpers[chip.dataset.value] && categoryHelperDesc && categoryHelperBox) {
+                categoryHelperDesc.textContent = catHelpers[chip.dataset.value];
+                categoryHelperBox.classList.remove('hidden');
+            } else if (categoryHelperBox) {
+                categoryHelperBox.classList.add('hidden');
+            }
+
+            handleCategoryChange();
+        });
+    });
+
+    // Set initial active category chip state
+    const currentCat = categorySelect ? categorySelect.value : '';
+    if (currentCat) {
+        const m = document.querySelector(`.cat-chip-btn[data-value="${currentCat}"]`);
+        if (m) { 
+            m.classList.add('selected'); 
+            if (categoryIndicatorName) categoryIndicatorName.textContent = catLabels[currentCat] || currentCat; 
+            if (categoryIndicator) categoryIndicator.classList.remove('hidden'); 
+            
+            if (catHelpers[currentCat] && categoryHelperDesc && categoryHelperBox) {
+                categoryHelperDesc.textContent = catHelpers[currentCat];
+                categoryHelperBox.classList.remove('hidden');
+            }
+        }
+    }
+
+    handleCategoryChange();
+
+    // ─── Status & Jadwal Tayang Logic ──────────────────────────────────────────
+    const statusSelect = document.getElementById('status_select');
+    const livePublishBadge = document.getElementById('live_publish_badge');
+    const startTimeWrapper = document.getElementById('start_time_wrapper');
+
+    function updateStatusScheduleState() {
+        if (!statusSelect) return;
+
+        if (statusSelect.value === 'published') {
+            if (startTimeWrapper) startTimeWrapper.classList.add('hidden');
+            if (livePublishBadge) livePublishBadge.classList.remove('hidden');
+            if (publishStartDateInput) publishStartDateInput.required = false;
+            if (publishStartTimeInput) publishStartTimeInput.required = false;
+        } else {
+            if (startTimeWrapper) startTimeWrapper.classList.remove('hidden');
+            if (livePublishBadge) livePublishBadge.classList.add('hidden');
+            if (publishStartDateInput) publishStartDateInput.required = true;
+            if (publishStartTimeInput) publishStartTimeInput.required = true;
+        }
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener('change', updateStatusScheduleState);
+        updateStatusScheduleState();
+    }
+
+    // ─── Interactive Image Framing, Zoom & Drag Editor ───────────────────────
+    const imageInput        = document.getElementById('image-input');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const imageFitSelect    = document.getElementById('image_fit_select');
+    const zoomSlider        = document.getElementById('zoom-slider');
+    const posxSlider        = document.getElementById('posx-slider');
+    const posySlider        = document.getElementById('posy-slider');
+    const zoomSliderVal     = document.getElementById('zoom-slider-val');
+    const posxSliderVal     = document.getElementById('posx-slider-val');
+    const posySliderVal     = document.getElementById('posy-slider-val');
+    const badgeScaleVal     = document.getElementById('badge-scale-val');
+    
+    const imageScaleInput   = document.getElementById('image_scale_input');
+    const imageXInput       = document.getElementById('image_x_input');
+    const imageYInput       = document.getElementById('image_y_input');
+    
+    const frameContainer    = document.getElementById('frame-simulator-container');
+    const frameSimImage     = document.getElementById('frame-sim-image');
+    const btnResetFrame     = document.getElementById('btn-reset-frame');
+
+    function updateFrameStyling() {
+        if (!frameSimImage) return;
+
+        const scaleVal = zoomSlider ? parseInt(zoomSlider.value) : 100;
+        const posXVal  = posxSlider ? parseInt(posxSlider.value) : 50;
+        const posYVal  = posySlider ? parseInt(posySlider.value) : 50;
+        const fitVal   = imageFitSelect ? imageFitSelect.value : 'cover';
+
+        if (imageScaleInput) imageScaleInput.value = scaleVal;
+        if (imageXInput)     imageXInput.value     = posXVal;
+        if (imageYInput)     imageYInput.value     = posYVal;
+
+        if (zoomSliderVal) zoomSliderVal.textContent = `${scaleVal}%`;
+        if (posxSliderVal) posxSliderVal.textContent = `${posXVal}%`;
+        if (posySliderVal) posySliderVal.textContent = `${posYVal}%`;
+        if (badgeScaleVal) badgeScaleVal.textContent = `${scaleVal}%`;
+
+        frameSimImage.style.objectFit = fitVal;
+        frameSimImage.style.objectPosition = `${posXVal}% ${posYVal}%`;
+        frameSimImage.style.transform = `scale(${scaleVal / 100})`;
+    }
+
+    if (zoomSlider) zoomSlider.addEventListener('input', updateFrameStyling);
+    if (posxSlider) posxSlider.addEventListener('input', updateFrameStyling);
+    if (posySlider) posySlider.addEventListener('input', updateFrameStyling);
+    if (imageFitSelect) imageFitSelect.addEventListener('change', updateFrameStyling);
+
+    if (btnResetFrame) {
+        btnResetFrame.addEventListener('click', () => {
+            if (zoomSlider) zoomSlider.value = 100;
+            if (posxSlider) posxSlider.value = 50;
+            if (posySlider) posySlider.value = 50;
+            if (imageFitSelect) imageFitSelect.value = 'cover';
+            updateFrameStyling();
+        });
+    }
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let startPosX = 50, startPosY = 50;
+
+    if (frameContainer) {
+        frameContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startPosX = posxSlider ? parseInt(posxSlider.value) : 50;
+            startPosY = posySlider ? parseInt(posySlider.value) : 50;
+            frameContainer.classList.add('cursor-grabbing');
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const rect = frameContainer.getBoundingClientRect();
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+
+            const movePercentX = (deltaX / rect.width) * 100;
+            const movePercentY = (deltaY / rect.height) * 100;
+
+            let newX = Math.round(startPosX - movePercentX);
+            let newY = Math.round(startPosY - movePercentY);
+
+            newX = Math.max(0, Math.min(100, newX));
+            newY = Math.max(0, Math.min(100, newY));
+
+            if (posxSlider) posxSlider.value = newX;
+            if (posySlider) posySlider.value = newY;
+            updateFrameStyling();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                frameContainer.classList.remove('cursor-grabbing');
+            }
+        });
+
+        frameContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (!zoomSlider) return;
+            let currentZoom = parseInt(zoomSlider.value);
+            if (e.deltaY < 0) {
+                currentZoom = Math.min(250, currentZoom + 5);
+            } else {
+                currentZoom = Math.max(50, currentZoom - 5);
+            }
+            zoomSlider.value = currentZoom;
+            updateFrameStyling();
+        }, { passive: false });
+    }
+
+    const dropzoneWrapper = document.getElementById('dropzone-wrapper');
+    const btnChangeImage   = document.getElementById('btn-change-image');
+
+    if (btnChangeImage && imageInput) {
+        btnChangeImage.addEventListener('click', () => {
+            imageInput.click();
+        });
+    }
+
+    if (imageInput && frameSimImage) {
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                if (dropzoneWrapper) dropzoneWrapper.classList.add('hidden');
+                if (btnChangeImage) btnChangeImage.classList.remove('hidden');
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    frameSimImage.src = e.target.result;
+                    updateFrameStyling();
+                };
+                reader.readAsDataURL(this.files[0]);
+
+                if (imagePreviewContainer) {
+                    imagePreviewContainer.innerHTML = '';
+                    imagePreviewContainer.classList.remove('hidden');
+                    Array.from(this.files).forEach((file, idx) => {
+                        const r = new FileReader();
+                        r.onload = function(ev) {
+                            const imgThumb = `
+                                <div class="relative rounded-lg overflow-hidden border border-slate-200 aspect-square bg-slate-100">
+                                    <img src="${ev.target.result}" class="w-full h-full object-cover">
+                                    <span class="absolute top-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">New #${idx+1}</span>
+                                </div>`;
+                            imagePreviewContainer.insertAdjacentHTML('beforeend', imgThumb);
+                        };
+                        r.readAsDataURL(file);
+                    });
+                }
+            }
+        });
+    }
+
+    updateFrameStyling();
+
 </script>
 @endpush
