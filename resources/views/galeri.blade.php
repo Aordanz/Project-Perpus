@@ -117,8 +117,16 @@
             <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center items-center {{ $hasActiveCategory ? 'expanded-mode' : '' }}">
                 <!-- Semua Kategori -->
                 <a href="{{ route('galeri', ['q' => request('q')]) }}" 
-                   class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
-                    <i class="ph ph-squares-four text-base sm:text-lg"></i> {{ __('Semua Kategori') }}
+                   class="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40' }}">
+                    <i class="ph ph-squares-four text-base sm:text-lg"></i>
+                    <span>{{ __('Semua Kategori') }}</span>
+                </a>
+                
+                <!-- Terlaris -->
+                <a href="{{ route('galeri', ['category' => 'terlaris', 'q' => request('q')]) }}" 
+                   class="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ request('category') === 'terlaris' ? 'bg-gradient-to-r from-amber-500 to-orange-500 border-amber-500 text-white font-bold shadow-md shadow-orange-300/60 ring-2 ring-orange-400/60' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:border-orange-400 hover:text-orange-600 hover:shadow-md hover:shadow-orange-200/60 hover:ring-2 hover:ring-orange-400/50' }}">
+                    <i class="ph ph-fire {{ request('category') === 'terlaris' ? 'text-white animate-pulse' : 'text-amber-500 group-hover:text-orange-500' }} text-base sm:text-lg"></i>
+                    <span>{{ __('Terlaris') }}</span>
                 </a>
                 
                 @foreach($ddcCategories as $key => $cat)
@@ -127,21 +135,21 @@
                         $index = $loop->index;
                         
                         $visibilityClass = 'cat-collapsible';
-                        if ($index < 1) $visibilityClass = 'cat-collapsible sm-visible';
-                        elseif ($index < 2) $visibilityClass = 'cat-collapsible md-visible';
-                        elseif ($index < 3) $visibilityClass = 'cat-collapsible lg-visible';
-                        elseif ($index < 4) $visibilityClass = 'cat-collapsible xl-visible';
+                        if ($index < 1) $visibilityClass = 'cat-collapsible md-visible';
+                        elseif ($index < 2) $visibilityClass = 'cat-collapsible lg-visible';
+                        elseif ($index < 3) $visibilityClass = 'cat-collapsible xl-visible';
                     @endphp
                     <a href="{{ route('galeri', ['category' => $key, 'q' => request('q')]) }}" 
-                       class="category-bubble {{ $visibilityClass }} items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38]' }} transition-colors text-xs sm:text-sm shadow-sm">
-                        <i class="ph {{ $cat['icon'] }} text-base sm:text-lg"></i> {{ __($cat['name']) }}
+                       class="group category-bubble {{ $visibilityClass }} relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40' }}">
+                        <i class="ph {{ $cat['icon'] }} text-base sm:text-lg"></i>
+                        <span>{{ __($cat['name']) }}</span>
                     </a>
                 @endforeach
 
                 <!-- Toggle Button -->
-                <button id="toggle-category-btn" class="flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] flex items-center gap-1 transition-colors bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] cursor-pointer">
+                <button id="toggle-category-btn" class="group flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] inline-flex items-center gap-1 transition-all duration-300 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] hover:ring-2 hover:ring-[#106c38]/40 hover:shadow-md hover:shadow-green-100 cursor-pointer transform hover:-translate-y-0.5">
                     <span id="toggle-category-text">{{ $hasActiveCategory ? __('Sembunyikan') : __('Lainnya') }}</span>
-                    <i id="toggle-category-icon" class="ph ph-caret-down transition-transform duration-300 {{ $hasActiveCategory ? 'rotate-180' : '' }}"></i>
+                    <i id="toggle-category-icon" class="ph ph-caret-down transition-transform duration-300 {{ $hasActiveCategory ? 'rotate-180' : '' }} group-hover:scale-110"></i>
                 </button>
             </div>
         </div>
