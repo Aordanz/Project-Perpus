@@ -14,6 +14,14 @@
         </div>
     </div>
     <div class="flex gap-2">
+        @if($informationCenter->computed_status === 'expired' || $informationCenter->status === 'archived' || ($informationCenter->publish_end_at && $informationCenter->publish_end_at->isPast()))
+            <button type="button" 
+                    class="px-5 py-2.5 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center gap-2 text-sm btn-republish-info cursor-pointer border-none shadow-sm"
+                    data-id="{{ $informationCenter->id }}"
+                    data-title="{{ e($informationCenter->title) }}">
+                <i class="ph ph-arrow-counter-clockwise text-lg"></i> Tampilkan Kembali
+            </button>
+        @endif
         <a href="{{ route('admin.information-center.edit', $informationCenter->id) }}" class="px-5 py-2.5 rounded-xl font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-2 text-sm">
             <i class="ph ph-pencil-simple text-lg"></i> Edit
         </a>
@@ -24,7 +32,9 @@
     <div class="lg:col-span-2 space-y-6">
         <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
             @if($informationCenter->image_path)
-                <img src="{{ asset($informationCenter->image_path) }}" alt="{{ $informationCenter->title }}" class="w-full h-64 object-cover">
+                <img src="{{ asset($informationCenter->image_path) }}" alt="{{ $informationCenter->title }}" class="w-full h-64 object-cover" onerror="this.onerror=null; this.src='{{ asset('perpustakaan_depan.webp') }}';">
+            @else
+                <img src="{{ asset('perpustakaan_depan.webp') }}" alt="{{ $informationCenter->title }}" class="w-full h-64 object-cover">
             @endif
             
             <div class="p-6 sm:p-8">
@@ -219,3 +229,80 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const republishButtons = document.querySelectorAll('.btn-republish-info');
+        republishButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const infoId = this.getAttribute('data-id');
+                const title = this.getAttribute('data-title');
+
+                const now = new Date();
+                const todayStr = now.toISOString().split('T')[0];
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const timeStr = `${hours}:${minutes}`;
+
+                const futureDate = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
+                const futureDateStr = futureDate.toISOString().split('T')[0];
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+
+                Swal.fire({
+                    title: '<div class="text-base font-bold text-slate-800 flex items-center gap-2"><i class="ph ph-arrow-counter-clockwise text-emerald-600 text-xl"></i> Atur Jadwal Tampil Kembali</div>',
+                    html: `
+                        <div class="text-left text-xs sm:text-sm space-y-4 pt-2">
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                                <span class="text-slate-400 font-semibold block text-[10px] uppercase tracking-wider">Judul Informasi</span>
+                                <span class="font-bold text-slate-700 block mt-0.5 leading-snug">${title}</span>
+                            </div>
+
+                            <form id="republishForm" action="/admin/information-center/${infoId}/republish" method="POST">
+                                <input type="hidden" name="_token" value="${csrfToken}">
+                                
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 mb-1">Mulai Tayang (Tanggal & Jam) <span class="text-rose-500">*</span></label>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <input type="date" name="publish_start_date" value="${todayStr}" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                                            <input type="time" name="publish_start_time" value="${timeStr}" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 mb-1">Selesai Tayang (Tanggal & Jam) <span class="text-slate-400 font-normal">(Kosongkan jika selamanya)</span></label>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <input type="date" name="publish_end_date" value="${futureDateStr}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                                            <input type="time" name="publish_end_time" value="23:59" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonColor: '#059669',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: '<i class="ph ph-check-circle"></i> Simpan & Terbitkan Kembali',
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        popup: 'rounded-3xl border border-slate-100 shadow-2xl max-w-md',
+                        confirmButton: 'px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all shadow-sm',
+                        cancelButton: 'px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all shadow-sm'
+                    },
+                    preConfirm: () => {
+                        const form = document.getElementById('republishForm');
+                        if (!form.checkValidity()) {
+                            form.reportValidity();
+                            return false;
+                        }
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+@endpush

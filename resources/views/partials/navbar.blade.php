@@ -196,16 +196,14 @@
 
 <!-- Event Popup Modal -->
 <div id="event-popup-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/45 backdrop-blur-[2px] p-4 transition-all duration-300">
-    <div class="bg-white border border-slate-200 rounded-[20px] shadow-2xl relative overflow-hidden w-full max-w-4xl h-[92vh] md:h-[550px] transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300" id="event-popup-content">
+    <div class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden w-full max-w-[860px] h-[92vh] md:h-[500px] transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300" id="event-popup-content">
         <!-- Close Button (Fixed) -->
         <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-450 hover:text-slate-650 bg-white hover:bg-slate-50 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/50 hover:scale-105">
             <i class="ph ph-x text-lg font-bold"></i>
         </button>
 
-        <!-- Floating Navigation Buttons (< and >) removed from here and moved to footer -->
-
         <!-- Slider Track Container (Main Content Area) -->
-        <div class="w-full flex-grow relative overflow-hidden">
+        <div class="w-full flex-1 relative overflow-hidden min-h-0">
             <!-- Slides Track -->
             <div id="event-slider-track" class="flex flex-nowrap h-full w-full">
                 <!-- Slides will be inserted dynamically -->
@@ -213,7 +211,7 @@
         </div>
 
         <!-- Global Modal Footer -->
-        <div class="flex justify-between items-center px-6 py-3.5 border-t border-slate-100 bg-white relative overflow-hidden select-none shrink-0 rounded-b-[20px]">
+        <div class="flex justify-between items-center px-6 md:px-8 py-3.5 border-t border-slate-100 bg-white relative overflow-hidden select-none shrink-0 rounded-b-[24px]">
             <!-- Checkbox: Jangan Tampilkan Lagi -->
             <div class="flex items-center gap-2 z-20">
                 <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
@@ -422,42 +420,26 @@
                         }
 
                         // ─── Description text ──────────────────────────────────────
-                        const cleanDesc = (event.description || '').replace(/\n+/g, ' ').trim();
-                        const hasDetails = detailHtml && detailHtml.trim().length > 0;
-                        const descId = 'desc-' + event.id;
-                        
+                        const cleanDesc = (event.description || '').trim();
                         let descHtml = '';
-                        if (showDesc && cleanDesc) {
-                            if (hasDetails && cleanDesc.length > 200) {
-                                descHtml = `
-                                    <div class="mb-4 text-[11.5px] text-slate-500 leading-relaxed text-justify pr-2">
-                                        <p id="${descId}-short" class="line-clamp-3">${cleanDesc}</p>
-                                        <p id="${descId}-full" class="hidden">${cleanDesc}</p>
-                                        <button type="button" onclick="
-                                            document.getElementById('${descId}-short').classList.add('hidden');
-                                            document.getElementById('${descId}-full').classList.remove('hidden');
-                                            this.classList.add('hidden');
-                                        " class="text-[#106c38] font-bold hover:underline mt-1 inline-block text-[10.5px]">Lihat Selengkapnya</button>
-                                    </div>
-                                `;
-                            } else {
-                                descHtml = `<p class="text-[11.5px] text-slate-500 leading-relaxed mb-3 text-justify pr-2">${cleanDesc}</p>`;
-                            }
+                        if (cleanDesc) {
+                            descHtml = `
+                                <div class="mb-4 text-xs md:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line">
+                                    ${cleanDesc}
+                                </div>
+                            `;
                         }
 
                         // ─── Slide HTML ────────────────────────────────────────────
                         slidesHtml += `
                             <div class="w-full shrink-0 h-full overflow-hidden">
-                                <div class="flex h-full">
+                                <div class="flex h-full items-stretch">
 
                                     <!-- ══ LEFT CONTENT PANEL ══ -->
-                                    <div class="w-full md:w-[58%] flex flex-col h-full bg-white z-10">
+                                    <div class="w-full md:w-[58%] flex flex-col justify-between h-full bg-white z-10">
 
                                         <!-- Scrollable body -->
-                                        <div class="flex-1 overflow-y-auto pr-5 pl-12 pt-5 pb-2 md:pr-7 md:pl-16 md:pt-6 min-h-0">
-
-                                            <!-- Logo USU (Removed per user request) -->
-
+                                        <div class="flex-1 overflow-y-auto px-6 md:px-8 pt-6 pb-2 min-h-0 break-words [overflow-wrap:anywhere]">
 
                                             <!-- Category Badge -->
                                             <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black uppercase tracking-wide text-[10px] mb-3 border w-fit ${badgeCls}">
@@ -466,7 +448,7 @@
                                             </div>
 
                                             <!-- Title -->
-                                            <h2 class="text-[18px] md:text-[20px] font-black text-slate-900 leading-snug tracking-tight mb-2">
+                                            <h2 class="text-[19px] md:text-[21px] font-black text-slate-900 leading-tight tracking-tight mb-2.5 break-words [overflow-wrap:anywhere]">
                                                 ${event.title}
                                             </h2>
 
@@ -478,24 +460,23 @@
 
                                         </div>
 
-                                        <!-- Pinned Action Footer -->
+                                        <!-- Action Button Container -->
                                         ${actionsHtml ? `
-                                        <div class="pr-5 pl-12 md:pr-7 md:pl-16 py-4 border-t border-slate-100 bg-white shrink-0 flex flex-col gap-2 shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
+                                        <div class="px-6 md:px-8 pb-5 pt-2 bg-white shrink-0 flex flex-col gap-2">
                                             ${actionsHtml}
                                         </div>` : `<div class="h-4 shrink-0"></div>`}
                                     </div>
 
                                     <!-- ══ RIGHT IMAGE PANEL ══ -->
-                                    <div class="hidden md:block md:w-[42%] relative overflow-hidden shrink-0"
-                                         style="background:${rightGrad}">
+                                    <div class="hidden md:block md:w-[42%] relative overflow-hidden shrink-0 bg-white h-full">
 
-                                        <!-- Wavy left-edge divider with golden accent -->
-                                        <div class="absolute left-0 top-0 h-full z-10 pointer-events-none" style="width:160px; transform: translateX(-1px);">
-                                            <svg class="h-full w-full drop-shadow-sm" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                                                <!-- Golden Edge Layer -->
-                                                <path d="M 65,0 C -10,35 85,65 100,100 L 0,100 L 0,0 Z" fill="#eab308" />
-                                                <!-- White Fill Layer -->
-                                                <path d="M 58,0 C -17,35 78,65 100,100 L 0,100 L 0,0 Z" fill="white" />
+                                        <!-- Wavy left-edge divider with golden accent (Overlap seam by -3px to kill middle line) -->
+                                        <div class="absolute top-0 h-full z-30 pointer-events-none" style="width: 32%; left: -3px;">
+                                            <svg class="h-full w-full" viewBox="0 0 100 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <!-- Seamless White Fill Layer -->
+                                                <path d="M 0,0 C 55,100 75,250 20,380 C 0,430 35,480 50,500 L 0,500 Z" fill="white" />
+                                                <!-- Golden S-Curve Border Line -->
+                                                <path d="M 0,0 C 55,100 75,250 20,380 C 0,430 35,480 50,500" fill="none" stroke="#eab308" stroke-width="3.5" vector-effect="non-scaling-stroke" />
                                             </svg>
                                         </div>
 
@@ -504,10 +485,11 @@
                                             ${(event.images_url || [event.image_url]).map((img, idx) => `
                                                 <img src="${img}"
                                                      alt="${event.title}"
-                                                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                                                     class="absolute inset-0 w-full h-full transition-opacity duration-500 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                                                     style="object-fit: ${event.image_fit || 'cover'}; object-position: ${event.image_x !== undefined ? event.image_x : 50}% ${event.image_y !== undefined ? event.image_y : 50}%; transform: scale(${(event.image_scale || 100) / 100});"
                                                      loading="lazy"
                                                      id="img-${event.id}-${idx}"
-                                                     onerror="this.style.opacity=0">
+                                                     onerror="this.onerror=null; this.src='${window.assetRoot}perpustakaan_depan.webp';">
                                             `).join('')}
                                         </div>
 
@@ -541,14 +523,6 @@
                                                 `).join('')}
                                             </div>
                                         ` : ''}
-
-                                        <!-- Overlay -->
-                                        <div class="absolute inset-0 pointer-events-none z-20 mix-blend-multiply" style="background:${rightOverlay}"></div>
-                                        
-                                        <!-- Decorative Elements Bottom Right -->
-                                        <div class="absolute -bottom-10 -right-10 w-48 h-48 rounded-full border-[8px] border-yellow-400 opacity-25 z-20 pointer-events-none"></div>
-                                        <div class="absolute -bottom-6 right-8 w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-300 to-yellow-100 opacity-40 shadow-lg z-20 pointer-events-none"></div>
-                                        <div class="absolute bottom-12 right-24 w-8 h-8 rounded-full border-2 border-white opacity-50 z-20 pointer-events-none"></div>
 
                                     </div>
                                 </div>

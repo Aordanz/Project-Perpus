@@ -13,6 +13,7 @@
         cursor: pointer; transition: all 0.18s cubic-bezier(.4,0,.2,1);
         text-align: center; user-select: none; width: 100%;
     }
+    .cat-chip-btn * { pointer-events: none; }
     .cat-chip-btn:hover {
         border-color: var(--chip-color, #106c38);
         background: var(--chip-bg, #f0fdf4);
@@ -230,10 +231,6 @@
                 <div class="flex items-center gap-2.5 text-xs bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5">
                     <i class="ph ph-check-circle-fill text-[#106c38] text-base shrink-0"></i>
                     <span class="text-emerald-800 font-medium">Kategori dipilih: <strong id="category-indicator-name" class="font-black"></strong></span>
-                    <button type="button" id="btn-change-category"
-                            class="ml-auto text-[11px] font-bold text-[#106c38] hover:underline shrink-0 flex items-center gap-1">
-                        <i class="ph ph-pencil-simple text-xs"></i> Ubah
-                    </button>
                 </div>
             </div>
 
@@ -268,7 +265,6 @@
                             <h2 class="text-sm font-black text-slate-800">Informasi Utama</h2>
                             <p class="text-xs text-slate-400 mt-0.5">Judul, ringkasan singkat, dan konten lengkap informasi</p>
                         </div>
-                        <span class="text-[10px] font-black text-slate-300 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-full uppercase tracking-widest shrink-0">Sesi 1</span>
                     </div>
                     <div class="form-card-body space-y-5">
 
@@ -307,7 +303,6 @@
                             </h2>
                             <p class="text-xs text-slate-400 mt-0.5">Field ini berubah otomatis sesuai kategori yang dipilih</p>
                         </div>
-                        <span class="text-[10px] font-black text-slate-300 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-full uppercase tracking-widest shrink-0">Sesi 2</span>
                     </div>
                     <div class="form-card-body">
                         <div id="dynamic-fields-container">
@@ -428,10 +423,9 @@
                             <i class="ph ph-link-simple text-blue-600 text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h2 class="text-sm font-black text-slate-800">Tombol Aksi &amp; Tautan</h2>
-                            <p class="text-xs text-slate-400 mt-0.5">Tambahkan tombol menuju link eksternal — Google Form, Instagram, website, dll.</p>
+                            <h2 class="text-sm font-black text-slate-800">Tombol Aksi &amp; Tautan <span class="font-bold text-slate-400 text-xs">(Opsional)</span></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Tambahkan tombol menuju link eksternal — Google Form, Instagram, website, dll. (Opsional)</p>
                         </div>
-                        <span class="text-[10px] font-black text-slate-300 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-full uppercase tracking-widest shrink-0">Sesi 3</span>
                     </div>
                     <div class="form-card-body">
                         <div id="action-buttons-container" class="space-y-3">
@@ -451,10 +445,9 @@
                             <i class="ph ph-user-circle text-amber-600 text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h2 class="text-sm font-black text-slate-800">Narahubung (Contact Person)</h2>
-                            <p class="text-xs text-slate-400 mt-0.5">Informasi kontak yang dapat dihubungi terkait kegiatan ini.</p>
+                            <h2 class="text-sm font-black text-slate-800">Narahubung (Contact Person) <span class="font-bold text-slate-400 text-xs">(Opsional)</span></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Informasi kontak yang dapat dihubungi terkait kegiatan ini. (Opsional)</p>
                         </div>
-                        <span class="text-[10px] font-black text-slate-300 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-full uppercase tracking-widest shrink-0">Sesi 4</span>
                     </div>
                     <div class="form-card-body space-y-4">
                         <div>
@@ -492,15 +485,18 @@
 
                             <div>
                                 <p class="fl text-[10px]">Status Publikasi <span class="text-red-500">*</span></p>
-                                <select name="status" class="fi fi-sm">
-                                    <option value="draft"     {{ old('status') == 'draft'      ? 'selected' : '' }}>📝  Draf — Simpan dulu</option>
+                                <select name="status" id="status_select" class="fi fi-sm">
                                     <option value="published" {{ old('status', 'published') == 'published' ? 'selected' : '' }}>🟢  Diterbitkan — Langsung tayang</option>
-                                    <option value="archived"  {{ old('status') == 'archived'   ? 'selected' : '' }}>📦  Diarsipkan — Sembunyikan</option>
+                                    <option value="draft"     {{ old('status') == 'draft'      ? 'selected' : '' }}>📝  Draf — Jadwalkan tayang nanti</option>
                                 </select>
                             </div>
 
+                            <div id="live_publish_badge" class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-xs font-semibold flex items-center gap-2">
+                                <i class="ph ph-check-circle text-base"></i> Ditayangkan langsung saat di-upload (Tanggal & Jam tayang otomatis saat ini).
+                            </div>
+
                             <div id="publish-time-container" class="space-y-4 pt-3 border-t border-slate-50">
-                                <div>
+                                <div id="start_time_wrapper">
                                     <p class="fl text-[10px]">Mulai Tayang <span class="text-red-500">*</span></p>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
@@ -512,7 +508,7 @@
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Jam</span>
                                             <input type="time" name="publish_start_time" id="publish_start_time_input"
-                                                   value="{{ old('publish_start_time', '08:00') }}"
+                                                   value="{{ old('publish_start_time', date('H:i')) }}"
                                                    class="fi fi-sm px-3 py-2">
                                         </div>
                                     </div>
@@ -548,72 +544,141 @@
                             <i class="ph ph-layout text-violet-500 text-base"></i>
                             <h3 class="text-xs font-black text-slate-700 uppercase tracking-wider">Pengaturan Tampilan</h3>
                         </div>
-                        <div class="sidebar-card-body space-y-4">
+                        <div class="sidebar-card-body space-y-3">
+                            <input type="hidden" name="show_popup" value="1">
+                            <input type="hidden" name="show_navbar" value="1">
+                            <input type="hidden" name="is_featured" value="0">
+                            <input type="hidden" name="popup_priority" value="1">
 
-                            <!-- Popup Option -->
-                            <div class="p-3 bg-slate-50/50 rounded-xl border border-slate-100">
-                                <label class="flex items-center gap-3 cursor-pointer">
-                                    <input type="checkbox" name="show_popup" value="1" {{ old('show_popup', 1) ? 'checked' : '' }} class="rounded border-slate-300 text-usu-green focus:ring-usu-green">
-                                    <span class="text-xs font-bold text-slate-700">Tampilkan Popup</span>
-                                </label>
-                                <span class="text-[9.5px] text-slate-400 mt-1.5 block leading-relaxed">Centang agar informasi ini muncul melayang di beranda web.</span>
-                                
-                                <div class="mt-3 pt-3 border-t border-slate-200/60">
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase">Prioritas Popup</label>
-                                    <input type="number" name="popup_priority" value="{{ old('popup_priority', 1) }}" min="1" class="fi fi-sm px-3 py-1.5 bg-white text-xs">
-                                </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil (Sort Order)</label>
+                                <input type="number" name="sort_order" min="1" max="{{ $maxSortOrder }}" value="{{ old('sort_order', $maxSortOrder) }}" class="fi fi-sm">
+                                <p class="text-[9.5px] text-slate-400 mt-1">Angka kecil = tampil paling awal. Maksimal {{ $maxSortOrder }}.</p>
                             </div>
-
-                            <!-- Navbar Option -->
-                            <div class="p-3 bg-slate-50/50 rounded-xl border border-slate-100">
-                                <label class="flex items-center gap-3 cursor-pointer">
-                                    <input type="checkbox" name="show_navbar" value="1" {{ old('show_navbar', 1) ? 'checked' : '' }} class="rounded border-slate-300 text-usu-green focus:ring-usu-green">
-                                    <span class="text-xs font-bold text-slate-700">Tampilkan di Navbar</span>
-                                </label>
-                            </div>
-
-                            <!-- Highlight/Sorotan Option -->
-                            <div class="p-3 bg-slate-50/50 rounded-xl border border-slate-100">
-                                <label class="flex items-center gap-3 cursor-pointer">
-                                    <input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }} class="rounded border-slate-300 text-usu-green focus:ring-usu-green">
-                                    <span class="text-xs font-bold text-slate-700">Sorotan Utama</span>
-                                </label>
-                            </div>
-
-                            <div class="pt-1">
-                                <p class="fl text-[10px]">Urutan Tampil (Sort Order)</p>
-                                <input type="number" name="sort_order" min="1" max="{{ \App\Models\InformationCenter::count() + 1 }}" value="{{ old('sort_order', $totalPopups + 1) }}" class="fi fi-sm">
-                                <p class="text-[9.5px] text-slate-400 mt-1">Angka kecil = tampil paling awal. (1 - {{ max(1, $totalPopups + 1) }})</p>
-                            </div>
-
                         </div>
                     </div>
 
                     {{-- Poster / Banner --}}
                     <div id="card-poster" class="sidebar-card">
-                        <div class="sidebar-card-header">
-                            <i class="ph ph-image text-pink-500 text-base"></i>
-                            <h3 class="text-xs font-black text-slate-700 uppercase tracking-wider">Poster / Banner</h3>
+                        <div class="sidebar-card-header flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-image text-pink-500 text-base"></i>
+                                <h3 class="text-xs font-black text-slate-700 uppercase tracking-wider">Poster / Banner</h3>
+                            </div>
+                            <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold uppercase">Frame Editor</span>
                         </div>
-                        <div class="sidebar-card-body">
-                            <img id="image-preview" src="#" alt="Pratinjau"
-                                 class="hidden w-full h-auto rounded-xl object-contain border border-slate-100 mb-3 shadow-sm">
-                            <label class="img-drop block">
-                                <div class="flex flex-col items-center justify-center gap-2.5">
-                                    <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-                                        <i class="ph ph-upload-simple text-2xl text-slate-400"></i>
+                        <div class="sidebar-card-body space-y-4">
+                            <!-- Dropzone Upload -->
+                            <div id="dropzone-wrapper">
+                                <label class="img-drop block cursor-pointer">
+                                    <div class="flex flex-col items-center justify-center gap-2.5">
+                                        <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                                            <i class="ph ph-upload-simple text-2xl text-slate-400"></i>
+                                        </div>
+                                        <div class="text-center">
+                                            <span class="text-xs font-bold text-slate-600 block">Klik untuk Pilih Gambar</span>
+                                            <span class="text-[10px] text-slate-400 mt-1 block">JPG, PNG, WEBP — Maks. 5MB</span>
+                                        </div>
                                     </div>
-                                    <div class="text-center">
-                                        <span class="text-xs font-bold text-slate-600 block">Klik untuk Pilih Gambar</span>
-                                        <span class="text-[10px] text-slate-400 mt-1 block">JPG, PNG, WEBP — Maks. 5MB</span>
-                                    </div>
-                                </div>
-                                <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
-                            </label>
+                                    <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
+                                </label>
+                            </div>
+
+                            <!-- Button Ganti Foto (Tampil saat foto sudah ada) -->
+                            <button type="button" id="btn-change-image" class="hidden w-full py-2.5 px-4 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#106c38] border border-slate-200 hover:border-emerald-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer">
+                                <i class="ph ph-image text-base text-[#106c38]"></i> Ganti Foto / Unggah Ulang
+                            </button>
                             
-                            <div id="image-preview-container" class="grid grid-cols-3 gap-2 mt-3 hidden">
+                            <div id="image-preview-container" class="grid grid-cols-3 gap-2 hidden">
                                 <!-- Previews will be injected here -->
                             </div>
+
+                            <!-- Hidden Inputs for Frame Customization -->
+                            <input type="hidden" name="image_scale" id="image_scale_input" value="{{ old('image_scale', 100) }}">
+                            <input type="hidden" name="image_x" id="image_x_input" value="{{ old('image_x', 50) }}">
+                            <input type="hidden" name="image_y" id="image_y_input" value="{{ old('image_y', 50) }}">
+
+                            <!-- Interactive Simulasi Frame Beranda -->
+                            <div class="pt-3 border-t border-slate-100 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                                        <i class="ph ph-crop text-emerald-600 text-sm"></i> Frame Banner Beranda
+                                    </span>
+                                    <span class="text-[9.5px] text-slate-400 font-medium">Klik & Drag / Scroll Zoom</span>
+                                </div>
+
+                                <!-- Box Simulasi Frame (Exact Ratio Frame Popup) -->
+                                <div id="frame-simulator-container"
+                                     class="relative w-full aspect-[376/500] max-h-[380px] rounded-2xl overflow-hidden bg-white border-2 border-emerald-500/40 shadow-inner group cursor-grab active:cursor-grabbing select-none"
+                                     style="aspect-ratio: 376 / 500;"
+                                     title="Klik & Drag untuk menggeser posisi foto | Scroll mouse untuk Zoom">
+
+                                    <!-- Wavy Divider Overlay (Matching Homepage Popup 100%) -->
+                                    <div class="absolute left-0 top-0 h-full z-20 pointer-events-none" style="width: 25%;">
+                                        <svg class="h-full w-full" viewBox="0 0 100 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M 0,0 C 55,100 75,250 20,380 C -5,430 35,480 50,500 L 0,500 Z" fill="#0f172a" fill-opacity="0.85" />
+                                            <path d="M 0,0 C 55,100 75,250 20,380 C -5,430 35,480 50,500" fill="none" stroke="#eab308" stroke-width="3.5" vector-effect="non-scaling-stroke" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- Target Image Element -->
+                                    <img id="image-preview" src="{{ asset('perpustakaan_depan.webp') }}" alt="Pratinjau Frame"
+                                         class="w-full h-full object-cover transition-transform duration-75 pointer-events-none"
+                                         style="object-position: {{ old('image_x', 50) }}% {{ old('image_y', 50) }}%; transform: scale({{ old('image_scale', 100) / 100 }});">
+
+                                    <!-- Bottom Info Overlay Badge -->
+                                    <div class="absolute bottom-2 left-2 right-2 px-2.5 py-1 bg-black/70 backdrop-blur-md rounded-lg text-[9.5px] text-white/90 flex items-center justify-between pointer-events-none z-30">
+                                        <span class="flex items-center gap-1 font-semibold">
+                                            <i class="ph ph-hand-grabbing text-yellow-400 text-xs"></i> Drag &amp; Scroll Aktif
+                                        </span>
+                                        <span id="preview-fit-label" class="font-black text-emerald-400">Zoom: <span id="badge-scale-val">{{ old('image_scale', 100) }}%</span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Sliders for Framing & Zoom -->
+                            <div class="space-y-3 pt-2 border-t border-slate-100">
+                                <!-- Zoom Slider -->
+                                <div>
+                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
+                                        <span class="flex items-center gap-1"><i class="ph ph-magnifying-glass-plus text-emerald-600"></i> Zoom / Perbesar-Kecilkan</span>
+                                        <span id="zoom-slider-val" class="text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded text-[10px]">{{ old('image_scale', 100) }}%</span>
+                                    </div>
+                                    <input type="range" id="zoom-slider" min="50" max="250" value="{{ old('image_scale', 100) }}" class="w-full accent-emerald-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                </div>
+
+                                <!-- X Position Slider -->
+                                <div>
+                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
+                                        <span class="flex items-center gap-1"><i class="ph ph-arrows-horizontal text-blue-600"></i> Posisi Horisontal (Kiri - Kanan)</span>
+                                        <span id="posx-slider-val" class="text-blue-700 font-bold text-[10px]">{{ old('image_x', 50) }}%</span>
+                                    </div>
+                                    <input type="range" id="posx-slider" min="0" max="100" value="{{ old('image_x', 50) }}" class="w-full accent-blue-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                </div>
+
+                                <!-- Y Position Slider -->
+                                <div>
+                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
+                                        <span class="flex items-center gap-1"><i class="ph ph-arrows-vertical text-purple-600"></i> Posisi Vertikal (Atas - Bawah)</span>
+                                        <span id="posy-slider-val" class="text-purple-700 font-bold text-[10px]">{{ old('image_y', 50) }}%</span>
+                                    </div>
+                                    <input type="range" id="posy-slider" min="0" max="100" value="{{ old('image_y', 50) }}" class="w-full accent-purple-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                </div>
+
+                                <!-- Controls & Preset Buttons -->
+                                <div class="grid grid-cols-2 gap-2 pt-2">
+                                    <select name="image_fit" id="image_fit_select" class="fi fi-sm text-xs">
+                                        <option value="cover" {{ old('image_fit', 'cover') == 'cover' ? 'selected' : '' }}>🔳 Cover (Penuh)</option>
+                                        <option value="contain" {{ old('image_fit') == 'contain' ? 'selected' : '' }}>🖼️ Contain (Utuh)</option>
+                                        <option value="fill" {{ old('image_fit') == 'fill' ? 'selected' : '' }}>📐 Fill (Regang)</option>
+                                    </select>
+
+                                    <button type="button" id="btn-reset-frame" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 flex items-center justify-center gap-1 transition">
+                                        <i class="ph ph-arrow-counter-clockwise"></i> Reset Frame
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -643,19 +708,20 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    // Initialize Flatpickr for 24-hour time inputs
-    flatpickr("input[type=time], .timepicker", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        time_24hr: true
-    });
+    if (typeof flatpickr !== 'undefined') {
+        flatpickr("input[type=time], .timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+        });
+    }
 </script>
 <script>
     // ─── Image Preview ────────────────────────────────────────────────────────
     const imageInput   = document.getElementById('image-input');
     const imagePreview = document.getElementById('image-preview');
-    if (imageInput) {
+    if (imageInput && imagePreview) {
         imageInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
@@ -675,6 +741,7 @@
     let btnIndex    = 0;
 
     function addRow(name = '', url = '', newTab = false) {
+        if (!container) return;
         const rowId = `row-btn-${btnIndex}`;
         const html  = `
             <div id="${rowId}" class="flex flex-col sm:flex-row gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 relative pt-7 sm:pt-4">
@@ -698,15 +765,31 @@
         container.insertAdjacentHTML('beforeend', html);
         btnIndex++;
     }
-    btnAdd.addEventListener('click', () => addRow());
+    if (btnAdd) {
+        btnAdd.addEventListener('click', () => addRow());
+    }
 
-    // ─── Visual Category Chips ────────────────────────────────────────────────
+    // ─── Visual Category Chips & Elements ──────────────────────────────────────
     const categorySelect        = document.getElementById('category-select');
     const categoryChips         = document.querySelectorAll('.cat-chip-btn');
     const categoryGrid          = document.getElementById('category-grid');
     const categoryIndicator     = document.getElementById('category-indicator');
     const categoryIndicatorName = document.getElementById('category-indicator-name');
     const btnChangeCategory     = document.getElementById('btn-change-category');
+    const categoryHelperBox     = document.getElementById('category-helper-box');
+    const categoryHelperDesc    = document.getElementById('category-helper-desc');
+
+    const mainFormArea          = document.getElementById('main-form-area');
+    const customFieldsCard      = document.getElementById('custom-category-fields-card');
+    const customFieldsTitle     = document.getElementById('custom-fields-title');
+    const allSections           = document.querySelectorAll('.category-fields-section');
+    const cardTombolAksi        = document.getElementById('card-tombol-aksi');
+    const cardNarahubung        = document.getElementById('card-narahubung');
+    const publishTimeContainer  = document.getElementById('publish-time-container');
+    const popupOptionContainer  = document.getElementById('popup-option-container');
+    const cardPoster            = document.getElementById('card-poster');
+    const publishStartDateInput = document.getElementById('publish_start_date_input');
+    const publishStartTimeInput = document.getElementById('publish_start_time_input');
 
     const catLabels = {
         announcement:       'Pengumuman',
@@ -724,78 +807,18 @@
         tips: 'Digunakan untuk memberikan panduan kepada pengguna. Contoh: Cara Meminjam Buku, Cara Menggunakan OPAC, Tips Mencari Jurnal, Panduan Akses Repository, serta FAQ.'
     };
 
-    const categoryHelperBox = document.getElementById('category-helper-box');
-    const categoryHelperDesc = document.getElementById('category-helper-desc');
-
-    categoryChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            categoryChips.forEach(c => c.classList.remove('selected'));
-            chip.classList.add('selected');
-            categorySelect.value = chip.dataset.value;
-            categoryIndicatorName.textContent = catLabels[chip.dataset.value] || chip.dataset.value;
-            categoryIndicator.classList.remove('hidden');
-            
-            // Tampilkan Helper Box
-            if (catHelpers[chip.dataset.value]) {
-                categoryHelperDesc.textContent = catHelpers[chip.dataset.value];
-                categoryHelperBox.classList.remove('hidden');
-            } else {
-                categoryHelperBox.classList.add('hidden');
-            }
-
-            categorySelect.dispatchEvent(new Event('change'));
-        });
-    });
-
-    if (btnChangeCategory) {
-        btnChangeCategory.addEventListener('click', () => {
-            categoryChips.forEach(c => c.classList.remove('selected'));
-            categorySelect.value = '';
-            categoryIndicator.classList.add('hidden');
-            categoryHelperBox.classList.add('hidden');
-            categorySelect.dispatchEvent(new Event('change'));
-            categoryGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
-    }
-
-    // Restore chip from old() value on page load
-    const _oldCat = '{{ old("category") }}';
-    if (_oldCat) {
-        const m = document.querySelector(`.cat-chip-btn[data-value="${_oldCat}"]`);
-        if (m) { 
-            m.classList.add('selected'); 
-            categoryIndicatorName.textContent = catLabels[_oldCat] || _oldCat; 
-            categoryIndicator.classList.remove('hidden'); 
-            
-            if (catHelpers[_oldCat]) {
-                categoryHelperDesc.textContent = catHelpers[_oldCat];
-                categoryHelperBox.classList.remove('hidden');
-            }
-        }
-    }
-
-    // ─── Toggle Category Specific Fields ─────────────────────────────────────
-    const mainFormArea          = document.getElementById('main-form-area');
-    const customFieldsCard      = document.getElementById('custom-category-fields-card');
-    const customFieldsTitle     = document.getElementById('custom-fields-title');
-    const allSections           = document.querySelectorAll('.category-fields-section');
-    const cardTombolAksi        = document.getElementById('card-tombol-aksi');
-    const cardNarahubung        = document.getElementById('card-narahubung');
-    const publishTimeContainer  = document.getElementById('publish-time-container');
-    const popupOptionContainer  = document.getElementById('popup-option-container');
-    const cardPoster            = document.getElementById('card-poster');
-    const publishStartDateInput = document.getElementById('publish_start_date_input');
-    const publishStartTimeInput = document.getElementById('publish_start_time_input');
-
     function handleCategoryChange() {
+        if (!categorySelect || !mainFormArea) return;
         const val = categorySelect.value;
         if (!val) {
             mainFormArea.classList.add('hidden', 'opacity-0', 'translate-y-4');
             mainFormArea.classList.remove('opacity-100');
+            mainFormArea.style.display = 'none';
             return;
         }
-        mainFormArea.classList.remove('hidden');
-        setTimeout(() => { mainFormArea.classList.remove('opacity-0', 'translate-y-4'); mainFormArea.classList.add('opacity-100'); }, 50);
+        mainFormArea.classList.remove('hidden', 'opacity-0', 'translate-y-4');
+        mainFormArea.classList.add('opacity-100');
+        mainFormArea.style.display = 'block';
 
         if (allSections) allSections.forEach(sec => sec.classList.add('hidden'));
         if (customFieldsCard) customFieldsCard.classList.add('hidden');
@@ -808,61 +831,300 @@
         if (publishStartTimeInput) publishStartTimeInput.required = true;
 
         if (val === 'event') {
-            // Event: tampilkan semua + detail event
             const fieldsEvent = document.getElementById('fields-event');
             if (fieldsEvent) fieldsEvent.classList.remove('hidden');
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-calendar-check text-[#106c38] text-base"></i> Detail Event / Kegiatan';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-
         } else if (val === 'announcement') {
-            // Pengumuman: trix editor + poster + fields pengumuman
             const fieldsAnnouncement = document.getElementById('fields-announcement');
             if (fieldsAnnouncement) fieldsAnnouncement.classList.remove('hidden');
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-megaphone-simple text-blue-500 text-base"></i> Detail Tambahan Pengumuman';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-            
-            if (cardTombolAksi) cardTombolAksi.classList.add('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
-            
         } else if (val === 'book_recommendation') {
-            // Buku Rekomendasi: detail buku, plus boleh tulis deskripsi
             const fieldsBook = document.getElementById('fields-book_recommendation');
             if (fieldsBook) fieldsBook.classList.remove('hidden');
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-star text-yellow-500 text-base"></i> Detail Buku Rekomendasi';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-            if (cardTombolAksi) cardTombolAksi.classList.add('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
-
         } else if (val === 'tips') {
-            // Tips & Trick: trix editor untuk poin-poin tips, tanpa kontak/tombol
-            if (cardTombolAksi) cardTombolAksi.classList.add('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
-
         } else if (val === 'library_news') {
-            // Berita Perpustakaan: artikel penuh — trix + poster + tanggal
             const fieldsNews = document.getElementById('fields-library_news');
             if (fieldsNews) fieldsNews.classList.remove('hidden');
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-newspaper text-indigo-500 text-base"></i> Detail Berita Perpustakaan';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-
-            if (cardTombolAksi) cardTombolAksi.classList.add('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
         }
     }
 
-    categorySelect.addEventListener('change', handleCategoryChange);
+    if (categorySelect) {
+        categorySelect.addEventListener('change', handleCategoryChange);
+    }
+
+    categoryChips.forEach(chip => {
+        chip.addEventListener('click', (e) => {
+            e.preventDefault();
+            categoryChips.forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            if (categorySelect) categorySelect.value = chip.dataset.value;
+            if (categoryIndicatorName) categoryIndicatorName.textContent = catLabels[chip.dataset.value] || chip.dataset.value;
+            if (categoryIndicator) categoryIndicator.classList.remove('hidden');
+            
+            if (catHelpers[chip.dataset.value] && categoryHelperDesc && categoryHelperBox) {
+                categoryHelperDesc.textContent = catHelpers[chip.dataset.value];
+                categoryHelperBox.classList.remove('hidden');
+            } else if (categoryHelperBox) {
+                categoryHelperBox.classList.add('hidden');
+            }
+
+            handleCategoryChange();
+
+            setTimeout(() => {
+                if (mainFormArea) {
+                    mainFormArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 50);
+        });
+    });
+
+
+
+    // Restore chip from old() value on page load
+    const _oldCat = '{{ old("category") }}';
+    if (_oldCat) {
+        const m = document.querySelector(`.cat-chip-btn[data-value="${_oldCat}"]`);
+        if (m) { 
+            m.classList.add('selected'); 
+            if (categoryIndicatorName) categoryIndicatorName.textContent = catLabels[_oldCat] || _oldCat; 
+            if (categoryIndicator) categoryIndicator.classList.remove('hidden'); 
+            
+            if (catHelpers[_oldCat] && categoryHelperDesc && categoryHelperBox) {
+                categoryHelperDesc.textContent = catHelpers[_oldCat];
+                categoryHelperBox.classList.remove('hidden');
+            }
+        }
+    }
+
     handleCategoryChange();
 
-    // ─── Form Validation ──────────────────────────────────────────────────────
-    document.getElementById('create-info-form').addEventListener('submit', function(e) {
-        if (!categorySelect.value) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'warning', title: 'Kategori Belum Dipilih',
-                text: 'Silakan pilih salah satu kategori informasi terlebih dahulu.',
-                confirmButtonColor: '#106c38', confirmButtonText: 'Pilih Kategori'
-            }).then(() => categoryGrid.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    // ─── Status & Jadwal Tayang Logic ──────────────────────────────────────────
+    const statusSelect = document.getElementById('status_select');
+    const livePublishBadge = document.getElementById('live_publish_badge');
+    const startTimeWrapper = document.getElementById('start_time_wrapper');
+
+    function updateStatusScheduleState() {
+        if (!statusSelect) return;
+
+        if (statusSelect.value === 'published') {
+            if (startTimeWrapper) startTimeWrapper.classList.add('hidden');
+            if (livePublishBadge) livePublishBadge.classList.remove('hidden');
+            if (publishStartDateInput) publishStartDateInput.required = false;
+            if (publishStartTimeInput) publishStartTimeInput.required = false;
+        } else {
+            if (startTimeWrapper) startTimeWrapper.classList.remove('hidden');
+            if (livePublishBadge) livePublishBadge.classList.add('hidden');
+            if (publishStartDateInput) publishStartDateInput.required = true;
+            if (publishStartTimeInput) publishStartTimeInput.required = true;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            if (publishStartDateInput) publishStartDateInput.min = `${year}-${month}-${day}`;
         }
-    });
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener('change', updateStatusScheduleState);
+        updateStatusScheduleState();
+    }
+
+    function validateDraftTime() {
+        if (statusSelect && statusSelect.value === 'draft' && publishStartDateInput && publishStartTimeInput) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            const currentDateStr = `${year}-${month}-${day}`;
+            const currentTimeStr = `${hours}:${minutes}`;
+
+            if (publishStartDateInput.value === currentDateStr && publishStartTimeInput.value < currentTimeStr) {
+                publishStartTimeInput.value = currentTimeStr;
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Jam Tidak Valid',
+                        text: 'Waktu mulai tayang untuk draf/jadwal tidak boleh sebelum jam saat ini!',
+                        confirmButtonColor: '#106c38'
+                    });
+                }
+            }
+        }
+    }
+
+    if (publishStartDateInput && publishStartTimeInput) {
+        publishStartDateInput.addEventListener('change', validateDraftTime);
+        publishStartTimeInput.addEventListener('change', validateDraftTime);
+    }
+
+    // ─── Interactive Image Framing, Zoom & Drag Editor ───────────────────────
+    const imageFitSelect    = document.getElementById('image_fit_select');
+    const zoomSlider        = document.getElementById('zoom-slider');
+    const posxSlider        = document.getElementById('posx-slider');
+    const posySlider        = document.getElementById('posy-slider');
+    const zoomSliderVal     = document.getElementById('zoom-slider-val');
+    const posxSliderVal     = document.getElementById('posx-slider-val');
+    const posySliderVal     = document.getElementById('posy-slider-val');
+    const badgeScaleVal     = document.getElementById('badge-scale-val');
+    
+    const imageScaleInput   = document.getElementById('image_scale_input');
+    const imageXInput       = document.getElementById('image_x_input');
+    const imageYInput       = document.getElementById('image_y_input');
+    
+    const frameContainer    = document.getElementById('frame-simulator-container');
+    const btnResetFrame     = document.getElementById('btn-reset-frame');
+
+    function updateFrameStyling() {
+        if (!imagePreview) return;
+
+        const scaleVal = zoomSlider ? parseInt(zoomSlider.value) : 100;
+        const posXVal  = posxSlider ? parseInt(posxSlider.value) : 50;
+        const posYVal  = posySlider ? parseInt(posySlider.value) : 50;
+        const fitVal   = imageFitSelect ? imageFitSelect.value : 'cover';
+
+        if (imageScaleInput) imageScaleInput.value = scaleVal;
+        if (imageXInput)     imageXInput.value     = posXVal;
+        if (imageYInput)     imageYInput.value     = posYVal;
+
+        if (zoomSliderVal) zoomSliderVal.textContent = `${scaleVal}%`;
+        if (posxSliderVal) posxSliderVal.textContent = `${posXVal}%`;
+        if (posySliderVal) posySliderVal.textContent = `${posYVal}%`;
+        if (badgeScaleVal) badgeScaleVal.textContent = `${scaleVal}%`;
+
+        imagePreview.style.objectFit = fitVal;
+        imagePreview.style.objectPosition = `${posXVal}% ${posYVal}%`;
+        imagePreview.style.transform = `scale(${scaleVal / 100})`;
+    }
+
+    if (zoomSlider) zoomSlider.addEventListener('input', updateFrameStyling);
+    if (posxSlider) posxSlider.addEventListener('input', updateFrameStyling);
+    if (posySlider) posySlider.addEventListener('input', updateFrameStyling);
+    if (imageFitSelect) imageFitSelect.addEventListener('change', updateFrameStyling);
+
+    if (btnResetFrame) {
+        btnResetFrame.addEventListener('click', () => {
+            if (zoomSlider) zoomSlider.value = 100;
+            if (posxSlider) posxSlider.value = 50;
+            if (posySlider) posySlider.value = 50;
+            if (imageFitSelect) imageFitSelect.value = 'cover';
+            updateFrameStyling();
+        });
+    }
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let startPosX = 50, startPosY = 50;
+
+    if (frameContainer) {
+        frameContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startPosX = posxSlider ? parseInt(posxSlider.value) : 50;
+            startPosY = posySlider ? parseInt(posySlider.value) : 50;
+            frameContainer.classList.add('cursor-grabbing');
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const rect = frameContainer.getBoundingClientRect();
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+
+            const movePercentX = (deltaX / rect.width) * 100;
+            const movePercentY = (deltaY / rect.height) * 100;
+
+            let newX = Math.round(startPosX - movePercentX);
+            let newY = Math.round(startPosY - movePercentY);
+
+            newX = Math.max(0, Math.min(100, newX));
+            newY = Math.max(0, Math.min(100, newY));
+
+            if (posxSlider) posxSlider.value = newX;
+            if (posySlider) posySlider.value = newY;
+            updateFrameStyling();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                frameContainer.classList.remove('cursor-grabbing');
+            }
+        });
+
+        frameContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (!zoomSlider) return;
+            let currentZoom = parseInt(zoomSlider.value);
+            if (e.deltaY < 0) {
+                currentZoom = Math.min(250, currentZoom + 5);
+            } else {
+                currentZoom = Math.max(50, currentZoom - 5);
+            }
+            zoomSlider.value = currentZoom;
+            updateFrameStyling();
+        }, { passive: false });
+    }
+
+    const dropzoneWrapper = document.getElementById('dropzone-wrapper');
+    const btnChangeImage   = document.getElementById('btn-change-image');
+    const frameSimImage    = document.getElementById('frame-sim-image');
+
+    if (btnChangeImage && imageInput) {
+        btnChangeImage.addEventListener('click', () => {
+            imageInput.click();
+        });
+    }
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                if (dropzoneWrapper) dropzoneWrapper.classList.add('hidden');
+                if (btnChangeImage) btnChangeImage.classList.remove('hidden');
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (frameSimImage) frameSimImage.src = e.target.result;
+                    updateFrameStyling();
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+
+    updateFrameStyling();
+
+    // ─── Form Validation ──────────────────────────────────────────────────────
+    const createForm = document.getElementById('create-info-form');
+    if (createForm) {
+        createForm.addEventListener('submit', function(e) {
+            if (categorySelect && !categorySelect.value) {
+                e.preventDefault();
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning', title: 'Kategori Belum Dipilih',
+                        text: 'Silakan pilih salah satu kategori informasi terlebih dahulu.',
+                        confirmButtonColor: '#106c38', confirmButtonText: 'Pilih Kategori'
+                    }).then(() => {
+                        if (categoryGrid) categoryGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+                }
+            }
+        });
+    }
 </script>
 @endpush
