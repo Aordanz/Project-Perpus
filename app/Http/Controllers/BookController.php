@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Location;
 use App\Models\University;
-use App\Models\Message;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -149,6 +148,16 @@ class BookController extends Controller
         // Get the main university (usu) - disabled because legacy DB doesn't use this table
         $university = null;
 
+        // Location IDs that are NOT shown in the old OPAC (digilib.usu.ac.id):
+        // 2  = Layanan Referensi dan Literasi Informasi
+        // 3  = Layanan Referensi
+        // 4  = Layanan Deposit
+        // 26 = Rumah Sakit Pendidikan USU
+        // 27 = Fakultas Ilmu Komputer dan TI
+        // 31 = The Gade Creative Lounge
+        // 36 = Belum Ada Lokasi
+        $excludedLocationIds = [2, 3, 4, 26, 27, 31, 36];
+
         // Get locations with count of distinct book titles (judul) instead of physical items
         $locationCounts = \Illuminate\Support\Facades\DB::table('tbleksemplar')
             ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
@@ -160,7 +169,9 @@ class BookController extends Controller
         $locations = Location::all()->map(function ($location) use ($locationCounts) {
             $location->items_count = $locationCounts[$location->idlokasi] ?? 0;
             return $location;
-        });
+        })->filter(function ($location) use ($excludedLocationIds) {
+            return !in_array($location->idlokasi, $excludedLocationIds) && $location->items_count > 0;
+        })->sortByDesc('items_count')->values();
 
         // Get 20 latest books with items.location eager loaded
         $latestBooks = Book::with(['items.location', 'publisherRelation'])->latest()->take(20)->get();
@@ -338,17 +349,49 @@ class BookController extends Controller
      */
     public function galeri(Request $request)
     {
-        // Urutkan berdasarkan abjad (judul_buku) lalu berdasarkan ID (penomoran)
-        $query = Book::with(['items.location', 'publisherRelation'])->orderBy('judul_buku', 'asc')->orderBy('idbuku', 'asc');
+        $query = Book::with(['items.location', 'publisherRelation']);
         
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);
         }
 
-        // Filter berdasarkan DDC category key (digit pertama nopanggil)
+        // Filter berdasarkan DDC category key (digit pertama nopanggil) atau filter khusus "terlaris"
         if ($request->filled('category')) {
             $catKey = $request->category;
-            $query->where('nopanggil', 'like', $catKey . '%');
+
+            if ($catKey === 'terlaris') {
+                // Cache data ID buku paling sering dipinjam dari tbltransaksi_pinjam selama 24 jam (86400 detik)
+                $terlarisBookIds = \Illuminate\Support\Facades\Cache::remember('buku_terlaris_ids', 86400, function () {
+                    return \Illuminate\Support\Facades\DB::table('tbltransaksi_pinjam')
+                        ->select('idmaster', \Illuminate\Support\Facades\DB::raw('COUNT(*) as total_pinjam'))
+                        ->whereNotNull('idmaster')
+                        ->where('idmaster', '!=', '')
+                        ->groupBy('idmaster')
+                        ->orderByDesc('total_pinjam')
+                        ->limit(200)
+                        ->pluck('idmaster')
+                        ->toArray();
+                });
+
+                if (!empty($terlarisBookIds)) {
+                    $query->whereIn('idmaster', $terlarisBookIds);
+                    $validIds = array_filter($terlarisBookIds, function($v) {
+                        return is_numeric($v) || is_string($v);
+                    });
+                    if (!empty($validIds)) {
+                        $quotedIds = implode(',', array_map(function($id) {
+                            return "'" . addslashes($id) . "'";
+                        }, $validIds));
+                        $query->orderByRaw("FIELD(idmaster, {$quotedIds})");
+                    }
+                }
+            } else {
+                $query->where('nopanggil', 'like', $catKey . '%')
+                      ->orderBy('judul_buku', 'asc')
+                      ->orderBy('idbuku', 'asc');
+            }
+        } else {
+            $query->orderBy('judul_buku', 'asc')->orderBy('idbuku', 'asc');
         }
 
         $perPage = $request->input('per', 24);
@@ -364,34 +407,4 @@ class BookController extends Controller
         return view('galeri', compact('books', 'perPage', 'ddcCategories'));
     }
 
-    /**
-     * Store a new contact message.
-     */
-    public function storeContact(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
-            'attachments' => 'nullable|array|max:3',
-            'attachments.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-        ]);
-
-        $data = $request->only(['name', 'email', 'subject', 'message']);
-        
-        $attachmentsPath = [];
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $filename = time() . '_' . uniqid() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
-                $file->move(public_path('contacts'), $filename);
-                $attachmentsPath[] = $filename;
-            }
-        }
-        $data['attachments'] = $attachmentsPath;
-
-        Message::create($data);
-
-        return back()->with('success', 'Pesan Anda telah berhasil dikirim! Tim kami akan merespons secepat mungkin.');
-    }
 }
