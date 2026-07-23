@@ -56,21 +56,9 @@
                     {{ __('Hubungi & Kunjungi Kami') }}
                 </h1>
                 
-                <p class="text-base sm:text-lg md:text-xl text-green-50/90 max-w-3xl mx-auto font-light leading-relaxed mb-8">
+                <p class="text-base sm:text-lg md:text-xl text-green-50/90 max-w-3xl mx-auto font-light leading-relaxed">
                     {{ __('Perpustakaan Universitas Sumatera Utara selalu siap membantu melayani kebutuhan literatur, riset akademik, konsultasi referensi, dan fasilitas belajar Anda.') }}
                 </p>
-
-                <!-- Quick Action Buttons -->
-                <div class="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
-                    <a href="https://maps.google.com/?q=Perpustakaan+Universitas+Sumatera+Utara" target="_blank" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-white text-[#106c38] font-semibold text-sm hover:bg-green-50 transition-all duration-200 shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5">
-                        <i class="ph ph-map-pin text-lg text-[#106c38]"></i>
-                        <span>{{ __('Petunjuk Lokasi (Google Maps)') }}</span>
-                    </a>
-                    <a href="mailto:library@usu.ac.id" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-800/60 backdrop-blur-md border border-white/20 text-white font-semibold text-sm hover:bg-emerald-800/80 transition-all duration-200 shadow-lg hover:-translate-y-0.5">
-                        <i class="ph ph-envelope-simple text-lg text-emerald-300"></i>
-                        <span>{{ __('Kirim Email Resmi') }}</span>
-                    </a>
-                </div>
             </div>
         </div>
 
@@ -150,11 +138,11 @@
                         <div class="text-slate-600 text-xs leading-relaxed mb-4 space-y-1.5">
                             <div class="flex justify-between items-center py-1 border-b border-slate-100">
                                 <span class="font-medium text-slate-700">{{ __('Senin - Kamis') }}</span>
-                                <span class="font-bold text-emerald-700">08.00 - 16.00</span>
+                                <span class="font-bold text-emerald-700">08.00 - 20.00</span>
                             </div>
                             <div class="flex justify-between items-center py-1 border-b border-slate-100">
                                 <span class="font-medium text-slate-700">{{ __('Jumat') }}</span>
-                                <span class="font-bold text-emerald-700">08.00 - 16.30</span>
+                                <span class="font-bold text-emerald-700">08.00 - 17.00</span>
                             </div>
                             <div class="flex justify-between items-center py-1">
                                 <span class="font-medium text-slate-500">{{ __('Sabtu, Minggu & Libur') }}</span>

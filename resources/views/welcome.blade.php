@@ -419,57 +419,82 @@
                     @foreach($locations as $stat)
                         @php
                             $bgImage = 'perpustakaan.webp';
+                            $icon = 'ph-buildings';
                             $nameLower = strtolower($stat->name);
+
                             if (str_contains($nameLower, 'hukum')) {
                                 $bgImage = 'Hukum.jpg';
+                                $icon = 'ph-scales';
                             } elseif (str_contains($nameLower, 'ilmu budaya')) {
                                 $bgImage = 'ilmu budaya.webp';
+                                $icon = 'ph-palette';
                             } elseif (str_contains($nameLower, 'ekonomi')) {
                                 $bgImage = 'Fakultas Ekonomi Dan Bisnis.webp';
+                                $icon = 'ph-chart-line-up';
                             } elseif (str_contains($nameLower, 'kesehatan masyarakat')) {
                                 $bgImage = 'Kesehatan Masyarakat.webp';
+                                $icon = 'ph-heartbeat';
                             } elseif (str_contains($nameLower, 'pascasarjana')) {
                                 $bgImage = 'sekolah-pascasarjana.jpg';
+                                $icon = 'ph-graduation-cap';
                             } elseif (str_contains($nameLower, 'kedokteran gigi')) {
                                 $bgImage = 'Fakultas Kedokteran Gigi.jpg';
+                                $icon = 'ph-tooth';
                             } elseif (str_contains($nameLower, 'kedokteran')) {
                                 $bgImage = 'kedokteran.webp';
+                                $icon = 'ph-stethoscope';
                             } elseif (str_contains($nameLower, 'isip') || str_contains($nameLower, 'fisip')) {
                                 $bgImage = 'fisip.jpg';
+                                $icon = 'ph-chats-circle';
                             } elseif (str_contains($nameLower, 'pertanian')) {
                                 $bgImage = 'pertanian.jpg';
+                                $icon = 'ph-plant';
                             } elseif (str_contains($nameLower, 'keperawatan')) {
                                 $bgImage = 'Keperawatan.jpg';
+                                $icon = 'ph-heart-straight';
                             } elseif (str_contains($nameLower, 'mipa')) {
                                 $bgImage = 'Fmipa.jpeg';
+                                $icon = 'ph-atom';
                             } elseif (str_contains($nameLower, 'psikologi')) {
                                 $bgImage = 'psikologi.webp';
+                                $icon = 'ph-brain';
                             } elseif (str_contains($nameLower, 'farmasi')) {
                                 $bgImage = 'Farmasi.webp';
+                                $icon = 'ph-pill';
                             } elseif (str_contains($nameLower, 'kehutanan')) {
                                 $bgImage = 'kehutanan.jpeg';
+                                $icon = 'ph-tree-evergreen';
+                            } elseif (str_contains($nameLower, 'sjahrir')) {
+                                $icon = 'ph-bookmark-simple';
+                            } elseif (str_contains($nameLower, 'parlindungan')) {
+                                $icon = 'ph-book-bookmark';
+                            } elseif (str_contains($nameLower, 'local wisdom')) {
+                                $icon = 'ph-globe-hemisphere-east';
+                            } elseif (str_contains($nameLower, 'out of stock')) {
+                                $icon = 'ph-archive';
                             }
                         @endphp
-                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#021f11] hover:bg-[#032917] rounded-xl p-4 sm:p-6 border border-emerald-800/30 hover:border-[#F3C300]/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.4)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(243,195,0,0.15)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
+                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-4 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 w-[230px] sm:w-[290px] shrink-0 h-[90px] sm:h-[105px] cursor-pointer">
                             
-                            <!-- Card background image with gradient transparency mask -->
-                            <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
+                            <!-- Card background image with building photo preserved -->
+                            <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 group-hover:scale-110 group-hover:opacity-45" 
                                  style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
-                                        opacity: 0.22; 
-                                        mask-image: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
-                                        -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);">
+                                        opacity: 0.32; 
+                                        mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);
+                                        -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);">
                             </div>
 
-                            <!-- Gold glow at bottom right -->
-                            <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-[#F3C300]/15 to-transparent rounded-full blur-xl group-hover:from-[#F3C300]/25 transition-all duration-300 pointer-events-none"></div>
+                            <!-- Gold & Emerald glow at bottom right -->
+                            <div class="absolute -bottom-10 -right-10 w-28 h-28 bg-gradient-to-tl from-[#F3C300]/20 via-emerald-400/10 to-transparent rounded-full blur-xl group-hover:from-[#F3C300]/35 transition-all duration-500 pointer-events-none"></div>
 
-                            <div class="flex flex-col z-10 max-w-[75%]">
-                                <h3 class="text-[26px] font-extrabold text-[#F3C300] mb-1 tracking-tight" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(2, 28, 14, 0.9);">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                                <p class="text-xs font-bold text-[#F3C300] leading-tight" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 6px rgba(2, 28, 14, 0.9);">{{ __($stat->name) }}</p>
+                            <div class="flex flex-col z-10 max-w-[70%]">
+                                <h3 class="text-xl sm:text-[26px] font-extrabold text-amber-300 leading-none mb-1 tracking-tight drop-shadow-md group-hover:text-white transition-colors duration-300">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                                <p class="text-xs sm:text-[13px] font-bold text-emerald-50 leading-tight line-clamp-2 drop-shadow-sm">{{ __($stat->name) }}</p>
                             </div>
                             
-                            <div class="text-[#F3C300] z-10" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));">
-                                <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px] font-bold"></i>
+                            <!-- Custom Glass Badge Icon -->
+                            <div class="z-10 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-2">
+                                <i class="ph {{ $icon }} text-2xl sm:text-3xl font-bold"></i>
                             </div>
                         </a>
                     @endforeach
@@ -479,57 +504,82 @@
                     @foreach($locations as $stat)
                         @php
                             $bgImage = 'perpustakaan.webp';
+                            $icon = 'ph-buildings';
                             $nameLower = strtolower($stat->name);
+
                             if (str_contains($nameLower, 'hukum')) {
                                 $bgImage = 'Hukum.jpg';
+                                $icon = 'ph-scales';
                             } elseif (str_contains($nameLower, 'ilmu budaya')) {
                                 $bgImage = 'ilmu budaya.webp';
+                                $icon = 'ph-palette';
                             } elseif (str_contains($nameLower, 'ekonomi')) {
                                 $bgImage = 'Fakultas Ekonomi Dan Bisnis.webp';
+                                $icon = 'ph-chart-line-up';
                             } elseif (str_contains($nameLower, 'kesehatan masyarakat')) {
                                 $bgImage = 'Kesehatan Masyarakat.webp';
+                                $icon = 'ph-heartbeat';
                             } elseif (str_contains($nameLower, 'pascasarjana')) {
                                 $bgImage = 'sekolah-pascasarjana.jpg';
+                                $icon = 'ph-graduation-cap';
                             } elseif (str_contains($nameLower, 'kedokteran gigi')) {
                                 $bgImage = 'Fakultas Kedokteran Gigi.jpg';
+                                $icon = 'ph-tooth';
                             } elseif (str_contains($nameLower, 'kedokteran')) {
                                 $bgImage = 'kedokteran.webp';
+                                $icon = 'ph-stethoscope';
                             } elseif (str_contains($nameLower, 'isip') || str_contains($nameLower, 'fisip')) {
                                 $bgImage = 'fisip.jpg';
+                                $icon = 'ph-chats-circle';
                             } elseif (str_contains($nameLower, 'pertanian')) {
                                 $bgImage = 'pertanian.jpg';
+                                $icon = 'ph-plant';
                             } elseif (str_contains($nameLower, 'keperawatan')) {
                                 $bgImage = 'Keperawatan.jpg';
+                                $icon = 'ph-heart-straight';
                             } elseif (str_contains($nameLower, 'mipa')) {
                                 $bgImage = 'Fmipa.jpeg';
+                                $icon = 'ph-atom';
                             } elseif (str_contains($nameLower, 'psikologi')) {
                                 $bgImage = 'psikologi.webp';
+                                $icon = 'ph-brain';
                             } elseif (str_contains($nameLower, 'farmasi')) {
                                 $bgImage = 'Farmasi.webp';
+                                $icon = 'ph-pill';
                             } elseif (str_contains($nameLower, 'kehutanan')) {
                                 $bgImage = 'kehutanan.jpeg';
+                                $icon = 'ph-tree-evergreen';
+                            } elseif (str_contains($nameLower, 'sjahrir')) {
+                                $icon = 'ph-bookmark-simple';
+                            } elseif (str_contains($nameLower, 'parlindungan')) {
+                                $icon = 'ph-book-bookmark';
+                            } elseif (str_contains($nameLower, 'local wisdom')) {
+                                $icon = 'ph-globe-hemisphere-east';
+                            } elseif (str_contains($nameLower, 'out of stock')) {
+                                $icon = 'ph-archive';
                             }
                         @endphp
-                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#021f11] hover:bg-[#032917] rounded-xl p-4 sm:p-6 border border-emerald-800/30 hover:border-[#F3C300]/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.4)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(243,195,0,0.15)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
+                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-4 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 w-[230px] sm:w-[290px] shrink-0 h-[90px] sm:h-[105px] cursor-pointer">
                             
-                            <!-- Card background image with gradient transparency mask -->
-                            <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
+                            <!-- Card background image with building photo preserved -->
+                            <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 group-hover:scale-110 group-hover:opacity-45" 
                                  style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
-                                        opacity: 0.22; 
-                                        mask-image: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
-                                        -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);">
+                                        opacity: 0.32; 
+                                        mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);
+                                        -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);">
                             </div>
 
-                            <!-- Gold glow at bottom right -->
-                            <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-[#F3C300]/15 to-transparent rounded-full blur-xl group-hover:from-[#F3C300]/25 transition-all duration-300 pointer-events-none"></div>
+                            <!-- Gold & Emerald glow at bottom right -->
+                            <div class="absolute -bottom-10 -right-10 w-28 h-28 bg-gradient-to-tl from-[#F3C300]/20 via-emerald-400/10 to-transparent rounded-full blur-xl group-hover:from-[#F3C300]/35 transition-all duration-500 pointer-events-none"></div>
 
-                            <div class="flex flex-col z-10 max-w-[75%]">
-                                <h3 class="text-[26px] font-extrabold text-[#F3C300] mb-1 tracking-tight" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(2, 28, 14, 0.9);">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                                <p class="text-xs font-bold text-[#F3C300] leading-tight" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 6px rgba(2, 28, 14, 0.9);">{{ __($stat->name) }}</p>
+                            <div class="flex flex-col z-10 max-w-[70%]">
+                                <h3 class="text-xl sm:text-[26px] font-extrabold text-amber-300 leading-none mb-1 tracking-tight drop-shadow-md group-hover:text-white transition-colors duration-300">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                                <p class="text-xs sm:text-[13px] font-bold text-emerald-50 leading-tight line-clamp-2 drop-shadow-sm">{{ __($stat->name) }}</p>
                             </div>
                             
-                            <div class="text-[#F3C300] z-10" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));">
-                                <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px] font-bold"></i>
+                            <!-- Custom Glass Badge Icon -->
+                            <div class="z-10 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-2">
+                                <i class="ph {{ $icon }} text-2xl sm:text-3xl font-bold"></i>
                             </div>
                         </a>
                     @endforeach
@@ -542,57 +592,82 @@
                 @foreach($locations as $stat)
                     @php
                         $bgImage = 'perpustakaan.webp';
+                        $icon = 'ph-buildings';
                         $nameLower = strtolower($stat->name);
+
                         if (str_contains($nameLower, 'hukum')) {
                             $bgImage = 'Hukum.jpg';
+                            $icon = 'ph-scales';
                         } elseif (str_contains($nameLower, 'ilmu budaya')) {
                             $bgImage = 'ilmu budaya.webp';
+                            $icon = 'ph-palette';
                         } elseif (str_contains($nameLower, 'ekonomi')) {
                             $bgImage = 'Fakultas Ekonomi Dan Bisnis.webp';
+                            $icon = 'ph-chart-line-up';
                         } elseif (str_contains($nameLower, 'kesehatan masyarakat')) {
                             $bgImage = 'Kesehatan Masyarakat.webp';
+                            $icon = 'ph-heartbeat';
                         } elseif (str_contains($nameLower, 'pascasarjana')) {
                             $bgImage = 'sekolah-pascasarjana.jpg';
+                            $icon = 'ph-graduation-cap';
                         } elseif (str_contains($nameLower, 'kedokteran gigi')) {
                             $bgImage = 'Fakultas Kedokteran Gigi.jpg';
+                            $icon = 'ph-tooth';
                         } elseif (str_contains($nameLower, 'kedokteran')) {
                             $bgImage = 'kedokteran.webp';
+                            $icon = 'ph-stethoscope';
                         } elseif (str_contains($nameLower, 'isip') || str_contains($nameLower, 'fisip')) {
                             $bgImage = 'fisip.jpg';
+                            $icon = 'ph-chats-circle';
                         } elseif (str_contains($nameLower, 'pertanian')) {
                             $bgImage = 'pertanian.jpg';
+                            $icon = 'ph-plant';
                         } elseif (str_contains($nameLower, 'keperawatan')) {
                             $bgImage = 'Keperawatan.jpg';
+                            $icon = 'ph-heart-straight';
                         } elseif (str_contains($nameLower, 'mipa')) {
                             $bgImage = 'Fmipa.jpeg';
+                            $icon = 'ph-atom';
                         } elseif (str_contains($nameLower, 'psikologi')) {
                             $bgImage = 'psikologi.webp';
+                            $icon = 'ph-brain';
                         } elseif (str_contains($nameLower, 'farmasi')) {
                             $bgImage = 'Farmasi.webp';
+                            $icon = 'ph-pill';
                         } elseif (str_contains($nameLower, 'kehutanan')) {
                             $bgImage = 'kehutanan.jpeg';
+                            $icon = 'ph-tree-evergreen';
+                        } elseif (str_contains($nameLower, 'sjahrir')) {
+                            $icon = 'ph-bookmark-simple';
+                        } elseif (str_contains($nameLower, 'parlindungan')) {
+                            $icon = 'ph-book-bookmark';
+                        } elseif (str_contains($nameLower, 'local wisdom')) {
+                            $icon = 'ph-globe-hemisphere-east';
+                        } elseif (str_contains($nameLower, 'out of stock')) {
+                            $icon = 'ph-archive';
                         }
                     @endphp
-                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#021f11] hover:bg-[#032917] rounded-xl p-3 sm:p-6 border border-emerald-800/30 hover:border-[#F3C300]/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.4)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(243,195,0,0.15)] hover:-translate-y-1 h-[75px] sm:h-[100px] w-full">
+                    <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-3 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 h-[85px] sm:h-[105px] w-full cursor-pointer">
                         
-                        <!-- Card background image with gradient transparency mask -->
-                        <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
+                        <!-- Card background image with building photo preserved -->
+                        <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 group-hover:scale-110 group-hover:opacity-45" 
                              style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
-                                    opacity: 0.22; 
-                                    mask-image: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
-                                    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);">
+                                    opacity: 0.32; 
+                                    mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);
+                                    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);">
                         </div>
 
-                        <!-- Gold glow at bottom right -->
-                        <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-[#F3C300]/15 to-transparent rounded-full blur-xl group-hover:from-[#F3C300]/25 transition-all duration-300 pointer-events-none"></div>
+                        <!-- Gold & Emerald glow at bottom right -->
+                        <div class="absolute -bottom-10 -right-10 w-28 h-28 bg-gradient-to-tl from-[#F3C300]/20 via-emerald-400/10 to-transparent rounded-full blur-xl group-hover:from-[#F3C300]/35 transition-all duration-500 pointer-events-none"></div>
 
-                        <div class="flex flex-col z-10 max-w-[75%]">
-                            <h3 class="text-lg sm:text-[26px] font-extrabold text-[#F3C300] mb-0.5 sm:mb-1 tracking-tight" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(2, 28, 14, 0.9);">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
-                            <p class="text-[10px] sm:text-xs font-bold text-[#F3C300] leading-tight" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 6px rgba(2, 28, 14, 0.9);">{{ __($stat->name) }}</p>
+                        <div class="flex flex-col z-10 max-w-[70%]">
+                            <h3 class="text-lg sm:text-[26px] font-extrabold text-amber-300 leading-none mb-1 tracking-tight drop-shadow-md group-hover:text-white transition-colors duration-300">{{ number_format($stat->items_count, 0, ',', '.') }}</h3>
+                            <p class="text-[11px] sm:text-[13px] font-bold text-emerald-50 leading-tight line-clamp-2 drop-shadow-sm">{{ __($stat->name) }}</p>
                         </div>
                         
-                        <div class="text-[#F3C300] z-10" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));">
-                            <i class="ph {{ $stat->icon }} text-2xl sm:text-[42px] font-bold"></i>
+                        <!-- Custom Glass Badge Icon -->
+                        <div class="z-10 w-10 h-10 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-1.5 sm:ml-2">
+                            <i class="ph {{ $icon }} text-xl sm:text-3xl font-bold"></i>
                         </div>
                     </a>
                 @endforeach
