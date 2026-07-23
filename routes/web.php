@@ -21,8 +21,6 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::post('/kontak', [BookController::class, 'storeContact'])->name('kontak.store');
-
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/admin/tambah-cover', [AdminController::class, 'tambahCoverIndex'])->name('admin.tambah-cover');
 Route::post('/admin/books', [AdminController::class, 'store'])->name('admin.books.store');
