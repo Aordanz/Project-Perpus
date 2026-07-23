@@ -88,6 +88,18 @@
             $ddcCategories = \App\Models\Book::getDdcCategories();
             $existingBigCategories = array_values(array_map(fn($cat) => $cat['name'], $ddcCategories));
             $iconMap = array_combine($existingBigCategories, array_column($ddcCategories, 'icon'));
+            $terlarisBookIds = \Illuminate\Support\Facades\Cache::remember('buku_terlaris_ids', 86400, function () {
+                return \Illuminate\Support\Facades\DB::table('tbltransaksi_pinjam')
+                    ->select('idmaster', \Illuminate\Support\Facades\DB::raw('COUNT(*) as total_pinjam'))
+                    ->whereNotNull('idmaster')
+                    ->where('idmaster', '!=', '')
+                    ->groupBy('idmaster')
+                    ->orderByDesc('total_pinjam')
+                    ->limit(200)
+                    ->pluck('idmaster')
+                    ->map(fn($id) => (string)$id)
+                    ->toArray();
+            });
         @endphp
 
         <!-- Dynamic Quick Filter Chips -->
@@ -121,31 +133,39 @@
                 }
             </style>
             <div id="chips-container" class="flex flex-wrap gap-2 sm:gap-3 mb-2 justify-center items-center transition-all duration-300">
-                <button data-filter="all" class="filter-chip active-chip bg-green-50 border-[#106c38] text-[#106c38] font-bold inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all text-xs sm:text-sm shadow-sm whitespace-nowrap cursor-pointer">
-                    <i class="ph ph-squares-four text-base sm:text-lg"></i> {{ __('Semua Kategori') }}
+                <!-- Semua Kategori -->
+                <button data-filter="all" class="filter-chip active-chip group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40 whitespace-nowrap">
+                    <i class="ph ph-squares-four text-base sm:text-lg"></i>
+                    <span>{{ __('Semua Kategori') }}</span>
+                </button>
+
+                <!-- Terlaris -->
+                <button data-filter="subject" data-value="terlaris" class="filter-chip group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 bg-white border-slate-200 text-slate-700 font-medium hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:border-orange-400 hover:text-orange-600 hover:shadow-md hover:shadow-orange-200/60 hover:ring-2 hover:ring-orange-400/50 whitespace-nowrap">
+                    <i class="ph ph-fire text-amber-500 group-hover:text-orange-500 text-base sm:text-lg"></i>
+                    <span>{{ __('Terlaris') }}</span>
                 </button>
 
                 @foreach($existingBigCategories as $index => $cat)
                     @php
                         $visibilityClass = 'chip-collapsible';
-                        if ($index < 1) $visibilityClass = 'chip-collapsible sm-visible';
-                        elseif ($index < 2) $visibilityClass = 'chip-collapsible md-visible';
-                        elseif ($index < 3) $visibilityClass = 'chip-collapsible lg-visible';
-                        elseif ($index < 4) $visibilityClass = 'chip-collapsible xl-visible';
+                        if ($index < 1) $visibilityClass = 'chip-collapsible md-visible';
+                        elseif ($index < 2) $visibilityClass = 'chip-collapsible lg-visible';
+                        elseif ($index < 3) $visibilityClass = 'chip-collapsible xl-visible';
 
                         $iconClass = $iconMap[$cat] ?? 'ph-books';
                     @endphp
                     <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
-                        class="filter-chip {{ $visibilityClass }} bg-white border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-[#106c38] hover:text-[#106c38] items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all text-xs sm:text-sm shadow-sm whitespace-nowrap cursor-pointer">
-                        <i class="ph {{ $iconClass }} text-base sm:text-lg"></i> {{ __($cat) }}
+                        class="filter-chip {{ $visibilityClass }} group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40 whitespace-nowrap">
+                        <i class="ph {{ $iconClass }} text-base sm:text-lg"></i>
+                        <span>{{ __($cat) }}</span>
                     </button>
                 @endforeach
 
                 <!-- Toggle Button -->
                 @if(count($existingBigCategories) > 2)
-                    <button id="toggle-chips-btn" class="flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] flex items-center gap-1 transition-colors bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] cursor-pointer">
+                    <button id="toggle-chips-btn" class="group flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] inline-flex items-center gap-1 transition-all duration-300 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] hover:ring-2 hover:ring-[#106c38]/40 hover:shadow-md hover:shadow-green-100 cursor-pointer transform hover:-translate-y-0.5">
                         <span id="toggle-chips-text">{{ __('Lainnya') }}</span>
-                        <i id="toggle-chips-icon" class="ph ph-caret-down transition-transform duration-300"></i>
+                        <i id="toggle-chips-icon" class="ph ph-caret-down transition-transform duration-300 group-hover:scale-110"></i>
                     </button>
                 @endif
             </div>
@@ -173,6 +193,7 @@
                      data-author="{{ strtolower($book->author) }}" 
                      data-publisher="{{ strtolower($book->publisher) }}" 
                      data-subject="{{ $subjValue }}"
+                     data-terlaris="{{ in_array((string)$book->idmaster, $terlarisBookIds ?? []) ? 'true' : 'false' }}"
                      data-available="{{ $availableCopies > 0 ? 'true' : 'false' }}">
                     
                     <!-- Card Numbering Index -->
@@ -374,7 +395,11 @@
                     if (activeFilter === 'available') {
                         matchesFilter = isAvailable;
                     } else if (activeFilter === 'subject') {
-                        matchesFilter = (subject === activeSubjectValue);
+                        if (activeSubjectValue === 'terlaris') {
+                            matchesFilter = (card.getAttribute('data-terlaris') === 'true');
+                        } else {
+                            matchesFilter = (subject === activeSubjectValue);
+                        }
                     }
 
                     if (matchesSearch && matchesFilter) {
@@ -441,8 +466,8 @@
                     }
                 });
 
-                // Render Page Control Buttons
-                renderPagination(totalMatched, totalPages);
+                // Render Pagination Controls
+                renderPagination(totalPages);
 
                 if (totalMatched === 0 && totalCount > 0) {
                     emptyState.classList.remove('hidden');
@@ -451,8 +476,11 @@
                 }
             }
 
-            function renderPagination(totalMatched, totalPages) {
-                if (totalMatched === 0) {
+            // Render Pagination Controls Handler
+            function renderPagination(totalPages) {
+                if (!paginationBar || !buttonsContainer) return;
+
+                if (totalPages <= 1) {
                     paginationBar.classList.add('hidden');
                     return;
                 }
@@ -460,14 +488,7 @@
                 paginationBar.classList.remove('hidden');
                 buttonsContainer.innerHTML = '';
 
-                if (itemsPerPage === 'all' || totalPages <= 1) {
-                    buttonsContainer.classList.add('hidden');
-                    return;
-                }
-                
-                buttonsContainer.classList.remove('hidden');
-
-                // Previous Page Button
+                // Prev Page Button
                 const prevBtn = document.createElement('button');
                 prevBtn.className = `px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38] transition text-xs font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:pointer-events-none`;
                 prevBtn.innerHTML = `<i class="ph ph-caret-left"></i> {{ __('Sebelumnya') }}`;
@@ -480,14 +501,15 @@
                 });
                 buttonsContainer.appendChild(prevBtn);
 
-                // Numbered Buttons
+                // Page Number Buttons
                 for (let i = 1; i <= totalPages; i++) {
                     const pageBtn = document.createElement('button');
-                    if (i === currentPage) {
-                        pageBtn.className = `w-8 h-8 rounded-full bg-[#106c38] text-white font-bold text-xs flex items-center justify-center shadow-sm cursor-default`;
-                    } else {
-                        pageBtn.className = `w-8 h-8 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38] transition font-semibold text-xs flex items-center justify-center cursor-pointer`;
-                    }
+                    const isActive = (i === currentPage);
+                    pageBtn.className = `w-8 h-8 rounded-full border transition text-xs font-bold flex items-center justify-center cursor-pointer ${
+                        isActive 
+                            ? 'bg-[#106c38] border-[#106c38] text-white shadow-sm' 
+                            : 'border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38]'
+                    }`;
                     pageBtn.textContent = i;
                     pageBtn.addEventListener('click', () => {
                         if (i !== currentPage) {

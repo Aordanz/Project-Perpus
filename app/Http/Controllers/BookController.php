@@ -349,17 +349,49 @@ class BookController extends Controller
      */
     public function galeri(Request $request)
     {
-        // Urutkan berdasarkan abjad (judul_buku) lalu berdasarkan ID (penomoran)
-        $query = Book::with(['items.location', 'publisherRelation'])->orderBy('judul_buku', 'asc')->orderBy('idbuku', 'asc');
+        $query = Book::with(['items.location', 'publisherRelation']);
         
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);
         }
 
-        // Filter berdasarkan DDC category key (digit pertama nopanggil)
+        // Filter berdasarkan DDC category key (digit pertama nopanggil) atau filter khusus "terlaris"
         if ($request->filled('category')) {
             $catKey = $request->category;
-            $query->where('nopanggil', 'like', $catKey . '%');
+
+            if ($catKey === 'terlaris') {
+                // Cache data ID buku paling sering dipinjam dari tbltransaksi_pinjam selama 24 jam (86400 detik)
+                $terlarisBookIds = \Illuminate\Support\Facades\Cache::remember('buku_terlaris_ids', 86400, function () {
+                    return \Illuminate\Support\Facades\DB::table('tbltransaksi_pinjam')
+                        ->select('idmaster', \Illuminate\Support\Facades\DB::raw('COUNT(*) as total_pinjam'))
+                        ->whereNotNull('idmaster')
+                        ->where('idmaster', '!=', '')
+                        ->groupBy('idmaster')
+                        ->orderByDesc('total_pinjam')
+                        ->limit(200)
+                        ->pluck('idmaster')
+                        ->toArray();
+                });
+
+                if (!empty($terlarisBookIds)) {
+                    $query->whereIn('idmaster', $terlarisBookIds);
+                    $validIds = array_filter($terlarisBookIds, function($v) {
+                        return is_numeric($v) || is_string($v);
+                    });
+                    if (!empty($validIds)) {
+                        $quotedIds = implode(',', array_map(function($id) {
+                            return "'" . addslashes($id) . "'";
+                        }, $validIds));
+                        $query->orderByRaw("FIELD(idmaster, {$quotedIds})");
+                    }
+                }
+            } else {
+                $query->where('nopanggil', 'like', $catKey . '%')
+                      ->orderBy('judul_buku', 'asc')
+                      ->orderBy('idbuku', 'asc');
+            }
+        } else {
+            $query->orderBy('judul_buku', 'asc')->orderBy('idbuku', 'asc');
         }
 
         $perPage = $request->input('per', 24);
