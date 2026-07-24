@@ -249,11 +249,16 @@
         <div class="hero-gradient min-h-[74vh] pt-24 pb-0 relative overflow-hidden flex flex-col justify-start">
         <!-- Background Images Slideshow with Low Opacity Overlay -->
         <div id="hero-bg-slideshow" class="absolute inset-0 z-0">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-100" src="{{ asset('kolam_perpustakaan.webp') }}" fetchpriority="high" alt="Background OPAC USU 1">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('perpustakaan_depan.webp') }}" alt="Background OPAC USU 2">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('perpustakaan_samping.webp') }}" alt="Background OPAC USU 3">
-            <!-- Dark green static overlay layer to emulate blend and keep it dark -->
-            <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/90 via-[#084323]/85 to-[#0c542c]/90 z-10 pointer-events-none"></div>
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-100" src="{{ asset('slider1.jpg') }}" fetchpriority="high" alt="Background OPAC USU 1" onerror="this.src='{{ asset('kolam_perpustakaan.webp') }}'">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider2.jpg') }}" alt="Background OPAC USU 2" onerror="this.src='{{ asset('perpustakaan_depan.webp') }}'">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider3.jpg') }}" alt="Background OPAC USU 3" onerror="this.src='{{ asset('perpustakaan_samping.webp') }}'">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider4.jpg') }}" alt="Background OPAC USU 4">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider5.jpg') }}" alt="Background OPAC USU 5">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider6.jpg') }}" alt="Background OPAC USU 6">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider7.jpg') }}" alt="Background OPAC USU 7">
+            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider8.jpg') }}" alt="Background OPAC USU 8">
+            <!-- Dark green static overlay layer to emulate blend and keep it readable but visible -->
+            <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/75 via-[#084323]/65 to-[#0c542c]/75 z-10 pointer-events-none"></div>
         </div>
 
         <!-- Abstract Shapes -->
@@ -1950,7 +1955,7 @@
                     heroSlides[nextSlideIdx].classList.add('opacity-100');
                     
                     currentSlideIdx = nextSlideIdx;
-                }, 10000); // 10 seconds per slide
+                }, 5000); // 5 seconds per slide
             }
         });
     </script>

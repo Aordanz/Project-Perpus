@@ -285,7 +285,7 @@
 
                     <!-- Tab Pane: Informasi Detail -->
                     <div id="pane-bibliografi" class="tab-pane hidden">
-                        <div class="overflow-hidden rounded-2xl border border-slate-100">
+                        <div class="overflow-x-auto rounded-2xl border border-slate-100">
                             <table class="w-full text-left border-collapse">
                                 <tbody class="divide-y divide-slate-100 text-sm font-medium">
                                     <tr class="hover:bg-slate-50/30 transition">

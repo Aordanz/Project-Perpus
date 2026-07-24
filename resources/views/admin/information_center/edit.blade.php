@@ -300,7 +300,7 @@
 
                         <div>
                             <label class="fl" for="content">Isi Informasi Lengkap <span class="text-red-500 normal-case">*</span></label>
-                            <textarea name="content" id="content" rows="6" class="fi resize-none" placeholder="Tuliskan isi informasi lengkap di sini...">{{ old('content', is_string($informationCenter->content) ? $informationCenter->content : '') }}</textarea>
+                            <textarea name="content" id="content" rows="6" class="fi resize-none" placeholder="Tuliskan isi informasi lengkap di sini...">{{ old('content', $contentDecoded['description'] ?? (empty($contentDecoded) ? $informationCenter->content : '')) }}</textarea>
                             @error('content') <p class="text-xs text-red-500 mt-1 font-bold">{{ $message }}</p> @enderror
                         </div>
 
@@ -351,28 +351,10 @@
                                 </div>
                                 <div class="pt-4 border-t border-slate-50">
                                     <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                        <i class="ph ph-image-square text-slate-300 text-base"></i>
-                                        Brosur / Flyer Slider (Opsional)
+                                        <i class="ph ph-list-bullets text-slate-300 text-base"></i>
+                                        Informasi Tambahan (Opsional)
                                     </p>
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                        <div>
-                                            <label class="fl text-[10px]" for="event_left_badge">Label Badge Flyer</label>
-                                            <input type="text" name="event_left_badge" id="event_left_badge" class="fi fi-sm" placeholder="EVENT PERPUSTAKAAN" value="{{ old('event_left_badge', $contentDecoded['left_badge'] ?? 'EVENT PERPUSTAKAAN') }}">
-                                        </div>
-                                        <div>
-                                            <label class="fl text-[10px]" for="event_left_title">Judul Besar Flyer</label>
-                                            <input type="text" name="event_left_title" id="event_left_title" class="fi fi-sm" placeholder="Kosongkan = ikuti judul" value="{{ old('event_left_title', $contentDecoded['left_title'] ?? '') }}">
-                                        </div>
-                                        <div>
-                                            <label class="fl text-[10px]" for="event_left_subtitle">Subjudul Flyer</label>
-                                            <input type="text" name="event_left_subtitle" id="event_left_subtitle" class="fi fi-sm" placeholder="Teks singkat penarik minat" value="{{ old('event_left_subtitle', $contentDecoded['left_subtitle'] ?? '') }}">
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="fl text-[10px]" for="event_quota_tag">Stiker / Quota Tag</label>
-                                            <input type="text" name="event_quota_tag" id="event_quota_tag" class="fi fi-sm" placeholder="PENDAFTARAN DIBUKA!" value="{{ old('event_quota_tag', $contentDecoded['quota_tag'] ?? 'PENDAFTARAN DIBUKA!') }}">
-                                        </div>
+                                    <div class="grid grid-cols-1 gap-4">
                                         <div>
                                             <label class="fl text-[10px]" for="event_left_features">Fitur / Benefit Flyer <span class="normal-case font-medium text-slate-400">(1 poin/baris, maks 4)</span></label>
                                             <textarea name="event_left_features" id="event_left_features" rows="3" class="fi fi-sm resize-none" placeholder="Materi Praktis&#10;Studi Kasus Nyata&#10;E-Sertifikat">{{ old('event_left_features', is_array($contentDecoded['left_features'] ?? null) ? implode("\n", $contentDecoded['left_features']) : ($contentDecoded['left_features'] ?? '')) }}</textarea>
@@ -587,7 +569,7 @@
                         <div class="sidebar-card-body space-y-4">
                             
                             @php
-                                $hasExistingImage = !empty($informationCenter->image_url) || (!empty($informationCenter->images_url) && count($informationCenter->images_url) > 0);
+                                $hasExistingImage = !empty($informationCenter->image_path) || (!empty($informationCenter->images) && is_array($informationCenter->images) && count($informationCenter->images) > 0);
                             @endphp
 
                             <!-- Dropzone Upload -->
@@ -623,78 +605,91 @@
                             <!-- Interactive Simulasi Frame Beranda -->
                             <div class="pt-3 border-t border-slate-100 space-y-3">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-[11px] font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                                        <i class="ph ph-crop text-slate-400"></i> Simulasi Frame Beranda
+                                    <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                                        <i class="ph ph-crop text-emerald-600 text-sm"></i> Frame Banner Beranda
                                     </span>
-                                    <button type="button" id="btn-reset-frame" class="text-[10px] font-bold text-emerald-700 hover:underline">
-                                        Reset Pengaturan
-                                    </button>
+                                    <span class="text-[9.5px] text-slate-400 font-medium">Klik & Drag / Scroll Zoom</span>
                                 </div>
 
-                                <div class="relative w-full aspect-[4/5] bg-slate-900 rounded-2xl overflow-hidden shadow-inner cursor-grab group select-none border border-slate-200" id="frame-simulator-container">
+                                <!-- Box Simulasi Frame (Exact Ratio Frame Popup) -->
+                                <div id="frame-simulator-container"
+                                     class="relative w-full aspect-[376/500] max-h-[380px] rounded-2xl overflow-hidden bg-white border-2 border-emerald-500/40 shadow-inner group cursor-grab active:cursor-grabbing select-none"
+                                     style="aspect-ratio: 376 / 500;"
+                                     title="Klik & Drag untuk menggeser posisi foto | Scroll mouse untuk Zoom">
+
+                                    <!-- Wavy Divider Overlay (Matching Homepage Popup 100%) -->
+                                    <div class="absolute left-0 top-0 h-full z-20 pointer-events-none" style="width: 25%;">
+                                        <svg class="h-full w-full" viewBox="0 0 100 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M 0,0 C 55,100 75,250 20,380 C -5,430 35,480 50,500 L 0,500 Z" fill="#0f172a" fill-opacity="0.85" />
+                                            <path d="M 0,0 C 55,100 75,250 20,380 C -5,430 35,480 50,500" fill="none" stroke="#eab308" stroke-width="3.5" vector-effect="non-scaling-stroke" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- Target Image Element -->
                                     @php
                                         $initialImgSrc = asset('perpustakaan_depan.webp');
-                                        if (!empty($informationCenter->images_url) && is_array($informationCenter->images_url) && count($informationCenter->images_url) > 0) {
-                                            $initialImgSrc = $informationCenter->images_url[0];
-                                        } elseif (!empty($informationCenter->image_url)) {
-                                            $initialImgSrc = $informationCenter->image_url;
+                                        if (!empty($informationCenter->images) && is_array($informationCenter->images) && count($informationCenter->images) > 0) {
+                                            $imgStr = $informationCenter->images[0];
+                                            $initialImgSrc = str_starts_with($imgStr, 'http') ? $imgStr : asset($imgStr);
+                                        } elseif (!empty($informationCenter->image_path)) {
+                                            $imgStr = $informationCenter->image_path;
+                                            $initialImgSrc = str_starts_with($imgStr, 'http') ? $imgStr : asset($imgStr);
                                         }
                                     @endphp
-                                    <img id="frame-sim-image" src="{{ $initialImgSrc }}"
-                                         alt="Poster Preview"
-                                         class="w-full h-full pointer-events-none transition-transform duration-75 origin-center"
-                                         style="object-fit: {{ old('image_fit', $informationCenter->image_fit ?? 'cover') }}; object-position: {{ old('image_x', $informationCenter->image_x ?? 50) }}% {{ old('image_y', $informationCenter->image_y ?? 50) }}%; transform: scale({{ old('image_scale', $informationCenter->image_scale ?? 100) / 100 }});">
+                                    <img id="frame-sim-image" src="{{ $initialImgSrc }}" alt="Pratinjau Frame"
+                                         class="w-full h-full object-cover transition-transform duration-75 pointer-events-none"
+                                         style="object-position: {{ old('image_x', $informationCenter->image_x ?? 50) }}% {{ old('image_y', $informationCenter->image_y ?? 50) }}%; transform: scale({{ old('image_scale', $informationCenter->image_scale ?? 100) / 100 }});">
 
-                                    {{-- Drag Guide Overlay --}}
-                                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white pointer-events-none p-3 text-center">
-                                        <i class="ph ph-hand-grabbing text-3xl mb-1 drop-shadow"></i>
-                                        <span class="text-[11px] font-bold drop-shadow">Geser untuk Posisi Foto</span>
-                                        <span class="text-[9px] text-white/80 drop-shadow">Scroll untuk Zoom In / Out</span>
-                                    </div>
-
-                                    <div class="absolute bottom-2 left-2 right-2 bg-slate-900/80 backdrop-blur-md px-2.5 py-1.5 rounded-lg flex items-center justify-between text-[10px] text-white">
-                                        <span>Zoom: <strong id="badge-scale-val">{{ old('image_scale', $informationCenter->image_scale ?? 100) }}%</strong></span>
-                                        <span class="text-white/60">Geser atau Atur Slider</span>
+                                    <!-- Bottom Info Overlay Badge -->
+                                    <div class="absolute bottom-2 left-2 right-2 px-2.5 py-1 bg-black/70 backdrop-blur-md rounded-lg text-[9.5px] text-white/90 flex items-center justify-between pointer-events-none z-30">
+                                        <span class="flex items-center gap-1 font-semibold">
+                                            <i class="ph ph-hand-grabbing text-yellow-400 text-xs"></i> Drag &amp; Scroll Aktif
+                                        </span>
+                                        <span id="preview-fit-label" class="font-black text-emerald-400">Zoom: <span id="badge-scale-val">{{ old('image_scale', $informationCenter->image_scale ?? 100) }}%</span></span>
                                     </div>
                                 </div>
+                            </div>
 
-                                {{-- Sliders Control Panel --}}
-                                <div class="space-y-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                    <div>
-                                        <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 mb-1">
-                                            <span>Mode Fit Foto</span>
-                                        </div>
-                                        <select name="image_fit" id="image_fit_select" class="fi fi-sm">
-                                            <option value="cover"   {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'cover'   ? 'selected' : '' }}>Cover (Isi Penuh Frame)</option>
-                                            <option value="contain" {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'contain' ? 'selected' : '' }}>Contain (Tampilkan Utuh Tanpa Terpotong)</option>
-                                            <option value="fill"    {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'fill'    ? 'selected' : '' }}>Stretch (Tarik Pas Frame)</option>
-                                        </select>
+                            <!-- Interactive Sliders for Framing & Zoom -->
+                            <div class="space-y-3 pt-2 border-t border-slate-100">
+                                <!-- Zoom Slider -->
+                                <div>
+                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
+                                        <span class="flex items-center gap-1"><i class="ph ph-magnifying-glass-plus text-emerald-600"></i> Zoom / Perbesar-Kecilkan</span>
+                                        <span id="zoom-slider-val" class="text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded text-[10px]">{{ old('image_scale', $informationCenter->image_scale ?? 100) }}%</span>
                                     </div>
+                                    <input type="range" id="zoom-slider" min="50" max="250" value="{{ old('image_scale', $informationCenter->image_scale ?? 100) }}" class="w-full accent-emerald-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                </div>
 
-                                    <div>
-                                        <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 mb-1">
-                                            <span>Perbesar / Zoom</span>
-                                            <span id="zoom-slider-val" class="text-emerald-700 font-extrabold">{{ old('image_scale', $informationCenter->image_scale ?? 100) }}%</span>
-                                        </div>
-                                        <input type="range" id="zoom-slider" min="50" max="250" value="{{ old('image_scale', $informationCenter->image_scale ?? 100) }}" class="w-full accent-[#106c38] cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                <!-- X Position Slider -->
+                                <div>
+                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
+                                        <span class="flex items-center gap-1"><i class="ph ph-arrows-horizontal text-blue-600"></i> Posisi Horisontal (Kiri - Kanan)</span>
+                                        <span id="posx-slider-val" class="text-blue-700 font-bold text-[10px]">{{ old('image_x', $informationCenter->image_x ?? 50) }}%</span>
                                     </div>
+                                    <input type="range" id="posx-slider" min="0" max="100" value="{{ old('image_x', $informationCenter->image_x ?? 50) }}" class="w-full accent-blue-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                </div>
 
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 mb-1">
-                                                <span>Posisi X</span>
-                                                <span id="posx-slider-val" class="text-emerald-700 font-extrabold">{{ old('image_x', $informationCenter->image_x ?? 50) }}%</span>
-                                            </div>
-                                            <input type="range" id="posx-slider" min="0" max="100" value="{{ old('image_x', $informationCenter->image_x ?? 50) }}" class="w-full accent-[#106c38] cursor-pointer h-1.5 bg-slate-200 rounded-lg">
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 mb-1">
-                                                <span>Posisi Y</span>
-                                                <span id="posy-slider-val" class="text-emerald-700 font-extrabold">{{ old('image_y', $informationCenter->image_y ?? 50) }}%</span>
-                                            </div>
-                                            <input type="range" id="posy-slider" min="0" max="100" value="{{ old('image_y', $informationCenter->image_y ?? 50) }}" class="w-full accent-[#106c38] cursor-pointer h-1.5 bg-slate-200 rounded-lg">
-                                        </div>
+                                <!-- Y Position Slider -->
+                                <div>
+                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
+                                        <span class="flex items-center gap-1"><i class="ph ph-arrows-vertical text-purple-600"></i> Posisi Vertikal (Atas - Bawah)</span>
+                                        <span id="posy-slider-val" class="text-purple-700 font-bold text-[10px]">{{ old('image_y', $informationCenter->image_y ?? 50) }}%</span>
                                     </div>
+                                    <input type="range" id="posy-slider" min="0" max="100" value="{{ old('image_y', $informationCenter->image_y ?? 50) }}" class="w-full accent-purple-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
+                                </div>
+
+                                <!-- Controls & Preset Buttons -->
+                                <div class="grid grid-cols-2 gap-2 pt-2">
+                                    <select name="image_fit" id="image_fit_select" class="fi fi-sm text-xs">
+                                        <option value="cover" {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'cover' ? 'selected' : '' }}>🔳 Cover (Penuh)</option>
+                                        <option value="contain" {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'contain' ? 'selected' : '' }}>🖼️ Contain (Utuh)</option>
+                                        <option value="fill" {{ old('image_fit', $informationCenter->image_fit ?? 'cover') == 'fill' ? 'selected' : '' }}>📐 Fill (Regang)</option>
+                                    </select>
+
+                                    <button type="button" id="btn-reset-frame" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 flex items-center justify-center gap-1 transition">
+                                        <i class="ph ph-arrow-counter-clockwise"></i> Reset Frame
+                                    </button>
                                 </div>
                             </div>
 

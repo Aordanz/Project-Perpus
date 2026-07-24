@@ -28,6 +28,7 @@ class EventController extends Controller
             $contentDecoded = json_decode($event->content, true);
             $isJson = is_array($contentDecoded);
             
+<<<<<<< HEAD
             // Helper untuk mengekstrak deskripsi jika tersimpan sebagai JSON bertingkat
             $unwrapText = function ($raw) use (&$unwrapText) {
                 if (empty($raw)) return '';
@@ -49,6 +50,22 @@ class EventController extends Controller
             $cleanDescription = trim(strip_tags($descriptionRaw));
             if (empty($cleanDescription)) {
                 $cleanDescription = trim(strip_tags($unwrapText($event->summary)));
+=======
+            // Bersihkan tag HTML untuk deskripsi slider
+            $descriptionRaw = $isJson ? ($contentDecoded['description'] ?? '') : $event->content;
+            
+            // Fix for double-encoded JSON bug from previous data
+            if (is_string($descriptionRaw) && str_starts_with(trim($descriptionRaw), '{')) {
+                $innerDecoded = json_decode($descriptionRaw, true);
+                if (is_array($innerDecoded) && isset($innerDecoded['description'])) {
+                    $descriptionRaw = $innerDecoded['description'];
+                }
+            }
+            
+            $cleanDescription = strip_tags($descriptionRaw);
+            if (empty($cleanDescription)) {
+                $cleanDescription = $event->summary;
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
             }
 
             // Parse tips menjadi array bullet untuk kategori tips
@@ -95,15 +112,24 @@ class EventController extends Controller
                 'title' => $event->title,
                 'category' => $event->category,
                 'description' => $cleanDescription,
+<<<<<<< HEAD
                 'image_url' => $resolveImageUrl($event->image_path),
+=======
+                'image_url' => $event->image_path ? (str_starts_with($event->image_path, 'http') ? $event->image_path : asset(ltrim($event->image_path, '/'))) : asset('perpustakaan_depan.webp'),
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                 'image_fit' => $event->image_fit ?? 'cover',
                 'image_position' => $event->image_position ?? 'center',
                 'image_scale' => $event->image_scale ?? 100,
                 'image_x' => $event->image_x ?? 50,
                 'image_y' => $event->image_y ?? 50,
                 'images_url' => is_array($event->images) && count($event->images) > 0 
+<<<<<<< HEAD
                     ? array_map(fn($img) => $resolveImageUrl($img), $event->images) 
                     : [$resolveImageUrl($event->image_path)],
+=======
+                    ? array_map(fn($img) => str_starts_with($img, 'http') ? $img : asset(ltrim($img, '/')), $event->images) 
+                    : ($event->image_path ? [str_starts_with($event->image_path, 'http') ? $event->image_path : asset(ltrim($event->image_path, '/'))] : [asset('perpustakaan_depan.webp')]),
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                 'link_url' => $primaryLink,
                 'instagram_url' => 'https://www.instagram.com/usu.library/',
                 'library_url' => $primaryLink,
@@ -117,7 +143,11 @@ class EventController extends Controller
                 'organizer' => $isJson ? ($contentDecoded['organizer'] ?? 'UPT Perpustakaan Universitas Sumatera Utara') : 'UPT Perpustakaan Universitas Sumatera Utara',
                 'participants' => $isJson ? ($contentDecoded['participants'] ?? 'Civitas Akademika USU & Umum') : 'Civitas Akademika USU & Umum',
                 'facilities' => $isJson ? ($contentDecoded['facilities'] ?? 'Ilmu Bermanfaat, E-Sertifikat') : 'Ilmu Bermanfaat, E-Sertifikat',
+<<<<<<< HEAD
                 'left_features' => ($isJson && is_array($contentDecoded['left_features'] ?? null)) ? $contentDecoded['left_features'] : [],
+=======
+                'left_features' => $isJson ? ($contentDecoded['left_features'] ?? null) : null,
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                 
                 // Fields Kategori Maintenance
                 'affected_services' => $isJson ? ($contentDecoded['affected_services'] ?? null) : null,
@@ -136,6 +166,9 @@ class EventController extends Controller
                 // Fields Kategori Promo
                 'promo_period' => $isJson ? ($contentDecoded['promo_period'] ?? null) : null,
                 'promo_benefit' => $isJson ? ($contentDecoded['promo_benefit'] ?? null) : null,
+                
+                // Fields Kategori Berita Perpustakaan
+                'news_date' => $isJson ? ($contentDecoded['date'] ?? null) : null,
                 
                 'contact_whatsapp' => $event->contact_phone ?? '0812-3456-7890',
                 'contact_whatsapp_name' => $event->contact_name ?? 'Humas Perpustakaan',
