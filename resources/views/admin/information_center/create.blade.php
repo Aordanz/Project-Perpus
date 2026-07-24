@@ -335,28 +335,10 @@
                                 </div>
                                 <div class="pt-4 border-t border-slate-50">
                                     <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                        <i class="ph ph-image-square text-slate-300 text-base"></i>
-                                        Brosur / Flyer Slider (Opsional)
+                                        <i class="ph ph-list-bullets text-slate-300 text-base"></i>
+                                        Informasi Tambahan (Opsional)
                                     </p>
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                        <div>
-                                            <label class="fl text-[10px]" for="event_left_badge">Label Badge Flyer</label>
-                                            <input type="text" name="event_left_badge" id="event_left_badge" class="fi fi-sm" placeholder="EVENT PERPUSTAKAAN" value="{{ old('event_left_badge') }}">
-                                        </div>
-                                        <div>
-                                            <label class="fl text-[10px]" for="event_left_title">Judul Besar Flyer</label>
-                                            <input type="text" name="event_left_title" id="event_left_title" class="fi fi-sm" placeholder="Kosongkan = ikuti judul" value="{{ old('event_left_title') }}">
-                                        </div>
-                                        <div>
-                                            <label class="fl text-[10px]" for="event_left_subtitle">Subjudul Flyer</label>
-                                            <input type="text" name="event_left_subtitle" id="event_left_subtitle" class="fi fi-sm" placeholder="Teks singkat penarik minat" value="{{ old('event_left_subtitle') }}">
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="fl text-[10px]" for="event_quota_tag">Stiker / Quota Tag</label>
-                                            <input type="text" name="event_quota_tag" id="event_quota_tag" class="fi fi-sm" placeholder="PENDAFTARAN DIBUKA!" value="{{ old('event_quota_tag') }}">
-                                        </div>
+                                    <div class="grid grid-cols-1 gap-4">
                                         <div>
                                             <label class="fl text-[10px]" for="event_left_features">Fitur / Benefit Flyer <span class="normal-case font-medium text-slate-400">(1 poin/baris, maks 4)</span></label>
                                             <textarea name="event_left_features" id="event_left_features" rows="3" class="fi fi-sm resize-none" placeholder="Materi Praktis&#10;Studi Kasus Nyata&#10;E-Sertifikat">{{ old('event_left_features') }}</textarea>
