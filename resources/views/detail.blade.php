@@ -130,8 +130,8 @@
                                 </div>
                             @endif
 
-                            <span class="absolute top-3 left-3 bg-[#106c38] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow z-20">
-                                {{ strtoupper(__($book->jenis)) }}
+                            <span class="absolute top-3 left-3 {{ $book->jenis_badge_color }} text-[10px] font-bold px-2 py-0.5 rounded shadow z-20">
+                                {{ $book->jenis_label }}
                             </span>
                         </div>
 

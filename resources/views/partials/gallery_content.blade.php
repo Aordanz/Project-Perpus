@@ -27,8 +27,8 @@
                     @endif
                     
                     <!-- Top Left Badge (Type) -->
-                    <div class="absolute top-0 left-0 bg-[#ef4444] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-br-lg shadow-sm">
-                        {{ strtoupper(__($book->jenis)) }}
+                    <div class="absolute top-0 left-0 {{ $book->jenis_badge_color }} text-[9px] font-bold px-1.5 py-0.5 rounded-br-lg shadow-sm">
+                        {{ $book->jenis_label }}
                     </div>
 
                     <!-- Category Badge on bottom left -->

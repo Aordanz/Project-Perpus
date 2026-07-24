@@ -189,4 +189,65 @@ class Book extends Model
     {
         return $this->belongsTo(City::class, 'idkota', 'idtempat');
     }
+
+    /**
+     * Get the collection type relation from tbljenis_koleksi.
+     */
+    public function collectionTypeRelation(): BelongsTo
+    {
+        return $this->belongsTo(CollectionType::class, 'idjenis_koleksi', 'idjns_koleksi');
+    }
+
+    /**
+     * Mendapatkan nama jenis koleksi yang sebenarnya dari relasi idjenis_koleksi atau kolom jenis.
+     */
+    public function getJenisNameAttribute(): string
+    {
+        if ($this->collectionTypeRelation && !empty($this->collectionTypeRelation->jenis_koleksi)) {
+            $name = trim($this->collectionTypeRelation->jenis_koleksi);
+            if (strtolower($name) !== 'belum diset') {
+                return $name;
+            }
+        }
+
+        $raw = trim($this->attributes['jenis'] ?? '');
+        if (!empty($raw)) {
+            return $raw;
+        }
+
+        return 'Buku';
+    }
+
+    /**
+     * Mendapatkan class Tailwind CSS untuk warna badge jenis koleksi.
+     */
+    public function getJenisBadgeColorAttribute(): string
+    {
+        $jenis = strtolower(trim($this->jenis_name));
+
+        return match (true) {
+            str_contains($jenis, 'tesis') => 'bg-blue-600 text-white',
+            str_contains($jenis, 'skripsi') => 'bg-purple-600 text-white',
+            str_contains($jenis, 'disertasi') => 'bg-amber-500 text-white',
+            str_contains($jenis, 'jurnal') => 'bg-orange-500 text-white',
+            str_contains($jenis, 'laporan') => 'bg-emerald-600 text-white',
+            str_contains($jenis, 'referensi') => 'bg-indigo-600 text-white',
+            str_contains($jenis, 'makalah') => 'bg-cyan-600 text-white',
+            str_contains($jenis, 'karya') => 'bg-teal-600 text-white',
+            str_contains($jenis, 'panduan') => 'bg-fuchsia-600 text-white',
+            str_contains($jenis, 'diktat') => 'bg-rose-600 text-white',
+            str_contains($jenis, 'orasi') || str_contains($jenis, 'pidato') => 'bg-sky-600 text-white',
+            str_contains($jenis, 'e-book') => 'bg-sky-500 text-white',
+            str_contains($jenis, 'buku') => 'bg-[#ef4444] text-white',
+            default => 'bg-slate-700 text-white',
+        };
+    }
+
+    /**
+     * Mendapatkan label jenis yang diformat dengan baik.
+     */
+    public function getJenisLabelAttribute(): string
+    {
+        return strtoupper(__($this->jenis_name));
+    }
 }
