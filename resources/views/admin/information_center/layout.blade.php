@@ -50,7 +50,7 @@
                     </div>
                 @endif
 
-                @if ($errors->any())
+                @if (isset($errors) && $errors->any())
                     <div class="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-2xl flex gap-3 text-sm font-medium shadow-sm">
                         <i class="ph ph-warning-circle text-2xl flex-shrink-0"></i>
                         <div class="leading-normal">

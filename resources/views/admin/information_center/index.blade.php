@@ -83,11 +83,19 @@
             </span>
         </a>
         <a href="{{ route('admin.information-center.index', array_merge(request()->query(), ['tab' => 'history'])) }}" 
-           class="px-4 py-2.5 rounded-t-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all {{ $tab === 'history' ? 'bg-white text-rose-600 border-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-800 border-transparent' }}">
+           class="px-4 py-2.5 rounded-t-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all {{ $tab === 'history' ? 'bg-white text-amber-600 border-amber-600 shadow-sm' : 'text-slate-500 hover:text-slate-800 border-transparent' }}">
             <i class="ph ph-clock-counter-clockwise text-base"></i>
             <span>History & Arsip Kadaluwarsa</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black {{ $tab === 'history' ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-600' }}">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black {{ $tab === 'history' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-600' }}">
                 {{ $countHistory }}
+            </span>
+        </a>
+        <a href="{{ route('admin.information-center.trash') }}" 
+           class="px-4 py-2.5 rounded-t-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all text-slate-500 hover:text-slate-800 border-transparent">
+            <i class="ph ph-trash text-base"></i>
+            <span>Tong Sampah</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-200 text-slate-600">
+                {{ $countTrash }}
             </span>
         </a>
     </div>
