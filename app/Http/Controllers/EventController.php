@@ -28,14 +28,28 @@ class EventController extends Controller
             $contentDecoded = json_decode($event->content, true);
             $isJson = is_array($contentDecoded);
             
-            // Bersihkan tag HTML untuk deskripsi slider
-            $descriptionRaw = $isJson ? ($contentDecoded['description'] ?? '') : $event->content;
-            $cleanDescription = strip_tags($descriptionRaw);
-            if (empty($cleanDescription)) {
-                $cleanDescription = $event->summary;
+            // Helper untuk mengekstrak deskripsi jika tersimpan sebagai JSON bertingkat
+            $unwrapText = function ($raw) use (&$unwrapText) {
+                if (empty($raw)) return '';
+                if (is_string($raw) && (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))) {
+                    $decoded = json_decode($raw, true);
+                    if (is_array($decoded)) {
+                        if (isset($decoded['description'])) {
+                            return $unwrapText($decoded['description']);
+                        }
+                    }
+                }
+                return is_string($raw) ? $raw : '';
+            };
+
+            $descriptionRaw = $unwrapText($event->content);
+            if (empty($descriptionRaw) && $isJson && isset($contentDecoded['description'])) {
+                $descriptionRaw = $unwrapText($contentDecoded['description']);
             }
-            // Deskripsi dikirim secara penuh (tanpa dibatasi karakter)
-            // agar bisa discroll di popup frontend
+            $cleanDescription = trim(strip_tags($descriptionRaw));
+            if (empty($cleanDescription)) {
+                $cleanDescription = trim(strip_tags($unwrapText($event->summary)));
+            }
 
             // Parse tips menjadi array bullet untuk kategori tips
             $tipsBullets = [];
@@ -64,20 +78,32 @@ class EventController extends Controller
                 $primaryLink = $actionButtons[0]['url'] ?? $primaryLink;
             }
 
+            // Robust image URL resolution with file_exists fallback
+            $resolveImageUrl = function ($path) {
+                if (empty($path)) {
+                    return asset('perpustakaan_depan.webp');
+                }
+                $cleanPath = ltrim($path, '/');
+                if (file_exists(public_path($cleanPath))) {
+                    return asset($cleanPath);
+                }
+                return asset('perpustakaan_depan.webp');
+            };
+
             return [
                 'id' => $event->id,
                 'title' => $event->title,
                 'category' => $event->category,
                 'description' => $cleanDescription,
-                'image_url' => $event->image_path ? asset($event->image_path) : asset('perpustakaan_depan.webp'),
+                'image_url' => $resolveImageUrl($event->image_path),
                 'image_fit' => $event->image_fit ?? 'cover',
                 'image_position' => $event->image_position ?? 'center',
                 'image_scale' => $event->image_scale ?? 100,
                 'image_x' => $event->image_x ?? 50,
                 'image_y' => $event->image_y ?? 50,
                 'images_url' => is_array($event->images) && count($event->images) > 0 
-                    ? array_map(fn($img) => asset($img), $event->images) 
-                    : ($event->image_path ? [asset($event->image_path)] : [asset('perpustakaan_depan.webp')]),
+                    ? array_map(fn($img) => $resolveImageUrl($img), $event->images) 
+                    : [$resolveImageUrl($event->image_path)],
                 'link_url' => $primaryLink,
                 'instagram_url' => 'https://www.instagram.com/usu.library/',
                 'library_url' => $primaryLink,
@@ -91,6 +117,7 @@ class EventController extends Controller
                 'organizer' => $isJson ? ($contentDecoded['organizer'] ?? 'UPT Perpustakaan Universitas Sumatera Utara') : 'UPT Perpustakaan Universitas Sumatera Utara',
                 'participants' => $isJson ? ($contentDecoded['participants'] ?? 'Civitas Akademika USU & Umum') : 'Civitas Akademika USU & Umum',
                 'facilities' => $isJson ? ($contentDecoded['facilities'] ?? 'Ilmu Bermanfaat, E-Sertifikat') : 'Ilmu Bermanfaat, E-Sertifikat',
+                'left_features' => ($isJson && is_array($contentDecoded['left_features'] ?? null)) ? $contentDecoded['left_features'] : [],
                 
                 // Fields Kategori Maintenance
                 'affected_services' => $isJson ? ($contentDecoded['affected_services'] ?? null) : null,
