@@ -122,11 +122,11 @@
                     <span>{{ __('Semua Kategori') }}</span>
                 </a>
                 
-                <!-- Terlaris -->
+                <!-- Diminati -->
                 <a href="{{ route('galeri', ['category' => 'terlaris', 'q' => request('q')]) }}" 
                    class="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ request('category') === 'terlaris' ? 'bg-gradient-to-r from-amber-500 to-orange-500 border-amber-500 text-white font-bold shadow-md shadow-orange-300/60 ring-2 ring-orange-400/60' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:border-orange-400 hover:text-orange-600 hover:shadow-md hover:shadow-orange-200/60 hover:ring-2 hover:ring-orange-400/50' }}">
                     <i class="ph ph-fire {{ request('category') === 'terlaris' ? 'text-white animate-pulse' : 'text-amber-500 group-hover:text-orange-500' }} text-base sm:text-lg"></i>
-                    <span>{{ __('Terlaris') }}</span>
+                    <span>{{ __('Diminati') }}</span>
                 </a>
                 
                 @foreach($ddcCategories as $key => $cat)

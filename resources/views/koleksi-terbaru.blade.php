@@ -139,10 +139,10 @@
                     <span>{{ __('Semua Kategori') }}</span>
                 </button>
 
-                <!-- Terlaris -->
+                <!-- Diminati -->
                 <button data-filter="subject" data-value="terlaris" class="filter-chip group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 bg-white border-slate-200 text-slate-700 font-medium hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:border-orange-400 hover:text-orange-600 hover:shadow-md hover:shadow-orange-200/60 hover:ring-2 hover:ring-orange-400/50 whitespace-nowrap">
                     <i class="ph ph-fire text-amber-500 group-hover:text-orange-500 text-base sm:text-lg"></i>
-                    <span>{{ __('Terlaris') }}</span>
+                    <span>{{ __('Diminati') }}</span>
                 </button>
 
                 @foreach($existingBigCategories as $index => $cat)
