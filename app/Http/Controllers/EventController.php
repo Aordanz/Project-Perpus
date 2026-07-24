@@ -78,19 +78,27 @@ class EventController extends Controller
                 $primaryLink = $actionButtons[0]['url'] ?? $primaryLink;
             }
 
-            // Robust image URL resolution with file_exists fallback
-            $resolveImageUrl = function ($path) {
-                if (empty($path)) {
-                    return asset('perpustakaan_depan.webp');
+            // Robust image URL resolution with dynamic fallback images per event ID
+            $fallbackImages = [
+                'perpustakaan_depan.webp',
+                'kolam_perpustakaan.webp',
+                'perpustakaan_samping.webp',
+                'slider1.jpg',
+                'slider2.jpg',
+            ];
+
+            $resolveImageUrl = function ($path) use ($event, $fallbackImages) {
+                if (!empty($path)) {
+                    if (str_starts_with($path, 'http')) {
+                        return $path;
+                    }
+                    $cleanPath = ltrim($path, '/');
+                    if (file_exists(public_path($cleanPath))) {
+                        return asset($cleanPath);
+                    }
                 }
-                if (str_starts_with($path, 'http')) {
-                    return $path;
-                }
-                $cleanPath = ltrim($path, '/');
-                if (file_exists(public_path($cleanPath))) {
-                    return asset($cleanPath);
-                }
-                return asset('perpustakaan_depan.webp');
+                $fallbackIndex = ($event->id ?? 0) % count($fallbackImages);
+                return asset($fallbackImages[$fallbackIndex]);
             };
 
             return [
