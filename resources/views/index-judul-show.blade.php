@@ -223,55 +223,78 @@
             </p>
 
             <!-- Pagination Buttons -->
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-1 sm:gap-1.5 flex-nowrap justify-center max-w-full">
                 @if ($books->onFirstPage())
-                    <span class="px-3 sm:px-4 py-2 rounded-full border border-slate-100 text-slate-300 text-xs sm:text-sm font-medium flex items-center gap-1.5 bg-slate-50 cursor-not-allowed">
-                        <i class="ph ph-caret-left text-lg"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>
+                    <span class="p-2 sm:px-4 sm:py-2 rounded-full border border-slate-100 text-slate-300 text-xs sm:text-sm font-medium flex items-center gap-1.5 bg-slate-50 cursor-not-allowed flex-shrink-0">
+                        <i class="ph ph-caret-left text-base sm:text-lg"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>
                     </span>
                 @else
-                    <a href="{{ $books->previousPageUrl() }}" class="px-3 sm:px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:bg-slate-50 hover:text-[#106c38] transition-colors shadow-sm">
-                        <i class="ph ph-caret-left text-lg"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>
+                    <a href="{{ $books->previousPageUrl() }}" class="p-2 sm:px-4 sm:py-2 rounded-full border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:bg-slate-50 hover:text-[#106c38] transition-colors shadow-sm flex-shrink-0">
+                        <i class="ph ph-caret-left text-base sm:text-lg"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>
                     </a>
                 @endif
 
-                <!-- Page Numbers: max 5 with sliding window -->
-                <div class="flex items-center gap-1">
+                <!-- Page Numbers -->
+                <div class="flex items-center gap-1 flex-nowrap">
                     @php
                         $current = $books->currentPage();
                         $last    = $books->lastPage();
-                        $window  = 5;
-                        $half    = (int) floor($window / 2);
-                        $start   = max(1, min($current - $half, $last - $window + 1));
-                        $end     = min($last, $start + $window - 1);
                     @endphp
-                    @if($start > 1)
-                        <a href="{{ $books->url(1) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">1</a>
-                        @if($start > 2)
-                            <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
+
+                    <!-- Mobile Page Numbers (5 compact buttons) -->
+                    <div class="flex sm:hidden items-center gap-1">
+                        @php
+                            $mWindow = 5;
+                            $mHalf = (int) floor($mWindow / 2);
+                            $mStart = max(1, min($current - $mHalf, $last - $mWindow + 1));
+                            $mEnd = min($last, $mStart + $mWindow - 1);
+                        @endphp
+                        @for($p = $mStart; $p <= $mEnd; $p++)
+                            @if($p == $current)
+                                <span class="w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center text-xs font-bold shadow-md shadow-green-900/20">{{ $p }}</span>
+                            @else
+                                <a href="{{ $books->url($p) }}" class="w-8 h-8 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center text-xs font-bold transition-colors">{{ $p }}</a>
+                            @endif
+                        @endfor
+                    </div>
+
+                    <!-- Desktop Page Numbers: max 5 with sliding window -->
+                    <div class="hidden sm:flex items-center gap-1">
+                        @php
+                            $window  = 5;
+                            $half    = (int) floor($window / 2);
+                            $start   = max(1, min($current - $half, $last - $window + 1));
+                            $end     = min($last, $start + $window - 1);
+                        @endphp
+                        @if($start > 1)
+                            <a href="{{ $books->url(1) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">1</a>
+                            @if($start > 2)
+                                <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
+                            @endif
                         @endif
-                    @endif
-                    @for($p = $start; $p <= $end; $p++)
-                        @if($p == $current)
-                            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#106c38] text-white flex items-center justify-center text-xs sm:text-sm font-bold shadow-md shadow-green-900/20">{{ $p }}</span>
-                        @else
-                            <a href="{{ $books->url($p) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">{{ $p }}</a>
+                        @for($p = $start; $p <= $end; $p++)
+                            @if($p == $current)
+                                <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#106c38] text-white flex items-center justify-center text-xs sm:text-sm font-bold shadow-md shadow-green-900/20">{{ $p }}</span>
+                            @else
+                                <a href="{{ $books->url($p) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">{{ $p }}</a>
+                            @endif
+                        @endfor
+                        @if($end < $last)
+                            @if($end < $last - 1)
+                                <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
+                            @endif
+                            <a href="{{ $books->url($last) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">{{ $last }}</a>
                         @endif
-                    @endfor
-                    @if($end < $last)
-                        @if($end < $last - 1)
-                            <span class="w-8 h-8 flex items-center justify-center text-slate-400 text-xs font-bold">…</span>
-                        @endif
-                        <a href="{{ $books->url($last) }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs sm:text-sm font-bold transition-colors">{{ $last }}</a>
-                    @endif
+                    </div>
                 </div>
 
                 @if ($books->hasMorePages())
-                    <a href="{{ $books->nextPageUrl() }}" class="px-3 sm:px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:bg-slate-50 hover:text-[#106c38] transition-colors shadow-sm">
-                        <span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-lg"></i>
+                    <a href="{{ $books->nextPageUrl() }}" class="p-2 sm:px-4 sm:py-2 rounded-full border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:bg-slate-50 hover:text-[#106c38] transition-colors shadow-sm flex-shrink-0">
+                        <span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-base sm:text-lg"></i>
                     </a>
                 @else
-                    <span class="px-3 sm:px-4 py-2 rounded-full border border-slate-100 text-slate-300 text-xs sm:text-sm font-medium flex items-center gap-1.5 bg-slate-50 cursor-not-allowed">
-                        <span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-lg"></i>
+                    <span class="p-2 sm:px-4 sm:py-2 rounded-full border border-slate-100 text-slate-300 text-xs sm:text-sm font-medium flex items-center gap-1.5 bg-slate-50 cursor-not-allowed flex-shrink-0">
+                        <span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-base sm:text-lg"></i>
                     </span>
                 @endif
             </div>

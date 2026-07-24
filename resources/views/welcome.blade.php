@@ -747,20 +747,20 @@
     </style>
 
     <!-- Advanced Search Modal -->
-    <div id="modal-pencarian-spesifik" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-sm p-0 sm:p-4">
-        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[calc(100vh-4rem)] flex flex-col overflow-hidden border border-emerald-800/10 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+    <div id="modal-pencarian-spesifik" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-3 sm:p-6">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] sm:max-h-[calc(100vh-4rem)] flex flex-col overflow-hidden border border-emerald-800/10 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
             <!-- Modal Header Banner -->
-            <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-5 py-4 md:px-6 md:py-6 text-white relative flex-shrink-0">
-                <div class="flex items-center gap-3 md:gap-4 pr-8">
-                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-md rounded-xl md:rounded-2xl flex items-center justify-center text-white text-lg md:text-2xl shadow-inner">
+            <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-5 py-4 md:px-6 md:py-5 text-white relative flex-shrink-0">
+                <div class="flex items-center gap-3 md:gap-4 pr-12 md:pr-14">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-md rounded-xl md:rounded-2xl flex items-center justify-center text-white text-lg md:text-2xl shadow-inner flex-shrink-0">
                         <i class="ph ph-graduation-cap"></i>
                     </div>
-                    <div>
-                        <h3 class="text-sm md:text-lg font-bold tracking-wide">{{ __('Pencarian Spesifik') }}</h3>
-                        <p class="text-[10px] md:text-xs text-green-100/90 font-medium font-sans leading-tight">{{ __('Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!') }}</p>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="text-sm md:text-lg font-bold tracking-wide leading-tight break-words pr-2">{{ __('Pencarian Spesifik') }}</h3>
+                        <p class="text-[10px] md:text-xs text-green-100/90 font-medium font-sans leading-tight mt-0.5 break-words pr-2">{{ __('Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!') }}</p>
                     </div>
                 </div>
-                <button id="close-modal-pencarian-spesifik" class="absolute top-4 right-4 md:top-6 md:right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-1.5 md:p-2 rounded-xl flex items-center justify-center">
+                <button id="close-modal-pencarian-spesifik" class="absolute top-4 right-4 md:top-5 md:right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-1.5 md:p-2 rounded-xl flex items-center justify-center">
                     <i class="ph ph-x text-base md:text-lg"></i>
                 </button>
             </div>
@@ -955,17 +955,17 @@
     <div id="modal-hasil-lokasi" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/65 backdrop-blur-md p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[85vh] overflow-hidden border border-emerald-800/10 transform transition-all duration-200 scale-95 opacity-0 flex flex-col" id="modal-hasil-content">
             <!-- Modal Header Banner -->
-            <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-6 py-5 text-white relative rounded-t-3xl flex-shrink-0">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">
+            <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-5 py-4 md:px-6 md:py-5 text-white relative rounded-t-3xl flex-shrink-0">
+                <div class="flex items-center gap-3.5 md:gap-4 pr-12 md:pr-14">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-md rounded-xl md:rounded-2xl flex items-center justify-center text-white text-xl md:text-2xl shadow-inner flex-shrink-0">
                         <i id="modal-hasil-icon" class="ph ph-buildings"></i>
                     </div>
-                    <div>
-                        <h3 id="modal-hasil-title" class="text-lg md:text-xl font-bold tracking-wide">{{ __('Koleksi Buku') }}</h3>
-                        <p id="modal-hasil-subtitle" class="text-xs text-green-100/90 font-medium font-sans">{{ __('Daftar koleksi buku yang tersedia di lokasi ini') }}</p>
+                    <div class="min-w-0 flex-1">
+                        <h3 id="modal-hasil-title" class="text-base md:text-xl font-bold tracking-wide leading-tight break-words pr-2">{{ __('Koleksi Buku') }}</h3>
+                        <p id="modal-hasil-subtitle" class="text-[11px] md:text-xs text-green-100/90 font-medium font-sans leading-snug mt-0.5 break-words pr-2">{{ __('Daftar koleksi buku yang tersedia di lokasi ini') }}</p>
                     </div>
                 </div>
-                <button id="close-modal-hasil-lokasi" class="absolute top-5 right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-2 rounded-xl flex items-center justify-center cursor-pointer">
+                <button id="close-modal-hasil-lokasi" class="absolute top-4 right-4 md:top-5 md:right-6 text-white/80 hover:text-white transition-all hover:scale-105 focus:outline-none bg-white/10 hover:bg-white/20 p-2 rounded-xl flex items-center justify-center cursor-pointer">
                     <i class="ph ph-x text-lg"></i>
                 </button>
             </div>
@@ -1507,15 +1507,16 @@
                 const paginationEl = document.getElementById('modal-hasil-pagination');
                 if (!paginationEl) return;
                 paginationEl.innerHTML = '';
+                paginationEl.className = 'flex items-center gap-1 sm:gap-1.5 flex-nowrap justify-center max-w-full';
 
                 if (totalPages <= 1) return;
 
                 // Prev button
                 const prevBtn = document.createElement('button');
-                prevBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
-                prevBtn.innerHTML = `<i class="ph ph-caret-left"></i> {{ __('Sebelumnya') }}`;
+                prevBtn.className = `p-2 sm:px-4 sm:py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50 flex-shrink-0`;
+                prevBtn.innerHTML = `<i class="ph ph-caret-left text-base sm:text-sm"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>`;
                 if (currentPage === 1) {
-                    prevBtn.classList.add('opacity-50', 'pointer-events-none');
+                    prevBtn.classList.add('opacity-40', 'pointer-events-none');
                 } else {
                     prevBtn.addEventListener('click', () => {
                         currentPage--;
@@ -1525,9 +1526,38 @@
                 }
                 paginationEl.appendChild(prevBtn);
 
-                // Page buttons (max 5 on desktop, 4 on mobile)
-                const isMobile = window.innerWidth < 640;
-                const maxButtons = isMobile ? 4 : 5;
+                // Mobile Page Numbers Container (5 buttons on mobile < 640px)
+                const mobilePagesDiv = document.createElement('div');
+                mobilePagesDiv.className = 'flex sm:hidden items-center gap-1';
+
+                const mWindow = 5;
+                const mHalf = Math.floor(mWindow / 2);
+                let mStart = Math.max(1, Math.min(currentPage - mHalf, totalPages - mWindow + 1));
+                let mEnd = Math.min(totalPages, mStart + mWindow - 1);
+
+                for (let i = mStart; i <= mEnd; i++) {
+                    const pageBtn = document.createElement('button');
+                    if (i === currentPage) {
+                        pageBtn.className = `w-8 h-8 rounded-full bg-[#106c38] text-white flex items-center justify-center font-bold text-xs border-none cursor-default shadow-sm`;
+                        pageBtn.innerText = i;
+                    } else {
+                        pageBtn.className = `w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-700 flex items-center justify-center font-semibold text-xs cursor-pointer hover:bg-slate-50 transition`;
+                        pageBtn.innerText = i;
+                        pageBtn.addEventListener('click', () => {
+                            currentPage = i;
+                            fetchPage(currentPage);
+                            scrollToModalTop();
+                        });
+                    }
+                    mobilePagesDiv.appendChild(pageBtn);
+                }
+                paginationEl.appendChild(mobilePagesDiv);
+
+                // Desktop Page buttons
+                const desktopPagesDiv = document.createElement('div');
+                desktopPagesDiv.className = 'hidden sm:flex items-center gap-1';
+
+                const maxButtons = 5;
                 const half = Math.floor(maxButtons / 2);
                 let startPage = Math.max(1, currentPage - (maxButtons - 1 - half));
                 let endPage = Math.min(totalPages, startPage + (maxButtons - 1));
@@ -1549,15 +1579,16 @@
                             scrollToModalTop();
                         });
                     }
-                    paginationEl.appendChild(pageBtn);
+                    desktopPagesDiv.appendChild(pageBtn);
                 }
+                paginationEl.appendChild(desktopPagesDiv);
 
                 // Next button
                 const nextBtn = document.createElement('button');
-                nextBtn.className = `px-4 py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50`;
-                nextBtn.innerHTML = `{{ __('Berikutnya') }} <i class="ph ph-caret-right"></i>`;
+                nextBtn.className = `p-2 sm:px-4 sm:py-1.5 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1 transition cursor-pointer bg-white hover:bg-slate-50 flex-shrink-0`;
+                nextBtn.innerHTML = `<span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-base sm:text-sm"></i>`;
                 if (currentPage === totalPages) {
-                    nextBtn.classList.add('opacity-50', 'pointer-events-none');
+                    nextBtn.classList.add('opacity-40', 'pointer-events-none');
                 } else {
                     nextBtn.addEventListener('click', () => {
                         currentPage++;

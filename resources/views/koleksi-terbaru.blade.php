@@ -487,11 +487,12 @@
                 
                 paginationBar.classList.remove('hidden');
                 buttonsContainer.innerHTML = '';
+                buttonsContainer.className = 'flex items-center gap-1 sm:gap-1.5 flex-nowrap justify-center max-w-full';
 
                 // Prev Page Button
                 const prevBtn = document.createElement('button');
-                prevBtn.className = `px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38] transition text-xs font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:pointer-events-none`;
-                prevBtn.innerHTML = `<i class="ph ph-caret-left"></i> {{ __('Sebelumnya') }}`;
+                prevBtn.className = `p-2 sm:px-3.5 sm:py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38] transition text-xs font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:pointer-events-none flex-shrink-0`;
+                prevBtn.innerHTML = `<i class="ph ph-caret-left text-base sm:text-sm"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>`;
                 prevBtn.disabled = (currentPage === 1);
                 prevBtn.addEventListener('click', () => {
                     currentPage--;
@@ -501,8 +502,16 @@
                 });
                 buttonsContainer.appendChild(prevBtn);
 
-                // Page Number Buttons
-                for (let i = 1; i <= totalPages; i++) {
+                // Mobile Page Numbers Container (5 compact buttons on mobile < 640px)
+                const mobilePagesDiv = document.createElement('div');
+                mobilePagesDiv.className = 'flex sm:hidden items-center gap-1';
+
+                const mWindow = 5;
+                const mHalf = Math.floor(mWindow / 2);
+                let mStart = Math.max(1, Math.min(currentPage - mHalf, totalPages - mWindow + 1));
+                let mEnd = Math.min(totalPages, mStart + mWindow - 1);
+
+                for (let i = mStart; i <= mEnd; i++) {
                     const pageBtn = document.createElement('button');
                     const isActive = (i === currentPage);
                     pageBtn.className = `w-8 h-8 rounded-full border transition text-xs font-bold flex items-center justify-center cursor-pointer ${
@@ -519,13 +528,46 @@
                             if (liveSearchEl) liveSearchEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         }
                     });
-                    buttonsContainer.appendChild(pageBtn);
+                    mobilePagesDiv.appendChild(pageBtn);
                 }
+                buttonsContainer.appendChild(mobilePagesDiv);
+
+                // Desktop Page Numbers Container (Hidden on mobile < 640px)
+                const desktopPagesDiv = document.createElement('div');
+                desktopPagesDiv.className = 'hidden sm:flex items-center gap-1';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                        const pageBtn = document.createElement('button');
+                        const isActive = (i === currentPage);
+                        pageBtn.className = `w-8 h-8 rounded-full border transition text-xs font-bold flex items-center justify-center cursor-pointer ${
+                            isActive 
+                                ? 'bg-[#106c38] border-[#106c38] text-white shadow-sm' 
+                                : 'border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38]'
+                        }`;
+                        pageBtn.textContent = i;
+                        pageBtn.addEventListener('click', () => {
+                            if (i !== currentPage) {
+                                currentPage = i;
+                                applyFilters();
+                                const liveSearchEl = document.getElementById('live-search');
+                                if (liveSearchEl) liveSearchEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            }
+                        });
+                        desktopPagesDiv.appendChild(pageBtn);
+                    } else if (i === currentPage - 3 || i === currentPage + 3) {
+                        const dots = document.createElement('span');
+                        dots.className = 'w-6 h-8 flex items-center justify-center text-slate-400 text-xs font-bold';
+                        dots.textContent = '...';
+                        desktopPagesDiv.appendChild(dots);
+                    }
+                }
+                buttonsContainer.appendChild(desktopPagesDiv);
 
                 // Next Page Button
                 const nextBtn = document.createElement('button');
-                nextBtn.className = `px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38] transition text-xs font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:pointer-events-none`;
-                nextBtn.innerHTML = `{{ __('Berikutnya') }} <i class="ph ph-caret-right"></i>`;
+                nextBtn.className = `p-2 sm:px-3.5 sm:py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38] transition text-xs font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:pointer-events-none flex-shrink-0`;
+                nextBtn.innerHTML = `<span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-base sm:text-sm"></i>`;
                 nextBtn.disabled = (currentPage === totalPages);
                 nextBtn.addEventListener('click', () => {
                     currentPage++;

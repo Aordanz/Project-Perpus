@@ -68,3 +68,43 @@ Website Resmi & OPAC: https://library.usu.ac.id
 - Total Anggota: Lebih dari 27.826 anggota.
 - Total Kunjungan: Lebih dari 256.191 pengunjung.
 - Peringkat Scimago: 40th Overall, 20th Research, 85th Innovation, 27th Societal.
+
+[JENIS & TIPE KOLEKSI PERPUSTAKAAN]
+- BUKU: Koleksi buku teks umum, buku ajar, dan referensi ilmu pengetahuan.
+- TESIS: Karya tulis ilmiah hasil penelitian mahasiswa program Magister (S2).
+- SKRIPSI: Karya tulis ilmiah hasil penelitian mahasiswa program Sarjana (S1).
+- DISERTASI: Karya ilmiah hasil penelitian mendalam mahasiswa program Doktor (S3).
+- LAPORAN PENELITIAN: Laporan hasil riset ilmiah yang dilakukan oleh dosen dan peneliti USU.
+- REFERENSI: Koleksi rujukan seperti ensiklopedia, kamus, direktori, dan atlas.
+- JURNAL: Terbitan berkala ilmiah yang berisi kumpulan artikel hasil riset akademisi.
+- MAKALAH: Karya tulis ilmiah yang dipresentasikan dalam seminar atau konferensi.
+- DIKTAT: Bahan ajar cetak yang disusun oleh dosen untuk menunjang mata kuliah.
+- BUKU PANDUAN: Petunjuk operasional, panduan akademik, atau pedoman pelaksanaan kegiatan.
+- ORASI PROFESOR / PIDATO REKTOR / ORASI ILMIAH: Naskah pidato resmi pengukuhan Guru Besar (Profesor) atau pidato Dies Natalis Rektor USU.
+- E-BOOK: Koleksi buku dalam format digital yang dapat diakses online.
+- WB (WORLD BANK CORNER): Singkatan dari World Bank (Bank Dunia). Koleksi khusus publikasi, laporan riset ekonomi, dan dokumen resmi dari Bank Dunia yang berada di Perpustakaan USU.
+- ADB (ASIAN DEVELOPMENT BANK CORNER): Singkatan dari Asian Development Bank (Bank Pembangunan Asia). Koleksi khusus publikasi dan laporan pembangunan dari ADB.
+- AMERICAN CORNER: Koleksi pusat informasi, buku, dan publikasi edukasi/sains dari Amerika Serikat.
+- AAM: Koleksi khusus materi ilmiah/arsip akademis perpustakaan.
+
+[LAYANAN CEK PLAGIARISME & SIMILARITY CHECK (TURNITIN)]
+- Layanan Cek Plagiarisme: Perpustakaan USU menyediakan layanan pemeriksaan tingkat kemiripan (similarity check) karya ilmiah (Skripsi, Tesis, Disertasi, dan Artikel Jurnal) menggunakan perangkat lunak Turnitin.
+- Prosedur Pengajuan: Mahasiswa dapat mengajukan draf karya ilmiah melalui meja layanan repositori/literasi di Lantai 3 atau melalui kontak email/layanan resmi evaluasi karya ilmiah perpustakaan.
+
+[FASILITAS RUANGAN, LOKER & WIFI KAMPUS]
+- Ruang Diskusi Kelompok (Group Study Room): Tersedia ruang diskusi bagi mahasiswa untuk belajar bersama atau berdiskusi kelompok. Reservasi ruangan dapat dilakukan melalui meja informasi Lantai 1.
+- Area The Gade Creative Lounge: Ruang baca dan diskusi modern bernuansa santai yang dilengkapi dengan sarana pendukung belajar dan fasilitas pengisian daya (stopkontak).
+- Loker Penitipan Barang: Pengunjung wajib menaruh tas besar di loker penitipan barang Lantai 1 sebelum masuk ke ruang koleksi. Kunci loker dipinjam di meja petugas sirkulasi.
+- Layanan WiFi Kampus: Area perpustakaan dilengkapi jaringan WiFi kampus (USU Access). Pengunjung cukup menghubungkan perangkat dan login menggunakan akun portal SSO USU.
+
+[PANDUAN PENELUSURAN LOKASI RAK BUKU (SISTEM KLASIFIKASI DDC)]
+- Sistem Klasifikasi: Koleksi disusun berdasarkan sistem Dewey Decimal Classification (DDC) 000 - 900.
+- Panduan Lantai Koleksi:
+  * Klasifikasi 000-300 & 500-700 (Komputer, Filsafat, Agama, Ilmu Sosial, Sains, Teknologi, Teknik, Pertanian, Seni) berada di Lantai 2.
+  * Klasifikasi 610-619 (Rumpun Ilmu Kedokteran, Kesehatan Masyarakat, Keperawatan, Farmasi) serta Koleksi Tesis/Skripsi/Disertasi berada di Lantai 3.
+  * Nomor Panggil (Call Number) pada punggung buku menunjukkan posisi tepat lokasi buku di rak.
+
+[PROSEDUR UNGGAH MANDIRI REPOSITORI & TUGAS AKHIR]
+- Prosedur Unggah Mandiri: Mahasiswa akhir wajib mengunggah (upload) berkas karya ilmiah/tugas akhir ke portal Repositori USU (repositori.usu.ac.id).
+- Ketentuan Berkas: Berkas karya ilmiah diunggah dalam bentuk format PDF lengkap termasuk lembar pengesahan yang sudah ditandatangani oleh dosen pembimbing dan penguji.
+- Verifikasi Bebas Pustaka: Setelah diunggah, petugas akan memverifikasi kelayakan berkas dalam waktu 1-2 hari kerja untuk penerbitan Surat Bebas Pustaka.
