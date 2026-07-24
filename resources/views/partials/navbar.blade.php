@@ -1,15 +1,15 @@
 <!-- Navigation -->
-<nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
-    <div class="w-full px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
+<nav class="glass-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16 gap-3">
             <!-- Logo & Links -->
-            <div class="flex items-center gap-4 lg:gap-6 flex-shrink-0">
+            <div class="flex items-center gap-2 sm:gap-4 lg:gap-6 min-w-0 flex-1">
                 <!-- USU Logo & Name -->
-                <a href="{{ route('home') }}" class="flex items-center gap-1.5 sm:gap-2 group">
-                    <img src="{{ asset('logousu.webp') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain">
-                    <div class="flex flex-col">
-                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Perpustakaan ') }}</span>
-                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition">{{ __('Universitas Sumatera Utara') }}</span>
+                <a href="{{ route('home') }}" class="flex items-center gap-2 group min-w-0">
+                    <img src="{{ asset('logousu.webp') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain shrink-0">
+                    <div class="flex flex-col min-w-0">
+                        <span class="font-bold text-white leading-none text-[11px] sm:text-sm group-hover:text-green-200 transition truncate">{{ __('Perpustakaan ') }}</span>
+                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition truncate">{{ __('Universitas Sumatera Utara') }}</span>
                     </div>
                 </a>
             </div>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Mobile Hamburger Button -->
-            <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-white hover:bg-white/10 transition cursor-pointer" aria-label="Menu">
+            <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl text-white bg-white/15 hover:bg-white/25 active:scale-95 transition cursor-pointer shrink-0" aria-label="Menu">
                 <i class="ph ph-list text-2xl" id="mobile-menu-icon"></i>
             </button>
         </div>
@@ -195,10 +195,10 @@
 </script>
 
 <!-- Event Popup Modal -->
-<div id="event-popup-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/45 backdrop-blur-[2px] p-4 transition-all duration-300">
-    <div class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden w-full max-w-[860px] h-[92vh] md:h-[500px] transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300" id="event-popup-content">
+<div id="event-popup-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 sm:p-6 transition-all duration-300">
+    <div class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden w-full max-w-[860px] h-auto max-h-[85vh] md:h-[500px] my-auto transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300" id="event-popup-content">
         <!-- Close Button (Fixed) -->
-        <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-450 hover:text-slate-650 bg-white hover:bg-slate-50 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/50 hover:scale-105">
+        <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-500 hover:text-slate-700 bg-slate-100/90 hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-sm border border-slate-200/80 hover:scale-105">
             <i class="ph ph-x text-lg font-bold"></i>
         </button>
 
@@ -211,23 +211,23 @@
         </div>
 
         <!-- Global Modal Footer -->
-        <div class="flex justify-between items-center px-6 md:px-8 py-3.5 border-t border-slate-100 bg-white relative overflow-hidden select-none shrink-0 rounded-b-[24px]">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-3 px-5 sm:px-6 md:px-8 py-3.5 border-t border-slate-100 bg-slate-50/50 relative overflow-hidden select-none shrink-0 rounded-b-[24px]">
             <!-- Checkbox: Jangan Tampilkan Lagi -->
             <div class="flex items-center gap-2 z-20">
                 <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
-                <label for="global-dont-show-checkbox" class="text-[11px] md:text-xs text-slate-500 font-semibold cursor-pointer hover:text-slate-700 transition">
+                <label for="global-dont-show-checkbox" class="text-[11px] md:text-xs text-slate-600 font-semibold cursor-pointer hover:text-slate-800 transition">
                     {{ __('Jangan tampilkan lagi hari ini') }}
                 </label>
             </div>
 
             <!-- Dynamic Pagination Controls -->
-            <div id="event-pagination-container" class="flex items-center gap-4 z-20 mr-6 md:mr-10 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm hidden">
-                <button id="prev-event-btn-floating" type="button" class="w-9 h-9 rounded-full bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white flex items-center justify-center transition-all cursor-pointer hidden shadow border border-[#106c38]/20 group">
-                    <i class="ph ph-caret-left font-bold text-lg group-hover:-translate-x-0.5 transition-transform"></i>
+            <div id="event-pagination-container" class="flex items-center gap-3 z-20 bg-emerald-50 px-3 sm:px-4 py-1.5 rounded-full border border-emerald-100 shadow-sm hidden">
+                <button id="prev-event-btn-floating" type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white flex items-center justify-center transition-all cursor-pointer hidden shadow border border-[#106c38]/20 group">
+                    <i class="ph ph-caret-left font-bold text-base group-hover:-translate-x-0.5 transition-transform"></i>
                 </button>
-                <span id="event-pagination-text" class="text-[13px] font-black text-[#106c38] tracking-widest w-10 text-center">1 / 3</span>
-                <button id="next-event-btn-floating" type="button" class="w-9 h-9 rounded-full bg-[#106c38] hover:bg-[#0c562c] text-white flex items-center justify-center transition-all cursor-pointer hidden shadow-md shadow-[#106c38]/30 group animate-pulse hover:animate-none">
-                    <i class="ph ph-caret-right font-bold text-lg group-hover:translate-x-0.5 transition-transform"></i>
+                <span id="event-pagination-text" class="text-xs sm:text-[13px] font-black text-[#106c38] tracking-widest w-8 sm:w-10 text-center">1 / 3</span>
+                <button id="next-event-btn-floating" type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#106c38] hover:bg-[#0c562c] text-white flex items-center justify-center transition-all cursor-pointer hidden shadow-md shadow-[#106c38]/30 group animate-pulse hover:animate-none">
+                    <i class="ph ph-caret-right font-bold text-base group-hover:translate-x-0.5 transition-transform"></i>
                 </button>
             </div>
 
@@ -432,14 +432,14 @@
 
                         // ─── Slide HTML ────────────────────────────────────────────
                         slidesHtml += `
-                            <div class="w-full shrink-0 h-full overflow-hidden">
-                                <div class="flex h-full items-stretch">
+                            <div class="w-full shrink-0 h-auto md:h-full overflow-hidden">
+                                <div class="flex flex-col md:flex-row h-auto md:h-full items-stretch">
 
                                     <!-- ══ LEFT CONTENT PANEL ══ -->
-                                    <div class="w-full md:w-[58%] flex flex-col justify-between h-full bg-white z-10">
+                                    <div class="w-full md:w-[58%] flex flex-col justify-start md:justify-between h-auto md:h-full bg-white z-10">
 
                                         <!-- Scrollable body -->
-                                        <div class="flex-1 overflow-y-auto px-6 md:px-8 pt-6 pb-2 min-h-0 break-words [overflow-wrap:anywhere]">
+                                        <div class="flex-1 overflow-y-auto px-5 sm:px-6 md:px-8 pt-5 sm:pt-6 pb-2 min-h-0 break-words [overflow-wrap:anywhere]">
 
                                             <!-- Category Badge -->
                                             <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black uppercase tracking-wide text-[10px] mb-3 border w-fit ${badgeCls}">
@@ -448,7 +448,7 @@
                                             </div>
 
                                             <!-- Title -->
-                                            <h2 class="text-[19px] md:text-[21px] font-black text-slate-900 leading-tight tracking-tight mb-2.5 break-words [overflow-wrap:anywhere]">
+                                            <h2 class="text-lg sm:text-[19px] md:text-[21px] font-black text-slate-900 leading-tight tracking-tight mb-3 pr-10 md:pr-0 break-words [overflow-wrap:anywhere]">
                                                 ${event.title}
                                             </h2>
 
@@ -462,9 +462,9 @@
 
                                         <!-- Action Button Container -->
                                         ${actionsHtml ? `
-                                        <div class="px-6 md:px-8 pb-5 pt-2 bg-white shrink-0 flex flex-col gap-2">
+                                        <div class="px-5 sm:px-6 md:px-8 pb-4 pt-2 bg-white shrink-0 flex flex-col gap-2">
                                             ${actionsHtml}
-                                        </div>` : `<div class="h-4 shrink-0"></div>`}
+                                        </div>` : `<div class="h-2 shrink-0"></div>`}
                                     </div>
 
                                     <!-- ══ RIGHT IMAGE PANEL ══ -->
