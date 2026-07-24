@@ -375,7 +375,6 @@
                                         <div class="min-w-0"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Penyelenggara</p><p class="text-[10.5px] font-bold text-slate-800 leading-tight truncate">${event.organizer || '-'}</p></div>
                                     </div>
                                 </div>
-<<<<<<< HEAD
                                 ${(event.left_features && Array.isArray(event.left_features) && event.left_features.length > 0) ? `
                                     <div class="bg-emerald-50/70 border border-emerald-100 rounded-2xl p-3 mb-3">
                                         <p class="text-[9px] font-black text-emerald-800 uppercase tracking-wider mb-1.5">Informasi Tambahan</p>
@@ -389,9 +388,6 @@
                                         </ul>
                                     </div>
                                 ` : ''}
-=======
-                                ${featuresHtml}
->>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                 ${(event.contact_whatsapp || event.contact_email) ? `<div class="flex items-center gap-2.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 mb-1"><span class="text-[8px] font-black text-slate-400 uppercase tracking-wide shrink-0">Hubungi Kami</span><div class="flex flex-wrap gap-3 min-w-0">${event.contact_whatsapp ? `<a href="https://wa.me/${event.contact_whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center"><i class="ph ph-whatsapp-logo text-emerald-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_whatsapp}</span></a>` : ''}${event.contact_email ? `<a href="mailto:${event.contact_email}" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center"><i class="ph ph-envelope-simple text-blue-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_email}</span></a>` : ''}</div></div>` : ''}
                             `;
                             if (!actionLinks) actionLinks = [{name: 'Lihat Detail', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
@@ -468,7 +464,6 @@
                         const cleanDesc = (event.description || '').trim();
                         let descHtml = '';
                         if (cleanDesc) {
-<<<<<<< HEAD
                             const isLongDesc = cleanDesc.length > 100;
                             const shortDesc = isLongDesc ? cleanDesc.slice(0, 95) + '...' : cleanDesc;
                             const showMoreText = window.currentLocale === 'en' ? 'Show More' : 'Lihat Selengkapnya';
@@ -484,24 +479,11 @@
                                             <span>${showMoreText}</span>
                                             <i class="ph ph-caret-down text-xs"></i>
                                         </button>
-=======
-                            if (cat === 'event') {
-                                descHtml = `
-                                    <div class="mb-4 relative">
-                                        <div class="text-xs md:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line line-clamp-4 transition-all duration-300" id="desc-${event.id}">
-                                            ${cleanDesc}
-                                        </div>
-                                        <button onclick="document.getElementById('desc-${event.id}').classList.toggle('line-clamp-4'); this.innerText = this.innerText === 'Lihat Selengkapnya ▼' ? 'Tutup ▲' : 'Lihat Selengkapnya ▼';" class="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 hover:underline mt-1 transition-colors cursor-pointer">Lihat Selengkapnya ▼</button>
->>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                     </div>
                                 `;
                             } else {
                                 descHtml = `
-<<<<<<< HEAD
                                     <div class="mb-3.5 text-xs sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line max-h-[140px] overflow-y-auto pr-1 custom-scrollbar">
-=======
-                                    <div class="mb-4 text-xs md:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line">
->>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                         ${cleanDesc}
                                     </div>
                                 `;
@@ -545,17 +527,10 @@
                                         </div>` : `<div class="h-2 shrink-0"></div>`}
                                     </div>
 
-<<<<<<< HEAD
                                     <!-- ══ RIGHT / TOP IMAGE PANEL ══ -->
                                     <div class="w-full md:w-[42%] relative overflow-hidden shrink-0 bg-white h-[160px] sm:h-[200px] md:h-full order-first md:order-last">
 
                                         <!-- Wavy left-edge divider with golden accent (Desktop only) -->
-=======
-                                    <!-- ══ RIGHT IMAGE PANEL ══ -->
-                                    <div class="w-full h-52 md:h-full md:w-[42%] relative overflow-hidden shrink-0 bg-white order-1 md:order-2">
-
-                                        <!-- Desktop Wavy left-edge divider -->
->>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                         <div class="hidden md:block absolute top-0 h-full z-30 pointer-events-none" style="width: 32%; left: -3px;">
                                             <svg class="h-full w-full" viewBox="0 0 100 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                                                 <!-- Seamless White Fill Layer -->
@@ -565,7 +540,6 @@
                                             </svg>
                                         </div>
 
-<<<<<<< HEAD
                                         <!-- Horizontal Wavy bottom-edge divider with golden accent (Mobile only) -->
                                         <div class="block md:hidden absolute bottom-0 left-0 w-full z-30 pointer-events-none" style="height: 20px;">
                                             <svg class="w-full h-full" viewBox="0 0 500 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -573,15 +547,6 @@
                                                 <path d="M 0,30 Q 125,5 250,20 T 500,10 L 500,30 L 0,30 Z" fill="white" />
                                                 <!-- Golden Curve Line -->
                                                 <path d="M 0,28 Q 125,3 250,18 T 500,8" fill="none" stroke="#eab308" stroke-width="3" vector-effect="non-scaling-stroke" />
-=======
-                                        <!-- Mobile Wavy bottom divider -->
-                                        <div class="block md:hidden absolute bottom-0 left-0 w-full z-30 pointer-events-none" style="height: 36px; margin-bottom: -1px;">
-                                            <svg class="w-full h-full" viewBox="0 0 500 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                                                <!-- Seamless White Fill Layer -->
-                                                <path d="M 0,100 C 150,-10 350,90 500,20 L 500,100 L 0,100 Z" fill="white" />
-                                                <!-- Golden Curve Border Line -->
-                                                <path d="M 0,100 C 150,-10 350,90 500,20" fill="none" stroke="#eab308" stroke-width="4.5" vector-effect="non-scaling-stroke" />
->>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                             </svg>
                                         </div>
 
