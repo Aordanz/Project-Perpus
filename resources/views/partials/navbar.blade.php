@@ -20,7 +20,7 @@
                 <a href="{{ route('koleksi.terbaru') }}" class="{{ request()->routeIs('koleksi.terbaru') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Koleksi Terbaru') }}</a>
                 <a href="{{ route('galeri') }}" class="{{ request()->routeIs('galeri') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Galeri') }}</a>
                 <a href="{{ route('index-judul') }}" class="{{ request()->routeIs('index-judul') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Index Judul') }}</a>
-                <a href="#" class="text-green-100 font-medium hover:text-white transition pb-1 whitespace-nowrap">{{ __('Cek Pinjaman') }}</a>
+
                 <a href="#" id="navbar-event-btn" class="text-green-100 font-medium hover:text-white transition pb-1 whitespace-nowrap cursor-pointer">
                     {{ __('Informasi') }}
                 </a>
@@ -96,9 +96,7 @@
                 <a href="{{ route('index-judul') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-medium {{ request()->routeIs('index-judul') ? 'text-white bg-white/10 font-bold' : 'text-green-100 hover:text-white hover:bg-white/5' }} transition">
                     <i class="ph ph-list-bullets text-lg"></i> {{ __('Index Judul') }}
                 </a>
-                <a href="#" class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
-                    <i class="ph ph-clipboard-text text-lg"></i> {{ __('Cek Pinjaman') }}
-                </a>
+
                 <a href="#" id="mobile-navbar-event-btn" class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-green-100 hover:text-white hover:bg-white/5 transition cursor-pointer">
                     <i class="ph ph-megaphone text-lg"></i> {{ __('Informasi') }}
                 </a>
