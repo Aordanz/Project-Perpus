@@ -195,8 +195,8 @@
 </script>
 
 <!-- Event Popup Modal -->
-<div id="event-popup-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 sm:p-6 transition-all duration-300">
-    <div class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden w-full max-w-[860px] h-auto max-h-[85vh] md:h-[500px] my-auto transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300" id="event-popup-content">
+<div id="event-popup-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/45 backdrop-blur-[2px] p-4 transition-all duration-300">
+    <div class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden w-[95%] max-w-[860px] h-[90vh] md:h-[500px] transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300 mx-auto" id="event-popup-content">
         <!-- Close Button (Fixed) -->
         <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-500 hover:text-slate-700 bg-slate-100/90 hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-sm border border-slate-200/80 hover:scale-105">
             <i class="ph ph-x text-lg font-bold"></i>
@@ -297,11 +297,16 @@
                             badgeCls = 'bg-red-50 text-red-700 border-red-200';
                             rightGrad = 'linear-gradient(150deg,#500c0c,#b91c1c,#f87171)';
                             rightOverlay = 'rgba(80,12,12,0.35)'; accentColor = 'red';
-                        } else if (cat === 'new_collection') {
-                            badgeLabel = 'BUKU BARU'; badgeIcon = 'ph-book-open';
+                        } else if (cat === 'new_collection' || cat === 'book_recommendation') {
+                            badgeLabel = cat === 'book_recommendation' ? 'BUKU REKOMENDASI' : 'BUKU BARU'; badgeIcon = 'ph-book-open';
                             badgeCls = 'bg-purple-50 text-purple-700 border-purple-200';
                             rightGrad = 'linear-gradient(150deg,#1e0640,#5b21b6,#8b5cf6)';
                             rightOverlay = 'rgba(30,6,64,0.45)'; accentColor = 'purple';
+                        } else if (cat === 'library_news') {
+                            badgeLabel = 'BERITA PERPUSTAKAAN'; badgeIcon = 'ph-newspaper';
+                            badgeCls = 'bg-indigo-50 text-indigo-700 border-indigo-200';
+                            rightGrad = 'linear-gradient(150deg,#1e1b4b,#4338ca,#6366f1)';
+                            rightOverlay = 'rgba(30,27,75,0.45)'; accentColor = 'blue';
                         } else if (cat === 'tips') {
                             badgeLabel = 'TIPS & TRIK'; badgeIcon = 'ph-lightbulb-filament';
                             badgeCls = 'bg-amber-50 text-amber-700 border-amber-200';
@@ -334,6 +339,22 @@
                             ? event.action_buttons : null;
 
                         if (cat === 'event') {
+                            let featuresHtml = '';
+                            if (event.left_features) {
+                                let features = [];
+                                if (Array.isArray(event.left_features)) {
+                                    features = event.left_features;
+                                } else if (typeof event.left_features === 'string') {
+                                    features = event.left_features.split('\n');
+                                }
+                                features = features.map(f => f.trim()).filter(f => f);
+                                if (features.length > 0) {
+                                    featuresHtml = '<div class="bg-[#106c38]/5 border border-[#106c38]/10 rounded-xl p-3 mb-3"><p class="text-[9px] font-black text-[#106c38] uppercase tracking-wide mb-1.5">Informasi Tambahan</p><ul class="space-y-1.5">' + 
+                                        features.map(f => '<li class="flex items-start gap-2"><div class="w-3.5 h-3.5 rounded-full bg-[#106c38]/10 flex items-center justify-center shrink-0 mt-0.5"><i class="ph ph-check text-[#106c38] text-[8px] font-bold"></i></div><span class="text-[11px] text-slate-700 font-medium leading-relaxed">' + f + '</span></li>').join('') + 
+                                        '</ul></div>';
+                                }
+                            }
+
                             detailHtml = `
                                 <div class="grid grid-cols-2 gap-2 mb-3">
                                     <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
@@ -353,6 +374,7 @@
                                         <div class="min-w-0"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Penyelenggara</p><p class="text-[10.5px] font-bold text-slate-800 leading-tight truncate">${event.organizer || '-'}</p></div>
                                     </div>
                                 </div>
+                                ${featuresHtml}
                                 ${(event.contact_whatsapp || event.contact_email) ? `<div class="flex items-center gap-2.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 mb-1"><span class="text-[8px] font-black text-slate-400 uppercase tracking-wide shrink-0">Hubungi Kami</span><div class="flex flex-wrap gap-3 min-w-0">${event.contact_whatsapp ? `<a href="https://wa.me/${event.contact_whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center"><i class="ph ph-whatsapp-logo text-emerald-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_whatsapp}</span></a>` : ''}${event.contact_email ? `<a href="mailto:${event.contact_email}" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center"><i class="ph ph-envelope-simple text-blue-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_email}</span></a>` : ''}</div></div>` : ''}
                             `;
                             if (!actionLinks) actionLinks = [{name: 'Lihat Detail', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
@@ -380,7 +402,7 @@
                                 ${event.alternative_link ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 mb-1"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Akses Alternatif</p><a href="${event.alternative_link}" target="_blank" class="text-[10.5px] font-bold text-blue-600 hover:underline truncate block">${event.alternative_link}</a></div>` : ''}
                             `;
 
-                        } else if (cat === 'new_collection') {
+                        } else if (cat === 'new_collection' || cat === 'book_recommendation') {
                             detailHtml = `
                                 <div class="bg-slate-50 border border-slate-100 rounded-xl overflow-hidden mb-3">
                                     ${event.book_author ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-user-circle text-purple-500 text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penulis</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_author}</span></div>` : ''}
@@ -389,6 +411,12 @@
                                 </div>
                             `;
                             if (!actionLinks) actionLinks = [{name: 'Lihat Detail Buku', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
+
+                        } else if (cat === 'library_news') {
+                            detailHtml = `
+                                ${event.news_date ? `<div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-lg mb-3"><i class="ph ph-calendar-blank text-indigo-600 text-sm"></i><span class="text-[10px] font-bold text-indigo-800">${event.news_date}</span></div>` : ''}
+                            `;
+                            if (!actionLinks) actionLinks = [{name: 'Baca Berita', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
 
                         } else if (cat === 'tips') {
                             const bullets = Array.isArray(event.tips_bullets) && event.tips_bullets.length > 0
@@ -423,20 +451,31 @@
                         const cleanDesc = (event.description || '').trim();
                         let descHtml = '';
                         if (cleanDesc) {
-                            descHtml = `
-                                <div class="mb-4 text-xs md:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line">
-                                    ${cleanDesc}
-                                </div>
-                            `;
+                            if (cat === 'event') {
+                                descHtml = `
+                                    <div class="mb-4 relative">
+                                        <div class="text-xs md:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line line-clamp-4 transition-all duration-300" id="desc-${event.id}">
+                                            ${cleanDesc}
+                                        </div>
+                                        <button onclick="document.getElementById('desc-${event.id}').classList.toggle('line-clamp-4'); this.innerText = this.innerText === 'Lihat Selengkapnya ▼' ? 'Tutup ▲' : 'Lihat Selengkapnya ▼';" class="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 hover:underline mt-1 transition-colors cursor-pointer">Lihat Selengkapnya ▼</button>
+                                    </div>
+                                `;
+                            } else {
+                                descHtml = `
+                                    <div class="mb-4 text-xs md:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line">
+                                        ${cleanDesc}
+                                    </div>
+                                `;
+                            }
                         }
 
                         // ─── Slide HTML ────────────────────────────────────────────
                         slidesHtml += `
-                            <div class="w-full shrink-0 h-auto md:h-full overflow-hidden">
-                                <div class="flex flex-col md:flex-row h-auto md:h-full items-stretch">
+                            <div class="w-full shrink-0 h-full overflow-hidden">
+                                <div class="flex flex-col md:flex-row h-full items-stretch relative">
 
                                     <!-- ══ LEFT CONTENT PANEL ══ -->
-                                    <div class="w-full md:w-[58%] flex flex-col justify-start md:justify-between h-auto md:h-full bg-white z-10">
+                                    <div class="w-full md:w-[58%] flex flex-col justify-between bg-white z-10 order-2 md:order-1 flex-1 min-h-0 md:h-full">
 
                                         <!-- Scrollable body -->
                                         <div class="flex-1 overflow-y-auto px-5 sm:px-6 md:px-8 pt-5 sm:pt-6 pb-2 min-h-0 break-words [overflow-wrap:anywhere]">
@@ -468,15 +507,25 @@
                                     </div>
 
                                     <!-- ══ RIGHT IMAGE PANEL ══ -->
-                                    <div class="hidden md:block md:w-[42%] relative overflow-hidden shrink-0 bg-white h-full">
+                                    <div class="w-full h-52 md:h-full md:w-[42%] relative overflow-hidden shrink-0 bg-white order-1 md:order-2">
 
-                                        <!-- Wavy left-edge divider with golden accent (Overlap seam by -3px to kill middle line) -->
-                                        <div class="absolute top-0 h-full z-30 pointer-events-none" style="width: 32%; left: -3px;">
+                                        <!-- Desktop Wavy left-edge divider -->
+                                        <div class="hidden md:block absolute top-0 h-full z-30 pointer-events-none" style="width: 32%; left: -3px;">
                                             <svg class="h-full w-full" viewBox="0 0 100 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                                                 <!-- Seamless White Fill Layer -->
                                                 <path d="M 0,0 C 55,100 75,250 20,380 C 0,430 35,480 50,500 L 0,500 Z" fill="white" />
                                                 <!-- Golden S-Curve Border Line -->
                                                 <path d="M 0,0 C 55,100 75,250 20,380 C 0,430 35,480 50,500" fill="none" stroke="#eab308" stroke-width="3.5" vector-effect="non-scaling-stroke" />
+                                            </svg>
+                                        </div>
+
+                                        <!-- Mobile Wavy bottom divider -->
+                                        <div class="block md:hidden absolute bottom-0 left-0 w-full z-30 pointer-events-none" style="height: 36px; margin-bottom: -1px;">
+                                            <svg class="w-full h-full" viewBox="0 0 500 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <!-- Seamless White Fill Layer -->
+                                                <path d="M 0,100 C 150,-10 350,90 500,20 L 500,100 L 0,100 Z" fill="white" />
+                                                <!-- Golden Curve Border Line -->
+                                                <path d="M 0,100 C 150,-10 350,90 500,20" fill="none" stroke="#eab308" stroke-width="4.5" vector-effect="non-scaling-stroke" />
                                             </svg>
                                         </div>
 
@@ -542,8 +591,9 @@
                         hideToday = (localStorage.getItem('event_popup_hide_date') === todayString);
                     } catch (e) {}
 
-                    // Auto-show delay: 1.5 seconds (only if not hidden for today)
-                    if (!hideToday) {
+                    // Auto-show delay: 1.5 seconds (only if not hidden for today and only on homepage)
+                    const isHomepage = {{ request()->routeIs('home') ? 'true' : 'false' }};
+                    if (!hideToday && isHomepage) {
                         autoShowTimeout = setTimeout(() => {
                             openEventModal();
                             // Auto-hide timing: 8 seconds (only for single slide, otherwise let user navigate)
