@@ -140,10 +140,10 @@
                 <!-- Footer / Social Elements -->
                 <div class="border-t border-white/10 mt-6 pt-4 pb-6 px-5 flex flex-col items-center gap-3">
                     <div class="flex items-center gap-3">
-                        <a href="https://library.usu.ac.id/" target="_blank" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" aria-label="Website">
+                        <a href="https://library.usu.ac.id/" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer" aria-label="Website">
                             <i class="ph ph-globe text-lg"></i>
                         </a>
-                        <a href="https://www.instagram.com/usu.library/" target="_blank" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" aria-label="Instagram">
+                        <a href="https://www.instagram.com/usulibraryofficial/" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer" aria-label="Instagram">
                             <i class="ph ph-instagram-logo text-lg"></i>
                         </a>
                     </div>
