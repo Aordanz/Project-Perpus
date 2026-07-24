@@ -17,20 +17,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Default User (Pustakawan)
+        // 1. Create Default User (Pustakawan) — masuk ke tbluser
         User::factory()->create([
-            'name' => 'Admin Perpustakaan USU',
-            'email' => 'admin@usu.ac.id',
-            'password' => bcrypt('Admin@12345'), // Kept standard credentials from history
-            'role' => 'pustakawan',
+            'nama_lengkap' => 'Admin Perpustakaan USU',
+            'username'     => 'admin',
+            'email'        => 'admin@usu.ac.id',
+            'password'     => bcrypt('Admin@12345'),
+            'role'         => 'pustakawan',
         ]);
 
-        // Create Default User (Anggota)
+        // Akun Admin OPAC — masuk ke tbluser
         User::factory()->create([
-            'name' => 'Anggota Perpustakaan USU',
-            'email' => 'anggota@usu.ac.id',
-            'password' => bcrypt('password'),
-            'role' => 'anggota',
+            'nama_lengkap' => 'Admin OPAC',
+            'username'     => 'opac',
+            'email'        => 'opac@perpus.usu',
+            'password'     => bcrypt('pustakawan123'),
+            'role'         => 'pustakawan',
+        ]);
+
+        // Create Default User (Anggota) — masuk ke tbluser
+        User::factory()->create([
+            'nama_lengkap' => 'Anggota Perpustakaan USU',
+            'username'     => 'anggota',
+            'email'        => 'anggota@usu.ac.id',
+            'password'     => bcrypt('password'),
+            'role'         => 'anggota',
         ]);
 
         // 2. Create University
