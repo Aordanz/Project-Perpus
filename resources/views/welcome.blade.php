@@ -493,7 +493,7 @@
                             </div>
                             
                             <!-- Custom Glass Badge Icon -->
-                            <div class="z-10 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-2">
+                            <div class="z-10 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-2">
                                 <i class="ph {{ $icon }} text-2xl sm:text-3xl font-bold"></i>
                             </div>
                         </a>
@@ -578,7 +578,7 @@
                             </div>
                             
                             <!-- Custom Glass Badge Icon -->
-                            <div class="z-10 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-2">
+                            <div class="z-10 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-2">
                                 <i class="ph {{ $icon }} text-2xl sm:text-3xl font-bold"></i>
                             </div>
                         </a>
@@ -666,7 +666,7 @@
                         </div>
                         
                         <!-- Custom Glass Badge Icon -->
-                        <div class="z-10 w-10 h-10 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-1.5 sm:ml-2">
+                        <div class="z-10 w-10 h-10 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-[#F3C300] group-hover:bg-[#F3C300] group-hover:text-[#064e3b] group-hover:scale-110 flex items-center justify-center transition-all duration-300 shadow-md shrink-0 ml-1.5 sm:ml-2">
                             <i class="ph {{ $icon }} text-xl sm:text-3xl font-bold"></i>
                         </div>
                     </a>
