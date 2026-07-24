@@ -78,13 +78,12 @@ class EventController extends Controller
                 $primaryLink = $actionButtons[0]['url'] ?? $primaryLink;
             }
 
-            // Robust image URL resolution with dynamic fallback images per event ID
+            // Robust image URL resolution with dynamic library building fallback images per event ID
             $fallbackImages = [
                 'perpustakaan_depan.webp',
                 'kolam_perpustakaan.webp',
                 'perpustakaan_samping.webp',
-                'slider1.jpg',
-                'slider2.jpg',
+                'lokasi/perpustakaan.webp',
             ];
 
             $resolveImageUrl = function ($path) use ($event, $fallbackImages) {

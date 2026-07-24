@@ -1,19 +1,22 @@
 <!-- Footer -->
-<footer class="bg-[#106c38] py-2.5 sm:py-3.5 text-white text-center text-xs sm:text-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p class="mb-1.5 sm:mb-2 text-white/90">
-            &copy; 2025 {{ __('University of Sumatera Utara Library') }} | OPAC. {{ __('All rights reserved.') }}
+<footer class="bg-[#106c38] py-4 sm:py-6 text-white text-center text-xs sm:text-sm border-t border-emerald-800/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-2.5 sm:gap-3">
+        <!-- Copyright Text -->
+        <p class="text-white/95 font-medium leading-relaxed max-w-xl mx-auto">
+            &copy; 2025 <span class="font-bold">{{ __('Perpustakaan Universitas Sumatera Utara') }}</span> | OPAC.<br class="block sm:hidden"> {{ __('All rights reserved.') }}
         </p>
-        <div class="flex flex-wrap justify-center gap-x-3 gap-y-1 sm:gap-x-2 sm:gap-y-1 items-center text-white/80">
-            <a href="https://www.usu.ac.id/" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Universitas Sumatera Utara') }}</a>
-            <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Perpustakaan USU') }}</a>
-            <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://repositori.usu.ac.id/" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">USU-IR</a>
-            <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Scientific eJournals') }}</a>
-            <span class="text-white/30 hidden sm:inline">|</span>
-            <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition inline-block py-0.5 px-1.5 rounded hover:bg-white/5">{{ __('Scientific eBooks') }}</a>
+
+        <!-- Navigation Links -->
+        <div class="flex flex-wrap justify-center items-center gap-x-2 gap-y-1.5 text-white/85 text-[11px] sm:text-xs font-medium max-w-3xl mx-auto">
+            <a href="https://www.usu.ac.id/" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">{{ __('Universitas Sumatera Utara') }}</a>
+            <span class="text-white/40 text-[10px]">&bull;</span>
+            <a href="https://library.usu.ac.id/id" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">{{ __('Perpustakaan USU') }}</a>
+            <span class="text-white/40 text-[10px]">&bull;</span>
+            <a href="https://repositori.usu.ac.id/" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">USU-IR</a>
+            <span class="text-white/40 text-[10px] hidden sm:inline">&bull;</span>
+            <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">{{ __('Scientific eJournals') }}</a>
+            <span class="text-white/40 text-[10px]">&bull;</span>
+            <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">{{ __('Scientific eBooks') }}</a>
         </div>
     </div>
 </footer>
@@ -86,8 +89,24 @@
 
 </script>
 
+<style>
+    /* Sembunyikan tombol floating AI Chatbot secara otomatis jika ada Modal atau Drawer Menu yang aktif */
+    body.overflow-hidden #ai-chatbot-container,
+    body:has(#event-popup-modal:not(.hidden)) #ai-chatbot-container,
+    body:has(#search-modal:not(.hidden)) #ai-chatbot-container,
+    body:has(#mobile-menu:not(.hidden)) #ai-chatbot-container,
+    body:has(#mobile-drawer:not(.hidden)) #ai-chatbot-container,
+    body:has(#mobile-nav-drawer:not(.hidden)) #ai-chatbot-container {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: scale(0.85);
+        visibility: hidden !important;
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+    }
+</style>
+
 <!-- AI Assistant Chatbot -->
-<div id="ai-chatbot-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col items-end pointer-events-none">
+<div id="ai-chatbot-container" class="fixed bottom-6 right-6 z-30 flex flex-col items-end pointer-events-none transition-all duration-300">
     
     <!-- Chat Window -->
     <div id="ai-chat-window" class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-[320px] h-[400px] mb-4 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right scale-0 opacity-0 pointer-events-auto">
@@ -370,7 +389,12 @@
 
         // Toggle chat window
         function toggleChat() {
+            const container = document.getElementById('ai-chatbot-container');
             if (chatWindow.classList.contains('scale-0')) {
+                if (container) {
+                    container.classList.remove('z-30');
+                    container.classList.add('z-50');
+                }
                 chatWindow.classList.remove('scale-0', 'opacity-0');
                 chatWindow.classList.add('scale-100', 'opacity-100');
                 if (pulseRing) pulseRing.classList.add('hidden');
@@ -381,6 +405,10 @@
                 chatWindow.classList.remove('scale-100', 'opacity-100');
                 chatWindow.classList.add('scale-0', 'opacity-0');
                 if (pulseRing) pulseRing.classList.remove('hidden');
+                if (container) {
+                    container.classList.remove('z-50');
+                    container.classList.add('z-30');
+                }
                 
                 // Return to normal size if closed while expanded
                 if (chatWindow.classList.contains('expanded-mode')) {
