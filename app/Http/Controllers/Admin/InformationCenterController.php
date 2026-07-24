@@ -619,13 +619,13 @@ class InformationCenterController extends Controller
     {
         try {
             $userId = Auth::id();
-            if ($userId && \Illuminate\Support\Facades\DB::table('users')->where('id', $userId)->exists()) {
+            if ($userId && \App\Models\User::where('iduser', $userId)->exists()) {
                 return (int) $userId;
             }
 
-            $firstUser = \Illuminate\Support\Facades\DB::table('users')->first();
-            if ($firstUser && isset($firstUser->id)) {
-                return (int) $firstUser->id;
+            $firstUser = \App\Models\User::first();
+            if ($firstUser && isset($firstUser->iduser)) {
+                return (int) $firstUser->iduser;
             }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::warning('[getValidUserId] Exception: ' . $e->getMessage());
