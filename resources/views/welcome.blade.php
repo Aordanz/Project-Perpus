@@ -1423,7 +1423,7 @@
                                     <!-- Desktop Book Cover -->
                                     <div class="hidden sm:block w-20 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                                         ${coverHtml}
-                                        <span class="absolute top-2 left-2 bg-[#106c38] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
+                                        <span class="absolute top-2 left-2 ${book.jenis_badge_color || 'bg-red-600 text-white'} text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
                                             ${book.jenis}
                                         </span>
                                     </div>
@@ -1445,7 +1445,7 @@
                                             <!-- Mobile Book Cover (Visible only on mobile) -->
                                             <div class="block sm:hidden w-20 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg overflow-hidden shadow-sm flex-shrink-0 relative">
                                                 ${coverHtml}
-                                                <span class="absolute top-1.5 left-1.5 bg-[#106c38] text-white text-[7px] font-bold px-1.5 py-0.5 rounded shadow">
+                                                <span class="absolute top-1.5 left-1.5 ${book.jenis_badge_color || 'bg-red-600 text-white'} text-[7px] font-bold px-1.5 py-0.5 rounded shadow">
                                                     ${book.jenis}
                                                 </span>
                                             </div>

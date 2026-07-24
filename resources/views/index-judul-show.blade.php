@@ -147,8 +147,8 @@
                                 <span class="text-[9px] font-bold text-center leading-tight">NO COVER</span>
                             </div>
                         @endif
-                        <span class="absolute top-2 left-2 bg-[#106c38] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
-                            {{ strtoupper(__($book->jenis)) }}
+                        <span class="absolute top-2 left-2 {{ $book->jenis_badge_color }} text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
+                            {{ $book->jenis_label }}
                         </span>
                     </div>
 

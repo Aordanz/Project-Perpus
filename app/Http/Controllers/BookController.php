@@ -174,7 +174,7 @@ class BookController extends Controller
         })->sortByDesc('items_count')->values();
 
         // Get 20 latest books with items.location eager loaded
-        $latestBooks = Book::with(['items.location', 'publisherRelation'])->latest()->take(20)->get();
+        $latestBooks = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])->latest()->take(20)->get();
 
         // Get Active Information Center data
         $activeInfos = \App\Models\InformationCenter::where('status', 'published')
@@ -196,7 +196,7 @@ class BookController extends Controller
     public function indexJudulShow(Request $request, $initial)
     {
         $perPage = $request->input('per_page', 5);
-        $query = Book::with(['items.location', 'publisherRelation'])
+        $query = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
             ->where('judul_buku', 'like', $initial . '%')
             ->orderBy('judul_buku', 'asc');
 
@@ -289,7 +289,8 @@ class BookController extends Controller
                     'publish_year' => $book->publish_year ?: '-',
                     'call_number' => $book->call_number ?: '-',
                     'category' => __($book->category ?: 'Umum'),
-                    'jenis' => strtoupper(__($book->jenis ?: 'BUKU')),
+                    'jenis' => $book->jenis_label,
+                    'jenis_badge_color' => $book->jenis_badge_color,
                     'cover_image' => $book->cover_image ? asset('covers/' . $book->cover_image) : null,
                     'locations' => !empty($locNames) ? implode(', ', $locNames) : __('Tidak ditentukan'),
                     'detail_url' => route('books.show', $book->id),
@@ -314,7 +315,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $book = Book::with(['items.location', 'publisherRelation'])->where('idmaster', $id)->firstOrFail();
+        $book = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])->where('idmaster', $id)->firstOrFail();
         
         return view('detail', compact('book'));
     }
@@ -324,7 +325,7 @@ class BookController extends Controller
      */
     public function latest(Request $request)
     {
-        $query = Book::with(['items.location', 'publisherRelation'])->latest();
+        $query = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])->latest();
 
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);
@@ -349,7 +350,7 @@ class BookController extends Controller
      */
     public function galeri(Request $request)
     {
-        $query = Book::with(['items.location', 'publisherRelation']);
+        $query = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation']);
         
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);
