@@ -258,7 +258,7 @@
             <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider7.jpg') }}" alt="Background OPAC USU 7">
             <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider8.jpg') }}" alt="Background OPAC USU 8">
             <!-- Dark green static overlay layer to emulate blend and keep it readable but visible -->
-            <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/75 via-[#084323]/65 to-[#0c542c]/75 z-10 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/90 via-[#084323]/85 to-[#0c542c]/90 z-10 pointer-events-none"></div>
         </div>
 
         <!-- Abstract Shapes -->
