@@ -82,7 +82,7 @@
         
         <div class="mb-6 max-w-6xl mx-auto px-2">
             @php
-                $hasActiveCategory = request()->has('category') && request('category') != '';
+                $hasActiveCategory = request()->has('category') && request('category') !== null && request('category') !== '';
                 $activeCategory = request('category');
             @endphp
 
@@ -117,7 +117,7 @@
             <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center items-center {{ $hasActiveCategory ? 'expanded-mode' : '' }}">
                 <!-- Semua Kategori -->
                 <a href="{{ route('galeri', ['q' => request('q')]) }}" 
-                   class="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ !request('category') ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40' }}">
+                   class="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ request('category') === null || request('category') === '' ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40' }}">
                     <i class="ph ph-squares-four text-base sm:text-lg"></i>
                     <span>{{ __('Semua Kategori') }}</span>
                 </a>
@@ -131,7 +131,7 @@
                 
                 @foreach($ddcCategories as $key => $cat)
                     @php 
-                        $isActive = $activeCategory === (string) $key; 
+                        $isActive = request('category') !== null && request('category') !== '' && (string) $activeCategory === (string) $key; 
                         $index = $loop->index;
                         
                         $visibilityClass = 'cat-collapsible';
@@ -217,7 +217,7 @@
             const toggleCategoryIcon = document.getElementById('toggle-category-icon');
             
             if (toggleCategoryBtn && categoryContainer) {
-                let isExpanded = {{ request()->has('category') && request('category') != '' ? 'true' : 'false' }};
+                let isExpanded = {{ request()->has('category') && request('category') !== null && request('category') !== '' ? 'true' : 'false' }};
                 
                 toggleCategoryBtn.addEventListener('click', function() {
                     isExpanded = !isExpanded;

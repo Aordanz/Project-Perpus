@@ -77,7 +77,7 @@
         <div id="mobile-menu-drawer" class="absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-[#106c38] transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl overflow-y-auto">
             <!-- Close Button -->
             <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
-                <span class="text-white font-bold text-sm tracking-wide">Menu</span>
+                <span class="text-white font-bold text-sm tracking-wide">{{ __('Menu') }}</span>
                 <button id="mobile-menu-close" aria-label="{{ __('Tutup Menu') }}" class="w-9 h-9 rounded-lg flex items-center justify-center text-white hover:bg-white/10 transition cursor-pointer">
                     <i class="ph ph-x text-xl"></i>
                 </button>
@@ -198,7 +198,7 @@
 <div id="event-popup-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/45 backdrop-blur-[2px] p-4 transition-all duration-300">
     <div class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden w-[95%] max-w-[860px] h-[90vh] md:h-[500px] transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300 mx-auto" id="event-popup-content">
         <!-- Close Button (Fixed) -->
-        <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-500 hover:text-slate-700 bg-slate-100/90 hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-sm border border-slate-200/80 hover:scale-105">
+        <button id="close-event-popup" class="absolute top-3 right-3 sm:top-4 sm:right-4 z-50 text-slate-700 md:text-slate-500 bg-white/85 md:bg-slate-100/90 hover:bg-white md:hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/80 hover:scale-105 backdrop-blur-md">
             <i class="ph ph-x text-lg font-bold"></i>
         </button>
 
@@ -254,6 +254,7 @@
 
         window.logoUsuUrl = "{{ asset('logousu.webp') }}";
         window.assetRoot = "{{ asset('') }}";
+        window.currentLocale = "{{ app()->getLocale() }}";
 
         let loadedEvents = [];
         let currentSlideIndex = 0;
@@ -374,7 +375,23 @@
                                         <div class="min-w-0"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Penyelenggara</p><p class="text-[10.5px] font-bold text-slate-800 leading-tight truncate">${event.organizer || '-'}</p></div>
                                     </div>
                                 </div>
+<<<<<<< HEAD
+                                ${(event.left_features && Array.isArray(event.left_features) && event.left_features.length > 0) ? `
+                                    <div class="bg-emerald-50/70 border border-emerald-100 rounded-2xl p-3 mb-3">
+                                        <p class="text-[9px] font-black text-emerald-800 uppercase tracking-wider mb-1.5">Informasi Tambahan</p>
+                                        <ul class="space-y-1">
+                                            ${event.left_features.map(feat => `
+                                                <li class="flex items-center gap-2 text-xs font-bold text-slate-700">
+                                                    <i class="ph ph-check text-emerald-600 font-bold text-xs"></i>
+                                                    <span>${feat}</span>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+=======
                                 ${featuresHtml}
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                 ${(event.contact_whatsapp || event.contact_email) ? `<div class="flex items-center gap-2.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 mb-1"><span class="text-[8px] font-black text-slate-400 uppercase tracking-wide shrink-0">Hubungi Kami</span><div class="flex flex-wrap gap-3 min-w-0">${event.contact_whatsapp ? `<a href="https://wa.me/${event.contact_whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center"><i class="ph ph-whatsapp-logo text-emerald-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_whatsapp}</span></a>` : ''}${event.contact_email ? `<a href="mailto:${event.contact_email}" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center"><i class="ph ph-envelope-simple text-blue-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_email}</span></a>` : ''}</div></div>` : ''}
                             `;
                             if (!actionLinks) actionLinks = [{name: 'Lihat Detail', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
@@ -447,10 +464,27 @@
                             `).join('');
                         }
 
-                        // ─── Description text ──────────────────────────────────────
+                        // ─── Description text (Instagram/TikTok style with Lihat Selengkapnya) ──
                         const cleanDesc = (event.description || '').trim();
                         let descHtml = '';
                         if (cleanDesc) {
+<<<<<<< HEAD
+                            const isLongDesc = cleanDesc.length > 100;
+                            const shortDesc = isLongDesc ? cleanDesc.slice(0, 95) + '...' : cleanDesc;
+                            const showMoreText = window.currentLocale === 'en' ? 'Show More' : 'Lihat Selengkapnya';
+                            
+                            if (isLongDesc) {
+                                descHtml = `
+                                    <div class="mb-3.5 text-xs sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere]">
+                                        <div class="desc-box max-h-[65px] overflow-hidden transition-all duration-300">
+                                            <span class="desc-short inline">${shortDesc}</span>
+                                            <span class="desc-full hidden whitespace-pre-line">${cleanDesc}</span>
+                                        </div>
+                                        <button type="button" class="desc-toggle-btn text-[#106c38] font-bold hover:underline cursor-pointer inline-flex items-center gap-1 text-xs mt-1 transition-all active:scale-95">
+                                            <span>${showMoreText}</span>
+                                            <i class="ph ph-caret-down text-xs"></i>
+                                        </button>
+=======
                             if (cat === 'event') {
                                 descHtml = `
                                     <div class="mb-4 relative">
@@ -458,11 +492,16 @@
                                             ${cleanDesc}
                                         </div>
                                         <button onclick="document.getElementById('desc-${event.id}').classList.toggle('line-clamp-4'); this.innerText = this.innerText === 'Lihat Selengkapnya ▼' ? 'Tutup ▲' : 'Lihat Selengkapnya ▼';" class="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 hover:underline mt-1 transition-colors cursor-pointer">Lihat Selengkapnya ▼</button>
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                     </div>
                                 `;
                             } else {
                                 descHtml = `
+<<<<<<< HEAD
+                                    <div class="mb-3.5 text-xs sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line max-h-[140px] overflow-y-auto pr-1 custom-scrollbar">
+=======
                                     <div class="mb-4 text-xs md:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line">
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                         ${cleanDesc}
                                     </div>
                                 `;
@@ -506,10 +545,17 @@
                                         </div>` : `<div class="h-2 shrink-0"></div>`}
                                     </div>
 
+<<<<<<< HEAD
+                                    <!-- ══ RIGHT / TOP IMAGE PANEL ══ -->
+                                    <div class="w-full md:w-[42%] relative overflow-hidden shrink-0 bg-white h-[160px] sm:h-[200px] md:h-full order-first md:order-last">
+
+                                        <!-- Wavy left-edge divider with golden accent (Desktop only) -->
+=======
                                     <!-- ══ RIGHT IMAGE PANEL ══ -->
                                     <div class="w-full h-52 md:h-full md:w-[42%] relative overflow-hidden shrink-0 bg-white order-1 md:order-2">
 
                                         <!-- Desktop Wavy left-edge divider -->
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                         <div class="hidden md:block absolute top-0 h-full z-30 pointer-events-none" style="width: 32%; left: -3px;">
                                             <svg class="h-full w-full" viewBox="0 0 100 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                                                 <!-- Seamless White Fill Layer -->
@@ -519,6 +565,15 @@
                                             </svg>
                                         </div>
 
+<<<<<<< HEAD
+                                        <!-- Horizontal Wavy bottom-edge divider with golden accent (Mobile only) -->
+                                        <div class="block md:hidden absolute bottom-0 left-0 w-full z-30 pointer-events-none" style="height: 20px;">
+                                            <svg class="w-full h-full" viewBox="0 0 500 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <!-- White Fill Layer -->
+                                                <path d="M 0,30 Q 125,5 250,20 T 500,10 L 500,30 L 0,30 Z" fill="white" />
+                                                <!-- Golden Curve Line -->
+                                                <path d="M 0,28 Q 125,3 250,18 T 500,8" fill="none" stroke="#eab308" stroke-width="3" vector-effect="non-scaling-stroke" />
+=======
                                         <!-- Mobile Wavy bottom divider -->
                                         <div class="block md:hidden absolute bottom-0 left-0 w-full z-30 pointer-events-none" style="height: 36px; margin-bottom: -1px;">
                                             <svg class="w-full h-full" viewBox="0 0 500 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -526,6 +581,7 @@
                                                 <path d="M 0,100 C 150,-10 350,90 500,20 L 500,100 L 0,100 Z" fill="white" />
                                                 <!-- Golden Curve Border Line -->
                                                 <path d="M 0,100 C 150,-10 350,90 500,20" fill="none" stroke="#eab308" stroke-width="4.5" vector-effect="non-scaling-stroke" />
+>>>>>>> b288e0820b65a37fedef75a8d8f16479f3caf2b4
                                             </svg>
                                         </div>
 
@@ -609,9 +665,9 @@
                             <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
                                 <i class="ph ph-info text-5xl text-slate-300"></i>
                             </div>
-                            <h3 class="text-xl md:text-2xl font-black text-slate-800 mb-3 text-center">Belum Ada Informasi</h3>
+                            <h3 class="text-xl md:text-2xl font-black text-slate-800 mb-3 text-center">{{ __('Belum Ada Informasi') }}</h3>
                             <p class="text-slate-500 text-[13px] md:text-sm text-center max-w-sm mx-auto leading-relaxed">
-                                Saat ini belum ada pengumuman, event, atau informasi terbaru dari Perpustakaan Universitas Sumatera Utara.
+                                {{ __('Saat ini belum ada pengumuman, event, atau informasi terbaru dari Perpustakaan Universitas Sumatera Utara.') }}
                             </p>
                         </div>
                     `;
@@ -849,9 +905,48 @@
             });
         }
 
-        // Toggle active status for event detail choices
+        // Toggle active status for event detail choices & Lihat Selengkapnya description toggle
         if (sliderTrack) {
             sliderTrack.addEventListener('click', function(e) {
+                // 1. Description "Lihat Selengkapnya" Toggle
+                const toggleBtn = e.target.closest('.desc-toggle-btn');
+                if (toggleBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearAutoHideTimer();
+                    const container = toggleBtn.closest('div');
+                    const descBox = container.querySelector('.desc-box');
+                    const shortSpan = container.querySelector('.desc-short');
+                    const fullSpan = container.querySelector('.desc-full');
+                    const isExpanded = fullSpan && !fullSpan.classList.contains('hidden');
+                    
+                    if (isExpanded) {
+                        fullSpan.classList.add('hidden');
+                        fullSpan.classList.remove('inline');
+                        shortSpan.classList.remove('hidden');
+                        shortSpan.classList.add('inline');
+                        if (descBox) {
+                            descBox.classList.add('max-h-[65px]', 'overflow-hidden');
+                            descBox.classList.remove('max-h-[150px]', 'overflow-y-auto', 'custom-scrollbar', 'pr-1');
+                        }
+                        toggleBtn.querySelector('span').textContent = window.currentLocale === 'en' ? 'Show More' : 'Lihat Selengkapnya';
+                        toggleBtn.querySelector('i').className = 'ph ph-caret-down text-xs';
+                    } else {
+                        shortSpan.classList.add('hidden');
+                        shortSpan.classList.remove('inline');
+                        fullSpan.classList.remove('hidden');
+                        fullSpan.classList.add('inline');
+                        if (descBox) {
+                            descBox.classList.remove('max-h-[65px]', 'overflow-hidden');
+                            descBox.classList.add('max-h-[150px]', 'overflow-y-auto', 'custom-scrollbar', 'pr-1');
+                        }
+                        toggleBtn.querySelector('span').textContent = window.currentLocale === 'en' ? 'Show Less' : 'Sembunyikan';
+                        toggleBtn.querySelector('i').className = 'ph ph-caret-up text-xs';
+                    }
+                    return;
+                }
+
+                // 2. Action buttons dropdown menu toggle
                 const trigger = e.target.closest('.lihat-detail-trigger');
                 if (!trigger) return;
                 
