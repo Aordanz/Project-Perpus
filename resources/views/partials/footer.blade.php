@@ -480,17 +480,17 @@
                 removeMessage(loadingId);
                 
                 if (response.status === 429) {
-                    addMessage(data.jawaban || "{{ __('Kamu terlalu cepat mengirim pesan, tunggu sebentar ya!') }}", 'bot');
+                    addMessage(data.jawaban || "{{ __('Maaf, saat ini sistem chatbot sedang dalam gangguan.') }}", 'bot');
                     return;
                 }
                 
-                if (!response.ok) throw new Error("{{ __('Terjadi kesalahan server') }}");
+                if (!response.ok) throw new Error("{{ __('Maaf, saat ini sistem chatbot sedang dalam gangguan.') }}");
                 
                 addMessage(data.jawaban, 'bot');
                 
             } catch (error) {
                 removeMessage(loadingId);
-                addMessage("{{ __('Maaf, sistem AI sedang offline atau GEMINI_API_KEY di .env belum disetting.') }}", 'bot');
+                addMessage("{{ __('Maaf, saat ini sistem chatbot sedang dalam gangguan.') }}", 'bot');
             }
         }
 

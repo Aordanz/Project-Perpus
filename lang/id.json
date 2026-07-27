@@ -205,7 +205,7 @@
     "Ketik pesan Anda...": "Ketik pesan Anda...",
     "Kamu terlalu cepat mengirim pesan, tunggu sebentar ya!": "Kamu terlalu cepat mengirim pesan, tunggu sebentar ya!",
     "Terjadi kesalahan server": "Terjadi kesalahan server",
-    "Maaf, sistem AI sedang offline atau GEMINI_API_KEY di .env belum disetting.": "Maaf, sistem AI sedang offline atau GEMINI_API_KEY di .env belum disetting.",
+    "Maaf, saat ini sistem chatbot sedang dalam gangguan.": "Maaf, saat ini sistem chatbot sedang dalam gangguan.",
     "Showing": "Menampilkan",
     "to": "sampai",
     "of": "dari",
