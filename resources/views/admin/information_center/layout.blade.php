@@ -36,37 +36,35 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('styles')
 </head>
-<body class="text-slate-800 antialiased min-h-screen bg-slate-50">
-    <div class="min-h-screen flex flex-col md:flex-row">
-        @include('partials.admin_sidebar')
+<body class="text-slate-800 antialiased min-h-screen bg-slate-50 flex flex-col">
+    @include('partials.admin_sidebar')
 
-        <div class="flex-grow flex flex-col min-w-0 h-screen overflow-y-auto">
-            <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
-                
-                @if (session('success'))
-                    <div class="bg-green-50 border border-green-200 text-green-800 p-4 rounded-2xl flex gap-3 text-sm font-medium shadow-sm">
-                        <i class="ph ph-check-circle text-2xl flex-shrink-0"></i>
-                        <div class="leading-normal">{{ session('success') }}</div>
+    <div class="w-full flex-grow flex flex-col min-w-0">
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+            
+            @if (session('success'))
+                <div class="bg-green-50 border border-green-200 text-green-800 p-4 rounded-2xl flex gap-3 text-sm font-medium shadow-sm">
+                    <i class="ph ph-check-circle text-2xl flex-shrink-0"></i>
+                    <div class="leading-normal">{{ session('success') }}</div>
+                </div>
+            @endif
+
+            @if (isset($errors) && $errors->any())
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-2xl flex gap-3 text-sm font-medium shadow-sm">
+                    <i class="ph ph-warning-circle text-2xl flex-shrink-0"></i>
+                    <div class="leading-normal">
+                        <p class="font-bold">Terjadi Kesalahan Validasi:</p>
+                        <ul class="list-disc pl-5 mt-1 space-y-0.5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
-                @endif
+                </div>
+            @endif
 
-                @if (isset($errors) && $errors->any())
-                    <div class="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-2xl flex gap-3 text-sm font-medium shadow-sm">
-                        <i class="ph ph-warning-circle text-2xl flex-shrink-0"></i>
-                        <div class="leading-normal">
-                            <p class="font-bold">Terjadi Kesalahan Validasi:</p>
-                            <ul class="list-disc pl-5 mt-1 space-y-0.5">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                @endif
-
-                @yield('content')
-            </main>
-        </div>
+            @yield('content')
+        </main>
     </div>
     @stack('scripts')
 </body>

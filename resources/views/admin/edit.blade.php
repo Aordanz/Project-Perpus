@@ -37,13 +37,12 @@
         .section-title { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px; margin-bottom: 1rem; }
     </style>
 </head>
-<body class="text-slate-800 antialiased min-h-screen bg-slate-50">
-    <div class="min-h-screen flex flex-col md:flex-row">
-        @include('partials.admin_sidebar')
+<body class="text-slate-800 antialiased min-h-screen bg-slate-50 flex flex-col">
+    @include('partials.admin_sidebar')
 
-        <!-- Main Content Area -->
-        <div class="flex-grow flex flex-col min-w-0">
-            <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+    <!-- Main Content Area -->
+    <div class="w-full flex-grow flex flex-col min-w-0">
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
 
         <!-- Breadcrumb -->
         <div class="flex items-center gap-2 text-sm text-slate-500">
@@ -218,7 +217,6 @@
                 </div>
             </footer>
         </div>
-    </div>
 
     <!-- Image Preview JS Script -->
     <script>
