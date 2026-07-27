@@ -356,6 +356,16 @@ class BookController extends Controller
             $this->applyAdvancedSearch($query, $request->q);
         }
 
+        // Filter berdasarkan Tipe Koleksi (Buku, Referensi, Tesis, Skripsi, Jurnal, etc.)
+        if ($request->filled('type') && $request->type !== 'all') {
+            $typeQuery = strtolower(trim($request->type));
+            $query->where(function ($q) use ($typeQuery) {
+                $q->whereHas('collectionTypeRelation', function ($ct) use ($typeQuery) {
+                    $ct->whereRaw('LOWER(jenis_koleksi) LIKE ?', ["%{$typeQuery}%"]);
+                })->orWhereRaw('LOWER(jenis) LIKE ?', ["%{$typeQuery}%"]);
+            });
+        }
+
         // Filter berdasarkan DDC category key (digit pertama nopanggil) atau filter khusus "terlaris"
         if ($request->filled('category')) {
             $catKey = $request->category;

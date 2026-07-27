@@ -50,7 +50,7 @@
     <main>
 
     <!-- Header Section -->
-    <div class="relative pt-24 pb-16 overflow-hidden bg-white shadow-sm mb-6">
+    <div class="relative z-30 pt-24 pb-12 bg-white shadow-sm mb-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
@@ -63,15 +63,63 @@
                     </div>
                 </div>
 
-                <!-- Search -->
-                <div class="w-full md:w-96">
-                    <form action="{{ route('galeri') }}" method="GET" class="relative">
+                <!-- Search & Pop-down Filter Dropdown -->
+                @php
+                    $currentType = request('type', 'all');
+                    $types = [
+                        'all' => ['label' => 'Semua Tipe', 'dot' => 'bg-slate-500'],
+                        'buku' => ['label' => 'Buku', 'dot' => 'bg-[#ef4444]'],
+                        'referensi' => ['label' => 'Referensi', 'dot' => 'bg-indigo-600'],
+                        'tesis' => ['label' => 'Tesis', 'dot' => 'bg-blue-600'],
+                        'skripsi' => ['label' => 'Skripsi', 'dot' => 'bg-purple-600'],
+                        'disertasi' => ['label' => 'Disertasi', 'dot' => 'bg-amber-500'],
+                        'jurnal' => ['label' => 'Jurnal', 'dot' => 'bg-orange-500'],
+                        'laporan' => ['label' => 'Laporan', 'dot' => 'bg-emerald-600'],
+                        'makalah' => ['label' => 'Makalah', 'dot' => 'bg-cyan-600'],
+                        'diktat' => ['label' => 'Diktat', 'dot' => 'bg-rose-600'],
+                    ];
+                @endphp
+                <div class="w-full md:w-96 flex flex-col items-end gap-2 relative">
+                    <form action="{{ route('galeri') }}" method="GET" class="relative w-full">
                         <input type="text" id="live-search-input" name="q" value="{{ request('q') }}" placeholder="{{ __('Cari di Galeri...') }}" 
                                class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-0 rounded-xl focus:ring-2 focus:ring-[#106c38]/20 focus:bg-white transition-all text-sm font-medium">
                         <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#106c38]">
                             <i class="ph ph-magnifying-glass text-lg font-bold"></i>
                         </button>
                     </form>
+
+                    <!-- Filter Pop-down Button (Under Search Bar) -->
+                    <div class="relative inline-block self-end">
+                        <button id="type-filter-dropdown-btn" type="button" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 shadow-sm hover:border-[#106c38] hover:text-[#106c38] transition cursor-pointer">
+                            <i class="ph ph-funnel text-sm text-[#106c38]"></i>
+                            <span>{{ __('Filter Tipe:') }}</span>
+                            <span class="font-extrabold text-[#106c38]">
+                                {{ $types[$currentType]['label'] ?? __('Semua Tipe') }}
+                            </span>
+                            <i class="ph ph-caret-down text-xs transition-transform duration-200" id="type-dropdown-arrow"></i>
+                        </button>
+
+                        <!-- Pop-down Dropdown Menu -->
+                        <div id="type-filter-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-[60] transition-all duration-200">
+                            <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 mb-1 flex items-center justify-between">
+                                <span>{{ __('Pilih Tipe Koleksi') }}</span>
+                                <i class="ph ph-funnel text-xs text-[#106c38]"></i>
+                            </div>
+                            @foreach($types as $tKey => $tVal)
+                                @php $isTypeActive = ($currentType === $tKey); @endphp
+                                <a href="{{ route('galeri', array_merge(request()->except('page'), ['type' => $tKey])) }}"
+                                   class="flex items-center justify-between px-3.5 py-2 text-xs font-semibold hover:bg-slate-50 transition {{ $isTypeActive ? 'text-[#106c38] bg-green-50/60 font-bold' : 'text-slate-700' }}">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full {{ $tVal['dot'] }}"></span>
+                                        <span>{{ __($tVal['label']) }}</span>
+                                    </div>
+                                    @if($isTypeActive)
+                                        <i class="ph ph-check-circle text-sm text-[#106c38]"></i>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,7 +127,7 @@
 
     <!-- Content Section -->
     <div class="flex-grow max-w-[1400px] mx-auto w-full px-2 sm:px-4 lg:px-6 mb-20">
-        
+
         <div class="mb-6 max-w-6xl mx-auto px-2">
             @php
                 $hasActiveCategory = request()->has('category') && request('category') !== null && request('category') !== '';
@@ -114,16 +162,16 @@
                     display: inline-flex !important;
                 }
             </style>
-            <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center items-center {{ $hasActiveCategory ? 'expanded-mode' : '' }}">
+            <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center items-center">
                 <!-- Semua Kategori -->
-                <a href="{{ route('galeri', ['q' => request('q')]) }}" 
+                <a href="{{ route('galeri', array_merge(request()->except('page', 'category'), ['q' => request('q')])) }}" 
                    class="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ request('category') === null || request('category') === '' ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40' }}">
                     <i class="ph ph-squares-four text-base sm:text-lg"></i>
                     <span>{{ __('Semua Kategori') }}</span>
                 </a>
                 
                 <!-- Diminati -->
-                <a href="{{ route('galeri', ['category' => 'terlaris', 'q' => request('q')]) }}" 
+                <a href="{{ route('galeri', array_merge(request()->except('page'), ['category' => 'terlaris', 'q' => request('q')])) }}" 
                    class="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ request('category') === 'terlaris' ? 'bg-gradient-to-r from-amber-500 to-orange-500 border-amber-500 text-white font-bold shadow-md shadow-orange-300/60 ring-2 ring-orange-400/60' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:border-orange-400 hover:text-orange-600 hover:shadow-md hover:shadow-orange-200/60 hover:ring-2 hover:ring-orange-400/50' }}">
                     <i class="ph ph-fire {{ request('category') === 'terlaris' ? 'text-white animate-pulse' : 'text-amber-500 group-hover:text-orange-500' }} text-base sm:text-lg"></i>
                     <span>{{ __('Diminati') }}</span>
@@ -139,7 +187,7 @@
                         elseif ($index < 2) $visibilityClass = 'cat-collapsible lg-visible';
                         elseif ($index < 3) $visibilityClass = 'cat-collapsible xl-visible';
                     @endphp
-                    <a href="{{ route('galeri', ['category' => $key, 'q' => request('q')]) }}" 
+                    <a href="{{ route('galeri', array_merge(request()->except('page'), ['category' => $key, 'q' => request('q')])) }}" 
                        class="group category-bubble {{ $visibilityClass }} relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40' }}">
                         <i class="ph {{ $cat['icon'] }} text-base sm:text-lg"></i>
                         <span>{{ __($cat['name']) }}</span>
@@ -148,8 +196,8 @@
 
                 <!-- Toggle Button -->
                 <button id="toggle-category-btn" class="group flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] inline-flex items-center gap-1 transition-all duration-300 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] hover:ring-2 hover:ring-[#106c38]/40 hover:shadow-md hover:shadow-green-100 cursor-pointer transform hover:-translate-y-0.5">
-                    <span id="toggle-category-text">{{ $hasActiveCategory ? __('Sembunyikan') : __('Lainnya') }}</span>
-                    <i id="toggle-category-icon" class="ph ph-caret-down transition-transform duration-300 {{ $hasActiveCategory ? 'rotate-180' : '' }} group-hover:scale-110"></i>
+                    <span id="toggle-category-text">{{ __('Lainnya') }}</span>
+                    <i id="toggle-category-icon" class="ph ph-caret-down transition-transform duration-300 group-hover:scale-110"></i>
                 </button>
             </div>
         </div>
@@ -217,7 +265,7 @@
             const toggleCategoryIcon = document.getElementById('toggle-category-icon');
             
             if (toggleCategoryBtn && categoryContainer) {
-                let isExpanded = {{ request()->has('category') && request('category') !== null && request('category') !== '' ? 'true' : 'false' }};
+                let isExpanded = false;
                 
                 toggleCategoryBtn.addEventListener('click', function() {
                     isExpanded = !isExpanded;
@@ -248,6 +296,26 @@
                         performGallerySearch();
                     });
                 }
+            }
+
+            // Type Filter Pop-down Dropdown Handler
+            const typeDropdownBtn = document.getElementById('type-filter-dropdown-btn');
+            const typeDropdownMenu = document.getElementById('type-filter-dropdown-menu');
+            const typeDropdownArrow = document.getElementById('type-dropdown-arrow');
+
+            if (typeDropdownBtn && typeDropdownMenu) {
+                typeDropdownBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    typeDropdownMenu.classList.toggle('hidden');
+                    if (typeDropdownArrow) typeDropdownArrow.classList.toggle('rotate-180');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!typeDropdownMenu.contains(e.target) && !typeDropdownBtn.contains(e.target)) {
+                        typeDropdownMenu.classList.add('hidden');
+                        if (typeDropdownArrow) typeDropdownArrow.classList.remove('rotate-180');
+                    }
+                });
             }
 
             // Event delegation for custom per-page dropdown in gallery

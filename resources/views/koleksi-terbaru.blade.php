@@ -55,7 +55,7 @@
     @include('partials.navbar')
 
     <!-- Header Section -->
-    <div class="relative pt-24 pb-16 overflow-hidden bg-white shadow-sm mb-6">
+    <div class="relative z-30 pt-24 pb-12 bg-white shadow-sm mb-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
@@ -68,14 +68,60 @@
                     </div>
                 </div>
 
-                <!-- Search -->
-                <form action="{{ route('koleksi.terbaru') }}" method="GET" class="w-full md:w-96 relative">
-                    <input type="text" name="q" id="live-search" value="{{ request('q') }}" placeholder="{{ __('Cari Koleksi...') }}" 
-                           class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-0 rounded-xl focus:ring-2 focus:ring-[#106c38]/20 focus:bg-white transition-all text-sm font-medium outline-none">
-                    <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#106c38] transition cursor-pointer bg-transparent border-0 outline-none flex items-center justify-center">
-                        <i class="ph ph-magnifying-glass text-lg font-bold"></i>
-                    </button>
-                </form>
+                <!-- Search & Pop-down Filter Dropdown -->
+                <div class="w-full md:w-96 flex flex-col items-end gap-2 relative">
+                    <form action="{{ route('koleksi.terbaru') }}" method="GET" class="w-full relative">
+                        <input type="text" name="q" id="live-search" value="{{ request('q') }}" placeholder="{{ __('Cari Koleksi...') }}" 
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-0 rounded-xl focus:ring-2 focus:ring-[#106c38]/20 focus:bg-white transition-all text-sm font-medium outline-none">
+                        <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#106c38] transition cursor-pointer bg-transparent border-0 outline-none flex items-center justify-center">
+                            <i class="ph ph-magnifying-glass text-lg font-bold"></i>
+                        </button>
+                    </form>
+
+                    <!-- Filter Pop-down Button (Under Search Bar) -->
+                    <div class="relative inline-block self-end">
+                        <button id="type-filter-dropdown-btn" type="button" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 shadow-sm hover:border-[#106c38] hover:text-[#106c38] transition cursor-pointer">
+                            <i class="ph ph-funnel text-sm text-[#106c38]"></i>
+                            <span>{{ __('Filter Tipe:') }}</span>
+                            <span class="font-extrabold text-[#106c38]" id="selected-type-label">
+                                {{ __('Semua Tipe') }}
+                            </span>
+                            <i class="ph ph-caret-down text-xs transition-transform duration-200" id="type-dropdown-arrow"></i>
+                        </button>
+
+                        <!-- Pop-down Dropdown Menu -->
+                        <div id="type-filter-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-[60] transition-all duration-200">
+                            <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 mb-1 flex items-center justify-between">
+                                <span>{{ __('Pilih Tipe Koleksi') }}</span>
+                                <i class="ph ph-funnel text-xs text-[#106c38]"></i>
+                            </div>
+                            @php
+                                $types = [
+                                    'all' => ['label' => 'Semua Tipe', 'dot' => 'bg-slate-500'],
+                                    'buku' => ['label' => 'Buku', 'dot' => 'bg-[#ef4444]'],
+                                    'referensi' => ['label' => 'Referensi', 'dot' => 'bg-indigo-600'],
+                                    'tesis' => ['label' => 'Tesis', 'dot' => 'bg-blue-600'],
+                                    'skripsi' => ['label' => 'Skripsi', 'dot' => 'bg-purple-600'],
+                                    'disertasi' => ['label' => 'Disertasi', 'dot' => 'bg-amber-500'],
+                                    'jurnal' => ['label' => 'Jurnal', 'dot' => 'bg-orange-500'],
+                                    'laporan' => ['label' => 'Laporan', 'dot' => 'bg-emerald-600'],
+                                    'makalah' => ['label' => 'Makalah', 'dot' => 'bg-cyan-600'],
+                                    'diktat' => ['label' => 'Diktat', 'dot' => 'bg-rose-600'],
+                                ];
+                            @endphp
+                            @foreach($types as $tKey => $tVal)
+                                <button type="button" data-type="{{ $tKey }}" data-label="{{ __($tVal['label']) }}"
+                                        class="type-option-btn w-full flex items-center justify-between px-3.5 py-2 text-xs font-semibold hover:bg-slate-50 transition cursor-pointer text-slate-700">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full {{ $tVal['dot'] }}"></span>
+                                        <span>{{ __($tVal['label']) }}</span>
+                                    </div>
+                                    <i class="ph ph-check-circle text-sm text-[#106c38] active-check {{ $tKey === 'all' ? '' : 'hidden' }}"></i>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -194,6 +240,7 @@
                      data-publisher="{{ strtolower($book->publisher) }}" 
                      data-subject="{{ $subjValue }}"
                      data-terlaris="{{ in_array((string)$book->idmaster, $terlarisBookIds ?? []) ? 'true' : 'false' }}"
+                     data-jenis="{{ strtolower(trim($book->jenis_name)) }}"
                      data-available="{{ $availableCopies > 0 ? 'true' : 'false' }}">
                     
                     <!-- Card Numbering Index -->
@@ -367,6 +414,58 @@
             let activeSearch = searchInput ? searchInput.value.toLowerCase().trim() : '';
             let activeFilter = 'all'; // 'all', 'available', or 'subject'
             let activeSubjectValue = '';
+            let activeCollectionType = 'all';
+
+            // Type Filter Pop-down Dropdown Handler
+            const typeDropdownBtn = document.getElementById('type-filter-dropdown-btn');
+            const typeDropdownMenu = document.getElementById('type-filter-dropdown-menu');
+            const typeDropdownArrow = document.getElementById('type-dropdown-arrow');
+            const selectedTypeLabel = document.getElementById('selected-type-label');
+            const typeOptionBtns = document.querySelectorAll('.type-option-btn');
+
+            if (typeDropdownBtn && typeDropdownMenu) {
+                typeDropdownBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    typeDropdownMenu.classList.toggle('hidden');
+                    if (typeDropdownArrow) typeDropdownArrow.classList.toggle('rotate-180');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!typeDropdownMenu.contains(e.target) && !typeDropdownBtn.contains(e.target)) {
+                        typeDropdownMenu.classList.add('hidden');
+                        if (typeDropdownArrow) typeDropdownArrow.classList.remove('rotate-180');
+                    }
+                });
+
+                typeOptionBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        activeCollectionType = btn.getAttribute('data-type');
+                        const labelText = btn.getAttribute('data-label');
+                        if (selectedTypeLabel) selectedTypeLabel.textContent = labelText;
+
+                        // Update check icons
+                        typeOptionBtns.forEach(b => {
+                            const check = b.querySelector('.active-check');
+                            if (b === btn) {
+                                b.classList.add('text-[#106c38]', 'bg-green-50/60', 'font-bold');
+                                b.classList.remove('text-slate-700');
+                                if (check) check.classList.remove('hidden');
+                            } else {
+                                b.classList.remove('text-[#106c38]', 'bg-green-50/60', 'font-bold');
+                                b.classList.add('text-slate-700');
+                                if (check) check.classList.add('hidden');
+                            }
+                        });
+
+                        typeDropdownMenu.classList.add('hidden');
+                        if (typeDropdownArrow) typeDropdownArrow.classList.remove('rotate-180');
+
+                        currentPage = 1;
+                        applyFilters();
+                    });
+                });
+            }
 
             let currentPage = 1;
             let itemsPerPage = 5;
@@ -402,7 +501,10 @@
                         }
                     }
 
-                    if (matchesSearch && matchesFilter) {
+                    const jenis = (card.getAttribute('data-jenis') || '').toLowerCase();
+                    let matchesType = (activeCollectionType === 'all' || jenis.includes(activeCollectionType));
+
+                    if (matchesSearch && matchesFilter && matchesType) {
                         matchedCards.push(card);
                     } else {
                         card.classList.add('!hidden');
