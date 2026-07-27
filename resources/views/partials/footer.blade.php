@@ -490,7 +490,7 @@
                 
             } catch (error) {
                 removeMessage(loadingId);
-                addMessage("{{ __('Maaf, sistem AI sedang offline atau GROQ_API_KEY di .env belum disetting.') }}", 'bot');
+                addMessage("{{ __('Maaf, sistem AI sedang offline atau GEMINI_API_KEY di .env belum disetting.') }}", 'bot');
             }
         }
 
