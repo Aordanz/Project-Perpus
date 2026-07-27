@@ -3,13 +3,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16 gap-3">
             <!-- Logo & Links -->
-            <div class="flex items-center gap-2 sm:gap-4 lg:gap-6 min-w-0 flex-1">
+            <div class="flex items-center gap-2 sm:gap-4 lg:gap-6 shrink-0">
                 <!-- USU Logo & Name -->
-                <a href="{{ route('home') }}" class="flex items-center gap-2 group min-w-0">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-2.5 group shrink-0">
                     <img src="{{ asset('logousu.webp') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain shrink-0">
-                    <div class="flex flex-col min-w-0">
-                        <span class="font-bold text-white leading-none text-[11px] sm:text-sm group-hover:text-green-200 transition truncate">{{ __('Perpustakaan ') }}</span>
-                        <span class="font-bold text-white leading-none text-[10px] sm:text-sm group-hover:text-green-200 transition truncate">{{ __('Universitas Sumatera Utara') }}</span>
+                    <div class="flex flex-col shrink-0">
+                        <span class="font-bold text-white leading-none text-[10px] xs:text-[11px] sm:text-sm group-hover:text-green-200 transition whitespace-nowrap">{{ __('Perpustakaan') }}</span>
+                        <span class="font-bold text-white leading-tight mt-0.5 text-[9px] xs:text-[10px] sm:text-xs md:text-sm group-hover:text-green-200 transition whitespace-nowrap">{{ __('Universitas Sumatera Utara') }}</span>
                     </div>
                 </a>
             </div>
