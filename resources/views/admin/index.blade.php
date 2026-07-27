@@ -162,13 +162,12 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 </head>
-<body class="text-slate-800 antialiased min-h-screen bg-slate-50">
-    <div class="min-h-screen flex flex-col md:flex-row">
-        @include('partials.admin_sidebar')
+<body class="text-slate-800 antialiased min-h-screen bg-slate-50 flex flex-col">
+    @include('partials.admin_sidebar')
 
-        <!-- Main Content Area -->
-        <div class="flex-grow flex flex-col min-w-0">
-            <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
+    <!-- Main Content Area -->
+    <div class="w-full flex-grow flex flex-col min-w-0">
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
         
         <!-- Welcome Alert & Summary -->
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
@@ -337,7 +336,6 @@
                 </div>
             </footer>
         </div>
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
