@@ -251,7 +251,10 @@ class BookController extends Controller
             $this->applyAdvancedSearch($query, $request->inKlasifikasi, ['noklasifikasi']);
         }
         if ($request->filled('inJenis')) {
-            $query->where('jenis', $request->inJenis);
+            $typeQuery = strtolower(trim($request->inJenis));
+            $query->whereHas('collectionTypeRelation', function ($ct) use ($typeQuery) {
+                $ct->whereRaw('LOWER(jenis_koleksi) = ?', [$typeQuery]);
+            });
         }
 
         // Barcode or Location filtering (relates to items)
@@ -364,13 +367,13 @@ class BookController extends Controller
             $this->applyAdvancedSearch($query, $request->q);
         }
 
-        // Filter berdasarkan Tipe Koleksi (Buku, Referensi, Tesis, Skripsi, Jurnal, etc.)
+        // Filter berdasarkan Tipe Koleksi - gunakan exact match via collectionTypeRelation
+        // CATATAN: kolom `jenis` di tblbuku bernilai 'buku' untuk SEMUA record,
+        // sehingga filter hanya boleh lewat tbljenis_koleksi (exact match).
         if ($request->filled('type') && $request->type !== 'all') {
             $typeQuery = strtolower(trim($request->type));
-            $query->where(function ($q) use ($typeQuery) {
-                $q->whereHas('collectionTypeRelation', function ($ct) use ($typeQuery) {
-                    $ct->whereRaw('LOWER(jenis_koleksi) LIKE ?', ["%{$typeQuery}%"]);
-                })->orWhereRaw('LOWER(jenis) LIKE ?', ["%{$typeQuery}%"]);
+            $query->whereHas('collectionTypeRelation', function ($ct) use ($typeQuery) {
+                $ct->whereRaw('LOWER(jenis_koleksi) = ?', [$typeQuery]);
             });
         }
 

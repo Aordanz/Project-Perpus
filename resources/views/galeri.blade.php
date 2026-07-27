@@ -66,17 +66,18 @@
                 <!-- Search & Pop-down Filter Dropdown -->
                 @php
                     $currentType = request('type', 'all');
+                    // Key harus EXACT MATCH (case-insensitive) dengan kolom jenis_koleksi di tbljenis_koleksi
                     $types = [
-                        'all' => ['label' => 'Semua Tipe', 'dot' => 'bg-slate-500'],
-                        'buku' => ['label' => 'Buku', 'dot' => 'bg-[#ef4444]'],
-                        'referensi' => ['label' => 'Referensi', 'dot' => 'bg-indigo-600'],
-                        'tesis' => ['label' => 'Tesis', 'dot' => 'bg-blue-600'],
-                        'skripsi' => ['label' => 'Skripsi', 'dot' => 'bg-purple-600'],
-                        'disertasi' => ['label' => 'Disertasi', 'dot' => 'bg-amber-500'],
-                        'jurnal' => ['label' => 'Jurnal', 'dot' => 'bg-orange-500'],
-                        'laporan' => ['label' => 'Laporan', 'dot' => 'bg-emerald-600'],
-                        'makalah' => ['label' => 'Makalah', 'dot' => 'bg-cyan-600'],
-                        'diktat' => ['label' => 'Diktat', 'dot' => 'bg-rose-600'],
+                        'all'               => ['label' => 'Semua Tipe', 'dot' => 'bg-slate-500'],
+                        'buku'              => ['label' => 'Buku', 'dot' => 'bg-[#ef4444]'],
+                        'referensi'         => ['label' => 'Referensi', 'dot' => 'bg-indigo-600'],
+                        'tesis'             => ['label' => 'Tesis', 'dot' => 'bg-blue-600'],
+                        'skripsi'           => ['label' => 'Skripsi', 'dot' => 'bg-purple-600'],
+                        'disertasi'         => ['label' => 'Disertasi', 'dot' => 'bg-amber-500'],
+                        'jurnal'            => ['label' => 'Jurnal', 'dot' => 'bg-orange-500'],
+                        'laporan penelitian' => ['label' => 'Laporan', 'dot' => 'bg-emerald-600'],
+                        'makalah'           => ['label' => 'Makalah', 'dot' => 'bg-cyan-600'],
+                        'diktat'            => ['label' => 'Diktat', 'dot' => 'bg-rose-600'],
                     ];
                 @endphp
                 <div class="w-full md:w-96 flex flex-col items-end gap-2 relative">

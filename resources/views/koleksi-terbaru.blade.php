@@ -104,7 +104,7 @@
                                     'skripsi' => ['label' => 'Skripsi', 'dot' => 'bg-purple-600'],
                                     'disertasi' => ['label' => 'Disertasi', 'dot' => 'bg-amber-500'],
                                     'jurnal' => ['label' => 'Jurnal', 'dot' => 'bg-orange-500'],
-                                    'laporan' => ['label' => 'Laporan', 'dot' => 'bg-emerald-600'],
+                                    'laporan penelitian' => ['label' => 'Laporan', 'dot' => 'bg-emerald-600'],
                                     'makalah' => ['label' => 'Makalah', 'dot' => 'bg-cyan-600'],
                                     'diktat' => ['label' => 'Diktat', 'dot' => 'bg-rose-600'],
                                 ];
@@ -502,7 +502,9 @@
                     }
 
                     const jenis = (card.getAttribute('data-jenis') || '').toLowerCase();
-                    let matchesType = (activeCollectionType === 'all' || jenis.includes(activeCollectionType));
+                    let matchesType = (activeCollectionType === 'all' || 
+                                       jenis === activeCollectionType || 
+                                       (activeCollectionType === 'laporan penelitian' && jenis.includes('laporan')));
 
                     if (matchesSearch && matchesFilter && matchesType) {
                         matchedCards.push(card);
