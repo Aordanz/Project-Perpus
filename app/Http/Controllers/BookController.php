@@ -321,11 +321,18 @@ class BookController extends Controller
     }
 
     /**
-     * Display the 20 latest books.
+     * Display the latest books (matches OPAC digilib.usu.ac.id logic).
+     * Only shows books with valid tglinput (input date), sorted newest first.
+     * Books without tglinput are old catalog imports and not considered "new arrivals".
      */
     public function latest(Request $request)
     {
-        $query = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])->latest();
+        $query = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
+            // Hanya tampilkan buku yang punya tanggal input valid (sama seperti OPAC digilib.usu.ac.id)
+            ->whereNotNull('tglinput')
+            ->where('tglinput', '!=', '')
+            ->where('tglinput', '!=', '0000-00-00 00:00:00')
+            ->orderByDesc('tglinput');
 
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);
@@ -338,7 +345,8 @@ class BookController extends Controller
             });
         }
 
-        $latestBooks = $query->take(50)->get();
+        // Ambil 40 terbaru
+        $latestBooks = $query->take(40)->get();
         
         $locations = Location::all();
         

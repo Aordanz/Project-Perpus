@@ -75,6 +75,15 @@ class AdminController extends Controller implements HasMiddleware
 
         $selectedLocation = ($request->filled('lokasi') && $request->lokasi !== 'all') ? $request->lokasi : 'Semua Lokasi';
 
+        // Get 10 latest books (matching OPAC logic: valid tglinput, sorted newest first)
+        $latestBooks = Book::with(['publisherRelation', 'collectionTypeRelation'])
+            ->whereNotNull('tglinput')
+            ->where('tglinput', '!=', '')
+            ->where('tglinput', '!=', '0000-00-00 00:00:00')
+            ->orderByDesc('tglinput')
+            ->limit(10)
+            ->get();
+
         return view('admin.index', compact(
             'totalBooks',
             'totalItems',
@@ -84,7 +93,8 @@ class AdminController extends Controller implements HasMiddleware
             'totalBooksWithoutCover',
             'locationStats',
             'locationsList',
-            'selectedLocation'
+            'selectedLocation',
+            'latestBooks'
         ));
     }
 
