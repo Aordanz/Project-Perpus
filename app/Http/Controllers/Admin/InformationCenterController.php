@@ -77,7 +77,7 @@ class InformationCenterController extends Controller
             }
         }
 
-        $informationCenters = $query->latest()->paginate(10)->withQueryString();
+        $informationCenters = $query->orderBy('sort_order', 'asc')->latest()->paginate(10)->withQueryString();
 
         return view('admin.information_center.index', compact('informationCenters', 'tab', 'countActive', 'countHistory'));
     }
@@ -146,6 +146,11 @@ class InformationCenterController extends Controller
             $data = $this->processCategoryContent($data, $request);
 
             \Illuminate\Support\Facades\Log::info('[IC-STORE] Data siap disimpan', ['data_keys' => array_keys($data), 'data' => $data]);
+
+            // Shift existing sort_order if there's a conflict
+            if (isset($data['sort_order'])) {
+                InformationCenter::where('sort_order', '>=', $data['sort_order'])->increment('sort_order');
+            }
 
             InformationCenter::create($data);
 
@@ -233,6 +238,21 @@ class InformationCenterController extends Controller
 
         // Proses data kustom kategori menjadi format JSON jika relevan
         $data = $this->processCategoryContent($data, $request);
+
+        if (isset($data['sort_order']) && $data['sort_order'] != $informationCenter->sort_order) {
+            $newSort = (int) $data['sort_order'];
+            $oldSort = (int) $informationCenter->sort_order;
+
+            if ($newSort < $oldSort) {
+                InformationCenter::where('sort_order', '>=', $newSort)
+                    ->where('sort_order', '<', $oldSort)
+                    ->increment('sort_order');
+            } elseif ($newSort > $oldSort) {
+                InformationCenter::where('sort_order', '<=', $newSort)
+                    ->where('sort_order', '>', $oldSort)
+                    ->decrement('sort_order');
+            }
+        }
 
         $informationCenter->update($data);
 

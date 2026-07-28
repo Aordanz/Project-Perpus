@@ -47,9 +47,6 @@ class EventController extends Controller
                 $descriptionRaw = $unwrapText($contentDecoded['description']);
             }
             $cleanDescription = trim(strip_tags($descriptionRaw));
-            if (empty($cleanDescription)) {
-                $cleanDescription = trim(strip_tags($unwrapText($event->summary)));
-            }
 
             // Parse tips menjadi array bullet untuk kategori tips
             $tipsBullets = [];

@@ -79,10 +79,6 @@
 
                     <h2 class="text-2xl font-bold text-slate-800 mb-2">{{ $informationCenter->title }}</h2>
                     
-                    @if($informationCenter->summary)
-                        <p class="text-slate-600 font-medium mb-6 text-sm leading-relaxed border-l-4 border-usu-green pl-4 py-1 bg-slate-50/50 rounded-r-lg">{{ $informationCenter->summary }}</p>
-                    @endif
-
                     @php
                         $contentData = json_decode($informationCenter->content, true);
                         $isJsonContent = json_last_error() === JSON_ERROR_NONE && is_array($contentData);
@@ -326,7 +322,7 @@
                                     </div>
 
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-2">Selesai Tayang <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                                        <label class="block text-xs font-bold text-slate-600 mb-2">Selesai Tayang <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></label>
                                         <div class="grid grid-cols-2 gap-3">
                                             <div>
                                                 <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>

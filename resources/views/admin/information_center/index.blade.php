@@ -161,7 +161,7 @@
                             <input type="checkbox" id="select-all-checkbox" class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" title="Pilih Semua">
                         </th>
                     @endif
-                    <th class="px-5 py-4 font-semibold w-16">No</th>
+                    <th class="px-5 py-4 font-semibold w-16 text-center">No</th>
                     <th class="px-5 py-4 font-semibold">Gambar</th>
                     <th class="px-5 py-4 font-semibold">Judul & Kategori</th>
                     <th class="px-5 py-4 font-semibold">Tampilan</th>
@@ -178,7 +178,9 @@
                                 <input type="checkbox" name="ids[]" value="{{ $info->id }}" class="history-checkbox w-4 h-4 accent-emerald-600 rounded cursor-pointer">
                             </td>
                         @endif
-                        <td class="px-5 py-4 text-slate-500">{{ $informationCenters->firstItem() + $index }}</td>
+                        <td class="px-5 py-4">
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700 font-black text-xs border border-slate-200 shadow-sm">{{ $informationCenters->firstItem() + $index }}</span>
+                        </td>
                         <td class="px-5 py-4">
                             @if($info->image_path)
                                 <img src="{{ asset($info->image_path) }}" alt="{{ $info->title }}" class="h-12 w-20 object-cover rounded shadow-sm border border-slate-200 {{ $info->computed_status === 'expired' ? 'grayscale opacity-80' : '' }}" onerror="this.onerror=null; this.src='{{ asset('perpustakaan_depan.webp') }}';">
@@ -493,7 +495,7 @@
                                     </div>
 
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-2">Selesai Tayang <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                                        <label class="block text-xs font-bold text-slate-600 mb-2">Selesai Tayang <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></label>
                                         <div class="grid grid-cols-2 gap-3">
                                             <div>
                                                 <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>

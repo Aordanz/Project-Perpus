@@ -50,17 +50,54 @@
             @endif
 
             @if (isset($errors) && $errors->any())
-                <div class="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-2xl flex gap-3 text-sm font-medium shadow-sm">
-                    <i class="ph ph-warning-circle text-2xl flex-shrink-0"></i>
-                    <div class="leading-normal">
-                        <p class="font-bold">Terjadi Kesalahan Validasi:</p>
-                        <ul class="list-disc pl-5 mt-1 space-y-0.5">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const errorKeys = {!! json_encode($errors->keys()) !!};
+                        const errorMessages = {!! json_encode($errors->messages()) !!};
+                        
+                        let firstErrorElement = null;
+                        
+                        errorKeys.forEach(key => {
+                            let input = document.querySelector(`[name="${key}"]`);
+                            if (!input && key.includes('.')) {
+                                const parts = key.split('.');
+                                if (parts.length === 2) {
+                                    input = document.querySelector(`[name="${parts[0]}[${parts[1]}]"]`);
+                                } else if (parts.length === 3) {
+                                    input = document.querySelector(`[name="${parts[0]}[${parts[1]}][${parts[2]}]"]`);
+                                }
+                            }
+                            
+                            if (input) {
+                                if (!firstErrorElement) firstErrorElement = input;
+                                input.classList.add('border-red-500', '!border-red-500', 'focus:ring-red-500', 'bg-red-50');
+                                
+                                // Check if an error message already exists
+                                let next = input.nextElementSibling;
+                                let hasErrorNode = false;
+                                while(next) {
+                                    if(next.tagName === 'P' && next.classList.contains('text-red-500')) {
+                                        hasErrorNode = true;
+                                        break;
+                                    }
+                                    next = next.nextElementSibling;
+                                }
+                                
+                                if (!hasErrorNode) {
+                                    const errorText = document.createElement('p');
+                                    errorText.className = 'text-[10px] text-red-500 mt-1 font-bold flex items-center gap-1';
+                                    errorText.innerHTML = `<i class="ph-fill ph-warning-circle"></i> ${errorMessages[key][0]}`;
+                                    input.parentNode.insertBefore(errorText, input.nextSibling);
+                                }
+                            }
+                        });
+                        
+                        if (firstErrorElement) {
+                            firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            setTimeout(() => firstErrorElement.focus(), 300);
+                        }
+                    });
+                </script>
             @endif
 
             @yield('content')
