@@ -63,96 +63,209 @@
         </div>
 
         <!-- Main Content Area -->
-        <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20 space-y-16">
+        <div class="max-w-[90rem] mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20 space-y-16">
             
-            <!-- Section 1: Top 4 Contact Cards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- New White Container for Contact Info (Screenshot match) -->
+            <div class="bg-white rounded-[2.5rem] p-6 pt-10 sm:p-10 lg:p-12 shadow-[0_15px_60px_rgb(0,0,0,0.08)] relative border border-slate-50 mt-16 lg:mt-24">
                 
-                <!-- Card 1: Alamat Utama -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-[#106c38] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                            <i class="ph ph-map-pin-line text-2xl"></i>
+                <!-- Background decorations -->
+                <div class="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-emerald-50/80 to-transparent rounded-br-[100px] pointer-events-none"></div>
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-emerald-50/80 to-transparent rounded-bl-[100px] pointer-events-none"></div>
+                <div class="absolute -top-10 -left-10 w-40 h-40 bg-emerald-100/30 blur-3xl rounded-full"></div>
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-100/30 blur-3xl rounded-full"></div>
+                
+                <!-- Header -->
+                <div class="relative z-10 text-center mb-16 lg:mb-20">
+                    <h2 class="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-[#115e32] mb-4 tracking-tight">Informasi & Kontak Perpustakaan</h2>
+                    <div class="flex items-center justify-center gap-2 mb-4">
+                        <div class="h-1 w-12 bg-emerald-200 rounded-full"></div>
+                        <div class="h-1 w-3 bg-[#106c38] rounded-full"></div>
+                    </div>
+                    <p class="text-slate-500 font-medium text-sm sm:text-base">Temukan informasi penting dan hubungi kami dengan mudah</p>
+                </div>
+
+                <!-- 4 Cards Grid -->
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 gap-y-16">
+                    
+                    <!-- Card 1: Lokasi Utama -->
+                    <div class="bg-white rounded-3xl p-6 pb-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-slate-100 flex flex-col items-center text-center relative pt-12 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="absolute -top-9 w-18 h-18 rounded-full bg-white shadow-[0_8px_20px_rgb(0,0,0,0.08)] flex items-center justify-center border border-slate-50 p-1.5">
+                            <div class="w-14 h-14 rounded-full bg-emerald-50/50 flex items-center justify-center">
+                                <i class="ph ph-map-pin text-[26px] text-[#106c38]"></i>
+                            </div>
                         </div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ __('Lokasi Utama') }}</h3>
-                        <h4 class="text-lg font-bold text-slate-800 mb-2">{{ __('Alamat Kampus') }}</h4>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                            Jl. Perpustakaan No. 1<br>
-                            Kampus USU Medan 20155<br>
-                            Sumatera Utara, Indonesia
+                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">Lokasi Utama</h3>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">Alamat Kampus</h4>
+                        
+                        <div class="flex items-center gap-3 text-left w-full mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
+                                <i class="ph ph-buildings text-xl"></i>
+                            </div>
+                            <p class="text-slate-600 text-xs sm:text-[13px] leading-relaxed font-medium">
+                                Jl. Perpustakaan No. 1<br>
+                                Kampus USU Medan 20155<br>
+                                Sumatera Utara, Indonesia
+                            </p>
+                        </div>
+                        
+
+
+                        <a href="https://maps.google.com/?q=Perpustakaan+Universitas+Sumatera+Utara" target="_blank" class="mt-auto w-full py-3 rounded-2xl border border-slate-200 text-[#106c38] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#106c38] hover:text-white hover:border-[#106c38] transition-colors duration-300">
+                            <i class="ph ph-map-pin text-base"></i> Buka di Google Maps <i class="ph ph-caret-right text-xs"></i>
+                        </a>
+                    </div>
+
+                    <!-- Card 2: Telepon -->
+                    <div class="bg-white rounded-3xl p-6 pb-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-slate-100 flex flex-col items-center text-center relative pt-12 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="absolute -top-9 w-18 h-18 rounded-full bg-white shadow-[0_8px_20px_rgb(0,0,0,0.08)] flex items-center justify-center border border-slate-50 p-1.5">
+                            <div class="w-14 h-14 rounded-full bg-emerald-50/50 flex items-center justify-center">
+                                <i class="ph ph-phone text-[26px] text-[#106c38]"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">Hotline & Telefon</h3>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">Telepon</h4>
+                        
+                        <div class="flex flex-col gap-4 text-left w-full mb-6">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
+                                    <i class="ph ph-phone-call text-base"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Reservasi Buku & Referensi</p>
+                                    <p class="text-[#106c38] font-extrabold text-sm">0812-6260-2129</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
+                                    <i class="ph ph-phone-call text-base"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Reservasi Artikel</p>
+                                    <p class="text-[#106c38] font-extrabold text-sm">0813-9677-7904</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
+                                    <i class="ph ph-phone-call text-base"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Layanan Bebas Pustaka</p>
+                                    <p class="text-[#106c38] font-extrabold text-sm">0813-6215-8587</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
+                                    <i class="ph ph-phone-call text-base"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Telepon Kantor (Humas)</p>
+                                    <p class="text-[#106c38] font-extrabold text-sm">(+62) 61 813108</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="tel:+6261813108" class="mt-auto w-full py-3 rounded-2xl bg-[#106c38] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-emerald-700 transition-colors duration-300 shadow-md shadow-emerald-200">
+                            <i class="ph ph-phone-call text-base"></i> Hubungi Telepon
+                        </a>
+                    </div>
+
+                    <!-- Card 3: Email & Web -->
+                    <div class="bg-white rounded-3xl p-6 pb-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-slate-100 flex flex-col items-center text-center relative pt-12 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="absolute -top-9 w-18 h-18 rounded-full bg-white shadow-[0_8px_20px_rgb(0,0,0,0.08)] flex items-center justify-center border border-slate-50 p-1.5">
+                            <div class="w-14 h-14 rounded-full bg-emerald-50/50 flex items-center justify-center">
+                                <i class="ph ph-envelope-simple text-[26px] text-[#106c38]"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">Korespondensi Digital</h3>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">Email & Portal</h4>
+                        
+                        <div class="flex flex-col gap-3.5 w-full mb-6">
+                            <div class="flex items-center gap-3.5 border border-slate-100 p-4 rounded-2xl bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
+                                    <i class="ph ph-envelope-simple text-lg"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Email</p>
+                                    <p class="text-[#106c38] font-extrabold text-[13px]">library@usu.ac.id</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3.5 border border-slate-100 p-4 rounded-2xl bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
+                                    <i class="ph ph-globe text-lg"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Web</p>
+                                    <p class="text-[#106c38] font-extrabold text-[13px]">library.usu.ac.id</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+
+                        <a href="mailto:library@usu.ac.id" class="mt-auto w-full py-3 rounded-2xl border border-slate-200 text-[#106c38] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#106c38] hover:text-white hover:border-[#106c38] transition-colors duration-300">
+                            <i class="ph ph-envelope-simple text-base"></i> Kirim Email <i class="ph ph-caret-right text-xs"></i>
+                        </a>
+                    </div>
+
+                    <!-- Card 4: Jam Operasional -->
+                    <div class="bg-white rounded-3xl p-6 pb-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-slate-100 flex flex-col items-center text-center relative pt-12 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="absolute -top-9 w-18 h-18 rounded-full bg-white shadow-[0_8px_20px_rgb(0,0,0,0.08)] flex items-center justify-center border border-slate-50 p-1.5">
+                            <div class="w-14 h-14 rounded-full bg-emerald-50/50 flex items-center justify-center">
+                                <i class="ph ph-clock text-[26px] text-[#106c38]"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">Waktu Kunjungan</h3>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">Jam Operasional</h4>
+                        
+                        <div class="flex flex-col gap-4 text-left w-full mb-6">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-50">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
+                                        <i class="ph ph-calendar-blank text-base"></i>
+                                    </div>
+                                    <span class="text-[13px] font-semibold text-slate-700">Senin – Kamis</span>
+                                </div>
+                                <span class="text-[13px] font-black text-[#106c38]">08.00 - 20.00</span>
+                            </div>
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-50">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
+                                        <i class="ph ph-calendar-blank text-base"></i>
+                                    </div>
+                                    <span class="text-[13px] font-semibold text-slate-700">Jumat</span>
+                                </div>
+                                <span class="text-[13px] font-black text-[#106c38]">08.00 - 17.00</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
+                                        <i class="ph ph-calendar-blank text-base"></i>
+                                    </div>
+                                    <span class="text-[13px] font-semibold text-slate-600">Sabtu, Minggu<br> & Libur</span>
+                                </div>
+                                <span class="text-[11px] font-extrabold text-rose-500 bg-rose-50 px-3 py-1 rounded-md">Tutup</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-auto w-full bg-emerald-50 rounded-2xl p-4 flex items-center gap-4">
+                            <i class="ph ph-info text-2xl text-[#106c38]"></i>
+                            <div class="text-left">
+                                <p class="text-[11px] font-bold text-slate-500 mb-0.5">Istirahat Jumat:</p>
+                                <p class="text-[13px] font-extrabold text-[#106c38]">12.00 - 13.30</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Banner inside container -->
+                <div class="mt-12 flex items-center justify-center relative z-10 border-t border-slate-100 pt-10">
+                    <div class="inline-flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 shadow-sm">
+                        <div class="w-10 h-10 rounded-full bg-[#106c38] text-white flex items-center justify-center shrink-0 shadow-md">
+                            <i class="ph-fill ph-bank text-lg"></i>
+                        </div>
+                        <p class="text-[13px] sm:text-sm font-semibold text-slate-700 leading-snug">
+                            Perpustakaan USU berkomitmen memberikan layanan terbaik<br class="hidden sm:block"> untuk mendukung kebutuhan akademik Anda. <i class="ph-fill ph-heart text-emerald-500"></i>
                         </p>
-                    </div>
-                    <a href="https://maps.google.com/?q=Perpustakaan+Universitas+Sumatera+Utara" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#106c38] hover:text-emerald-800 transition group-hover:translate-x-1 duration-200">
-                        <span>{{ __('Buka di Google Maps') }}</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </a>
-                </div>
-
-                <!-- Card 2: Telepon & Fax -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-[#106c38] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                            <i class="ph ph-phone-call text-2xl"></i>
-                        </div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ __('Hotline & Telefon') }}</h3>
-                        <h4 class="text-lg font-bold text-slate-800 mb-2">{{ __('Telepon & Fax') }}</h4>
-                        <div class="text-slate-600 text-sm leading-relaxed mb-4 space-y-1">
-                            <p><span class="font-semibold text-slate-700">Phone:</span> (+62)61 813526</p>
-                            <p><span class="font-semibold text-slate-700">Line 2:</span> (+62)61 811112, 811113</p>
-                            <p><span class="font-semibold text-slate-700">Fax:</span> (+62)61 813108</p>
-                        </div>
-                    </div>
-                    <a href="tel:+6261813526" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#106c38] hover:text-emerald-800 transition group-hover:translate-x-1 duration-200">
-                        <span>{{ __('Hubungi Telepon') }}</span>
-                        <i class="ph ph-phone text-sm"></i>
-                    </a>
-                </div>
-
-                <!-- Card 3: Email & Website -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-[#106c38] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                            <i class="ph ph-envelope-simple-open text-2xl"></i>
-                        </div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ __('Korespondensi Digital') }}</h3>
-                        <h4 class="text-lg font-bold text-slate-800 mb-2">{{ __('Email & Portal') }}</h4>
-                        <div class="text-slate-600 text-sm leading-relaxed mb-4 space-y-1">
-                            <p class="truncate"><span class="font-semibold text-slate-700">Email:</span> <a href="mailto:library@usu.ac.id" class="text-[#106c38] hover:underline">library@usu.ac.id</a></p>
-                            <p class="truncate"><span class="font-semibold text-slate-700">Web:</span> <a href="https://library.usu.ac.id" target="_blank" class="text-[#106c38] hover:underline">library.usu.ac.id</a></p>
-                        </div>
-                    </div>
-                    <a href="mailto:library@usu.ac.id" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#106c38] hover:text-emerald-800 transition group-hover:translate-x-1 duration-200">
-                        <span>{{ __('Kirim Email') }}</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </a>
-                </div>
-
-                <!-- Card 4: Jam Operasional -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-[#106c38] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                            <i class="ph ph-clock text-2xl"></i>
-                        </div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ __('Waktu Kunjungan') }}</h3>
-                        <h4 class="text-lg font-bold text-slate-800 mb-2">{{ __('Jam Operasional') }}</h4>
-                        <div class="text-slate-600 text-xs leading-relaxed mb-4 space-y-1.5">
-                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                                <span class="font-medium text-slate-700">{{ __('Senin - Kamis') }}</span>
-                                <span class="font-bold text-emerald-700">08.00 - 20.00</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                                <span class="font-medium text-slate-700">{{ __('Jumat') }}</span>
-                                <span class="font-bold text-emerald-700">08.00 - 17.00</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1">
-                                <span class="font-medium text-slate-500">{{ __('Sabtu, Minggu & Libur') }}</span>
-                                <span class="font-semibold text-rose-500 bg-rose-50 px-2 py-0.5 rounded">{{ __('Tutup') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="inline-flex items-center gap-1.5 text-xs text-slate-400">
-                        <i class="ph ph-info text-sm text-emerald-600"></i>
-                        <span>{{ __('Istirahat Jumat: 12.00 - 13.30') }}</span>
                     </div>
                 </div>
 

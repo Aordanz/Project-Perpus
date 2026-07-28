@@ -185,7 +185,7 @@
                 <h2 class="text-sm font-black text-slate-800">Kategori Informasi</h2>
                 <p class="text-xs text-slate-400 mt-0.5">Kategori konten informasi ini dapat diubah jika diperlukan</p>
             </div>
-            <span class="text-[10px] font-bold text-red-400 shrink-0">Wajib ✱</span>
+            <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold uppercase tracking-widest shrink-0">Wajib ✱</span>
         </div>
         <div class="form-card-body">
 
@@ -276,7 +276,7 @@
                 <h2 class="text-sm font-black text-slate-800">Jenis Informasi</h2>
                 <p class="text-xs text-slate-400 mt-0.5">Tentukan bentuk tampilan informasi di halaman depan</p>
             </div>
-            <span class="text-[10px] font-bold text-red-400 shrink-0">Wajib ✱</span>
+            <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold uppercase tracking-widest shrink-0">Wajib ✱</span>
         </div>
         <div class="form-card-body">
             <div class="flex flex-col sm:flex-row gap-4">
@@ -336,21 +336,15 @@
                     <div class="form-card-body space-y-5">
 
                         <div>
-                            <label class="fl" for="title">Judul Informasi / Kegiatan <span class="text-red-500 normal-case">*</span></label>
+                            <label class="fl" for="title">Judul Informasi / Kegiatan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
                             <input type="text" name="title" id="title" value="{{ old('title', $informationCenter->title) }}" required
                                    class="fi" placeholder="Contoh: Workshop Mendeley untuk Mahasiswa USU...">
                         </div>
 
-                        <div>
-                            <label class="fl" for="summary">Ringkasan Singkat
-                                <span class="normal-case font-medium text-slate-400 ml-1">(tampil di halaman depan)</span>
-                            </label>
-                            <textarea name="summary" id="summary" rows="3" class="fi resize-none"
-                                      placeholder="Tulis 1–2 kalimat menarik yang menggambarkan isi informasi ini...">{{ old('summary', $informationCenter->summary) }}</textarea>
-                        </div>
+
 
                         <div>
-                            <label class="fl" for="content">Isi Informasi Lengkap <span class="text-red-500 normal-case">*</span></label>
+                            <label class="fl" for="content">Isi Informasi Lengkap <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
                             <textarea name="content" id="content" rows="6" class="fi resize-none" placeholder="Tuliskan isi informasi lengkap di sini...">{{ old('content', $contentDecoded['description'] ?? (empty($contentDecoded) ? $informationCenter->content : '')) }}</textarea>
                             @error('content') <p class="text-xs text-red-500 mt-1 font-bold">{{ $message }}</p> @enderror
                         </div>
@@ -378,12 +372,12 @@
                             <div id="fields-event" class="category-fields-section hidden space-y-5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="fl" for="event_time">Waktu Kegiatan <span class="text-red-500">*</span></label>
-                                        <input type="text" name="event_time" id="event_time" class="fi" placeholder="Contoh: 09.00 - 12.00 WIB" value="{{ old('event_time', $contentDecoded['time'] ?? '09.00 - 12.00 WIB') }}">
+                                        <label class="fl" for="event_time">Waktu Kegiatan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
+                                        <input type="text" name="event_time" id="event_time" class="fi" placeholder="Contoh: 09.00 - 12.00 WIB" value="{{ old('event_time', $contentDecoded['time'] ?? '09.00 - 12.00 WIB') }}" required>
                                     </div>
                                     <div>
-                                        <label class="fl" for="event_location">Lokasi Kegiatan <span class="text-red-500">*</span></label>
-                                        <input type="text" name="event_location" id="event_location" class="fi" placeholder="Ruang Seminar Lantai 3" value="{{ old('event_location', $contentDecoded['location'] ?? 'Gedung UPT Perpustakaan USU') }}">
+                                        <label class="fl" for="event_location">Lokasi Kegiatan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
+                                        <input type="text" name="event_location" id="event_location" class="fi" placeholder="Ruang Seminar Lantai 3" value="{{ old('event_location', $contentDecoded['location'] ?? 'Gedung UPT Perpustakaan USU') }}" required>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -403,7 +397,7 @@
                                 <div class="pt-4 border-t border-slate-50">
                                     <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
                                         <i class="ph ph-list-bullets text-slate-300 text-base"></i>
-                                        Informasi Tambahan (Opsional)
+                                        Informasi Tambahan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span>
                                     </p>
                                     <div class="grid grid-cols-1 gap-4">
                                         <div>
@@ -418,11 +412,11 @@
                             <div id="fields-announcement" class="category-fields-section hidden space-y-5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="fl" for="announcement_time">Jadwal / Waktu <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                        <label class="fl" for="announcement_time">Jadwal / Waktu <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></label>
                                         <input type="text" name="announcement_time" id="announcement_time" class="fi" placeholder="Contoh: 08.00 - Selesai" value="{{ old('announcement_time', $contentDecoded['time'] ?? '') }}">
                                     </div>
                                     <div>
-                                        <label class="fl" for="announcement_location">Lokasi / Tempat <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                        <label class="fl" for="announcement_location">Lokasi / Tempat <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></label>
                                         <input type="text" name="announcement_location" id="announcement_location" class="fi" placeholder="Contoh: Gedung A" value="{{ old('announcement_location', $contentDecoded['location'] ?? '') }}">
                                     </div>
                                 </div>
@@ -431,7 +425,7 @@
                             {{-- Berita Perpustakaan Fields --}}
                             <div id="fields-library_news" class="category-fields-section hidden space-y-5">
                                 <div>
-                                    <label class="fl" for="news_date">Tanggal Berita / Kegiatan <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                    <label class="fl" for="news_date">Tanggal Berita / Kegiatan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></label>
                                     <input type="text" name="news_date" id="news_date" class="fi" placeholder="Contoh: 17 Agustus 2026" value="{{ old('news_date', $contentDecoded['date'] ?? '') }}">
                                 </div>
                             </div>
@@ -440,12 +434,12 @@
                             <div id="fields-book_recommendation" class="category-fields-section hidden space-y-5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="fl" for="book_title">Judul Buku / Koleksi <span class="text-red-500">*</span></label>
-                                        <input type="text" name="book_title" id="book_title" class="fi" placeholder="Algoritma & Pemrograman" value="{{ old('book_title', $contentDecoded['book_title'] ?? '') }}">
+                                        <label class="fl" for="book_title">Judul Buku / Koleksi <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
+                                        <input type="text" name="book_title" id="book_title" class="fi" placeholder="Algoritma & Pemrograman" value="{{ old('book_title', $contentDecoded['book_title'] ?? '') }}" required>
                                     </div>
                                     <div>
-                                        <label class="fl" for="book_author">Penulis / Pencipta <span class="text-red-500">*</span></label>
-                                        <input type="text" name="book_author" id="book_author" class="fi" placeholder="Prof. Dr. Budi Luhur" value="{{ old('book_author', $contentDecoded['book_author'] ?? '') }}">
+                                        <label class="fl" for="book_author">Penulis / Pencipta <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
+                                        <input type="text" name="book_author" id="book_author" class="fi" placeholder="Prof. Dr. Budi Luhur" value="{{ old('book_author', $contentDecoded['book_author'] ?? '') }}" required>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -471,8 +465,8 @@
                             <i class="ph ph-link-simple text-blue-600 text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h2 class="text-sm font-black text-slate-800">Tombol Aksi &amp; Tautan <span class="font-bold text-slate-400 text-xs">(Opsional)</span></h2>
-                            <p class="text-xs text-slate-400 mt-0.5">Tambahkan tombol menuju link eksternal — Google Form, Instagram, website, dll. (Opsional)</p>
+                            <h2 class="text-sm font-black text-slate-800">Tombol Aksi &amp; Tautan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Tambahkan tombol menuju link eksternal — Google Form, Instagram, website, dll.</p>
                         </div>
                     </div>
                     <div class="form-card-body">
@@ -493,8 +487,8 @@
                             <i class="ph ph-user-circle text-amber-600 text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h2 class="text-sm font-black text-slate-800">Narahubung (Contact Person) <span class="font-bold text-slate-400 text-xs">(Opsional)</span></h2>
-                            <p class="text-xs text-slate-400 mt-0.5">Informasi kontak yang dapat dihubungi terkait kegiatan ini. (Opsional)</p>
+                            <h2 class="text-sm font-black text-slate-800">Narahubung (Contact Person) <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Informasi kontak yang dapat dihubungi terkait kegiatan ini.</p>
                         </div>
                     </div>
                     <div class="form-card-body space-y-4">
@@ -565,9 +559,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="fl text-[10px]">Selesai Tayang
-                                        <span class="normal-case font-medium text-slate-400 ml-1">(Opsional)</span>
-                                    </label>
+                                    <label class="fl text-[10px]">Selesai Tayang</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
@@ -604,45 +596,102 @@
 
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil (Sort Order)</label>
-                                <input type="number" name="sort_order" min="1" value="{{ old('sort_order', $informationCenter->sort_order ?? 1) }}" class="fi fi-sm">
-                                <p class="text-[9.5px] text-slate-400 mt-1">Angka kecil = tampil paling awal.</p>
-                                </div>
+                                <input type="number" name="sort_order" min="1" max="{{ $maxSortOrder }}" value="{{ old('sort_order', $informationCenter->sort_order ?? 1) }}" class="fi fi-sm" oninput="if(this.value > {{ $maxSortOrder }}) this.value = {{ $maxSortOrder }};">
+                                <p class="text-[10px] text-red-500 font-bold mt-1.5 p-2 bg-red-50 rounded-lg border border-red-100"><i class="ph ph-warning-circle"></i> Angka kecil = tampil paling awal. Maksimal {{ $maxSortOrder }}.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                                <!-- Interactive Simulasi Frame Beranda -->
-                                <div id="frame-simulator-wrapper" class="{{ $hasExistingImage ? '' : 'hidden' }} w-full space-y-3">
-                                    <div class="flex items-center justify-between">
+                    {{-- Poster / Banner --}}
+                    <div id="card-poster" class="sidebar-card">
+                        <div class="sidebar-card-header flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-image text-pink-500 text-base"></i>
+                                <h3 class="text-xs font-black text-slate-700 uppercase tracking-wider">Poster / Banner</h3>
+                            </div>
+                            <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold uppercase">Frame Editor</span>
+                        </div>
+                        <div class="sidebar-card-body space-y-4">
+                            <div class="flex flex-col items-center pt-2 pb-4">
+                                <div class="w-full max-w-xs space-y-4 mx-auto">
+                                    
+                                    <!-- Header for Dropzone -->
+                                    <div class="flex items-center justify-between" id="upload-header">
                                         <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
-                                            <i class="ph ph-crop text-emerald-600 text-sm"></i> Atur Posisi & Zoom Gambar
+                                            <i class="ph ph-upload-simple text-blue-500 text-sm"></i> File Gambar
                                         </span>
-                                        <span class="text-[9.5px] text-slate-400 font-medium">Klik & Drag pada gambar</span>
+                                        <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-500 text-[10px] font-extrabold uppercase tracking-widest shrink-0">Opsional</span>
                                     </div>
 
-                                    <div id="frame-simulator-container"
-                                            class="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 border-2 border-emerald-500 shadow-inner select-none cursor-move"
-                                            style="aspect-ratio: 4 / 5;"
-                                            title="Geser gambar untuk menyesuaikan posisi">
-
-                                        <!-- Target Image Element -->
-                                        @php
-                                            $initialImgSrc = '';
-                                            if (!empty($informationCenter->images) && is_array($informationCenter->images) && count($informationCenter->images) > 0) {
-                                                $imgStr = $informationCenter->images[0];
-                                                $initialImgSrc = str_starts_with($imgStr, 'http') ? $imgStr : asset($imgStr);
-                                            } elseif (!empty($informationCenter->image_path)) {
-                                                $imgStr = $informationCenter->image_path;
-                                                $initialImgSrc = str_starts_with($imgStr, 'http') ? $imgStr : asset($imgStr);
-                                            }
-                                        @endphp
-                                        <img id="frame-sim-image" src="{{ $initialImgSrc }}" alt="Pratinjau Frame"
-                                             class="w-full h-full object-cover transition-transform duration-75 pointer-events-none"
-                                             style="object-position: {{ old('image_x', $informationCenter->image_x ?? 50) }}% {{ old('image_y', $informationCenter->image_y ?? 50) }}%; transform: scale({{ old('image_scale', $informationCenter->image_scale ?? 100) / 100 }});">
+                                    <!-- Dropzone Upload (Tampil Awal) -->
+                                    <div id="dropzone-wrapper" class="{{ $hasExistingImage ? 'hidden' : '' }} w-full aspect-[4/5]">
+                                        <label class="img-drop block cursor-pointer h-full border-2 border-dashed border-slate-300 hover:border-[#106c38] rounded-2xl bg-slate-50 hover:bg-emerald-50 transition-colors">
+                                            <div class="flex flex-col items-center justify-center gap-2.5 h-full py-8">
+                                                <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                                                    <i class="ph ph-upload-simple text-2xl text-slate-400"></i>
+                                                </div>
+                                                <div class="text-center px-4">
+                                                    <span class="text-xs font-bold text-slate-600 block">Klik untuk Pilih Gambar</span>
+                                                    <span class="text-[10px] text-slate-400 mt-1 block">JPG, PNG, WEBP — Maks. 5MB</span>
+                                                    <span class="text-[10px] font-bold text-emerald-600 mt-0.5 block">Disarankan format Potrait (Rasio 4:5)</span>
+                                                </div>
+                                            </div>
+                                            <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
+                                        </label>
                                     </div>
+
+                                    <!-- Interactive Simulasi Frame Beranda -->
+                                    <div id="frame-simulator-wrapper" class="{{ $hasExistingImage ? '' : 'hidden' }} w-full space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                                                <i class="ph ph-crop text-emerald-600 text-sm"></i> Atur Posisi & Zoom Gambar
+                                            </span>
+                                            <span class="text-[9.5px] text-slate-400 font-medium">Klik & Drag pada gambar</span>
+                                        </div>
+
+                                        <div id="frame-simulator-container"
+                                                class="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 border-2 border-emerald-500 shadow-inner select-none cursor-move"
+                                                title="Geser gambar untuk menyesuaikan posisi">
+
+                                            <!-- Target Image Element -->
+                                            @php
+                                                $initialImgSrc = '';
+                                                if (!empty($informationCenter->images) && is_array($informationCenter->images) && count($informationCenter->images) > 0) {
+                                                    $imgStr = $informationCenter->images[0];
+                                                    $initialImgSrc = str_starts_with($imgStr, 'http') ? $imgStr : asset($imgStr);
+                                                } elseif (!empty($informationCenter->image_path)) {
+                                                    $imgStr = $informationCenter->image_path;
+                                                    $initialImgSrc = str_starts_with($imgStr, 'http') ? $imgStr : asset($imgStr);
+                                                }
+                                            @endphp
+                                            <img id="image-preview" src="{{ $initialImgSrc }}" alt="Pratinjau Frame"
+                                                 class="w-full h-full object-cover transition-transform duration-75 pointer-events-none"
+                                                 style="object-position: {{ old('image_x', $informationCenter->image_x ?? 50) }}% {{ old('image_y', $informationCenter->image_y ?? 50) }}%; transform: scale({{ old('image_scale', $informationCenter->image_scale ?? 100) / 100 }});">
+                                        </div>
+                                        
+                                        <!-- Zoom Slider -->
+                                        <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl flex items-center gap-3">
+                                            <i class="ph ph-minus-circle text-slate-400 text-lg"></i>
+                                            <input type="range" id="zoom-slider" min="100" max="300" value="{{ old('image_scale', $informationCenter->image_scale ?? 100) }}" class="flex-1 accent-emerald-500">
+                                            <i class="ph ph-plus-circle text-slate-400 text-lg"></i>
+                                            <span id="zoom-value" class="text-xs font-bold text-slate-600 w-10 text-right">{{ old('image_scale', $informationCenter->image_scale ?? 100) }}%</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Button Ganti Foto (Tampil saat foto sudah ada) -->
+                                    <button type="button" id="btn-change-image" class="{{ $hasExistingImage ? '' : 'hidden' }} w-full py-2.5 px-4 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#106c38] border border-slate-200 hover:border-emerald-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer">
+                                        <i class="ph ph-image text-base text-[#106c38]"></i> Ganti Foto / Unggah Ulang
+                                    </button>
+
+                                    <!-- Hidden Inputs for Frame Customization -->
+                                    <input type="hidden" name="image_scale" id="image_scale_input" value="{{ old('image_scale', $informationCenter->image_scale ?? 100) }}">
+                                    <input type="hidden" name="image_x" id="image_x_input" value="{{ old('image_x', $informationCenter->image_x ?? 50) }}">
+                                    <input type="hidden" name="image_y" id="image_y_input" value="{{ old('image_y', $informationCenter->image_y ?? 50) }}">
                                 </div>
                             </div>
-                            
+
                             <!-- Interactive Sliders for Framing & Zoom -->
                             <input type="hidden" name="image_fit" value="cover">
-
                         </div>
                     </div>
 
@@ -708,11 +757,11 @@
                     <i class="ph ph-x font-bold"></i>
                 </button>
                 <div class="w-full sm:w-2/5">
-                    <p class="fl text-[10px] mb-1">Label Tombol <span class="normal-case font-medium text-slate-400">(Opsional)</span></p>
+                    <p class="fl text-[10px] mb-1">Label Tombol <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></p>
                     <input type="text" name="action_buttons[${btnIndex}][name]" value="${name}" class="fi fi-sm" placeholder="Contoh: Daftar Lomba">
                 </div>
                 <div class="flex-1">
-                    <p class="fl text-[10px] mb-1">Link (URL) <span class="normal-case font-medium text-slate-400">(Opsional)</span></p>
+                    <p class="fl text-[10px] mb-1">Link (URL) <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></p>
                     <input type="url" name="action_buttons[${btnIndex}][url]" value="${url}" class="fi fi-sm" placeholder="https://forms.google.com/...">
                 </div>
                 <div class="flex items-center gap-1.5 pt-2 sm:pt-4 shrink-0">
@@ -814,18 +863,27 @@
 
         if (val === 'event') {
             const fieldsEvent = document.getElementById('fields-event');
-            if (fieldsEvent) fieldsEvent.classList.remove('hidden');
+            if (fieldsEvent) {
+                fieldsEvent.classList.remove('hidden');
+                fieldsEvent.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-calendar-check text-[#106c38] text-base"></i> Detail Event / Kegiatan';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
         } else if (val === 'announcement') {
             const fieldsAnnouncement = document.getElementById('fields-announcement');
-            if (fieldsAnnouncement) fieldsAnnouncement.classList.remove('hidden');
+            if (fieldsAnnouncement) {
+                fieldsAnnouncement.classList.remove('hidden');
+                fieldsAnnouncement.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-megaphone-simple text-blue-500 text-base"></i> Detail Tambahan Pengumuman';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
         } else if (val === 'book_recommendation') {
             const fieldsBook = document.getElementById('fields-book_recommendation');
-            if (fieldsBook) fieldsBook.classList.remove('hidden');
+            if (fieldsBook) {
+                fieldsBook.classList.remove('hidden');
+                fieldsBook.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-star text-yellow-500 text-base"></i> Detail Buku Rekomendasi';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
@@ -833,7 +891,10 @@
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
         } else if (val === 'library_news') {
             const fieldsNews = document.getElementById('fields-library_news');
-            if (fieldsNews) fieldsNews.classList.remove('hidden');
+            if (fieldsNews) {
+                fieldsNews.classList.remove('hidden');
+                fieldsNews.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-newspaper text-indigo-500 text-base"></i> Detail Berita Perpustakaan';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
@@ -915,8 +976,20 @@
         if (selectedType === 'text') {
             if (cardPoster) cardPoster.classList.add('hidden');
             if (cardTombolAksi) cardTombolAksi.classList.remove('hidden');
-            if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-            if (cardInformasiUtama) cardInformasiUtama.classList.remove('hidden');
+            if (customFieldsCard) {
+                customFieldsCard.classList.remove('hidden');
+                const cat = categorySelect ? categorySelect.value : null;
+                if (cat) {
+                    const activeSection = document.getElementById('fields-' + cat);
+                    if (activeSection) {
+                        activeSection.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+                    }
+                }
+            }
+            if (cardInformasiUtama) {
+                cardInformasiUtama.classList.remove('hidden');
+                cardInformasiUtama.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (titleField) titleField.required = true;
             if (contentContainer) {
                 contentContainer.classList.remove('hidden');
@@ -926,8 +999,14 @@
             // poster
             if (cardPoster) cardPoster.classList.remove('hidden');
             if (cardTombolAksi) cardTombolAksi.classList.remove('hidden');
-            if (customFieldsCard) customFieldsCard.classList.add('hidden');
-            if (cardInformasiUtama) cardInformasiUtama.classList.add('hidden');
+            if (customFieldsCard) {
+                customFieldsCard.classList.add('hidden');
+                customFieldsCard.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
+            }
+            if (cardInformasiUtama) {
+                cardInformasiUtama.classList.add('hidden');
+                cardInformasiUtama.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
+            }
             if (titleField) titleField.required = false;
             
             // Require image input ONLY if there's no existing image and it's a poster
@@ -1068,6 +1147,21 @@
         } else {
             if (endTimeError) endTimeError.classList.add('hidden');
             if (publishEndTimeInput) publishEndTimeInput.classList.remove('border-red-500', 'focus:ring-red-500');
+        }
+        
+        // Enforce required_with for Selesai Tayang
+        if (publishEndDateInput && publishEndTimeInput) {
+            if (publishEndDateInput.value) {
+                publishEndTimeInput.required = true;
+            } else {
+                publishEndTimeInput.required = false;
+            }
+            
+            if (publishEndTimeInput.value) {
+                publishEndDateInput.required = true;
+            } else {
+                publishEndDateInput.required = false;
+            }
         }
     }
 

@@ -165,7 +165,7 @@
                 <h2 class="text-sm font-black text-slate-800">Pilih Kategori Informasi</h2>
                 <p class="text-xs text-slate-400 mt-0.5">Tentukan jenis konten — tampilan form akan menyesuaikan secara otomatis</p>
             </div>
-            <span class="text-[10px] font-bold text-red-400 shrink-0">Wajib ✱</span>
+            <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold uppercase tracking-widest shrink-0">Wajib ✱</span>
         </div>
         <div class="form-card-body">
 
@@ -256,7 +256,7 @@
                 <h2 class="text-sm font-black text-slate-800">Jenis Informasi</h2>
                 <p class="text-xs text-slate-400 mt-0.5">Tentukan bentuk tampilan informasi di halaman depan</p>
             </div>
-            <span class="text-[10px] font-bold text-red-400 shrink-0">Wajib ✱</span>
+            <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold uppercase tracking-widest shrink-0">Wajib ✱</span>
         </div>
         <div class="form-card-body">
             <div class="flex flex-col sm:flex-row gap-4">
@@ -316,21 +316,15 @@
                     <div class="form-card-body space-y-5">
 
                         <div>
-                            <label class="fl" for="title">Judul Informasi / Kegiatan <span class="text-red-500 normal-case">*</span></label>
+                            <label class="fl" for="title">Judul Informasi / Kegiatan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
                             <input type="text" name="title" id="title" value="{{ old('title') }}" required
                                    class="fi" placeholder="Contoh: Workshop Mendeley untuk Mahasiswa USU...">
                         </div>
 
-                        <div>
-                            <label class="fl" for="summary">Ringkasan Singkat
-                                <span class="normal-case font-medium text-slate-400 ml-1">(tampil di halaman depan)</span>
-                            </label>
-                            <textarea name="summary" id="summary" rows="3" class="fi resize-none"
-                                      placeholder="Tulis 1–2 kalimat menarik yang menggambarkan isi informasi ini...">{{ old('summary') }}</textarea>
-                        </div>
+
 
                         <div>
-                            <label class="fl" for="content">Isi Informasi Lengkap <span class="text-red-500 normal-case">*</span></label>
+                            <label class="fl" for="content">Isi Informasi Lengkap <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
                             <textarea name="content" id="content" rows="6" class="fi resize-none" placeholder="Tuliskan isi informasi lengkap di sini...">{{ old('content') }}</textarea>
                             @error('content') <p class="text-xs text-red-500 mt-1 font-bold">{{ $message }}</p> @enderror
                         </div>
@@ -358,12 +352,12 @@
                             <div id="fields-event" class="category-fields-section hidden space-y-5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="fl" for="event_time">Waktu Kegiatan <span class="text-red-500">*</span></label>
-                                        <input type="text" name="event_time" id="event_time" class="fi" placeholder="Contoh: 09.00 - 12.00 WIB" value="{{ old('event_time') }}">
+                                        <label class="fl" for="event_time">Waktu Kegiatan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
+                                        <input type="text" name="event_time" id="event_time" class="fi" placeholder="Contoh: 09.00 - 12.00 WIB" value="{{ old('event_time') }}" required>
                                     </div>
                                     <div>
-                                        <label class="fl" for="event_location">Lokasi Kegiatan <span class="text-red-500">*</span></label>
-                                        <input type="text" name="event_location" id="event_location" class="fi" placeholder="Ruang Seminar Lantai 3" value="{{ old('event_location') }}">
+                                        <label class="fl" for="event_location">Lokasi Kegiatan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
+                                        <input type="text" name="event_location" id="event_location" class="fi" placeholder="Ruang Seminar Lantai 3" value="{{ old('event_location') }}" required>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -383,7 +377,7 @@
                                 <div class="pt-4 border-t border-slate-50">
                                     <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
                                         <i class="ph ph-list-bullets text-slate-300 text-base"></i>
-                                        Informasi Tambahan (Opsional)
+                                        Informasi Tambahan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span>
                                     </p>
                                     <div class="grid grid-cols-1 gap-4">
                                         <div>
@@ -398,11 +392,11 @@
                             <div id="fields-announcement" class="category-fields-section hidden space-y-5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="fl" for="announcement_time">Jadwal / Waktu <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                        <label class="fl" for="announcement_time">Jadwal / Waktu <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></label>
                                         <input type="text" name="announcement_time" id="announcement_time" class="fi" placeholder="Contoh: 08.00 - Selesai" value="{{ old('announcement_time') }}">
                                     </div>
                                     <div>
-                                        <label class="fl" for="announcement_location">Lokasi / Tempat <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                        <label class="fl" for="announcement_location">Lokasi / Tempat <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></label>
                                         <input type="text" name="announcement_location" id="announcement_location" class="fi" placeholder="Contoh: Gedung A" value="{{ old('announcement_location') }}">
                                     </div>
                                 </div>
@@ -411,7 +405,7 @@
                             {{-- Berita Perpustakaan Fields --}}
                             <div id="fields-library_news" class="category-fields-section hidden space-y-5">
                                 <div>
-                                    <label class="fl" for="news_date">Tanggal Berita / Kegiatan <span class="normal-case font-medium text-slate-400">(Opsional)</span></label>
+                                    <label class="fl" for="news_date">Tanggal Berita / Kegiatan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></label>
                                     <input type="text" name="news_date" id="news_date" class="fi" placeholder="Contoh: 17 Agustus 2026" value="{{ old('news_date') }}">
                                 </div>
                             </div>
@@ -420,12 +414,12 @@
                             <div id="fields-book_recommendation" class="category-fields-section hidden space-y-5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="fl" for="book_title">Judul Buku / Koleksi <span class="text-red-500">*</span></label>
-                                        <input type="text" name="book_title" id="book_title" class="fi" placeholder="Algoritma & Pemrograman" value="{{ old('book_title') }}">
+                                        <label class="fl" for="book_title">Judul Buku / Koleksi <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
+                                        <input type="text" name="book_title" id="book_title" class="fi" placeholder="Algoritma & Pemrograman" value="{{ old('book_title') }}" required>
                                     </div>
                                     <div>
-                                        <label class="fl" for="book_author">Penulis / Pencipta <span class="text-red-500">*</span></label>
-                                        <input type="text" name="book_author" id="book_author" class="fi" placeholder="Prof. Dr. Budi Luhur" value="{{ old('book_author') }}">
+                                        <label class="fl" for="book_author">Penulis / Pencipta <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></label>
+                                        <input type="text" name="book_author" id="book_author" class="fi" placeholder="Prof. Dr. Budi Luhur" value="{{ old('book_author') }}" required>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -452,8 +446,8 @@
                             <i class="ph ph-link-simple text-blue-600 text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h2 class="text-sm font-black text-slate-800">Tombol Aksi &amp; Tautan <span class="font-bold text-slate-400 text-xs">(Opsional)</span></h2>
-                            <p class="text-xs text-slate-400 mt-0.5">Tambahkan tombol menuju link eksternal — Google Form, Instagram, website, dll. (Opsional)</p>
+                            <h2 class="text-sm font-black text-slate-800">Tombol Aksi &amp; Tautan <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Tambahkan tombol menuju link eksternal — Google Form, Instagram, website, dll.</p>
                         </div>
                     </div>
                     <div class="form-card-body">
@@ -474,8 +468,8 @@
                             <i class="ph ph-user-circle text-amber-600 text-xl"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h2 class="text-sm font-black text-slate-800">Narahubung (Contact Person) <span class="font-bold text-slate-400 text-xs">(Opsional)</span></h2>
-                            <p class="text-xs text-slate-400 mt-0.5">Informasi kontak yang dapat dihubungi terkait kegiatan ini. (Opsional)</p>
+                            <h2 class="text-sm font-black text-slate-800">Narahubung (Contact Person) <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Informasi kontak yang dapat dihubungi terkait kegiatan ini.</p>
                         </div>
                     </div>
                     <div class="form-card-body space-y-4">
@@ -544,9 +538,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <p class="fl text-[10px]">Selesai Tayang
-                                        <span class="normal-case font-medium text-slate-400 ml-1">(Opsional)</span>
-                                    </p>
+                                    <p class="fl text-[10px]">Selesai Tayang</p>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
@@ -583,8 +575,8 @@
 
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil (Sort Order)</label>
-                                <input type="number" name="sort_order" min="1" max="{{ $maxSortOrder }}" value="{{ old('sort_order', $maxSortOrder) }}" class="fi fi-sm">
-                                <p class="text-[9.5px] text-slate-400 mt-1">Angka kecil = tampil paling awal. Maksimal {{ $maxSortOrder }}.</p>
+                                <input type="number" name="sort_order" min="1" max="{{ $maxSortOrder }}" value="{{ old('sort_order', $maxSortOrder) }}" class="fi fi-sm" oninput="if(this.value > {{ $maxSortOrder }}) this.value = {{ $maxSortOrder }};">
+                                <p class="text-[10px] text-red-500 font-bold mt-1.5 p-2 bg-red-50 rounded-lg border border-red-100"><i class="ph ph-warning-circle"></i> Angka kecil = tampil paling awal. Maksimal {{ $maxSortOrder }}.</p>
                             </div>
                         </div>
                     </div>
@@ -600,14 +592,14 @@
                         </div>
                         <div class="sidebar-card-body space-y-4">
                             <div class="flex flex-col items-center pt-2 pb-4">
-                                <div class="w-full max-w-[400px] space-y-4">
+                                <div class="w-full max-w-xs space-y-4 mx-auto">
                                     
                                     <!-- Header for Dropzone -->
                                     <div class="flex items-center justify-between" id="upload-header">
                                         <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
                                             <i class="ph ph-upload-simple text-blue-500 text-sm"></i> File Gambar
                                         </span>
-                                        <span class="text-[9.5px] text-slate-400 font-medium">Wajib diisi</span>
+                                        <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold uppercase tracking-widest shrink-0">Wajib</span>
                                     </div>
                                     
                                     <!-- Dropzone Upload (Tampil Awal) -->
@@ -755,11 +747,11 @@
                     <i class="ph ph-trash"></i>
                 </button>
                 <div class="flex-1">
-                    <p class="fl text-[10px] mb-1">Label Tombol <span class="normal-case font-medium text-slate-400">(Opsional)</span></p>
+                    <p class="fl text-[10px] mb-1">Label Tombol <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></p>
                     <input type="text" name="action_buttons[${btnIndex}][name]" value="${name}" class="fi fi-sm" placeholder="Contoh: Daftar Lomba">
                 </div>
                 <div class="flex-1">
-                    <p class="fl text-[10px] mb-1">Link (URL) <span class="normal-case font-medium text-slate-400">(Opsional)</span></p>
+                    <p class="fl text-[10px] mb-1">Link (URL) <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></p>
                     <input type="url" name="action_buttons[${btnIndex}][url]" value="${url}" class="fi fi-sm" placeholder="https://forms.google.com/...">
                 </div>
                 <div class="flex items-center gap-1.5 pt-2 sm:pt-4 shrink-0">
@@ -874,7 +866,12 @@
             mainFormArea.style.display = 'none';
         }
 
-        if (allSections) allSections.forEach(sec => sec.classList.add('hidden'));
+        if (allSections) {
+            allSections.forEach(sec => {
+                sec.classList.add('hidden');
+                sec.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
+            });
+        }
         if (customFieldsCard) customFieldsCard.classList.add('hidden');
         if (cardTombolAksi) cardTombolAksi.classList.remove('hidden');
         if (cardNarahubung) cardNarahubung.classList.remove('hidden');
@@ -886,18 +883,27 @@
 
         if (val === 'event') {
             const fieldsEvent = document.getElementById('fields-event');
-            if (fieldsEvent) fieldsEvent.classList.remove('hidden');
+            if (fieldsEvent) {
+                fieldsEvent.classList.remove('hidden');
+                fieldsEvent.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-calendar-check text-[#106c38] text-base"></i> Detail Event / Kegiatan';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
         } else if (val === 'announcement') {
             const fieldsAnnouncement = document.getElementById('fields-announcement');
-            if (fieldsAnnouncement) fieldsAnnouncement.classList.remove('hidden');
+            if (fieldsAnnouncement) {
+                fieldsAnnouncement.classList.remove('hidden');
+                fieldsAnnouncement.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-megaphone-simple text-blue-500 text-base"></i> Detail Tambahan Pengumuman';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
         } else if (val === 'book_recommendation') {
             const fieldsBook = document.getElementById('fields-book_recommendation');
-            if (fieldsBook) fieldsBook.classList.remove('hidden');
+            if (fieldsBook) {
+                fieldsBook.classList.remove('hidden');
+                fieldsBook.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-star text-yellow-500 text-base"></i> Detail Buku Rekomendasi';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
@@ -905,7 +911,10 @@
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
         } else if (val === 'library_news') {
             const fieldsNews = document.getElementById('fields-library_news');
-            if (fieldsNews) fieldsNews.classList.remove('hidden');
+            if (fieldsNews) {
+                fieldsNews.classList.remove('hidden');
+                fieldsNews.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (customFieldsTitle) customFieldsTitle.innerHTML = '<i class="ph ph-newspaper text-indigo-500 text-base"></i> Detail Berita Perpustakaan';
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
@@ -971,8 +980,20 @@
         if (selectedType === 'text') {
             if (cardPoster) cardPoster.classList.add('hidden');
             if (cardTombolAksi) cardTombolAksi.classList.remove('hidden');
-            if (customFieldsCard) customFieldsCard.classList.remove('hidden');
-            if (cardInformasiUtama) cardInformasiUtama.classList.remove('hidden');
+            if (customFieldsCard) {
+                customFieldsCard.classList.remove('hidden');
+                const cat = categorySelect ? categorySelect.value : null;
+                if (cat) {
+                    const activeSection = document.getElementById('fields-' + cat);
+                    if (activeSection) {
+                        activeSection.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+                    }
+                }
+            }
+            if (cardInformasiUtama) {
+                cardInformasiUtama.classList.remove('hidden');
+                cardInformasiUtama.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = false);
+            }
             if (titleField) titleField.required = true;
             if (imageInput) imageInput.required = false;
             if (contentContainer) {
@@ -990,10 +1011,16 @@
             // poster
             if (cardPoster) cardPoster.classList.remove('hidden');
             if (cardTombolAksi) cardTombolAksi.classList.remove('hidden');
-            if (customFieldsCard) customFieldsCard.classList.add('hidden');
-            if (cardInformasiUtama) cardInformasiUtama.classList.add('hidden');
-            if (cardNarahubung) cardNarahubung.classList.add('hidden');
+            if (customFieldsCard) {
+                customFieldsCard.classList.add('hidden');
+                customFieldsCard.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
+            }
+            if (cardInformasiUtama) {
+                cardInformasiUtama.classList.add('hidden');
+                cardInformasiUtama.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
+            }
             if (titleField) titleField.required = false;
+            if (cardNarahubung) cardNarahubung.classList.add('hidden');
             if (imageInput) imageInput.required = true;
             if (contentContainer) {
                 contentContainer.classList.add('hidden');
@@ -1135,6 +1162,21 @@
         } else {
             if (endTimeError) endTimeError.classList.add('hidden');
             if (publishEndTimeInput) publishEndTimeInput.classList.remove('border-red-500', 'focus:ring-red-500');
+        }
+        
+        // Enforce required_with for Selesai Tayang
+        if (publishEndDateInput && publishEndTimeInput) {
+            if (publishEndDateInput.value) {
+                publishEndTimeInput.required = true;
+            } else {
+                publishEndTimeInput.required = false;
+            }
+            
+            if (publishEndTimeInput.value) {
+                publishEndDateInput.required = true;
+            } else {
+                publishEndDateInput.required = false;
+            }
         }
     }
 

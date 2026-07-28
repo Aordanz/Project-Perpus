@@ -194,7 +194,7 @@
 
 <!-- Event Popup Modal -->
 <div id="event-popup-modal" class="fixed inset-0 z-[100] hidden bg-slate-950/60 backdrop-blur-sm overflow-hidden transition-all duration-300 flex items-center justify-center p-4 sm:p-6 md:p-8">
-    <div id="event-popup-content" class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col w-full max-w-[440px] min-h-[550px] max-h-[90vh] md:max-h-[95vh]">
+    <div id="event-popup-content" class="bg-white rounded-3xl shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col w-full max-w-md md:max-h-[95vh]" style="min-height: 550px; max-height: 90vh;">
         <!-- Close Button (Fixed) -->
         <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-500 bg-slate-100/90 hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/80 hover:scale-105 backdrop-blur-md">
                 <i class="ph ph-x text-lg font-bold"></i>
@@ -209,7 +209,7 @@
             </div>
 
             <!-- Global Modal Footer -->
-            <div class="flex flex-row justify-between items-center gap-3 px-8 py-3.5 border-t border-slate-100 bg-slate-50/50 relative overflow-hidden select-none shrink-0 rounded-b-[24px]">
+            <div class="flex flex-row justify-between items-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50 relative overflow-hidden select-none shrink-0 rounded-b-3xl">
                 <!-- Checkbox: Jangan Tampilkan Lagi -->
                 <div class="flex items-center gap-2 z-20">
                     <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">

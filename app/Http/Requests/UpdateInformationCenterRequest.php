@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateInformationCenterRequest extends FormRequest
 {
@@ -39,7 +40,6 @@ class UpdateInformationCenterRequest extends FormRequest
         $maxSortOrder = max(1, $activeCount);
         return [
             'title' => 'required_if:type,text|nullable|string|max:255',
-            'summary' => 'nullable|string',
             'content' => 'required_if:type,text|nullable|string',
             'category' => 'required|in:event,announcement,book_recommendation,tips,library_news',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:20480',
@@ -56,8 +56,8 @@ class UpdateInformationCenterRequest extends FormRequest
             'sort_order' => 'required|integer|min:1|max:' . $maxSortOrder,
             'publish_start_date' => 'required_if:status,draft|nullable|date',
             'publish_start_time' => 'required_if:status,draft|nullable|string',
-            'publish_end_date' => 'nullable|date',
-            'publish_end_time' => 'nullable|string',
+            'publish_end_date' => 'required_with:publish_end_time|nullable|date',
+            'publish_end_time' => 'required_with:publish_end_date|nullable|string',
             'action_buttons' => 'nullable|array|max:1',
             'action_buttons.*.name' => 'required_with:action_buttons|string|max:255',
             'action_buttons.*.url' => 'required_with:action_buttons|url|max:255',
@@ -70,8 +70,8 @@ class UpdateInformationCenterRequest extends FormRequest
             'type' => 'required|in:poster,text',
             
             // Aturan baru untuk field kustom dinamis
-            'event_time' => 'nullable|string|max:255',
-            'event_location' => 'nullable|string|max:255',
+            'event_time' => [Rule::requiredIf(fn() => $this->category === 'event' && $this->type === 'text'), 'nullable', 'string', 'max:255'],
+            'event_location' => [Rule::requiredIf(fn() => $this->category === 'event' && $this->type === 'text'), 'nullable', 'string', 'max:255'],
             'event_organizer' => 'nullable|string|max:255',
             'event_participants' => 'nullable|string|max:255',
             'event_facilities' => 'nullable|string|max:255',
@@ -80,8 +80,8 @@ class UpdateInformationCenterRequest extends FormRequest
             'event_left_subtitle' => 'nullable|string|max:1000',
             'event_quota_tag' => 'nullable|string|max:255',
             'event_left_features' => 'nullable|string',
-            'book_title' => 'nullable|string|max:255',
-            'book_author' => 'nullable|string|max:255',
+            'book_title' => [Rule::requiredIf(fn() => $this->category === 'book_recommendation' && $this->type === 'text'), 'nullable', 'string', 'max:255'],
+            'book_author' => [Rule::requiredIf(fn() => $this->category === 'book_recommendation' && $this->type === 'text'), 'nullable', 'string', 'max:255'],
             'book_publisher' => 'nullable|string|max:255',
             'shelf_location' => 'nullable|string|max:255',
             'announcement_time' => 'nullable|string|max:255',
@@ -99,13 +99,22 @@ class UpdateInformationCenterRequest extends FormRequest
             'title.required' => 'Judul Informasi wajib diisi.',
             'title.string' => 'Judul Informasi harus berupa teks.',
             'title.max' => 'Judul Informasi tidak boleh lebih dari 255 karakter.',
+            'content.required_if' => 'Isi Informasi Lengkap wajib diisi.',
+            'images.required_if' => 'Gambar Poster wajib diunggah.',
+            'event_time.required_if' => 'Waktu Kegiatan wajib diisi.',
+            'event_location.required_if' => 'Lokasi Kegiatan wajib diisi.',
+            'book_title.required_if' => 'Judul Buku wajib diisi.',
+            'book_author.required_if' => 'Penulis Buku wajib diisi.',
             'category.required' => 'Kategori Informasi wajib dipilih.',
             'category.in' => 'Kategori Informasi yang dipilih tidak valid.',
             'status.required' => 'Status Publikasi wajib dipilih.',
             'status.in' => 'Status Publikasi yang dipilih tidak valid.',
-            'publish_start_date.required' => 'Tanggal mulai tayang wajib diisi.',
-            'publish_start_date.date' => 'Format tanggal mulai tayang tidak valid.',
-            'publish_start_time.required' => 'Jam mulai tayang wajib diisi.',
+            'publish_start_date.required' => 'Tanggal tayang wajib diisi.',
+            'publish_start_date.required_if' => 'Tanggal tayang wajib diisi.',
+            'publish_start_date.date' => 'Format tanggal tayang tidak valid.',
+            'publish_start_time.required_if' => 'Jam mulai tayang wajib diisi jika Anda memilih Simpan sebagai Draf.',
+            'publish_end_date.required_with' => 'Tanggal Selesai Tayang wajib diisi jika Jam Selesai Tayang diisi.',
+            'publish_end_time.required_with' => 'Jam Selesai Tayang wajib diisi jika Tanggal Selesai Tayang diisi.',
             'publish_end_date.date' => 'Format tanggal selesai tayang tidak valid.',
             'publish_end_date.after_or_equal' => 'Tanggal selesai tayang tidak boleh mendahului tanggal mulai tayang.',
             'popup_priority.integer' => 'Prioritas popup harus berupa angka bulat.',

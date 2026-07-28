@@ -302,7 +302,7 @@
             const tableContainer = document.getElementById('books-table-container');
             let debounceTimer;
 
-            window.performSearch = function() {
+            window.performSearch = function(targetUrl = null) {
                 if (tableContainer) {
                     tableContainer.style.opacity = '0.5';
                     tableContainer.style.pointerEvents = 'none';
@@ -313,12 +313,15 @@
                 const filter = document.getElementById('admin-cover-filter') ? document.getElementById('admin-cover-filter').value : 'all';
                 const locFilter = document.getElementById('admin-location-filter') ? document.getElementById('admin-location-filter').value : 'all';
                 
-                const url = new URL(window.location.href);
+                const url = targetUrl ? new URL(targetUrl, window.location.origin) : new URL(window.location.href);
                 url.searchParams.set('search', query);
                 url.searchParams.set('limit', limit);
                 url.searchParams.set('cover_filter', filter);
                 url.searchParams.set('location_filter', locFilter);
-                url.searchParams.delete('page'); // Go back to page 1 on new search
+                
+                if (!targetUrl) {
+                    url.searchParams.delete('page'); // Go back to page 1 on new search
+                }
 
                 fetch(url.toString(), {
                     headers: {
