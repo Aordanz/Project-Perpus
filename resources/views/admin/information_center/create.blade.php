@@ -157,6 +157,25 @@
 <form action="{{ route('admin.information-center.store') }}" method="POST" enctype="multipart/form-data" id="create-info-form" novalidate>
     @csrf
 
+    {{-- ═══ SERVER VALIDATION ERRORS ═══ --}}
+    @if ($errors->any())
+    <div id="server-error-banner" class="mb-6 bg-red-50 border border-red-200 rounded-2xl p-5 flex gap-4 items-start">
+        <div class="shrink-0 w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+            <i class="ph ph-warning-circle text-red-500 text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <h3 class="text-sm font-black text-red-700 mb-2">Ada kolom yang belum diisi dengan benar:</h3>
+            <ul class="space-y-1">
+                @foreach ($errors->all() as $error)
+                <li class="text-[12px] text-red-600 flex items-center gap-1.5">
+                    <i class="ph ph-dot-outline text-red-400 shrink-0"></i> {{ $error }}
+                </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+    @endif
+
     {{-- ═══ STEP 1: PILIH KATEGORI ═══ --}}
     <div class="form-card mb-6">
         <div class="form-card-header">
@@ -520,41 +539,57 @@
 
                             <div id="publish-time-container" class="space-y-4 pt-3 border-t border-slate-50">
                                 <div id="start_time_wrapper">
-                                    <p class="fl text-[10px]">Mulai Tayang <span class="text-red-500">*</span></p>
+                                    <p class="fl text-[10px]">Mulai Tayang <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></p>
+                                    @if ($errors->has('publish_start_date') || $errors->has('publish_start_time'))
+                                        <p class="text-[11px] text-red-500 font-bold mb-2 flex items-center gap-1"><i class="ph ph-warning-circle"></i> Tanggal & Jam Mulai Tayang wajib diisi.</p>
+                                    @endif
+
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
                                             <input type="date" name="publish_start_date" id="publish_start_date_input"
                                                    value="{{ old('publish_start_date', date('Y-m-d')) }}"
-                                                   class="fi fi-sm px-3 py-2">
+                                                   class="fi fi-sm px-3 py-2 {{ $errors->has('publish_start_date') ? '!border-red-500 !bg-red-50 ring-2 ring-red-200' : '' }}">
+                                            @error('publish_start_date')
+                                                <p class="text-[10px] text-red-500 mt-1 font-bold flex items-center gap-1"><i class="ph ph-warning-circle"></i> {{ $message }}</p>
+                                            @enderror
                                         </div>
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Jam</span>
                                             <input type="time" name="publish_start_time" id="publish_start_time_input"
                                                    value="{{ old('publish_start_time', date('H:i')) }}"
-                                                   class="fi fi-sm px-3 py-2">
+                                                   class="fi fi-sm px-3 py-2 {{ $errors->has('publish_start_time') ? '!border-red-500 !bg-red-50 ring-2 ring-red-200' : '' }}">
+                                            @error('publish_start_time')
+                                                <p class="text-[10px] text-red-500 mt-1 font-bold flex items-center gap-1"><i class="ph ph-warning-circle"></i> {{ $message }}</p>
+                                            @enderror
                                             <span id="start_time_error" class="hidden text-[10px] text-red-500 mt-1 leading-tight">Jam tidak boleh lewat!</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <p class="fl text-[10px]">Selesai Tayang</p>
+                                    <p class="fl text-[10px]">Selesai Tayang <span class="ml-1.5 px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-extrabold uppercase tracking-widest">Wajib</span></p>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
                                             <input type="date" name="publish_end_date" id="publish_end_date_input"
                                                    value="{{ old('publish_end_date') }}"
-                                                   class="fi fi-sm px-3 py-2">
+                                                   class="fi fi-sm px-3 py-2 {{ $errors->has('publish_end_date') ? '!border-red-500 !bg-red-50 ring-2 ring-red-200' : '' }}" required>
+                                            @error('publish_end_date')
+                                                <p class="text-[10px] text-red-500 mt-1 font-bold flex items-center gap-1"><i class="ph ph-warning-circle"></i> {{ $message }}</p>
+                                            @enderror
                                         </div>
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Jam</span>
                                             <input type="time" name="publish_end_time" id="publish_end_time_input"
                                                    value="{{ old('publish_end_time') }}"
-                                                   class="fi fi-sm px-3 py-2">
+                                                   class="fi fi-sm px-3 py-2 {{ $errors->has('publish_end_time') ? '!border-red-500 !bg-red-50 ring-2 ring-red-200' : '' }}" required>
+                                            @error('publish_end_time')
+                                                <p class="text-[10px] text-red-500 mt-1 font-bold flex items-center gap-1"><i class="ph ph-warning-circle"></i> {{ $message }}</p>
+                                            @enderror
                                             <span id="end_time_error" class="hidden text-[10px] text-red-500 mt-1 leading-tight">Jam tidak boleh lewat!</span>
                                         </div>
                                     </div>
-                                    <p class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Biarkan kosong untuk tayang tanpa batas waktu.</p>
+                                    <p class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Jadwal kapan informasi ini akan otomatis selesai ditayangkan.</p>
                                 </div>
                             </div>
 
@@ -575,7 +610,10 @@
 
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Urutan Tampil (Sort Order)</label>
-                                <input type="number" name="sort_order" min="1" max="{{ $maxSortOrder }}" value="{{ old('sort_order', $maxSortOrder) }}" class="fi fi-sm" oninput="if(this.value > {{ $maxSortOrder }}) this.value = {{ $maxSortOrder }};">
+                                <input type="number" name="sort_order" min="1" max="{{ $maxSortOrder }}" value="{{ old('sort_order', $maxSortOrder) }}" class="fi fi-sm {{ $errors->has('sort_order') ? '!border-red-500 !bg-red-50 ring-2 ring-red-200' : '' }}" oninput="if(this.value > {{ $maxSortOrder }}) this.value = {{ $maxSortOrder }};">
+                                @error('sort_order')
+                                    <p class="text-[10px] text-red-500 mt-1 font-bold flex items-center gap-1"><i class="ph ph-warning-circle"></i> {{ $message }}</p>
+                                @enderror
                                 <p class="text-[10px] text-red-500 font-bold mt-1.5 p-2 bg-red-50 rounded-lg border border-red-100"><i class="ph ph-warning-circle"></i> Angka kecil = tampil paling awal. Maksimal {{ $maxSortOrder }}.</p>
                             </div>
                         </div>
@@ -604,7 +642,7 @@
                                     
                                     <!-- Dropzone Upload (Tampil Awal) -->
                                     <div id="dropzone-wrapper" class="w-full aspect-[4/5]">
-                                        <label class="img-drop block cursor-pointer h-full border-2 border-dashed border-slate-300 hover:border-[#106c38] rounded-2xl bg-slate-50 hover:bg-emerald-50 transition-colors">
+                                        <label class="img-drop block cursor-pointer h-full border-2 border-dashed {{ $errors->has('images') ? '!border-red-400 !bg-red-50' : 'border-slate-300' }} hover:border-[#106c38] rounded-2xl bg-slate-50 hover:bg-emerald-50 transition-colors">
                                             <div class="flex flex-col items-center justify-center gap-2.5 h-full py-8">
                                                 <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
                                                     <i class="ph ph-upload-simple text-2xl text-slate-400"></i>
@@ -618,6 +656,9 @@
                                             <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
                                         </label>
                                     </div>
+                                    @error('images')
+                                         <p class="text-[11px] text-red-500 mt-1 font-bold flex items-center gap-1"><i class="ph ph-warning-circle"></i> {{ $message }}</p>
+                                    @enderror
 
                                     <!-- Interactive Simulasi Frame Beranda (Sembunyi Awal) -->
                                     <div id="frame-simulator-wrapper" class="hidden w-full space-y-3">
@@ -668,8 +709,7 @@
 
                     {{-- Tombol Submit --}}
                     <div class="space-y-2.5">
-                        <button type="submit" class="btn-pub"
-                                onclick="this.innerHTML='<i class=\'ph ph-spinner animate-spin text-lg\'></i>&nbsp;Menyimpan...'; this.form.submit(); this.disabled=true;">
+                        <button type="submit" class="btn-pub" id="submit-btn">
                             <i class="ph ph-floppy-disk text-lg"></i>
                             Simpan &amp; Terbitkan
                         </button>
@@ -1080,6 +1120,23 @@
 
     handleCategoryChange();
 
+    // Auto-scroll to specific errors or banner on page load
+    @if ($errors->has('images') || $errors->has('images.*'))
+        const dropzoneEl = document.getElementById('dropzone-wrapper');
+        if (dropzoneEl) {
+            setTimeout(() => {
+                dropzoneEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 400);
+        }
+    @else
+        const serverErrorBanner = document.getElementById('server-error-banner');
+        if (serverErrorBanner) {
+            setTimeout(() => {
+                serverErrorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    @endif
+
     // ─── Status & Jadwal Tayang Logic ──────────────────────────────────────────
     const statusSelect = document.getElementById('status_select');
     const livePublishBadge = document.getElementById('live_publish_badge');
@@ -1094,14 +1151,33 @@
         if (statusSelect.value === 'published') {
             if (startTimeWrapper) startTimeWrapper.classList.add('hidden');
             if (livePublishBadge) livePublishBadge.classList.remove('hidden');
-            if (publishStartDateInput) publishStartDateInput.required = false;
-            if (publishStartTimeInput) publishStartTimeInput.required = false;
+            if (publishStartDateInput) publishStartDateInput.required = true;
+            if (publishStartTimeInput) publishStartTimeInput.required = true;
+
+            // Automatically set to current date and time when published (hidden) so it passes validation
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            if (publishStartDateInput) {
+                publishStartDateInput.value = `${year}-${month}-${day}`;
+                clearError(publishStartDateInput);
+            }
+            if (publishStartTimeInput) {
+                publishStartTimeInput.value = `${hours}:${minutes}`;
+                clearError(publishStartTimeInput);
+            }
+            const headerErr = startTimeWrapper ? startTimeWrapper.querySelector('.start-time-header-err') : null;
+            if (headerErr) headerErr.remove();
         } else {
             if (startTimeWrapper) startTimeWrapper.classList.remove('hidden');
             if (livePublishBadge) livePublishBadge.classList.add('hidden');
             if (publishStartDateInput) publishStartDateInput.required = true;
             if (publishStartTimeInput) publishStartTimeInput.required = true;
-
+            
             const now = new Date();
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -1164,19 +1240,10 @@
             if (publishEndTimeInput) publishEndTimeInput.classList.remove('border-red-500', 'focus:ring-red-500');
         }
         
-        // Enforce required_with for Selesai Tayang
+        // Selesai Tayang is always required
         if (publishEndDateInput && publishEndTimeInput) {
-            if (publishEndDateInput.value) {
-                publishEndTimeInput.required = true;
-            } else {
-                publishEndTimeInput.required = false;
-            }
-            
-            if (publishEndTimeInput.value) {
-                publishEndDateInput.required = true;
-            } else {
-                publishEndDateInput.required = false;
-            }
+            publishEndDateInput.required = true;
+            publishEndTimeInput.required = true;
         }
     }
 
@@ -1293,18 +1360,315 @@
 
     // ─── Form Validation ──────────────────────────────────────────────────────
     const createForm = document.getElementById('create-info-form');
+
+    // Helper: mark a field as error
+    function markError(el, msg) {
+        if (!el) return;
+        el.classList.add('!border-red-500', '!bg-red-50', 'ring-2', 'ring-red-200');
+        el.classList.remove('border-slate-200');
+        // Insert error message if not already there
+        let errEl = el.parentElement.querySelector('.fi-err-msg');
+        if (!errEl) {
+            errEl = document.createElement('p');
+            errEl.className = 'fi-err-msg text-[11px] text-red-600 font-bold mt-1.5 flex items-center gap-1';
+            el.insertAdjacentElement('afterend', errEl);
+        }
+        errEl.innerHTML = '<i class="ph ph-warning-circle"></i> ' + msg;
+    }
+
+    // Helper: clear error
+    function clearError(el) {
+        if (!el) return;
+        el.classList.remove('!border-red-500', '!bg-red-50', 'ring-2', 'ring-red-200');
+        const errEl = el.parentElement.querySelector('.fi-err-msg');
+        if (errEl) errEl.remove();
+
+        // Also clear header error for time wrapper if both start date & time have values
+        const startDateEl = document.getElementById('publish_start_date_input');
+        const startTimeEl = document.getElementById('publish_start_time_input');
+        if (startDateEl && startTimeEl && startDateEl.value && startTimeEl.value) {
+            const startWrapper = document.getElementById('start_time_wrapper');
+            if (startWrapper) {
+                const headerErr = startWrapper.querySelector('.start-time-header-err');
+                if (headerErr) headerErr.remove();
+            }
+        }
+    }
+
+    // Clear all errors on input
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('fi')) {
+            clearError(e.target);
+        }
+    });
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('fi')) {
+            clearError(e.target);
+        }
+    });
+
+    function scrollToField(el) {
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => el.focus(), 400);
+    }
+
+    // Mark category section error
+    function markCategoryError() {
+        const grid = document.getElementById('category-grid');
+        if (!grid) return;
+        let errEl = grid.parentElement.querySelector('.cat-err-msg');
+        if (!errEl) {
+            errEl = document.createElement('p');
+            errEl.className = 'cat-err-msg text-[12px] text-red-600 font-bold mt-3 flex items-center gap-1.5 bg-red-50 border border-red-200 px-3 py-2 rounded-lg';
+            grid.insertAdjacentElement('afterend', errEl);
+        }
+        errEl.innerHTML = '<i class="ph ph-warning-circle text-base"></i> Silakan pilih salah satu kategori informasi.';
+        grid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function clearCategoryError() {
+        const errEl = document.querySelector('.cat-err-msg');
+        if (errEl) errEl.remove();
+    }
+
+    // Mark type-section error
+    function markTypeError() {
+        const typeSection = document.getElementById('type-section');
+        if (!typeSection) return;
+        let errEl = typeSection.querySelector('.type-err-msg');
+        if (!errEl) {
+            errEl = document.createElement('p');
+            errEl.className = 'type-err-msg text-[12px] text-red-600 font-bold mx-6 mb-4 flex items-center gap-1.5 bg-red-50 border border-red-200 px-3 py-2 rounded-lg';
+            const body = typeSection.querySelector('.form-card-body');
+            if (body) body.insertAdjacentElement('afterend', errEl);
+            else typeSection.appendChild(errEl);
+        }
+        errEl.innerHTML = '<i class="ph ph-warning-circle text-base"></i> Silakan pilih jenis tampilan informasi (Poster atau Teks).';
+        typeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function clearTypeError() {
+        const errEl = document.querySelector('.type-err-msg');
+        if (errEl) errEl.remove();
+    }
+
+    // Mark image dropzone error
+    function markImageError() {
+        const wrapper = document.getElementById('dropzone-wrapper');
+        if (!wrapper) return;
+        let errEl = wrapper.parentElement.querySelector('.img-err-msg');
+        if (!errEl) {
+            errEl = document.createElement('p');
+            errEl.className = 'img-err-msg text-[11px] text-red-600 font-bold mt-2 flex items-center gap-1';
+            wrapper.insertAdjacentElement('afterend', errEl);
+        }
+        errEl.innerHTML = '<i class="ph ph-warning-circle"></i> Gambar wajib diunggah untuk tipe Poster.';
+        const label = wrapper.querySelector('label');
+        if (label) label.classList.add('!border-red-400', '!bg-red-50');
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function clearImageError() {
+        const errEl = document.querySelector('.img-err-msg');
+        if (errEl) errEl.remove();
+        const wrapper = document.getElementById('dropzone-wrapper');
+        if (wrapper) {
+            const label = wrapper.querySelector('label');
+            if (label) label.classList.remove('!border-red-400', '!bg-red-50');
+        }
+    }
+
+    // Clear image error when file is picked
+    if (imageInput) {
+        imageInput.addEventListener('change', clearImageError);
+    }
+
+    // Clear category error when chip is clicked
+    categoryChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            clearCategoryError();
+            clearTypeError();
+        });
+    });
+
+    // Clear type error when type radio is selected
+    document.querySelectorAll('.type-radio').forEach(r => {
+        r.addEventListener('change', clearTypeError);
+    });
+
     if (createForm) {
         createForm.addEventListener('submit', function(e) {
-            if (categorySelect && !categorySelect.value) {
+            // Reset all errors
+            document.querySelectorAll('.fi-err-msg').forEach(el => el.remove());
+            clearCategoryError();
+            clearTypeError();
+            clearImageError();
+
+            let firstInvalid = null;
+            let hasError = false;
+
+            // 1) Category must be selected
+            const cat = categorySelect ? categorySelect.value : '';
+            if (!cat) {
                 e.preventDefault();
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'warning', title: 'Kategori Belum Dipilih',
-                        text: 'Silakan pilih salah satu kategori informasi terlebih dahulu.',
-                        confirmButtonColor: '#106c38', confirmButtonText: 'Pilih Kategori'
-                    }).then(() => {
-                        if (categoryGrid) categoryGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    });
+                hasError = true;
+                markCategoryError();
+                return;
+            }
+
+            // 2) Type must be selected
+            let selectedType = null;
+            document.querySelectorAll('.type-radio').forEach(r => { if (r.checked) selectedType = r.value; });
+            if (!selectedType) {
+                e.preventDefault();
+                hasError = true;
+                markTypeError();
+                return;
+            }
+
+            // 3) Validate per type
+            if (selectedType === 'poster') {
+                // Re-query imageInput fresh in case DOM was rearranged
+                const imgInputFresh = document.getElementById('image-input');
+                const hasImage = imgInputFresh && imgInputFresh.files && imgInputFresh.files.length > 0;
+                if (!hasImage) {
+                    e.preventDefault();
+                    hasError = true;
+                    markImageError();
+                    if (!firstInvalid) firstInvalid = document.getElementById('dropzone-wrapper');
+                }
+            } else {
+                // Text type: title & content required
+                const titleEl = document.getElementById('title');
+                const contentEl = document.getElementById('content');
+                if (titleEl && !titleEl.value.trim()) {
+                    e.preventDefault();
+                    hasError = true;
+                    markError(titleEl, 'Judul wajib diisi.');
+                    if (!firstInvalid) firstInvalid = titleEl;
+                }
+                if (contentEl && !contentEl.value.trim()) {
+                    e.preventDefault();
+                    hasError = true;
+                    markError(contentEl, 'Isi informasi wajib diisi.');
+                    if (!firstInvalid) firstInvalid = contentEl;
+                }
+            }
+
+            // 4) Category-specific required fields (only for text type)
+            if (selectedType === 'text') {
+                if (cat === 'event') {
+                    const eventTime = document.getElementById('event_time');
+                    const eventLoc  = document.getElementById('event_location');
+                    if (eventTime && !eventTime.value.trim()) {
+                        e.preventDefault();
+                        hasError = true;
+                        markError(eventTime, 'Waktu kegiatan wajib diisi.');
+                        if (!firstInvalid) firstInvalid = eventTime;
+                    }
+                    if (eventLoc && !eventLoc.value.trim()) {
+                        e.preventDefault();
+                        hasError = true;
+                        markError(eventLoc, 'Lokasi kegiatan wajib diisi.');
+                        if (!firstInvalid) firstInvalid = eventLoc;
+                    }
+                } else if (cat === 'book_recommendation') {
+                    const bookTitle  = document.getElementById('book_title');
+                    const bookAuthor = document.getElementById('book_author');
+                    if (bookTitle && !bookTitle.value.trim()) {
+                        e.preventDefault();
+                        hasError = true;
+                        markError(bookTitle, 'Judul buku wajib diisi.');
+                        if (!firstInvalid) firstInvalid = bookTitle;
+                    }
+                    if (bookAuthor && !bookAuthor.value.trim()) {
+                        e.preventDefault();
+                        hasError = true;
+                        markError(bookAuthor, 'Nama penulis wajib diisi.');
+                        if (!firstInvalid) firstInvalid = bookAuthor;
+                    }
+                }
+            }
+
+            // 5) Jadwal & Status: Mulai Tayang wajib jika Draf; Selesai Tayang selalu wajib
+            const statusEl = document.getElementById('status_select');
+            const startDateEl = document.getElementById('publish_start_date_input');
+            const startTimeEl = document.getElementById('publish_start_time_input');
+            const endDateEl = document.getElementById('publish_end_date_input');
+            const endTimeEl = document.getElementById('publish_end_time_input');
+
+            // 5.a) Selesai Tayang: selalu wajib diisi
+            if (endDateEl && !endDateEl.value) {
+                e.preventDefault();
+                hasError = true;
+                markError(endDateEl, 'Tanggal selesai tayang wajib diisi.');
+                if (!firstInvalid) firstInvalid = endDateEl;
+            }
+            if (endTimeEl && !endTimeEl.value) {
+                e.preventDefault();
+                hasError = true;
+                markError(endTimeEl, 'Jam selesai tayang wajib diisi.');
+                if (!firstInvalid) firstInvalid = endTimeEl;
+            }
+
+            // 5.b) Mulai Tayang: wajib jika draf
+            if (statusEl && statusEl.value === 'draft') {
+                let hasDateTimeError = false;
+
+                if (startDateEl && !startDateEl.value) {
+                    e.preventDefault();
+                    hasError = true;
+                    hasDateTimeError = true;
+                    markError(startDateEl, 'Tanggal mulai tayang wajib diisi untuk status Draf.');
+                    if (!firstInvalid) firstInvalid = startDateEl;
+                }
+                if (startTimeEl && !startTimeEl.value) {
+                    e.preventDefault();
+                    hasError = true;
+                    hasDateTimeError = true;
+                    markError(startTimeEl, 'Jam mulai tayang wajib diisi untuk status Draf.');
+                    if (!firstInvalid) firstInvalid = startTimeEl;
+                }
+
+                if (hasDateTimeError) {
+                    const startWrapper = document.getElementById('start_time_wrapper');
+                    if (startWrapper) {
+                        let headerErr = startWrapper.querySelector('.start-time-header-err');
+                        if (!headerErr) {
+                            headerErr = document.createElement('p');
+                            headerErr.className = 'start-time-header-err text-[11px] text-red-600 font-bold mb-2 flex items-center gap-1';
+                            const label = startWrapper.querySelector('.fl');
+                            if (label) label.insertAdjacentElement('afterend', headerErr);
+                        }
+                        headerErr.innerHTML = '<i class="ph ph-warning-circle"></i> Tanggal & Jam Mulai Tayang wajib diisi untuk status Draf.';
+                    }
+                }
+            }
+
+            // 6) Urutan Tampil (sort_order) wajib diisi dengan angka valid
+            const sortOrderEl = document.querySelector('input[name="sort_order"]');
+            if (sortOrderEl) {
+                const sortVal = sortOrderEl.value.trim();
+                if (sortVal === '' || isNaN(sortVal) || parseInt(sortVal) < 1) {
+                    e.preventDefault();
+                    hasError = true;
+                    markError(sortOrderEl, 'Urutan tampil wajib diisi dengan angka minimal 1.');
+                    if (!firstInvalid) firstInvalid = sortOrderEl;
+                }
+            }
+
+            // 7) Scroll to first invalid
+            if (hasError && firstInvalid) {
+                scrollToField(firstInvalid);
+            }
+
+            // 8) If no errors, submit normally (show loading state)
+            if (!hasError) {
+                const submitBtn = createForm.querySelector('[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="ph ph-spinner animate-spin text-lg"></i>&nbsp;Menyimpan...';
+                    submitBtn.disabled = true;
                 }
             }
         });
