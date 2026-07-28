@@ -65,8 +65,6 @@
 
                 <!-- Search & Pop-down Filter Dropdown -->
                 @php
-                    $currentType = request('type', 'all');
-                    // Key harus EXACT MATCH (case-insensitive) dengan kolom jenis_koleksi di tbljenis_koleksi
                     $types = [
                         'all'               => ['label' => 'Semua Tipe', 'dot' => 'bg-slate-500'],
                         'buku'              => ['label' => 'Buku', 'dot' => 'bg-[#ef4444]'],
@@ -79,6 +77,29 @@
                         'makalah'           => ['label' => 'Makalah', 'dot' => 'bg-cyan-600'],
                         'diktat'            => ['label' => 'Diktat', 'dot' => 'bg-rose-600'],
                     ];
+
+                    $rawRequestType = request('type', 'all');
+                    $activeTypesArray = array_values(array_filter(array_map('trim', explode(',', strtolower($rawRequestType)))));
+                    if (empty($activeTypesArray)) {
+                        $activeTypesArray = ['all'];
+                    }
+
+                    $activeLabels = [];
+                    foreach ($activeTypesArray as $aKey) {
+                        if ($aKey !== 'all' && isset($types[$aKey])) {
+                            $activeLabels[] = __($types[$aKey]['label']);
+                        }
+                    }
+
+                    if (empty($activeLabels)) {
+                        $initialTypeLabel = __('Semua Tipe');
+                    } elseif (count($activeLabels) === 1) {
+                        $initialTypeLabel = $activeLabels[0];
+                    } elseif (count($activeLabels) === 2) {
+                        $initialTypeLabel = implode(', ', $activeLabels);
+                    } else {
+                        $initialTypeLabel = $activeLabels[0] . ', ' . $activeLabels[1] . ' (+' . (count($activeLabels) - 2) . ')';
+                    }
                 @endphp
                 <div class="w-full md:w-96 flex flex-col items-end gap-2 relative">
                     <form action="{{ route('galeri') }}" method="GET" class="relative w-full">
@@ -94,8 +115,8 @@
                         <button id="type-filter-dropdown-btn" type="button" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 shadow-sm hover:border-[#106c38] hover:text-[#106c38] transition cursor-pointer">
                             <i class="ph ph-funnel text-sm text-[#106c38]"></i>
                             <span>{{ __('Filter Tipe:') }}</span>
-                            <span class="font-extrabold text-[#106c38]">
-                                {{ $types[$currentType]['label'] ?? __('Semua Tipe') }}
+                            <span class="font-extrabold text-[#106c38]" id="selected-type-label">
+                                {{ $initialTypeLabel }}
                             </span>
                             <i class="ph ph-caret-down text-xs transition-transform duration-200" id="type-dropdown-arrow"></i>
                         </button>
@@ -107,17 +128,17 @@
                                 <i class="ph ph-funnel text-xs text-[#106c38]"></i>
                             </div>
                             @foreach($types as $tKey => $tVal)
-                                @php $isTypeActive = ($currentType === $tKey); @endphp
-                                <a href="{{ route('galeri', array_merge(request()->except('page'), ['type' => $tKey])) }}"
-                                   class="flex items-center justify-between px-3.5 py-2 text-xs font-semibold hover:bg-slate-50 transition {{ $isTypeActive ? 'text-[#106c38] bg-green-50/60 font-bold' : 'text-slate-700' }}">
+                                @php
+                                    $isTypeActive = in_array($tKey, $activeTypesArray) || (in_array('all', $activeTypesArray) && $tKey === 'all');
+                                @endphp
+                                <button type="button" data-type="{{ $tKey }}" data-label="{{ __($tVal['label']) }}"
+                                        class="type-option-btn w-full flex items-center justify-between px-3.5 py-2 text-xs font-semibold hover:bg-slate-50 transition cursor-pointer {{ $isTypeActive ? 'text-[#106c38] bg-green-50/60 font-bold' : 'text-slate-700' }}">
                                     <div class="flex items-center gap-2">
                                         <span class="w-2.5 h-2.5 rounded-full {{ $tVal['dot'] }}"></span>
                                         <span>{{ __($tVal['label']) }}</span>
                                     </div>
-                                    @if($isTypeActive)
-                                        <i class="ph ph-check-circle text-sm text-[#106c38]"></i>
-                                    @endif
-                                </a>
+                                    <i class="ph ph-check-circle text-sm text-[#106c38] active-check {{ $isTypeActive ? '' : 'hidden' }}"></i>
+                                </button>
                             @endforeach
                         </div>
                     </div>
@@ -218,11 +239,19 @@
             const searchInput = document.getElementById('live-search-input');
             let debounceTimer;
 
+            let selectedTypes = new Set(@json($activeTypesArray));
+
             function performGallerySearch() {
-                const query = searchInput.value;
+                const query = searchInput ? searchInput.value : '';
                 const urlParams = new URLSearchParams(window.location.search);
                 urlParams.set('q', query);
                 urlParams.set('page', '1'); // Reset to page 1 on new search
+
+                if (selectedTypes.has('all') || selectedTypes.size === 0) {
+                    urlParams.delete('type');
+                } else {
+                    urlParams.set('type', Array.from(selectedTypes).join(','));
+                }
 
                 const targetUrl = `{{ route('galeri') }}?${urlParams.toString()}`;
                 
@@ -303,6 +332,8 @@
             const typeDropdownBtn = document.getElementById('type-filter-dropdown-btn');
             const typeDropdownMenu = document.getElementById('type-filter-dropdown-menu');
             const typeDropdownArrow = document.getElementById('type-dropdown-arrow');
+            const selectedTypeLabel = document.getElementById('selected-type-label');
+            const typeOptionBtns = document.querySelectorAll('.type-option-btn');
 
             if (typeDropdownBtn && typeDropdownMenu) {
                 typeDropdownBtn.addEventListener('click', function(e) {
@@ -316,6 +347,73 @@
                         typeDropdownMenu.classList.add('hidden');
                         if (typeDropdownArrow) typeDropdownArrow.classList.remove('rotate-180');
                     }
+                });
+
+                const totalSpecificTypes = Array.from(typeOptionBtns).filter(b => b.getAttribute('data-type') !== 'all').length;
+
+                typeOptionBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const key = btn.getAttribute('data-type');
+
+                        if (key === 'all') {
+                            selectedTypes.clear();
+                            selectedTypes.add('all');
+                        } else {
+                            selectedTypes.delete('all');
+                            if (selectedTypes.has(key)) {
+                                selectedTypes.delete(key);
+                            } else {
+                                selectedTypes.add(key);
+                            }
+
+                            const specificCount = Array.from(selectedTypes).filter(k => k !== 'all').length;
+                            if (specificCount === 0 || specificCount >= totalSpecificTypes) {
+                                selectedTypes.clear();
+                                selectedTypes.add('all');
+                            }
+                        }
+
+                        // Update check icons and styles
+                        typeOptionBtns.forEach(b => {
+                            const bKey = b.getAttribute('data-type');
+                            const check = b.querySelector('.active-check');
+                            const isSel = selectedTypes.has(bKey) || (selectedTypes.has('all') && bKey === 'all');
+                            if (isSel) {
+                                b.classList.add('text-[#106c38]', 'bg-green-50/60', 'font-bold');
+                                b.classList.remove('text-slate-700');
+                                if (check) check.classList.remove('hidden');
+                            } else {
+                                b.classList.remove('text-[#106c38]', 'bg-green-50/60', 'font-bold');
+                                b.classList.add('text-slate-700');
+                                if (check) check.classList.add('hidden');
+                            }
+                        });
+
+                        // Update label text
+                        if (selectedTypeLabel) {
+                            if (selectedTypes.has('all') || selectedTypes.size === 0) {
+                                selectedTypeLabel.textContent = "{{ __('Semua Tipe') }}";
+                            } else {
+                                const labels = [];
+                                typeOptionBtns.forEach(b => {
+                                    const bKey = b.getAttribute('data-type');
+                                    if (bKey !== 'all' && selectedTypes.has(bKey)) {
+                                        labels.push(b.getAttribute('data-label'));
+                                    }
+                                });
+                                if (labels.length === 1) {
+                                    selectedTypeLabel.textContent = labels[0];
+                                } else if (labels.length === 2) {
+                                    selectedTypeLabel.textContent = labels.join(', ');
+                                } else {
+                                    selectedTypeLabel.textContent = `${labels[0]}, ${labels[1]} (+${labels.length - 2})`;
+                                }
+                            }
+                        }
+
+                        performGallerySearch();
+                    });
                 });
             }
 

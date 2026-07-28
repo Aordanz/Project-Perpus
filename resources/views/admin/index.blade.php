@@ -288,6 +288,7 @@
                 <form action="{{ route('admin.index') }}" method="GET" class="flex-shrink-0 w-full sm:w-72">
                     <select name="lokasi" id="lokasi-select" onchange="this.form.submit()" placeholder="Cari Lokasi...">
                         <option value="all" {{ request('lokasi', 'all') == 'all' ? 'selected' : '' }}>Semua Lokasi</option>
+                        <option value="koleksi_terbaru" {{ request('lokasi') == 'koleksi_terbaru' ? 'selected' : '' }}>Koleksi Terbaru</option>
                         @foreach($locationsList as $locationName)
                             <option value="{{ $locationName }}" {{ request('lokasi') == $locationName ? 'selected' : '' }}>{{ $locationName }}</option>
                         @endforeach
@@ -297,7 +298,7 @@
             
             <div class="pt-2 border-t border-slate-100">
                 <div class="flex items-center gap-2 mb-4">
-                    <i class="ph ph-map-pin text-usu-green"></i>
+                    <i class="ph {{ request('lokasi') === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin' }} text-usu-green"></i>
                     <h3 class="text-sm font-bold text-slate-600 uppercase tracking-wider">{{ $selectedLocation }}</h3>
                 </div>
                 
@@ -326,95 +327,6 @@
             </div>
         </div>
 
-        <!-- Koleksi Terbaru Section -->
-        <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm p-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-[#006633]/10 text-[#006633] flex items-center justify-center text-2xl">
-                        <i class="ph ph-sparkle"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-800 tracking-tight">Koleksi Terbaru</h2>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium">10 buku terakhir yang diinput ke sistem berdasarkan tanggal input.</p>
-                    </div>
-                </div>
-                <a href="{{ route('koleksi.terbaru') }}" target="_blank"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-[#106c38] text-white hover:bg-[#0b4d27] transition shadow-sm flex-shrink-0">
-                    <i class="ph ph-arrow-square-out text-sm"></i>
-                    Lihat Semua
-                </a>
-            </div>
-
-            <div class="border border-slate-100 rounded-2xl overflow-hidden">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-100">
-                            <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-4 py-3">#</th>
-                            <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-4 py-3">Judul Buku</th>
-                            <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-4 py-3 hidden md:table-cell">Pengarang</th>
-                            <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-4 py-3 hidden lg:table-cell">Tipe</th>
-                            <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-4 py-3 hidden sm:table-cell">Tahun</th>
-                            <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-4 py-3">Tgl Input</th>
-                            <th class="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider px-4 py-3">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @forelse($latestBooks as $i => $book)
-                        <tr class="hover:bg-slate-50/70 transition-colors group">
-                            <td class="px-4 py-3 text-slate-400 font-bold text-xs">{{ $i + 1 }}</td>
-                            <td class="px-4 py-3">
-                                <div class="font-semibold text-slate-800 text-xs leading-snug line-clamp-2 max-w-xs group-hover:text-[#106c38] transition-colors">
-                                    {{ $book->title ?: 'Judul tidak tersedia' }}
-                                </div>
-                                @if($book->call_number)
-                                    <div class="text-[10px] text-slate-400 font-mono mt-0.5">{{ $book->call_number }}</div>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 hidden md:table-cell">
-                                <span class="text-xs text-slate-600 font-medium">{{ Str::limit($book->author ?: '-', 30) }}</span>
-                            </td>
-                            <td class="px-4 py-3 hidden lg:table-cell">
-                                @php $badgeColor = $book->jenis_badge_color ?? 'bg-slate-100 text-slate-600'; @endphp
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold {{ $badgeColor }}">
-                                    {{ $book->jenis_name ?? $book->jenis ?? '-' }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 hidden sm:table-cell">
-                                <span class="text-xs text-slate-500 font-medium">{{ $book->publish_year ?: '-' }}</span>
-                            </td>
-                            <td class="px-4 py-3">
-                                @if($book->tglinput)
-                                    <div class="text-[11px] font-semibold text-[#106c38]">
-                                        {{ \Carbon\Carbon::parse($book->tglinput)->format('d M Y') }}
-                                    </div>
-                                    <div class="text-[10px] text-slate-400 font-mono">
-                                        {{ \Carbon\Carbon::parse($book->tglinput)->format('H:i') }}
-                                    </div>
-                                @else
-                                    <span class="text-xs text-slate-300">—</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
-                                <a href="{{ route('books.show', $book->idmaster) }}" target="_blank"
-                                   class="inline-flex items-center gap-1 text-[11px] font-bold text-[#106c38] hover:text-[#0b4d27] transition">
-                                    <i class="ph ph-eye text-sm"></i>
-                                    <span class="hidden sm:inline">Detail</span>
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-sm text-slate-400 font-medium">
-                                <i class="ph ph-books text-3xl block mb-2 text-slate-300"></i>
-                                Belum ada koleksi terbaru.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
             </main>
 
             <!-- Footer -->
@@ -436,10 +348,12 @@
                     maxOptions: 100,
                     render: {
                         item: function(data, escape) {
-                            return '<div class="flex items-center gap-2"><i class="ph ph-map-pin text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
+                            var icon = data.value === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin';
+                            return '<div class="flex items-center gap-2"><i class="ph ' + icon + ' text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
                         },
                         option: function(data, escape) {
-                            return '<div class="flex items-center gap-2"><i class="ph ph-map-pin text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
+                            var icon = data.value === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin';
+                            return '<div class="flex items-center gap-2"><i class="ph ' + icon + ' text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
                         }
                     }
                 });

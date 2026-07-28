@@ -414,7 +414,7 @@
             let activeSearch = searchInput ? searchInput.value.toLowerCase().trim() : '';
             let activeFilter = 'all'; // 'all', 'available', or 'subject'
             let activeSubjectValue = '';
-            let activeCollectionType = 'all';
+            let selectedCollectionTypes = new Set(['all']);
 
             // Type Filter Pop-down Dropdown Handler
             const typeDropdownBtn = document.getElementById('type-filter-dropdown-btn');
@@ -437,17 +437,37 @@
                     }
                 });
 
+                const totalSpecificTypes = Array.from(typeOptionBtns).filter(b => b.getAttribute('data-type') !== 'all').length;
+
                 typeOptionBtns.forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        activeCollectionType = btn.getAttribute('data-type');
-                        const labelText = btn.getAttribute('data-label');
-                        if (selectedTypeLabel) selectedTypeLabel.textContent = labelText;
+                        const key = btn.getAttribute('data-type');
+                        
+                        if (key === 'all') {
+                            selectedCollectionTypes.clear();
+                            selectedCollectionTypes.add('all');
+                        } else {
+                            selectedCollectionTypes.delete('all');
+                            if (selectedCollectionTypes.has(key)) {
+                                selectedCollectionTypes.delete(key);
+                            } else {
+                                selectedCollectionTypes.add(key);
+                            }
 
-                        // Update check icons
+                            const specificCount = Array.from(selectedCollectionTypes).filter(k => k !== 'all').length;
+                            if (specificCount === 0 || specificCount >= totalSpecificTypes) {
+                                selectedCollectionTypes.clear();
+                                selectedCollectionTypes.add('all');
+                            }
+                        }
+
+                        // Update check icons and styles
                         typeOptionBtns.forEach(b => {
+                            const bKey = b.getAttribute('data-type');
                             const check = b.querySelector('.active-check');
-                            if (b === btn) {
+                            const isSel = selectedCollectionTypes.has(bKey) || (selectedCollectionTypes.has('all') && bKey === 'all');
+                            if (isSel) {
                                 b.classList.add('text-[#106c38]', 'bg-green-50/60', 'font-bold');
                                 b.classList.remove('text-slate-700');
                                 if (check) check.classList.remove('hidden');
@@ -458,8 +478,27 @@
                             }
                         });
 
-                        typeDropdownMenu.classList.add('hidden');
-                        if (typeDropdownArrow) typeDropdownArrow.classList.remove('rotate-180');
+                        // Update label text
+                        if (selectedTypeLabel) {
+                            if (selectedCollectionTypes.has('all') || selectedCollectionTypes.size === 0) {
+                                selectedTypeLabel.textContent = "{{ __('Semua Tipe') }}";
+                            } else {
+                                const labels = [];
+                                typeOptionBtns.forEach(b => {
+                                    const bKey = b.getAttribute('data-type');
+                                    if (bKey !== 'all' && selectedCollectionTypes.has(bKey)) {
+                                        labels.push(b.getAttribute('data-label'));
+                                    }
+                                });
+                                if (labels.length === 1) {
+                                    selectedTypeLabel.textContent = labels[0];
+                                } else if (labels.length === 2) {
+                                    selectedTypeLabel.textContent = labels.join(', ');
+                                } else {
+                                    selectedTypeLabel.textContent = `${labels[0]}, ${labels[1]} (+${labels.length - 2})`;
+                                }
+                            }
+                        }
 
                         currentPage = 1;
                         applyFilters();
@@ -502,9 +541,16 @@
                     }
 
                     const jenis = (card.getAttribute('data-jenis') || '').toLowerCase();
-                    let matchesType = (activeCollectionType === 'all' || 
-                                       jenis === activeCollectionType || 
-                                       (activeCollectionType === 'laporan penelitian' && jenis.includes('laporan')));
+                    let matchesType = false;
+                    if (selectedCollectionTypes.has('all') || selectedCollectionTypes.size === 0) {
+                        matchesType = true;
+                    } else {
+                        selectedCollectionTypes.forEach(t => {
+                            if (jenis === t || (t === 'laporan penelitian' && jenis.includes('laporan'))) {
+                                matchesType = true;
+                            }
+                        });
+                    }
 
                     if (matchesSearch && matchesFilter && matchesType) {
                         matchedCards.push(card);
