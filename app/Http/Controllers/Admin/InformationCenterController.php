@@ -33,8 +33,6 @@ class InformationCenterController extends Controller
               });
         })->count();
 
-        $countTrash = InformationCenter::onlyTrashed()->count();
-
         $query = InformationCenter::query();
 
         if ($tab === 'history') {
@@ -81,7 +79,7 @@ class InformationCenterController extends Controller
 
         $informationCenters = $query->latest()->paginate(10)->withQueryString();
 
-        return view('admin.information_center.index', compact('informationCenters', 'tab', 'countActive', 'countHistory', 'countTrash'));
+        return view('admin.information_center.index', compact('informationCenters', 'tab', 'countActive', 'countHistory'));
     }
 
     public function create()
@@ -100,6 +98,10 @@ class InformationCenterController extends Controller
     {
         try {
             $data = $request->validated();
+            
+            if (($data['type'] ?? 'poster') === 'poster' && empty($data['title'])) {
+                $data['title'] = 'Poster - ' . now()->format('d M Y H:i');
+            }
             
             $data['slug'] = Str::slug($data['title']) . '-' . uniqid();
             $data['created_by'] = $this->getValidUserId();
@@ -179,6 +181,10 @@ class InformationCenterController extends Controller
     public function update(UpdateInformationCenterRequest $request, InformationCenter $informationCenter)
     {
         $data = $request->validated();
+        
+        if (($data['type'] ?? $informationCenter->type ?? 'poster') === 'poster' && empty($data['title'])) {
+            $data['title'] = 'Poster - ' . now()->format('d M Y H:i');
+        }
         
         $data['updated_by'] = $this->getValidUserId();
 
@@ -382,75 +388,7 @@ class InformationCenterController extends Controller
         return $data;
     }
 
-    /**
-     * Menampilkan daftar data yang dihapus (Trash / History Arsip).
-     */
-    public function trash(Request $request)
-    {
-        $search = $request->input('search');
-        $category = $request->input('category');
 
-        $query = InformationCenter::onlyTrashed();
-
-        if ($search) {
-            $query->where('title', 'like', "%{$search}%");
-        }
-        if ($category) {
-            $query->where('category', $category);
-        }
-
-        $countActive = InformationCenter::where('status', '!=', 'archived')
-            ->where(function ($q) {
-                $q->whereNull('publish_end_at')
-                  ->orWhere('publish_end_at', '>=', now());
-            })->count();
-
-        $countHistory = InformationCenter::where(function ($q) {
-            $q->where('status', 'archived')
-              ->orWhere('status', 'expired')
-              ->orWhere(function ($sub) {
-                  $sub->whereNotNull('publish_end_at')
-                      ->where('publish_end_at', '<', now());
-              });
-        })->count();
-
-        $countTrash = InformationCenter::onlyTrashed()->count();
-
-        $trashItems = $query->latest('deleted_at')->paginate(10);
-        return view('admin.information_center.trash', compact('trashItems', 'countActive', 'countHistory', 'countTrash'));
-    }
-
-    /**
-     * Memulihkan data yang di-Soft Delete.
-     */
-    public function restore($id)
-    {
-        $info = InformationCenter::onlyTrashed()->findOrFail($id);
-        $info->restore();
-        return redirect()->route('admin.information-center.trash')->with('success', 'Informasi berhasil dipulihkan!');
-    }
-
-    /**
-     * Menghapus data secara permanen dari database.
-     */
-    public function forceDelete($id)
-    {
-        $info = InformationCenter::onlyTrashed()->findOrFail($id);
-        
-        // Hapus gambar fisik
-        if ($info->images) {
-            foreach ($info->images as $oldImage) {
-                $oldPath = str_replace('/storage/', '', $oldImage);
-                Storage::disk('public')->delete($oldPath);
-            }
-        } elseif ($info->image_path) {
-            $oldPath = str_replace('/storage/', '', $info->image_path);
-            Storage::disk('public')->delete($oldPath);
-        }
-
-        $info->forceDelete();
-        return redirect()->route('admin.information-center.trash')->with('success', 'Informasi berhasil dihapus permanen dari database!');
-    }
 
     /**
      * Menerbitkan kembali informasi yang telah kadaluarsa dengan jadwal tanggal & waktu baru.
@@ -460,19 +398,31 @@ class InformationCenterController extends Controller
         $informationCenter = InformationCenter::findOrFail($id);
 
         $request->validate([
-            'publish_start_date' => 'required|date',
-            'publish_start_time' => 'required|string',
-            'publish_end_date'   => 'nullable|date|after_or_equal:publish_start_date',
+            'status'             => 'required|in:published,draft',
+            'publish_start_date' => 'required_if:status,draft|nullable|date',
+            'publish_start_time' => 'required_if:status,draft|nullable|string',
+            'publish_end_date'   => 'nullable|date',
             'publish_end_time'   => 'nullable|string',
+            'sort_order'         => 'required|integer|min:1',
         ], [
-            'publish_start_date.required' => 'Tanggal mulai tayang wajib diisi.',
+            'publish_start_date.required_if' => 'Tanggal mulai tayang wajib diisi untuk draf.',
             'publish_start_date.date'     => 'Format tanggal mulai tayang tidak valid.',
-            'publish_start_time.required' => 'Jam mulai tayang wajib diisi.',
+            'publish_start_time.required_if' => 'Jam mulai tayang wajib diisi untuk draf.',
             'publish_end_date.date'       => 'Format tanggal selesai tayang tidak valid.',
-            'publish_end_date.after_or_equal' => 'Tanggal selesai tayang tidak boleh mendahului tanggal mulai tayang.',
         ]);
 
-        $publishStartAt = $request->publish_start_date . ' ' . $request->publish_start_time;
+        $status = $request->status;
+
+        if ($status === 'published') {
+            $publishStartAt = now()->format('Y-m-d H:i:s');
+        } else {
+            $publishStartAt = $request->publish_start_date . ' ' . $request->publish_start_time;
+            $startDateTime = \Carbon\Carbon::parse($publishStartAt);
+            if ($startDateTime->isPast()) {
+                return back()->with('error', 'Waktu mulai tayang untuk draf/jadwal tidak boleh sebelum jam saat ini.');
+            }
+        }
+
         $publishEndAt = null;
         if (!empty($request->publish_end_date) && !empty($request->publish_end_time)) {
             $publishEndAt = $request->publish_end_date . ' ' . $request->publish_end_time;
@@ -481,7 +431,8 @@ class InformationCenterController extends Controller
         $informationCenter->update([
             'publish_start_at' => $publishStartAt,
             'publish_end_at'   => $publishEndAt,
-            'status'           => 'published',
+            'status'           => $status,
+            'sort_order'       => $request->sort_order,
             'updated_by'       => $this->getValidUserId(),
         ]);
 
@@ -556,61 +507,7 @@ class InformationCenterController extends Controller
             ->with('success', "Berhasil menghapus {$count} data informasi!");
     }
 
-    /**
-     * Memulihkan beberapa data sekaligus (Bulk Restore).
-     */
-    public function bulkRestore(Request $request)
-    {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'integer',
-        ], [
-            'ids.required' => 'Pilih setidaknya satu data informasi untuk dipulihkan.',
-        ]);
 
-        $items = InformationCenter::onlyTrashed()->whereIn('id', $request->ids)->get();
-        $count = $items->count();
-
-        foreach ($items as $item) {
-            $item->restore();
-        }
-
-        return redirect()->route('admin.information-center.trash')
-            ->with('success', "Berhasil memulihkan {$count} data informasi!");
-    }
-
-    /**
-     * Menghapus beberapa data secara permanen sekaligus (Bulk Force Delete).
-     */
-    public function bulkForceDelete(Request $request)
-    {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'integer',
-        ], [
-            'ids.required' => 'Pilih setidaknya satu data informasi untuk dihapus permanen.',
-        ]);
-
-        $items = InformationCenter::onlyTrashed()->whereIn('id', $request->ids)->get();
-        $count = $items->count();
-
-        foreach ($items as $info) {
-            if ($info->images) {
-                foreach ($info->images as $oldImage) {
-                    $oldPath = str_replace('/storage/', '', $oldImage);
-                    Storage::disk('public')->delete($oldPath);
-                }
-            } elseif ($info->image_path) {
-                $oldPath = str_replace('/storage/', '', $info->image_path);
-                Storage::disk('public')->delete($oldPath);
-            }
-
-            $info->forceDelete();
-        }
-
-        return redirect()->route('admin.information-center.trash')
-            ->with('success', "Berhasil menghapus permanen {$count} data informasi dari database!");
-    }
 
     /**
      * Mengambil ID user yang valid dari tabel 'users' untuk menghindari kesalahan Foreign Key Constraint MySQL.

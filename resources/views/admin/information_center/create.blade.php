@@ -248,6 +248,53 @@
         </div>
     </div>
 
+    {{-- ═══ STEP 1.5: JENIS INFORMASI ═══ --}}
+    <div id="type-section" class="form-card mb-6 hidden opacity-0 transform translate-y-4 transition-all duration-500">
+        <div class="form-card-header">
+            <span class="sec-num bg-[#106c38] text-white">2</span>
+            <div class="flex-1 min-w-0">
+                <h2 class="text-sm font-black text-slate-800">Jenis Informasi</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Tentukan bentuk tampilan informasi di halaman depan</p>
+            </div>
+            <span class="text-[10px] font-bold text-red-400 shrink-0">Wajib ✱</span>
+        </div>
+        <div class="form-card-body">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <label class="flex-1 relative cursor-pointer group">
+                    <input type="radio" name="type" value="poster" class="peer sr-only type-radio" {{ old('type') == 'poster' ? 'checked' : '' }}>
+                    <div class="p-4 rounded-xl border-2 border-slate-200 bg-white group-hover:border-[#106c38]/50 peer-checked:border-[#106c38] peer-checked:bg-emerald-50/50 transition-all text-center h-full flex flex-col items-center justify-center gap-2">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-[#106c38] flex items-center justify-center text-xl mb-1">
+                            <i class="ph ph-image"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-slate-800 mb-0.5">Poster / Gambar</div>
+                            <div class="text-[10.5px] text-slate-500 leading-relaxed">Fokus pada visual banner. Membutuhkan gambar.</div>
+                        </div>
+                        <div class="absolute top-3 right-3 opacity-0 peer-checked:opacity-100 transition-opacity text-[#106c38]">
+                            <i class="ph-fill ph-check-circle text-lg"></i>
+                        </div>
+                    </div>
+                </label>
+                
+                <label class="flex-1 relative cursor-pointer group">
+                    <input type="radio" name="type" value="text" class="peer sr-only type-radio" {{ old('type') == 'text' ? 'checked' : '' }}>
+                    <div class="p-4 rounded-xl border-2 border-slate-200 bg-white group-hover:border-[#106c38]/50 peer-checked:border-[#106c38] peer-checked:bg-emerald-50/50 transition-all text-center h-full flex flex-col items-center justify-center gap-2">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-1">
+                            <i class="ph ph-text-aa"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-slate-800 mb-0.5">Informasi Teks</div>
+                            <div class="text-[10.5px] text-slate-500 leading-relaxed">Fokus pada isi teks. Gambar akan disembunyikan.</div>
+                        </div>
+                        <div class="absolute top-3 right-3 opacity-0 peer-checked:opacity-100 transition-opacity text-[#106c38]">
+                            <i class="ph-fill ph-check-circle text-lg"></i>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+    </div>
+
     {{-- ═══ MAIN FORM AREA (2-Column) ═══ --}}
     <div id="main-form-area" class="hidden opacity-0 transform translate-y-4 transition-all duration-500">
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
@@ -256,7 +303,7 @@
             <div class="xl:col-span-8 space-y-5">
 
                 {{-- SECTION 1: Informasi Utama --}}
-                <div class="form-card">
+                <div id="card-informasi-utama" class="form-card">
                     <div class="form-card-header">
                         <div class="form-card-icon bg-emerald-50">
                             <i class="ph ph-text-aa text-[#106c38] text-xl"></i>
@@ -415,7 +462,7 @@
                         </div>
                         <button type="button" id="btn-add-action-button"
                                 class="mt-3 flex items-center justify-center gap-2 w-full px-4 py-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 border-dashed hover:border-blue-300 text-slate-500 hover:text-blue-600 text-xs font-bold rounded-xl transition-all">
-                            <i class="ph ph-plus-circle text-base"></i> Tambah Tombol Baru
+                            <i class="ph ph-plus-circle text-base"></i> Tambah Tautan
                         </button>
                     </div>
                 </div>
@@ -492,6 +539,7 @@
                                             <input type="time" name="publish_start_time" id="publish_start_time_input"
                                                    value="{{ old('publish_start_time', date('H:i')) }}"
                                                    class="fi fi-sm px-3 py-2">
+                                            <span id="start_time_error" class="hidden text-[10px] text-red-500 mt-1 leading-tight">Jam tidak boleh lewat!</span>
                                         </div>
                                     </div>
                                 </div>
@@ -502,15 +550,16 @@
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
-                                            <input type="date" name="publish_end_date"
+                                            <input type="date" name="publish_end_date" id="publish_end_date_input"
                                                    value="{{ old('publish_end_date') }}"
                                                    class="fi fi-sm px-3 py-2">
                                         </div>
                                         <div>
                                             <span class="block text-[10px] text-slate-400 mb-1.5">Jam</span>
-                                            <input type="time" name="publish_end_time"
+                                            <input type="time" name="publish_end_time" id="publish_end_time_input"
                                                    value="{{ old('publish_end_time') }}"
                                                    class="fi fi-sm px-3 py-2">
+                                            <span id="end_time_error" class="hidden text-[10px] text-red-500 mt-1 leading-tight">Jam tidak boleh lewat!</span>
                                         </div>
                                     </div>
                                     <p class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Biarkan kosong untuk tayang tanpa batas waktu.</p>
@@ -550,116 +599,77 @@
                             <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold uppercase">Frame Editor</span>
                         </div>
                         <div class="sidebar-card-body space-y-4">
-                            <!-- Dropzone Upload -->
-                            <div id="dropzone-wrapper">
-                                <label class="img-drop block cursor-pointer">
-                                    <div class="flex flex-col items-center justify-center gap-2.5">
-                                        <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-                                            <i class="ph ph-upload-simple text-2xl text-slate-400"></i>
-                                        </div>
-                                        <div class="text-center">
-                                            <span class="text-xs font-bold text-slate-600 block">Klik untuk Pilih Gambar</span>
-                                            <span class="text-[10px] text-slate-400 mt-1 block">JPG, PNG, WEBP — Maks. 5MB</span>
-                                        </div>
-                                    </div>
-                                    <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
-                                </label>
-                            </div>
-
-                            <!-- Button Ganti Foto (Tampil saat foto sudah ada) -->
-                            <button type="button" id="btn-change-image" class="hidden w-full py-2.5 px-4 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#106c38] border border-slate-200 hover:border-emerald-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer">
-                                <i class="ph ph-image text-base text-[#106c38]"></i> Ganti Foto / Unggah Ulang
-                            </button>
-                            
-                            <div id="image-preview-container" class="grid grid-cols-3 gap-2 hidden">
-                                <!-- Previews will be injected here -->
-                            </div>
-
-                            <!-- Hidden Inputs for Frame Customization -->
-                            <input type="hidden" name="image_scale" id="image_scale_input" value="{{ old('image_scale', 100) }}">
-                            <input type="hidden" name="image_x" id="image_x_input" value="{{ old('image_x', 50) }}">
-                            <input type="hidden" name="image_y" id="image_y_input" value="{{ old('image_y', 50) }}">
-
-                            <!-- Interactive Simulasi Frame Beranda -->
-                            <div class="pt-3 border-t border-slate-100 space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
-                                        <i class="ph ph-crop text-emerald-600 text-sm"></i> Frame Banner Beranda
-                                    </span>
-                                    <span class="text-[9.5px] text-slate-400 font-medium">Klik & Drag / Scroll Zoom</span>
-                                </div>
-
-                                <!-- Box Simulasi Frame (Exact Ratio Frame Popup) -->
-                                <div id="frame-simulator-container"
-                                     class="relative w-full aspect-[376/500] max-h-[380px] rounded-2xl overflow-hidden bg-white border-2 border-emerald-500/40 shadow-inner group cursor-grab active:cursor-grabbing select-none"
-                                     style="aspect-ratio: 376 / 500;"
-                                     title="Klik & Drag untuk menggeser posisi foto | Scroll mouse untuk Zoom">
-
-                                    <!-- Wavy Divider Overlay (Matching Homepage Popup 100%) -->
-                                    <div class="absolute left-0 top-0 h-full z-20 pointer-events-none" style="width: 25%;">
-                                        <svg class="h-full w-full" viewBox="0 0 100 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M 0,0 C 55,100 75,250 20,380 C -5,430 35,480 50,500 L 0,500 Z" fill="#0f172a" fill-opacity="0.85" />
-                                            <path d="M 0,0 C 55,100 75,250 20,380 C -5,430 35,480 50,500" fill="none" stroke="#eab308" stroke-width="3.5" vector-effect="non-scaling-stroke" />
-                                        </svg>
-                                    </div>
-
-                                    <!-- Target Image Element -->
-                                    <img id="image-preview" src="{{ asset('perpustakaan_depan.webp') }}" alt="Pratinjau Frame"
-                                         class="w-full h-full object-cover transition-transform duration-75 pointer-events-none"
-                                         style="object-position: {{ old('image_x', 50) }}% {{ old('image_y', 50) }}%; transform: scale({{ old('image_scale', 100) / 100 }});">
-
-                                    <!-- Bottom Info Overlay Badge -->
-                                    <div class="absolute bottom-2 left-2 right-2 px-2.5 py-1 bg-black/70 backdrop-blur-md rounded-lg text-[9.5px] text-white/90 flex items-center justify-between pointer-events-none z-30">
-                                        <span class="flex items-center gap-1 font-semibold">
-                                            <i class="ph ph-hand-grabbing text-yellow-400 text-xs"></i> Drag &amp; Scroll Aktif
+                            <div class="flex flex-col items-center pt-2 pb-4">
+                                <div class="w-full max-w-[400px] space-y-4">
+                                    
+                                    <!-- Header for Dropzone -->
+                                    <div class="flex items-center justify-between" id="upload-header">
+                                        <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                                            <i class="ph ph-upload-simple text-blue-500 text-sm"></i> File Gambar
                                         </span>
-                                        <span id="preview-fit-label" class="font-black text-emerald-400">Zoom: <span id="badge-scale-val">{{ old('image_scale', 100) }}%</span></span>
+                                        <span class="text-[9.5px] text-slate-400 font-medium">Wajib diisi</span>
                                     </div>
+                                    
+                                    <!-- Dropzone Upload (Tampil Awal) -->
+                                    <div id="dropzone-wrapper" class="w-full aspect-[4/5]">
+                                        <label class="img-drop block cursor-pointer h-full border-2 border-dashed border-slate-300 hover:border-[#106c38] rounded-2xl bg-slate-50 hover:bg-emerald-50 transition-colors">
+                                            <div class="flex flex-col items-center justify-center gap-2.5 h-full py-8">
+                                                <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                                                    <i class="ph ph-upload-simple text-2xl text-slate-400"></i>
+                                                </div>
+                                                <div class="text-center px-4">
+                                                    <span class="text-xs font-bold text-slate-600 block">Klik untuk Pilih Gambar</span>
+                                                    <span class="text-[10px] text-slate-400 mt-1 block">JPG, PNG, WEBP — Maks. 5MB</span>
+                                                    <span class="text-[10px] font-bold text-emerald-600 mt-0.5 block">Disarankan format Potrait (Rasio 4:5)</span>
+                                                </div>
+                                            </div>
+                                            <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
+                                        </label>
+                                    </div>
+
+                                    <!-- Interactive Simulasi Frame Beranda (Sembunyi Awal) -->
+                                    <div id="frame-simulator-wrapper" class="hidden w-full space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                                                <i class="ph ph-crop text-emerald-600 text-sm"></i> Atur Posisi & Zoom Gambar
+                                            </span>
+                                            <span class="text-[9.5px] text-slate-400 font-medium">Klik & Drag pada gambar</span>
+                                        </div>
+
+                                        <div id="frame-simulator-container"
+                                             class="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 border-2 border-emerald-500 shadow-inner select-none cursor-move"
+                                             style="aspect-ratio: 4 / 5;"
+                                             title="Geser gambar untuk menyesuaikan posisi">
+
+                                            <!-- Target Image Element (Kosong Awal) -->
+                                            <img id="image-preview" src="" alt="Pratinjau Frame"
+                                                 class="w-full h-full object-cover transition-transform duration-75 pointer-events-none"
+                                                 style="object-position: {{ old('image_x', 50) }}% {{ old('image_y', 50) }}%; transform: scale({{ old('image_scale', 100) / 100 }});">
+                                        </div>
+                                        
+                                        <!-- Zoom Slider -->
+                                        <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl flex items-center gap-3">
+                                            <i class="ph ph-minus-circle text-slate-400 text-lg"></i>
+                                            <input type="range" id="zoom-slider" min="100" max="300" value="{{ old('image_scale', 100) }}" class="flex-1 accent-emerald-500">
+                                            <i class="ph ph-plus-circle text-slate-400 text-lg"></i>
+                                            <span id="zoom-value" class="text-xs font-bold text-slate-600 w-10 text-right">{{ old('image_scale', 100) }}%</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Button Ganti Foto (Tampil saat foto sudah ada) -->
+                                    <button type="button" id="btn-change-image" class="hidden w-full py-2.5 px-4 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#106c38] border border-slate-200 hover:border-emerald-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer">
+                                        <i class="ph ph-image text-base text-[#106c38]"></i> Ganti Foto / Unggah Ulang
+                                    </button>
+
+                                    <!-- Hidden Inputs for Frame Customization -->
+                                    <input type="hidden" name="image_scale" id="image_scale_input" value="{{ old('image_scale', 100) }}">
+                                    <input type="hidden" name="image_x" id="image_x_input" value="{{ old('image_x', 50) }}">
+                                    <input type="hidden" name="image_y" id="image_y_input" value="{{ old('image_y', 50) }}">
                                 </div>
                             </div>
 
                             <!-- Interactive Sliders for Framing & Zoom -->
-                            <div class="space-y-3 pt-2 border-t border-slate-100">
-                                <!-- Zoom Slider -->
-                                <div>
-                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
-                                        <span class="flex items-center gap-1"><i class="ph ph-magnifying-glass-plus text-emerald-600"></i> Zoom / Perbesar-Kecilkan</span>
-                                        <span id="zoom-slider-val" class="text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded text-[10px]">{{ old('image_scale', 100) }}%</span>
-                                    </div>
-                                    <input type="range" id="zoom-slider" min="50" max="250" value="{{ old('image_scale', 100) }}" class="w-full accent-emerald-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
-                                </div>
-
-                                <!-- X Position Slider -->
-                                <div>
-                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
-                                        <span class="flex items-center gap-1"><i class="ph ph-arrows-horizontal text-blue-600"></i> Posisi Horisontal (Kiri - Kanan)</span>
-                                        <span id="posx-slider-val" class="text-blue-700 font-bold text-[10px]">{{ old('image_x', 50) }}%</span>
-                                    </div>
-                                    <input type="range" id="posx-slider" min="0" max="100" value="{{ old('image_x', 50) }}" class="w-full accent-blue-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
-                                </div>
-
-                                <!-- Y Position Slider -->
-                                <div>
-                                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
-                                        <span class="flex items-center gap-1"><i class="ph ph-arrows-vertical text-purple-600"></i> Posisi Vertikal (Atas - Bawah)</span>
-                                        <span id="posy-slider-val" class="text-purple-700 font-bold text-[10px]">{{ old('image_y', 50) }}%</span>
-                                    </div>
-                                    <input type="range" id="posy-slider" min="0" max="100" value="{{ old('image_y', 50) }}" class="w-full accent-purple-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg">
-                                </div>
-
-                                <!-- Controls & Preset Buttons -->
-                                <div class="grid grid-cols-2 gap-2 pt-2">
-                                    <select name="image_fit" id="image_fit_select" class="fi fi-sm text-xs">
-                                        <option value="cover" {{ old('image_fit', 'cover') == 'cover' ? 'selected' : '' }}>🔳 Cover (Penuh)</option>
-                                        <option value="contain" {{ old('image_fit') == 'contain' ? 'selected' : '' }}>🖼️ Contain (Utuh)</option>
-                                        <option value="fill" {{ old('image_fit') == 'fill' ? 'selected' : '' }}>📐 Fill (Regang)</option>
-                                    </select>
-
-                                    <button type="button" id="btn-reset-frame" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 flex items-center justify-center gap-1 transition">
-                                        <i class="ph ph-arrow-counter-clockwise"></i> Reset Frame
-                                    </button>
-                                </div>
-                            </div>
+                            <input type="hidden" name="image_fit" value="cover">
 
                         </div>
                     </div>
@@ -704,17 +714,7 @@
     const imageInput   = document.getElementById('image-input');
     const imagePreview = document.getElementById('image-preview');
     if (imageInput && imagePreview) {
-        imageInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => { imagePreview.src = e.target.result; imagePreview.classList.remove('hidden'); };
-                reader.readAsDataURL(file);
-            } else {
-                imagePreview.classList.add('hidden');
-                imagePreview.src = '#';
-            }
-        });
+        // Validation and preview is handled below
     }
 
     // ─── Dynamic Multi Action Buttons ────────────────────────────────────────
@@ -722,22 +722,45 @@
     const btnAdd    = document.getElementById('btn-add-action-button');
     let btnIndex    = 0;
 
+    function updateAddButtonVisibility() {
+        if (!container || !btnAdd) return;
+        if (container.children.length >= 1) {
+            btnAdd.style.display = 'none';
+        } else {
+            btnAdd.style.display = 'block';
+        }
+    }
+
     function addRow(name = '', url = '', newTab = false) {
         if (!container) return;
+        if (container.children.length >= 1) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Batas Maksimal',
+                    text: 'Anda hanya dapat menambahkan 1 tautan!',
+                    confirmButtonColor: '#106c38'
+                });
+            } else {
+                alert("Maksimal 1 tautan diperbolehkan.");
+            }
+            return;
+        }
+        
         const rowId = `row-btn-${btnIndex}`;
         const html  = `
             <div id="${rowId}" class="flex flex-col sm:flex-row gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 relative pt-7 sm:pt-4">
-                <button type="button" onclick="document.getElementById('${rowId}').remove()"
+                <button type="button" onclick="document.getElementById('${rowId}').remove(); window.updateAddButtonVisibility_create();"
                         class="absolute top-2 right-2 w-6 h-6 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-500 flex items-center justify-center border border-rose-100 transition text-[10px]" title="Hapus">
                     <i class="ph ph-trash"></i>
                 </button>
                 <div class="flex-1">
-                    <p class="fl text-[10px] mb-1">Label Tombol</p>
-                    <input type="text" name="action_buttons[${btnIndex}][name]" value="${name}" required class="fi fi-sm" placeholder="Contoh: Daftar Lomba">
+                    <p class="fl text-[10px] mb-1">Label Tombol <span class="normal-case font-medium text-slate-400">(Opsional)</span></p>
+                    <input type="text" name="action_buttons[${btnIndex}][name]" value="${name}" class="fi fi-sm" placeholder="Contoh: Daftar Lomba">
                 </div>
                 <div class="flex-1">
-                    <p class="fl text-[10px] mb-1">Link (URL)</p>
-                    <input type="url" name="action_buttons[${btnIndex}][url]" value="${url}" required class="fi fi-sm" placeholder="https://forms.google.com/...">
+                    <p class="fl text-[10px] mb-1">Link (URL) <span class="normal-case font-medium text-slate-400">(Opsional)</span></p>
+                    <input type="url" name="action_buttons[${btnIndex}][url]" value="${url}" class="fi fi-sm" placeholder="https://forms.google.com/...">
                 </div>
                 <div class="flex items-center gap-1.5 pt-2 sm:pt-4 shrink-0">
                     <input type="checkbox" name="action_buttons[${btnIndex}][new_tab]" value="1" ${newTab ? 'checked' : ''} id="new_tab_${btnIndex}" style="accent-color:#106c38">
@@ -746,9 +769,33 @@
             </div>`;
         container.insertAdjacentHTML('beforeend', html);
         btnIndex++;
+        updateAddButtonVisibility();
     }
+    
+    // Attach to window so onclick works
+    window.updateAddButtonVisibility_create = updateAddButtonVisibility;
+    
     if (btnAdd) {
         btnAdd.addEventListener('click', () => addRow());
+    }
+
+    // Render existing buttons from old() safely
+    try {
+        const existingButtons = @json(old('action_buttons', []));
+        if (existingButtons && typeof existingButtons === 'object') {
+            Object.values(existingButtons).forEach(btn => {
+                if (btn && typeof btn === 'object') {
+                    // Check new_tab logic (might be '1' or '0')
+                    let isNewTab = true;
+                    if (btn.hasOwnProperty('new_tab')) {
+                        isNewTab = (btn.new_tab == '1' || btn.new_tab === true);
+                    }
+                    addRow(btn.name || '', btn.url || '', isNewTab);
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Error rendering action buttons:", e);
     }
 
     // ─── Visual Category Chips & Elements ──────────────────────────────────────
@@ -792,15 +839,40 @@
     function handleCategoryChange() {
         if (!categorySelect || !mainFormArea) return;
         const val = categorySelect.value;
+        const typeSection = document.getElementById('type-section');
         if (!val) {
             mainFormArea.classList.add('hidden', 'opacity-0', 'translate-y-4');
             mainFormArea.classList.remove('opacity-100');
             mainFormArea.style.display = 'none';
+            if (typeSection) {
+                typeSection.classList.add('hidden', 'opacity-0', 'translate-y-4');
+                typeSection.classList.remove('opacity-100');
+            }
             return;
         }
-        mainFormArea.classList.remove('hidden', 'opacity-0', 'translate-y-4');
-        mainFormArea.classList.add('opacity-100');
-        mainFormArea.style.display = 'block';
+        if (typeSection) {
+            typeSection.classList.remove('hidden', 'opacity-0', 'translate-y-4');
+            typeSection.classList.add('opacity-100');
+        }
+
+        let isTypeSelected = false;
+        let selectedType = null;
+        document.querySelectorAll('.type-radio').forEach(r => { 
+            if (r.checked) {
+                isTypeSelected = true;
+                selectedType = r.value;
+            }
+        });
+        
+        if (isTypeSelected) {
+            mainFormArea.classList.remove('hidden', 'opacity-0', 'translate-y-4');
+            mainFormArea.classList.add('opacity-100');
+            mainFormArea.style.display = 'block';
+        } else {
+            mainFormArea.classList.add('hidden', 'opacity-0', 'translate-y-4');
+            mainFormArea.classList.remove('opacity-100');
+            mainFormArea.style.display = 'none';
+        }
 
         if (allSections) allSections.forEach(sec => sec.classList.add('hidden'));
         if (customFieldsCard) customFieldsCard.classList.add('hidden');
@@ -838,11 +910,102 @@
             if (customFieldsCard) customFieldsCard.classList.remove('hidden');
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
         }
+        
+        if (selectedType === 'poster' && cardNarahubung) {
+            cardNarahubung.classList.add('hidden');
+        }
+        
+        handleTypeChange();
     }
 
     if (categorySelect) {
         categorySelect.addEventListener('change', handleCategoryChange);
     }
+    
+    // ─── Type Handling Logic ──────────────────────────────────────
+    function handleTypeChange() {
+        const typeRadios = document.querySelectorAll('.type-radio');
+        let selectedType = null;
+        typeRadios.forEach(r => { if (r.checked) selectedType = r.value; });
+        
+        if (!selectedType) return;
+        
+        if (mainFormArea) {
+            mainFormArea.classList.remove('hidden', 'opacity-0', 'translate-y-4');
+            mainFormArea.classList.add('opacity-100');
+            mainFormArea.style.display = 'block';
+        }
+        
+        const cardPoster = document.getElementById('card-poster');
+        const cardTombolAksi = document.getElementById('card-tombol-aksi');
+        const cardInformasiUtama = document.getElementById('card-informasi-utama');
+        const titleField = document.getElementById('title');
+        const contentField = document.getElementById('content');
+        
+        // Dynamically move card-poster to left column to balance layout
+        if (cardPoster && cardTombolAksi) {
+            const leftColumn = cardTombolAksi.parentElement;
+            if (cardPoster.parentElement !== leftColumn) {
+                // Place poster after Tombol Aksi
+                cardTombolAksi.insertAdjacentElement('afterend', cardPoster);
+                cardPoster.classList.remove('sidebar-card');
+                cardPoster.classList.add('form-card');
+                const header = cardPoster.querySelector('.sidebar-card-header');
+                if (header) {
+                    header.classList.remove('sidebar-card-header');
+                    header.classList.add('form-card-header');
+                }
+                const body = cardPoster.querySelector('.sidebar-card-body');
+                if (body) {
+                    body.classList.remove('sidebar-card-body');
+                    body.classList.add('form-card-body');
+                }
+            }
+        }
+
+        let contentContainer = null;
+        if (contentField) {
+            contentContainer = contentField.closest('div');
+        }
+
+        if (selectedType === 'text') {
+            if (cardPoster) cardPoster.classList.add('hidden');
+            if (cardTombolAksi) cardTombolAksi.classList.remove('hidden');
+            if (customFieldsCard) customFieldsCard.classList.remove('hidden');
+            if (cardInformasiUtama) cardInformasiUtama.classList.remove('hidden');
+            if (titleField) titleField.required = true;
+            if (imageInput) imageInput.required = false;
+            if (contentContainer) {
+                contentContainer.classList.remove('hidden');
+                contentField.required = true;
+            }
+            // Retrigger category change to restore Narahubung if needed
+            if (categorySelect && categorySelect.value) {
+                const val = categorySelect.value;
+                if (val === 'event' || val === 'tips') {
+                    if (cardNarahubung && val === 'event') cardNarahubung.classList.remove('hidden');
+                }
+            }
+        } else {
+            // poster
+            if (cardPoster) cardPoster.classList.remove('hidden');
+            if (cardTombolAksi) cardTombolAksi.classList.remove('hidden');
+            if (customFieldsCard) customFieldsCard.classList.add('hidden');
+            if (cardInformasiUtama) cardInformasiUtama.classList.add('hidden');
+            if (cardNarahubung) cardNarahubung.classList.add('hidden');
+            if (titleField) titleField.required = false;
+            if (imageInput) imageInput.required = true;
+            if (contentContainer) {
+                contentContainer.classList.add('hidden');
+                contentField.required = false;
+            }
+        }
+    }
+
+    const typeRadios = document.querySelectorAll('.type-radio');
+    typeRadios.forEach(radio => {
+        radio.addEventListener('change', handleTypeChange);
+    });
 
     categoryChips.forEach(chip => {
         chip.addEventListener('click', (e) => {
@@ -895,6 +1058,9 @@
     const livePublishBadge = document.getElementById('live_publish_badge');
     const startTimeWrapper = document.getElementById('start_time_wrapper');
 
+    const publishEndDateInput = document.getElementById('publish_end_date_input');
+    const publishEndTimeInput = document.getElementById('publish_end_time_input');
+
     function updateStatusScheduleState() {
         if (!statusSelect) return;
 
@@ -915,6 +1081,13 @@
             const day = String(now.getDate()).padStart(2, '0');
             if (publishStartDateInput) publishStartDateInput.min = `${year}-${month}-${day}`;
         }
+        
+        // Selesai Tayang min date is also today
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        if (publishEndDateInput) publishEndDateInput.min = `${year}-${month}-${day}`;
     }
 
     if (statusSelect) {
@@ -922,173 +1095,159 @@
         updateStatusScheduleState();
     }
 
-    function validateDraftTime() {
-        if (statusSelect && statusSelect.value === 'draft' && publishStartDateInput && publishStartTimeInput) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
+    function validateTimeInputs() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
 
-            const currentDateStr = `${year}-${month}-${day}`;
-            const currentTimeStr = `${hours}:${minutes}`;
+        const currentDateStr = `${year}-${month}-${day}`;
+        const currentTimeStr = `${hours}:${minutes}`;
 
+        const startTimeError = document.getElementById('start_time_error');
+        const endTimeError = document.getElementById('end_time_error');
+
+        // Validate Start Time if Draft
+        if (statusSelect && statusSelect.value === 'draft' && publishStartDateInput && publishStartTimeInput && publishStartTimeInput.value) {
             if (publishStartDateInput.value === currentDateStr && publishStartTimeInput.value < currentTimeStr) {
-                publishStartTimeInput.value = currentTimeStr;
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Jam Tidak Valid',
-                        text: 'Waktu mulai tayang untuk draf/jadwal tidak boleh sebelum jam saat ini!',
-                        confirmButtonColor: '#106c38'
-                    });
-                }
+                if (startTimeError) startTimeError.classList.remove('hidden');
+                publishStartTimeInput.classList.add('border-red-500', 'focus:ring-red-500');
+            } else {
+                if (startTimeError) startTimeError.classList.add('hidden');
+                publishStartTimeInput.classList.remove('border-red-500', 'focus:ring-red-500');
             }
+        } else {
+            if (startTimeError) startTimeError.classList.add('hidden');
+            if (publishStartTimeInput) publishStartTimeInput.classList.remove('border-red-500', 'focus:ring-red-500');
+        }
+        
+        // Validate End Time
+        if (publishEndDateInput && publishEndTimeInput && publishEndTimeInput.value) {
+            if (publishEndDateInput.value === currentDateStr && publishEndTimeInput.value < currentTimeStr) {
+                if (endTimeError) endTimeError.classList.remove('hidden');
+                publishEndTimeInput.classList.add('border-red-500', 'focus:ring-red-500');
+            } else {
+                if (endTimeError) endTimeError.classList.add('hidden');
+                publishEndTimeInput.classList.remove('border-red-500', 'focus:ring-red-500');
+            }
+        } else {
+            if (endTimeError) endTimeError.classList.add('hidden');
+            if (publishEndTimeInput) publishEndTimeInput.classList.remove('border-red-500', 'focus:ring-red-500');
         }
     }
 
     if (publishStartDateInput && publishStartTimeInput) {
-        publishStartDateInput.addEventListener('change', validateDraftTime);
-        publishStartTimeInput.addEventListener('change', validateDraftTime);
+        publishStartDateInput.addEventListener('change', validateTimeInputs);
+        publishStartTimeInput.addEventListener('change', validateTimeInputs);
+    }
+    if (publishEndDateInput && publishEndTimeInput) {
+        publishEndDateInput.addEventListener('change', validateTimeInputs);
+        publishEndTimeInput.addEventListener('change', validateTimeInputs);
     }
 
-    // ─── Interactive Image Framing, Zoom & Drag Editor ───────────────────────
-    const imageFitSelect    = document.getElementById('image_fit_select');
-    const zoomSlider        = document.getElementById('zoom-slider');
-    const posxSlider        = document.getElementById('posx-slider');
-    const posySlider        = document.getElementById('posy-slider');
-    const zoomSliderVal     = document.getElementById('zoom-slider-val');
-    const posxSliderVal     = document.getElementById('posx-slider-val');
-    const posySliderVal     = document.getElementById('posy-slider-val');
-    const badgeScaleVal     = document.getElementById('badge-scale-val');
-    
-    const imageScaleInput   = document.getElementById('image_scale_input');
-    const imageXInput       = document.getElementById('image_x_input');
-    const imageYInput       = document.getElementById('image_y_input');
-    
-    const frameContainer    = document.getElementById('frame-simulator-container');
-    const btnResetFrame     = document.getElementById('btn-reset-frame');
-
-    function updateFrameStyling() {
-        if (!imagePreview) return;
-
-        const scaleVal = zoomSlider ? parseInt(zoomSlider.value) : 100;
-        const posXVal  = posxSlider ? parseInt(posxSlider.value) : 50;
-        const posYVal  = posySlider ? parseInt(posySlider.value) : 50;
-        const fitVal   = imageFitSelect ? imageFitSelect.value : 'cover';
-
-        if (imageScaleInput) imageScaleInput.value = scaleVal;
-        if (imageXInput)     imageXInput.value     = posXVal;
-        if (imageYInput)     imageYInput.value     = posYVal;
-
-        if (zoomSliderVal) zoomSliderVal.textContent = `${scaleVal}%`;
-        if (posxSliderVal) posxSliderVal.textContent = `${posXVal}%`;
-        if (posySliderVal) posySliderVal.textContent = `${posYVal}%`;
-        if (badgeScaleVal) badgeScaleVal.textContent = `${scaleVal}%`;
-
-        imagePreview.style.objectFit = fitVal;
-        imagePreview.style.objectPosition = `${posXVal}% ${posYVal}%`;
-        imagePreview.style.transform = `scale(${scaleVal / 100})`;
-    }
-
-    if (zoomSlider) zoomSlider.addEventListener('input', updateFrameStyling);
-    if (posxSlider) posxSlider.addEventListener('input', updateFrameStyling);
-    if (posySlider) posySlider.addEventListener('input', updateFrameStyling);
-    if (imageFitSelect) imageFitSelect.addEventListener('change', updateFrameStyling);
-
-    if (btnResetFrame) {
-        btnResetFrame.addEventListener('click', () => {
-            if (zoomSlider) zoomSlider.value = 100;
-            if (posxSlider) posxSlider.value = 50;
-            if (posySlider) posySlider.value = 50;
-            if (imageFitSelect) imageFitSelect.value = 'cover';
-            updateFrameStyling();
-        });
-    }
-
-    let isDragging = false;
-    let startX = 0, startY = 0;
-    let startPosX = 50, startPosY = 50;
-
-    if (frameContainer) {
-        frameContainer.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            startPosX = posxSlider ? parseInt(posxSlider.value) : 50;
-            startPosY = posySlider ? parseInt(posySlider.value) : 50;
-            frameContainer.classList.add('cursor-grabbing');
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            const rect = frameContainer.getBoundingClientRect();
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-
-            const movePercentX = (deltaX / rect.width) * 100;
-            const movePercentY = (deltaY / rect.height) * 100;
-
-            let newX = Math.round(startPosX - movePercentX);
-            let newY = Math.round(startPosY - movePercentY);
-
-            newX = Math.max(0, Math.min(100, newX));
-            newY = Math.max(0, Math.min(100, newY));
-
-            if (posxSlider) posxSlider.value = newX;
-            if (posySlider) posySlider.value = newY;
-            updateFrameStyling();
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                frameContainer.classList.remove('cursor-grabbing');
-            }
-        });
-
-        frameContainer.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            if (!zoomSlider) return;
-            let currentZoom = parseInt(zoomSlider.value);
-            if (e.deltaY < 0) {
-                currentZoom = Math.min(250, currentZoom + 5);
-            } else {
-                currentZoom = Math.max(50, currentZoom - 5);
-            }
-            zoomSlider.value = currentZoom;
-            updateFrameStyling();
-        }, { passive: false });
-    }
-
+    // ─── Image Upload & Validation ──────────────────────────────────────────────
     const dropzoneWrapper = document.getElementById('dropzone-wrapper');
+    const frameSimulatorWrapper = document.getElementById('frame-simulator-wrapper');
     const btnChangeImage   = document.getElementById('btn-change-image');
-    const frameSimImage    = document.getElementById('frame-sim-image');
+    const zoomSlider = document.getElementById('zoom-slider');
+    const zoomValue = document.getElementById('zoom-value');
+    const imageScaleInput = document.getElementById('image_scale_input');
 
     if (btnChangeImage && imageInput) {
         btnChangeImage.addEventListener('click', () => {
             imageInput.click();
         });
     }
+    
+    if (zoomSlider && imagePreview && imageScaleInput && zoomValue) {
+        zoomSlider.addEventListener('input', function() {
+            const scale = this.value;
+            zoomValue.textContent = scale + '%';
+            imageScaleInput.value = scale;
+            imagePreview.style.transform = `scale(${scale / 100})`;
+        });
+    }
 
     if (imageInput) {
         imageInput.addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
-                if (dropzoneWrapper) dropzoneWrapper.classList.add('hidden');
-                if (btnChangeImage) btnChangeImage.classList.remove('hidden');
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    if (frameSimImage) frameSimImage.src = e.target.result;
-                    updateFrameStyling();
+                const file = this.files[0];
+                const img = new Image();
+                img.onload = function() {
+                    // if valid, show preview
+                    if (dropzoneWrapper) dropzoneWrapper.classList.add('hidden');
+                    if (btnChangeImage) btnChangeImage.classList.remove('hidden');
+                    if (frameSimulatorWrapper) frameSimulatorWrapper.classList.remove('hidden');
+                    if (imagePreview) {
+                        imagePreview.src = URL.createObjectURL(file);
+                        imagePreview.style.objectFit = 'cover';
+                        imagePreview.style.objectPosition = '50% 50%';
+                        
+                        // Reset zoom
+                        if (zoomSlider) zoomSlider.value = 100;
+                        if (zoomValue) zoomValue.textContent = '100%';
+                        if (imageScaleInput) imageScaleInput.value = 100;
+                        imagePreview.style.transform = 'scale(1)';
+                    }
                 };
-                reader.readAsDataURL(this.files[0]);
+                img.src = URL.createObjectURL(file);
             }
         });
     }
 
-    updateFrameStyling();
+    // ─── Image Dragging (Panning) Logic ──────────────────────────────────────────
+    const frameSimulatorContainer = document.getElementById('frame-simulator-container');
+    const imageXInput = document.getElementById('image_x_input');
+    const imageYInput = document.getElementById('image_y_input');
+
+    if (frameSimulatorContainer && imagePreview && imageXInput && imageYInput) {
+        let isDragging = false;
+        let startX, startY;
+        let currentBgPosX = parseFloat(imageXInput.value) || 50;
+        let currentBgPosY = parseFloat(imageYInput.value) || 50;
+
+        frameSimulatorContainer.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            currentBgPosX = parseFloat(imageXInput.value) || 50;
+            currentBgPosY = parseFloat(imageYInput.value) || 50;
+            frameSimulatorContainer.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            const rect = frameSimulatorContainer.getBoundingClientRect();
+            
+            const sensitivityX = 100 / rect.width;
+            const sensitivityY = 100 / rect.height;
+
+            let newPosX = currentBgPosX - (dx * sensitivityX);
+            let newPosY = currentBgPosY - (dy * sensitivityY);
+
+            newPosX = Math.max(0, Math.min(100, newPosX));
+            newPosY = Math.max(0, Math.min(100, newPosY));
+
+            imagePreview.style.objectPosition = `${newPosX}% ${newPosY}%`;
+            
+            imageXInput.value = newPosX.toFixed(2);
+            imageYInput.value = newPosY.toFixed(2);
+        });
+
+        window.addEventListener('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                frameSimulatorContainer.style.cursor = 'move';
+            }
+        });
+    }
 
     // ─── Form Validation ──────────────────────────────────────────────────────
     const createForm = document.getElementById('create-info-form');

@@ -90,14 +90,6 @@
                 {{ $countHistory }}
             </span>
         </a>
-        <a href="{{ route('admin.information-center.trash') }}" 
-           class="px-4 py-2.5 rounded-t-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all text-slate-500 hover:text-slate-800 border-transparent">
-            <i class="ph ph-trash text-base"></i>
-            <span>Tong Sampah</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-200 text-slate-600">
-                {{ $countTrash }}
-            </span>
-        </a>
     </div>
 
     <!-- Filters -->
@@ -208,9 +200,17 @@
                                     default => $info->category
                                 };
                             @endphp
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 uppercase tracking-wider">
-                                {{ $categoryName }}
-                            </span>
+                            <div class="flex flex-wrap items-center gap-1">
+                                @if(isset($info->type) && $info->type === 'poster')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider">
+                                        POSTER
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 uppercase tracking-wider">
+                                        {{ $categoryName }}
+                                    </span>
+                                @endif
+                            </div>
                         </td>
                         <td class="px-5 py-4 space-y-1">
                             @if($info->show_popup)
@@ -285,9 +285,11 @@
                                 <a href="{{ route('admin.information-center.show', $info->id) }}" class="action-tooltip w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors" data-tooltip="Lihat Detail Informasi">
                                     <i class="ph ph-eye text-lg"></i>
                                 </a>
+                                @if($tab !== 'history' && $info->status !== 'archived')
                                 <a href="{{ route('admin.information-center.edit', $info->id) }}" class="action-tooltip w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center hover:bg-amber-100 transition-colors" data-tooltip="Edit Informasi">
                                     <i class="ph ph-pencil-simple text-lg"></i>
                                 </a>
+                                @endif
 
                                 @if($tab === 'history')
                                     <form action="{{ route('admin.information-center.destroy', $info->id) }}" method="POST" class="delete-info-form inline">
@@ -400,8 +402,8 @@
                 const form = this.closest('.delete-info-form');
                 
                 Swal.fire({
-                    title: 'Konfirmasi Hapus Informasi',
-                    text: 'Informasi ini akan dihapus!',
+                    title: 'Hapus Informasi Permanen?',
+                    text: 'Informasi ini akan dihapus secara permanen dari database dan tidak dapat dipulihkan lagi!',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#106c38',
@@ -439,6 +441,8 @@
                 const futureDate = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
                 const futureDateStr = futureDate.toISOString().split('T')[0];
 
+                const maxSortOrder = {{ max(1, \App\Models\InformationCenter::where('status', '!=', 'archived')->where(function($q){ $q->whereNull('publish_end_at')->orWhere('publish_end_at', '>=', now()); })->count() + 1) }};
+
                 const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
 
                 Swal.fire({
@@ -453,20 +457,53 @@
                             <form id="republishForm" action="/admin/information-center/${infoId}/republish" method="POST">
                                 <input type="hidden" name="_token" value="${csrfToken}">
                                 
-                                <div class="space-y-3">
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">Mulai Tayang (Tanggal & Jam) <span class="text-rose-500">*</span></label>
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <input type="date" name="publish_start_date" value="${todayStr}" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
-                                            <input type="time" name="publish_start_time" value="${timeStr}" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 mb-2">Status Publikasi <span class="text-rose-500">*</span></label>
+                                            <select name="status" id="swal_status" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none">
+                                                <option value="published">🟢 Diterbitkan</option>
+                                                <option value="draft">📝 Draf (Jadwalkan)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 mb-2">Urutan Tampil <span class="text-rose-500">*</span></label>
+                                            <input type="number" name="sort_order" title="Urutan Tampil" placeholder="Maks: ${maxSortOrder}" value="${maxSortOrder}" min="1" max="${maxSortOrder}" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none">
+                                            <p class="text-[9.5px] text-slate-400 mt-1">Maksimal ${maxSortOrder}.</p>
+                                        </div>
+                                    </div>
+
+                                    <div id="swal_live_publish_badge" class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-xs font-semibold flex items-center gap-2">
+                                        <i class="ph ph-check-circle text-base"></i> Ditayangkan langsung saat ini.
+                                    </div>
+
+                                    <div id="swal_start_time_wrapper" class="hidden">
+                                        <label class="block text-xs font-bold text-slate-600 mb-2">Mulai Tayang <span class="text-rose-500">*</span></label>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
+                                                <input type="date" name="publish_start_date" id="swal_start_date" value="${todayStr}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600" min="${todayStr}">
+                                            </div>
+                                            <div>
+                                                <span class="block text-[10px] text-slate-400 mb-1.5">Jam</span>
+                                                <input type="time" name="publish_start_time" id="swal_start_time" value="${timeStr}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                                                <span id="swal_start_time_error" class="hidden text-[10px] text-red-500 mt-1 leading-tight block">Jam tidak boleh lewat!</span>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">Selesai Tayang (Tanggal & Jam) <span class="text-slate-400 font-normal">(Kosongkan jika selamanya)</span></label>
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <input type="date" name="publish_end_date" value="${futureDateStr}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
-                                            <input type="time" name="publish_end_time" value="23:59" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                                        <label class="block text-xs font-bold text-slate-600 mb-2">Selesai Tayang <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <span class="block text-[10px] text-slate-400 mb-1.5">Tanggal</span>
+                                                <input type="date" name="publish_end_date" id="swal_end_date" value="${futureDateStr}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600" min="${todayStr}">
+                                            </div>
+                                            <div>
+                                                <span class="block text-[10px] text-slate-400 mb-1.5">Jam</span>
+                                                <input type="time" name="publish_end_time" id="swal_end_time" value="23:59" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                                                <span id="swal_end_time_error" class="hidden text-[10px] text-red-500 mt-1 leading-tight block">Jam tidak boleh lewat!</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -483,12 +520,158 @@
                         confirmButton: 'px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all shadow-sm',
                         cancelButton: 'px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all shadow-sm'
                     },
+                    didOpen: () => {
+                        const statusSelect = document.getElementById('swal_status');
+                        const startTimeWrapper = document.getElementById('swal_start_time_wrapper');
+                        const livePublishBadge = document.getElementById('swal_live_publish_badge');
+                        
+                        const startDateInput = document.getElementById('swal_start_date');
+                        const startTimeInput = document.getElementById('swal_start_time');
+                        const startTimeError = document.getElementById('swal_start_time_error');
+                        const endDateInput = document.getElementById('swal_end_date');
+                        const endTimeInput = document.getElementById('swal_end_time');
+                        const endTimeError = document.getElementById('swal_end_time_error');
+
+                        function updateStatusState() {
+                            if (statusSelect.value === 'published') {
+                                startTimeWrapper.classList.add('hidden');
+                                livePublishBadge.classList.remove('hidden');
+                                startDateInput.required = false;
+                                startTimeInput.required = false;
+                            } else {
+                                startTimeWrapper.classList.remove('hidden');
+                                livePublishBadge.classList.add('hidden');
+                                startDateInput.required = true;
+                                startTimeInput.required = true;
+                            }
+                        }
+
+                        statusSelect.addEventListener('change', updateStatusState);
+                        updateStatusState();
+
+                        function getTodayDateStr() {
+                            const d = new Date();
+                            const yyyy = d.getFullYear();
+                            const mm = String(d.getMonth() + 1).padStart(2, '0');
+                            const dd = String(d.getDate()).padStart(2, '0');
+                            return `${yyyy}-${mm}-${dd}`;
+                        }
+
+                        function isValidTimeStr(timeStr) {
+                            if (!timeStr) return true;
+                            const d = new Date();
+                            const h = d.getHours();
+                            const m = d.getMinutes();
+                            const parts = timeStr.split(':');
+                            if (parts.length === 2) {
+                                const ih = parseInt(parts[0], 10);
+                                const im = parseInt(parts[1], 10);
+                                if (ih < h || (ih === h && im < m)) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+
+                        function validateStartTime() {
+                            if (statusSelect.value === 'draft' && startDateInput.value === getTodayDateStr()) {
+                                if (!isValidTimeStr(startTimeInput.value)) {
+                                    startTimeError.classList.remove('hidden');
+                                    startTimeInput.classList.add('border-red-500', 'focus:ring-red-500/20', 'focus:border-red-600');
+                                } else {
+                                    startTimeError.classList.add('hidden');
+                                    startTimeInput.classList.remove('border-red-500', 'focus:ring-red-500/20', 'focus:border-red-600');
+                                }
+                            } else {
+                                startTimeError.classList.add('hidden');
+                                startTimeInput.classList.remove('border-red-500', 'focus:ring-red-500/20', 'focus:border-red-600');
+                            }
+                        }
+
+                        function validateEndTime() {
+                            if (endDateInput.value === getTodayDateStr()) {
+                                if (!isValidTimeStr(endTimeInput.value)) {
+                                    endTimeError.classList.remove('hidden');
+                                    endTimeInput.classList.add('border-red-500', 'focus:ring-red-500/20', 'focus:border-red-600');
+                                } else {
+                                    endTimeError.classList.add('hidden');
+                                    endTimeInput.classList.remove('border-red-500', 'focus:ring-red-500/20', 'focus:border-red-600');
+                                }
+                            } else {
+                                endTimeError.classList.add('hidden');
+                                endTimeInput.classList.remove('border-red-500', 'focus:ring-red-500/20', 'focus:border-red-600');
+                            }
+                        }
+
+                        startTimeInput.addEventListener('change', validateStartTime);
+                        startDateInput.addEventListener('change', validateStartTime);
+                        endTimeInput.addEventListener('change', validateEndTime);
+                        endDateInput.addEventListener('change', validateEndTime);
+                        statusSelect.addEventListener('change', validateStartTime);
+                    },
                     preConfirm: () => {
                         const form = document.getElementById('republishForm');
                         if (!form.checkValidity()) {
                             form.reportValidity();
                             return false;
                         }
+
+                        const statusSelect = document.getElementById('swal_status');
+                        const startDateInput = document.getElementById('swal_start_date');
+                        const startTimeInput = document.getElementById('swal_start_time');
+                        const startTimeError = document.getElementById('swal_start_time_error');
+                        const endDateInput = document.getElementById('swal_end_date');
+                        const endTimeInput = document.getElementById('swal_end_time');
+                        const endTimeError = document.getElementById('swal_end_time_error');
+
+                        function getTodayDateStr() {
+                            const d = new Date();
+                            const yyyy = d.getFullYear();
+                            const mm = String(d.getMonth() + 1).padStart(2, '0');
+                            const dd = String(d.getDate()).padStart(2, '0');
+                            return `${yyyy}-${mm}-${dd}`;
+                        }
+
+                        function isValidTimeStr(timeStr) {
+                            if (!timeStr) return true;
+                            const d = new Date();
+                            const h = d.getHours();
+                            const m = d.getMinutes();
+                            const parts = timeStr.split(':');
+                            if (parts.length === 2) {
+                                const ih = parseInt(parts[0], 10);
+                                const im = parseInt(parts[1], 10);
+                                if (ih < h || (ih === h && im < m)) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+
+                        let isValid = true;
+
+                        if (statusSelect.value === 'draft') {
+                            if (startDateInput.value === getTodayDateStr()) {
+                                if (!isValidTimeStr(startTimeInput.value)) {
+                                    startTimeError.classList.remove('hidden');
+                                    startTimeInput.classList.add('border-red-500', 'focus:ring-red-500/20', 'focus:border-red-600');
+                                    isValid = false;
+                                }
+                            }
+                        }
+
+                        if (endDateInput.value && endDateInput.value === getTodayDateStr()) {
+                            if (!isValidTimeStr(endTimeInput.value)) {
+                                endTimeError.classList.remove('hidden');
+                                endTimeInput.classList.add('border-red-500', 'focus:ring-red-500/20', 'focus:border-red-600');
+                                isValid = false;
+                            }
+                        }
+
+                        if (!isValid) {
+                            return false;
+                        }
+
                         form.submit();
                     }
                 });
@@ -579,8 +762,8 @@
                 if (checked.length === 0) return;
 
                 Swal.fire({
-                    title: 'Hapus Sekaligus?',
-                    text: `Apakah Anda yakin ingin menghapus ${checked.length} data informasi terpilih ini?`,
+                    title: 'Hapus Permanen Sekaligus?',
+                    text: `Apakah Anda yakin ingin menghapus permanen ${checked.length} data informasi terpilih ini? Data yang dihapus tidak dapat dipulihkan!`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#e11d48',
