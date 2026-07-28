@@ -107,13 +107,9 @@ class InformationCenterController extends Controller
             $data['created_by'] = $this->getValidUserId();
 
             // Merangkai tanggal & waktu menjadi datetime
-            if ($data['status'] === 'published') {
-                $data['publish_start_at'] = now()->format('Y-m-d H:i:s');
-            } else {
-                $startDate = $data['publish_start_date'] ?? date('Y-m-d');
-                $startTime = $data['publish_start_time'] ?? date('H:i');
-                $data['publish_start_at'] = $startDate . ' ' . $startTime;
-            }
+            $startDate = $data['publish_start_date'] ?? date('Y-m-d');
+            $startTime = $data['publish_start_time'] ?? date('H:i');
+            $data['publish_start_at'] = $startDate . ' ' . $startTime;
             if (!empty($data['publish_end_date']) && !empty($data['publish_end_time'])) {
                 $data['publish_end_at'] = $data['publish_end_date'] . ' ' . $data['publish_end_time'];
             } else {
@@ -194,13 +190,9 @@ class InformationCenterController extends Controller
         $data['updated_by'] = $this->getValidUserId();
 
         // Merangkai tanggal & waktu menjadi datetime
-        if ($data['status'] === 'published') {
-            $data['publish_start_at'] = $informationCenter->publish_start_at ?? now()->format('Y-m-d H:i:s');
-        } else {
-            $startDate = $data['publish_start_date'] ?? date('Y-m-d');
-            $startTime = $data['publish_start_time'] ?? date('H:i');
-            $data['publish_start_at'] = $startDate . ' ' . $startTime;
-        }
+        $startDate = $data['publish_start_date'] ?? date('Y-m-d');
+        $startTime = $data['publish_start_time'] ?? date('H:i');
+        $data['publish_start_at'] = $startDate . ' ' . $startTime;
         if (!empty($data['publish_end_date']) && !empty($data['publish_end_time'])) {
             $data['publish_end_at'] = $data['publish_end_date'] . ' ' . $data['publish_end_time'];
         } else {

@@ -193,17 +193,17 @@
 </script>
 
 <!-- Event Popup Modal -->
-<div id="event-popup-modal" class="fixed inset-0 z-[100] hidden bg-slate-950/60 backdrop-blur-sm overflow-hidden transition-all duration-300 flex items-center justify-center p-4 sm:p-6 md:p-8">
-    <div id="event-popup-content" class="bg-white rounded-3xl shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col w-full max-w-md md:max-h-[95vh]" style="min-height: 550px; max-height: 90vh;">
+<div id="event-popup-modal" class="fixed inset-0 z-[100] hidden bg-slate-950/60 backdrop-blur-sm overflow-hidden transition-all duration-300 flex items-center justify-center p-4 sm:p-6">
+    <div id="event-popup-content" class="bg-white rounded-3xl shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full max-w-sm flex flex-col" style="max-height: 95vh;">
         <!-- Close Button (Fixed) -->
         <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-500 bg-slate-100/90 hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/80 hover:scale-105 backdrop-blur-md">
                 <i class="ph ph-x text-lg font-bold"></i>
             </button>
 
             <!-- Slider Track Container (Main Content Area) -->
-            <div class="w-full flex-1 relative overflow-hidden min-h-0">
+            <div id="event-slider-track-wrapper" class="w-full overflow-hidden">
                 <!-- Slides Track -->
-                <div id="event-slider-track" class="absolute inset-0 flex flex-nowrap">
+                <div id="event-slider-track" class="flex flex-nowrap will-change-transform">
                     <!-- Slides will be inserted dynamically -->
                 </div>
             </div>
@@ -492,20 +492,18 @@
                         const type = event.type || 'poster';
                         if (type === 'poster') {
                             slidesHtml += `
-                                <div class="w-full shrink-0 h-full overflow-y-auto overflow-x-hidden custom-scrollbar bg-slate-900" data-type="poster">
-                                    <div class="w-full relative group flex flex-col min-h-full">
-                                        <!-- Full width image background -->
-                                        <div class="relative w-full aspect-[4/5] shrink-0 overflow-hidden bg-slate-900" id="img-slider-${event.id}">
-                                            ${(event.images_url || [event.image_url]).map((img, idx) => `
-                                                <img src="${img}"
-                                                     alt="${event.title}"
-                                                     class="absolute inset-0 w-full h-full transition-opacity duration-500 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
-                                                     style="object-fit: ${event.image_fit || 'cover'}; object-position: ${event.image_x !== undefined ? event.image_x : 50}% ${event.image_y !== undefined ? event.image_y : 50}%; transform: scale(${(event.image_scale || 100) / 100});"
-                                                     loading="lazy"
-                                                     id="img-${event.id}-${idx}"
-                                                     onerror="this.onerror=null; this.src='${window.assetRoot}perpustakaan_depan.webp';">
-                                            `).join('')}
-                                        </div>
+                                <div class="w-full shrink-0 flex flex-col bg-white" data-type="poster">
+                                    <!-- IMAGE ALWAYS 4:5 RATIO -->
+                                    <div class="w-full bg-slate-900 shrink-0" style="aspect-ratio: 4/5; position: relative; overflow: hidden;" id="img-slider-${event.id}">
+                                        ${(event.images_url || [event.image_url]).map((img, idx) => `
+                                            <img src="${img}"
+                                                 alt="${event.title}"
+                                                 class="absolute inset-0 w-full h-full transition-opacity duration-500 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                                                 style="object-fit: ${event.image_fit || 'cover'}; object-position: ${event.image_x !== undefined ? event.image_x : 50}% ${event.image_y !== undefined ? event.image_y : 50}%; transform: scale(${(event.image_scale || 100) / 100});"
+                                                 loading="lazy"
+                                                 id="img-${event.id}-${idx}"
+                                                 onerror="this.onerror=null; this.src='${window.assetRoot}perpustakaan_depan.webp';">
+                                        `).join('')}
 
                                         <!-- Image Navigation Dots (Only if multiple images) -->
                                         ${(event.images_url && event.images_url.length > 1) ? `
@@ -537,14 +535,14 @@
                                                 `).join('')}
                                             </div>
                                         ` : ''}
-                                        
-                                        <!-- Action Buttons Below Image -->
-                                        ${actionsHtml ? `
-                                        <div class="shrink-0 bg-white border-t border-slate-100 p-4 sm:p-5">
-                                            <div class="w-full">
-                                                ${actionsHtml}
-                                            </div>
-                                        </div>` : ''}
+                                    </div>
+
+                                    <!-- Action Button Area - ALWAYS present, same height for all slides -->
+                                    <div class="shrink-0 bg-white px-4 py-4 border-t border-slate-100">
+                                        ${actionsHtml
+                                            ? `<div class="w-full">${actionsHtml}</div>`
+                                            : `<div class="w-full h-[46px] flex items-center justify-center"><span class="text-[11px] text-slate-300 font-medium tracking-wide">Perpustakaan USU</span></div>`
+                                        }
                                     </div>
                                 </div>
                             `;
