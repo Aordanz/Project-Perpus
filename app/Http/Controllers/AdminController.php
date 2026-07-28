@@ -56,10 +56,15 @@ class AdminController extends Controller implements HasMiddleware
         // Calculate stats for each Location or Koleksi Terbaru
         if ($request->filled('lokasi') && $request->lokasi !== 'all') {
             if ($request->lokasi === 'koleksi_terbaru') {
-                $locationStats = \Illuminate\Support\Facades\DB::table('tblbuku')
-                    ->whereNotNull('tglinput')
+                $latest40Ids = Book::whereNotNull('tglinput')
                     ->where('tglinput', '!=', '')
                     ->where('tglinput', '!=', '0000-00-00 00:00:00')
+                    ->orderByDesc('tglinput')
+                    ->limit(40)
+                    ->pluck('idmaster');
+
+                $locationStats = \Illuminate\Support\Facades\DB::table('tblbuku')
+                    ->whereIn('idmaster', $latest40Ids)
                     ->select(
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT idbuku) as total_books'),
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN cover_image IS NOT NULL AND cover_image != "" THEN idbuku END) as with_cover'),
@@ -132,9 +137,20 @@ class AdminController extends Controller implements HasMiddleware
 
         if ($request->filled('location_filter') && $request->location_filter !== 'all') {
             $locFilter = $request->location_filter;
-            $query->whereHas('items', function ($itemQuery) use ($locFilter) {
-                $itemQuery->where('kodelokasi', $locFilter);
-            });
+            if ($locFilter === 'koleksi_terbaru') {
+                $latest40Ids = Book::whereNotNull('tglinput')
+                    ->where('tglinput', '!=', '')
+                    ->where('tglinput', '!=', '0000-00-00 00:00:00')
+                    ->orderByDesc('tglinput')
+                    ->limit(40)
+                    ->pluck('idmaster');
+
+                $query->whereIn('idmaster', $latest40Ids);
+            } else {
+                $query->whereHas('items', function ($itemQuery) use ($locFilter) {
+                    $itemQuery->where('kodelokasi', $locFilter);
+                });
+            }
         }
 
         $perPage = $request->input('limit', 10);

@@ -242,11 +242,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Location Filter Dropdown (Tom Select) -->
+                                 <!-- Location Filter Dropdown (Tom Select) -->
                                 <div class="w-full sm:w-64">
                                     <input type="hidden" name="location_filter" id="admin-location-filter" value="{{ request('location_filter', 'all') }}">
                                     <select id="lokasi-select" placeholder="Cari Lokasi..." onchange="document.getElementById('admin-location-filter').value = this.value; window.performSearch();">
                                         <option value="all" {{ request('location_filter', 'all') == 'all' ? 'selected' : '' }}>Semua Lokasi</option>
+                                        <option value="koleksi_terbaru" {{ request('location_filter') == 'koleksi_terbaru' ? 'selected' : '' }}>Koleksi Terbaru</option>
                                         @if(isset($locations))
                                             @foreach($locations as $loc)
                                                 <option value="{{ $loc->idlokasi }}" {{ request('location_filter') == $loc->idlokasi ? 'selected' : '' }}>{{ $loc->lokasi }}</option>
@@ -423,10 +424,12 @@
                     maxOptions: 100,
                     render: {
                         item: function(data, escape) {
-                            return '<div class="flex items-center gap-2"><i class="ph ph-map-pin text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
+                            var icon = data.value === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin';
+                            return '<div class="flex items-center gap-2"><i class="ph ' + icon + ' text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
                         },
                         option: function(data, escape) {
-                            return '<div class="flex items-center gap-2"><i class="ph ph-map-pin text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
+                            var icon = data.value === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin';
+                            return '<div class="flex items-center gap-2"><i class="ph ' + icon + ' text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
                         }
                     }
                 });
