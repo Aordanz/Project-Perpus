@@ -193,44 +193,44 @@
 </script>
 
 <!-- Event Popup Modal -->
-<div id="event-popup-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/45 backdrop-blur-[2px] p-4 transition-all duration-300">
-    <div class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden w-[95%] max-w-[860px] h-[90vh] md:h-[500px] transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col animate-in fade-in duration-300 mx-auto" id="event-popup-content">
+<div id="event-popup-modal" class="fixed inset-0 z-[100] hidden bg-slate-950/60 backdrop-blur-sm overflow-hidden transition-all duration-300 flex items-center justify-center p-4 sm:p-6 md:p-8">
+    <div id="event-popup-content" class="bg-white rounded-[24px] shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col w-full max-w-[440px] min-h-[550px] max-h-[90vh] md:max-h-[95vh]">
         <!-- Close Button (Fixed) -->
-        <button id="close-event-popup" class="absolute top-3 right-3 sm:top-4 sm:right-4 z-50 text-slate-700 md:text-slate-500 bg-white/85 md:bg-slate-100/90 hover:bg-white md:hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/80 hover:scale-105 backdrop-blur-md">
-            <i class="ph ph-x text-lg font-bold"></i>
-        </button>
+        <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-500 bg-slate-100/90 hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/80 hover:scale-105 backdrop-blur-md">
+                <i class="ph ph-x text-lg font-bold"></i>
+            </button>
 
-        <!-- Slider Track Container (Main Content Area) -->
-        <div class="w-full flex-1 relative overflow-hidden min-h-0">
-            <!-- Slides Track -->
-            <div id="event-slider-track" class="flex flex-nowrap h-full w-full">
-                <!-- Slides will be inserted dynamically -->
+            <!-- Slider Track Container (Main Content Area) -->
+            <div class="w-full flex-1 relative overflow-hidden min-h-0">
+                <!-- Slides Track -->
+                <div id="event-slider-track" class="absolute inset-0 flex flex-nowrap">
+                    <!-- Slides will be inserted dynamically -->
+                </div>
+            </div>
+
+            <!-- Global Modal Footer -->
+            <div class="flex flex-row justify-between items-center gap-3 px-8 py-3.5 border-t border-slate-100 bg-slate-50/50 relative overflow-hidden select-none shrink-0 rounded-b-[24px]">
+                <!-- Checkbox: Jangan Tampilkan Lagi -->
+                <div class="flex items-center gap-2 z-20">
+                    <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
+                    <label for="global-dont-show-checkbox" class="text-xs text-slate-600 font-semibold cursor-pointer hover:text-slate-800 transition">
+                        {{ __('Jangan tampilkan lagi hari ini') }}
+                    </label>
+                </div>
+
+                <!-- Dynamic Pagination Controls -->
+                <div id="event-pagination-container" class="flex items-center gap-3 z-20 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100 shadow-sm hidden">
+                    <button id="prev-event-btn-floating" type="button" class="w-8 h-8 rounded-full bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white flex items-center justify-center transition-all cursor-pointer hidden shadow border border-[#106c38]/20 group">
+                        <i class="ph ph-caret-left font-bold text-base group-hover:-translate-x-0.5 transition-transform"></i>
+                    </button>
+                    <span id="event-pagination-text" class="text-[13px] font-black text-[#106c38] tracking-widest w-10 text-center">1 / 3</span>
+                    <button id="next-event-btn-floating" type="button" class="w-8 h-8 rounded-full bg-[#106c38] hover:bg-[#0c562c] text-white flex items-center justify-center transition-all cursor-pointer hidden shadow-md shadow-[#106c38]/30 group animate-pulse hover:animate-none">
+                        <i class="ph ph-caret-right font-bold text-base group-hover:translate-x-0.5 transition-transform"></i>
+                    </button>
+                </div>
+
             </div>
         </div>
-
-        <!-- Global Modal Footer -->
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-3 px-5 sm:px-6 md:px-8 py-3.5 border-t border-slate-100 bg-slate-50/50 relative overflow-hidden select-none shrink-0 rounded-b-[24px]">
-            <!-- Checkbox: Jangan Tampilkan Lagi -->
-            <div class="flex items-center gap-2 z-20">
-                <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
-                <label for="global-dont-show-checkbox" class="text-[11px] md:text-xs text-slate-600 font-semibold cursor-pointer hover:text-slate-800 transition">
-                    {{ __('Jangan tampilkan lagi hari ini') }}
-                </label>
-            </div>
-
-            <!-- Dynamic Pagination Controls -->
-            <div id="event-pagination-container" class="flex items-center gap-3 z-20 bg-emerald-50 px-3 sm:px-4 py-1.5 rounded-full border border-emerald-100 shadow-sm hidden">
-                <button id="prev-event-btn-floating" type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white flex items-center justify-center transition-all cursor-pointer hidden shadow border border-[#106c38]/20 group">
-                    <i class="ph ph-caret-left font-bold text-base group-hover:-translate-x-0.5 transition-transform"></i>
-                </button>
-                <span id="event-pagination-text" class="text-xs sm:text-[13px] font-black text-[#106c38] tracking-widest w-8 sm:w-10 text-center">1 / 3</span>
-                <button id="next-event-btn-floating" type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#106c38] hover:bg-[#0c562c] text-white flex items-center justify-center transition-all cursor-pointer hidden shadow-md shadow-[#106c38]/30 group animate-pulse hover:animate-none">
-                    <i class="ph ph-caret-right font-bold text-base group-hover:translate-x-0.5 transition-transform"></i>
-                </button>
-            </div>
-
-        </div>
-    </div>
 </div>
 
 <!-- SweetAlert2 for empty notifications -->
@@ -449,9 +449,9 @@
                         // ─── Action Buttons ────────────────────────────────────────
                         let actionsHtml = '';
                         if (actionLinks && actionLinks.length > 0) {
-                            actionsHtml = actionLinks.slice(0, 2).map((btn, i) => `
+                            actionsHtml = actionLinks.slice(0, 1).map((btn, i) => `
                                 <a href="${btn.url}" target="${btn.new_tab !== false ? '_blank' : '_self'}"
-                                   class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl font-bold text-[11.5px] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-px ${i === 0 ? accentBtnCls : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+                                   class="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl font-bold text-[12px] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-px ${i === 0 ? accentBtnCls : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
                                     <span>${btn.name}</span>
                                     <i class="ph ph-arrow-right text-xs"></i>
                                 </a>
@@ -468,20 +468,20 @@
                             
                             if (isLongDesc) {
                                 descHtml = `
-                                    <div class="mb-3.5 text-xs sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere]">
-                                        <div class="desc-box max-h-[65px] overflow-hidden transition-all duration-300">
+                                    <div class="mb-2 sm:mb-3.5 text-[10px] sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere]">
+                                        <div class="desc-box max-h-[45px] sm:max-h-[65px] overflow-hidden transition-all duration-300">
                                             <span class="desc-short inline">${shortDesc}</span>
                                             <span class="desc-full hidden whitespace-pre-line">${cleanDesc}</span>
                                         </div>
-                                        <button type="button" class="desc-toggle-btn text-[#106c38] font-bold hover:underline cursor-pointer inline-flex items-center gap-1 text-xs mt-1 transition-all active:scale-95">
+                                        <button type="button" class="desc-toggle-btn text-[#106c38] font-bold hover:underline cursor-pointer inline-flex items-center gap-1 text-[10px] sm:text-xs mt-1 transition-all active:scale-95">
                                             <span>${showMoreText}</span>
-                                            <i class="ph ph-caret-down text-xs"></i>
+                                            <i class="ph ph-caret-down text-[10px] sm:text-xs"></i>
                                         </button>
                                     </div>
                                 `;
                             } else {
                                 descHtml = `
-                                    <div class="mb-3.5 text-xs sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line max-h-[140px] overflow-y-auto pr-1 custom-scrollbar">
+                                    <div class="mb-2 sm:mb-3.5 text-[10px] sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line max-h-[90px] sm:max-h-[140px] overflow-y-auto pr-1 custom-scrollbar">
                                         ${cleanDesc}
                                     </div>
                                 `;
@@ -489,67 +489,13 @@
                         }
 
                         // ─── Slide HTML ────────────────────────────────────────────
-                        slidesHtml += `
-                            <div class="w-full shrink-0 h-full overflow-hidden">
-                                <div class="flex flex-col md:flex-row h-full items-stretch relative">
-
-                                    <!-- ══ LEFT CONTENT PANEL ══ -->
-                                    <div class="w-full md:w-[58%] flex flex-col justify-between bg-white z-10 order-2 md:order-1 flex-1 min-h-0 md:h-full">
-
-                                        <!-- Scrollable body -->
-                                        <div class="flex-1 overflow-y-auto px-5 sm:px-6 md:px-8 pt-5 sm:pt-6 pb-2 min-h-0 break-words [overflow-wrap:anywhere]">
-
-                                            <!-- Category Badge -->
-                                            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black uppercase tracking-wide text-[10px] mb-3 border w-fit ${badgeCls}">
-                                                <i class="ph ${badgeIcon} text-sm"></i>
-                                                <span>${badgeLabel}</span>
-                                            </div>
-
-                                            <!-- Title -->
-                                            <h2 class="text-lg sm:text-[19px] md:text-[21px] font-black text-slate-900 leading-tight tracking-tight mb-3 pr-10 md:pr-0 break-words [overflow-wrap:anywhere]">
-                                                ${event.title}
-                                            </h2>
-
-                                            <!-- Description -->
-                                            ${descHtml}
-
-                                            <!-- Category Detail -->
-                                            ${detailHtml}
-
-                                        </div>
-
-                                        <!-- Action Button Container -->
-                                        ${actionsHtml ? `
-                                        <div class="px-5 sm:px-6 md:px-8 pb-4 pt-2 bg-white shrink-0 flex flex-col gap-2">
-                                            ${actionsHtml}
-                                        </div>` : `<div class="h-2 shrink-0"></div>`}
-                                    </div>
-
-                                    <!-- ══ RIGHT / TOP IMAGE PANEL ══ -->
-                                    <div class="w-full md:w-[42%] relative overflow-hidden shrink-0 bg-white h-[160px] sm:h-[200px] md:h-full order-first md:order-last">
-
-                                        <!-- Wavy left-edge divider with golden accent (Desktop only) -->
-                                        <div class="hidden md:block absolute top-0 h-full z-30 pointer-events-none" style="width: 32%; left: -3px;">
-                                            <svg class="h-full w-full" viewBox="0 0 100 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                                                <!-- Seamless White Fill Layer -->
-                                                <path d="M 0,0 C 55,100 75,250 20,380 C 0,430 35,480 50,500 L 0,500 Z" fill="white" />
-                                                <!-- Golden S-Curve Border Line -->
-                                                <path d="M 0,0 C 55,100 75,250 20,380 C 0,430 35,480 50,500" fill="none" stroke="#eab308" stroke-width="3.5" vector-effect="non-scaling-stroke" />
-                                            </svg>
-                                        </div>
-
-                                        <!-- Horizontal Wavy bottom-edge divider with golden accent (Mobile only) -->
-                                        <div class="block md:hidden absolute bottom-0 left-0 w-full z-30 pointer-events-none" style="height: 20px;">
-                                            <svg class="w-full h-full" viewBox="0 0 500 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                                                <!-- White Fill Layer -->
-                                                <path d="M 0,30 Q 125,5 250,20 T 500,10 L 500,30 L 0,30 Z" fill="white" />
-                                                <!-- Golden Curve Line -->
-                                                <path d="M 0,28 Q 125,3 250,18 T 500,8" fill="none" stroke="#eab308" stroke-width="3" vector-effect="non-scaling-stroke" />
-                                            </svg>
-                                        </div>
-
-                                        <!-- Images Slider -->
-                                        <div class="absolute inset-0 w-full h-full" id="img-slider-${event.id}">
+                        const type = event.type || 'poster';
+                        if (type === 'poster') {
+                            slidesHtml += `
+                                <div class="w-full shrink-0 h-full overflow-y-auto overflow-x-hidden custom-scrollbar bg-slate-900" data-type="poster">
+                                    <div class="w-full relative group flex flex-col min-h-full">
+                                        <!-- Full width image background -->
+                                        <div class="relative w-full aspect-[4/5] shrink-0 overflow-hidden bg-slate-900" id="img-slider-${event.id}">
                                             ${(event.images_url || [event.image_url]).map((img, idx) => `
                                                 <img src="${img}"
                                                      alt="${event.title}"
@@ -563,7 +509,7 @@
 
                                         <!-- Image Navigation Dots (Only if multiple images) -->
                                         ${(event.images_url && event.images_url.length > 1) ? `
-                                            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+                                            <div class="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
                                                 ${event.images_url.map((_, idx) => `
                                                     <button type="button" onclick="
                                                         const container = document.getElementById('img-slider-${event.id}');
@@ -591,11 +537,55 @@
                                                 `).join('')}
                                             </div>
                                         ` : ''}
-
+                                        
+                                        <!-- Action Buttons Below Image -->
+                                        ${actionsHtml ? `
+                                        <div class="shrink-0 bg-white border-t border-slate-100 p-4 sm:p-5">
+                                            <div class="w-full">
+                                                ${actionsHtml}
+                                            </div>
+                                        </div>` : ''}
                                     </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
+                        } else if (type === 'text') {
+                            slidesHtml += `
+                                <div class="w-full shrink-0 h-full overflow-hidden bg-white" data-type="text">
+                                    <div class="flex flex-col h-full items-stretch relative">
+                                        <!-- Scrollable body -->
+                                        <div class="flex-1 overflow-y-auto px-6 sm:px-10 md:px-12 pt-6 sm:pt-8 pb-4 min-h-0 break-words [overflow-wrap:anywhere] custom-scrollbar max-w-4xl mx-auto w-full">
+
+                                            <!-- Category Badge -->
+                                            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black uppercase tracking-wide text-[10px] mb-4 border w-fit ${badgeCls}">
+                                                <i class="ph ${badgeIcon} text-sm"></i>
+                                                <span>${badgeLabel}</span>
+                                            </div>
+
+                                            <!-- Title -->
+                                            <h2 class="text-[22px] sm:text-[26px] md:text-[30px] font-black text-slate-900 leading-tight tracking-tight mb-4 break-words [overflow-wrap:anywhere]">
+                                                ${event.title}
+                                            </h2>
+
+                                            <!-- Description -->
+                                            ${descHtml}
+
+                                            <!-- Category Detail -->
+                                            <div class="mt-5">
+                                                ${detailHtml}
+                                            </div>
+
+                                            <!-- Action Buttons -->
+                                            ${actionsHtml ? `
+                                            <div class="mt-8 mb-4 border-t border-slate-100 pt-5">
+                                                <div class="w-full">
+                                                    ${actionsHtml}
+                                                </div>
+                                            </div>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
                     });
 
                     sliderTrack.innerHTML = slidesHtml;
@@ -889,8 +879,8 @@
                         shortSpan.classList.remove('hidden');
                         shortSpan.classList.add('inline');
                         if (descBox) {
-                            descBox.classList.add('max-h-[65px]', 'overflow-hidden');
-                            descBox.classList.remove('max-h-[150px]', 'overflow-y-auto', 'custom-scrollbar', 'pr-1');
+                            descBox.classList.add('max-h-[45px]', 'sm:max-h-[65px]', 'overflow-hidden');
+                            descBox.classList.remove('max-h-[3000px]');
                         }
                         toggleBtn.querySelector('span').textContent = window.currentLocale === 'en' ? 'Show More' : 'Lihat Selengkapnya';
                         toggleBtn.querySelector('i').className = 'ph ph-caret-down text-xs';
@@ -900,8 +890,8 @@
                         fullSpan.classList.remove('hidden');
                         fullSpan.classList.add('inline');
                         if (descBox) {
-                            descBox.classList.remove('max-h-[65px]', 'overflow-hidden');
-                            descBox.classList.add('max-h-[150px]', 'overflow-y-auto', 'custom-scrollbar', 'pr-1');
+                            descBox.classList.remove('max-h-[45px]', 'sm:max-h-[65px]', 'overflow-hidden');
+                            descBox.classList.add('max-h-[3000px]');
                         }
                         toggleBtn.querySelector('span').textContent = window.currentLocale === 'en' ? 'Show Less' : 'Sembunyikan';
                         toggleBtn.querySelector('i').className = 'ph ph-caret-up text-xs';

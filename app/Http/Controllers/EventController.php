@@ -102,6 +102,7 @@ class EventController extends Controller
 
             return [
                 'id' => $event->id,
+                'type' => $event->type,
                 'title' => $event->title,
                 'category' => $event->category,
                 'description' => $cleanDescription,

@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class InformationCenter extends Model
 {
-    use \Illuminate\Database\Eloquent\SoftDeletes;
-
     protected $guarded = ['id'];
 
     protected $casts = [
