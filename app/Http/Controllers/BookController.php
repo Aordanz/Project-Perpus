@@ -368,13 +368,16 @@ class BookController extends Controller
         }
 
         // Filter berdasarkan Tipe Koleksi - gunakan exact match via collectionTypeRelation
-        // CATATAN: kolom `jenis` di tblbuku bernilai 'buku' untuk SEMUA record,
-        // sehingga filter hanya boleh lewat tbljenis_koleksi (exact match).
+        // Mendukung multiple tipe koleksi (misal: 'tesis,skripsi,buku')
         if ($request->filled('type') && $request->type !== 'all') {
-            $typeQuery = strtolower(trim($request->type));
-            $query->whereHas('collectionTypeRelation', function ($ct) use ($typeQuery) {
-                $ct->whereRaw('LOWER(jenis_koleksi) = ?', [$typeQuery]);
+            $types = array_filter(array_map('trim', explode(',', strtolower($request->type))), function($t) {
+                return $t !== '' && $t !== 'all';
             });
+            if (!empty($types)) {
+                $query->whereHas('collectionTypeRelation', function ($ct) use ($types) {
+                    $ct->whereIn(\Illuminate\Support\Facades\DB::raw('LOWER(jenis_koleksi)'), $types);
+                });
+            }
         }
 
         // Filter berdasarkan DDC category key (digit pertama nopanggil) atau filter khusus "terlaris"

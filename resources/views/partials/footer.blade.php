@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-2.5 sm:gap-3">
         <!-- Copyright Text -->
         <p class="text-white/95 font-medium leading-relaxed max-w-xl mx-auto">
-            &copy; 2025 <span class="font-bold">{{ __('Perpustakaan Universitas Sumatera Utara') }}</span> | OPAC.<br class="block sm:hidden"> {{ __('All rights reserved.') }}
+            &copy; 2026 <span class="font-bold">{{ __('Perpustakaan Universitas Sumatera Utara') }}</span> | OPAC.<br class="block sm:hidden"> {{ __('All rights reserved.') }}
         </p>
 
         <!-- Navigation Links -->

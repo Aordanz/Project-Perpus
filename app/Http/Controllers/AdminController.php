@@ -53,17 +53,31 @@ class AdminController extends Controller implements HasMiddleware
             ->orderBy('lokasi')
             ->pluck('lokasi');
 
-        // Calculate stats for each Location
+        // Calculate stats for each Location or Koleksi Terbaru
         if ($request->filled('lokasi') && $request->lokasi !== 'all') {
-            $locationStats = \Illuminate\Support\Facades\DB::table('tbllokasi')
-                ->join('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
-                ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
-                ->where('tbllokasi.lokasi', $request->lokasi)
-                ->select(
-                    \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as total_books'),
-                    \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NOT NULL THEN tblbuku.idbuku END) as with_cover'),
-                    \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NULL THEN tblbuku.idbuku END) as without_cover')
-                )->first();
+            if ($request->lokasi === 'koleksi_terbaru') {
+                $locationStats = \Illuminate\Support\Facades\DB::table('tblbuku')
+                    ->whereNotNull('tglinput')
+                    ->where('tglinput', '!=', '')
+                    ->where('tglinput', '!=', '0000-00-00 00:00:00')
+                    ->select(
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT idbuku) as total_books'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN cover_image IS NOT NULL AND cover_image != "" THEN idbuku END) as with_cover'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN cover_image IS NULL OR cover_image = "" THEN idbuku END) as without_cover')
+                    )->first();
+                $selectedLocation = 'Koleksi Terbaru';
+            } else {
+                $locationStats = \Illuminate\Support\Facades\DB::table('tbllokasi')
+                    ->join('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
+                    ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->where('tbllokasi.lokasi', $request->lokasi)
+                    ->select(
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as total_books'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NOT NULL AND tblbuku.cover_image != "" THEN tblbuku.idbuku END) as with_cover'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NULL OR tblbuku.cover_image = "" THEN tblbuku.idbuku END) as without_cover')
+                    )->first();
+                $selectedLocation = $request->lokasi;
+            }
         } else {
             // Avoid heavy query when 'Semua Lokasi' is selected
             $locationStats = (object) [
@@ -71,18 +85,8 @@ class AdminController extends Controller implements HasMiddleware
                 'with_cover' => $totalBooksWithCover,
                 'without_cover' => $totalBooksWithoutCover
             ];
+            $selectedLocation = 'Semua Lokasi';
         }
-
-        $selectedLocation = ($request->filled('lokasi') && $request->lokasi !== 'all') ? $request->lokasi : 'Semua Lokasi';
-
-        // Get 10 latest books (matching OPAC logic: valid tglinput, sorted newest first)
-        $latestBooks = Book::with(['publisherRelation', 'collectionTypeRelation'])
-            ->whereNotNull('tglinput')
-            ->where('tglinput', '!=', '')
-            ->where('tglinput', '!=', '0000-00-00 00:00:00')
-            ->orderByDesc('tglinput')
-            ->limit(10)
-            ->get();
 
         return view('admin.index', compact(
             'totalBooks',
@@ -93,8 +97,7 @@ class AdminController extends Controller implements HasMiddleware
             'totalBooksWithoutCover',
             'locationStats',
             'locationsList',
-            'selectedLocation',
-            'latestBooks'
+            'selectedLocation'
         ));
     }
 
