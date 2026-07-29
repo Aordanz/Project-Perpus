@@ -653,7 +653,7 @@
                                                     <span class="text-[10px] font-bold text-emerald-600 mt-0.5 block">Disarankan format Potrait (Rasio 4:5)</span>
                                                 </div>
                                             </div>
-                                            <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
+                                            <input type="file" name="images[]" id="image-input" class="hidden" accept="image/*" multiple>
                                         </label>
                                     </div>
                                     @error('images')
@@ -1039,6 +1039,7 @@
             if (contentContainer) {
                 contentContainer.classList.remove('hidden');
                 contentField.required = true;
+                contentField.disabled = false;
             }
             // Retrigger category change to restore Narahubung if needed
             if (categorySelect && categorySelect.value) {
@@ -1056,15 +1057,16 @@
                 customFieldsCard.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
             }
             if (cardInformasiUtama) {
-                cardInformasiUtama.classList.add('hidden');
-                cardInformasiUtama.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
+                cardInformasiUtama.classList.remove('hidden');
+                if (titleField) titleField.disabled = false;
             }
-            if (titleField) titleField.required = false;
+            if (titleField) titleField.required = true;
             if (cardNarahubung) cardNarahubung.classList.add('hidden');
             if (imageInput) imageInput.required = true;
             if (contentContainer) {
                 contentContainer.classList.add('hidden');
                 contentField.required = false;
+                contentField.disabled = true;
             }
         }
     }
@@ -1528,6 +1530,14 @@
             }
 
             // 3) Validate per type
+            const titleEl = document.getElementById('title');
+            if (titleEl && !titleEl.value.trim()) {
+                e.preventDefault();
+                hasError = true;
+                markError(titleEl, 'Judul wajib diisi.');
+                if (!firstInvalid) firstInvalid = titleEl;
+            }
+
             if (selectedType === 'poster') {
                 // Re-query imageInput fresh in case DOM was rearranged
                 const imgInputFresh = document.getElementById('image-input');
@@ -1539,15 +1549,8 @@
                     if (!firstInvalid) firstInvalid = document.getElementById('dropzone-wrapper');
                 }
             } else {
-                // Text type: title & content required
-                const titleEl = document.getElementById('title');
+                // Text type: content required
                 const contentEl = document.getElementById('content');
-                if (titleEl && !titleEl.value.trim()) {
-                    e.preventDefault();
-                    hasError = true;
-                    markError(titleEl, 'Judul wajib diisi.');
-                    if (!firstInvalid) firstInvalid = titleEl;
-                }
                 if (contentEl && !contentEl.value.trim()) {
                     e.preventDefault();
                     hasError = true;

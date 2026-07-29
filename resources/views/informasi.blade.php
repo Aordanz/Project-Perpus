@@ -368,6 +368,29 @@
             gap: 16px;
         }
 
+        /* ── POSTER MODE OVERRIDES ── */
+        .detail-container.poster-mode {
+            flex-direction: column;
+            align-items: center;
+        }
+        .detail-container.poster-mode .detail-poster-left {
+            width: auto;
+            max-width: 100%;
+            height: clamp(500px, 75vh, 800px);
+            aspect-ratio: 4 / 5;
+            position: relative;
+        }
+        .detail-container.poster-mode .detail-content-right {
+            width: 100%;
+            max-width: 700px;
+            align-items: center;
+            text-align: center;
+        }
+        .detail-container.poster-mode .detail-content-right .detail-meta-grid,
+        .detail-container.poster-mode .detail-content-right .detail-widgets-grid {
+            text-align: left;
+        }
+
         .badge-cat {
             display: inline-flex;
             align-items: center;
@@ -606,6 +629,9 @@
                 min-width: 0;
                 border-right: none;
             }
+            .panel-titles-header {
+                padding-left: 32px; /* Give space for the mobile sidebar handle */
+            }
             .panel-detail {
                 display: none !important; /* Hide Panel 3 on mobile */
             }
@@ -811,53 +837,16 @@
                         {{-- Title --}}
                         <h2 id="detail-title" class="detail-title">{{ $activeItem['title'] ?? '' }}</h2>
 
-                        {{-- Meta Items Grid (Only shown if filled in Admin) --}}
-                        <div class="detail-meta-grid" style="{{ $activeHasMeta ? '' : 'display:none;' }}">
-                            <div class="meta-item" style="{{ !empty($activeItem['time']) ? '' : 'display:none;' }}">
-                                <i class="ph ph-clock"></i>
-                                <div>
-                                    <span class="meta-label">Waktu Operasional / Event</span>
-                                    <span id="detail-time" class="meta-val">{{ $activeItem['time'] ?? '' }}</span>
-                                </div>
-                            </div>
-                            <div class="meta-item" style="{{ !empty($activeItem['location']) ? '' : 'display:none;' }}">
-                                <i class="ph ph-map-pin"></i>
-                                <div>
-                                    <span class="meta-label">Lokasi Kegiatan</span>
-                                    <span id="detail-location" class="meta-val">{{ $activeItem['location'] ?? '' }}</span>
-                                </div>
-                            </div>
-                            <div class="meta-item" style="{{ !empty($activeItem['organizer']) ? '' : 'display:none;' }}">
-                                <i class="ph ph-buildings"></i>
-                                <div>
-                                    <span class="meta-label">Penyelenggara</span>
-                                    <span id="detail-organizer" class="meta-val">{{ $activeItem['organizer'] ?? '' }}</span>
-                                </div>
-                            </div>
-                        </div>
+                        {{-- Meta Items Grid (Populated dynamically in JS) --}}
+                        <div class="detail-meta-grid" id="dynamic-meta-grid" style="display:none;"></div>
 
                         {{-- Main Description Box (Shown if description entered) --}}
                         <div class="detail-desc-box" style="{{ $activeHasRawDesc ? '' : 'display:none;' }}">
                             <div id="detail-description">{{ $activeItem['description'] ?? '' }}</div>
                         </div>
 
-                        {{-- Useful Info Widgets (Only shown if description/event provided) --}}
-                        <div class="detail-widgets-grid" style="{{ ($activeHasRawDesc || ($activeItem['category']??'')==='event') ? '' : 'display:none;' }}">
-                            <div class="widget-card">
-                                <i class="ph ph-identification-card"></i>
-                                <div>
-                                    <div class="widget-title">Ketentuan Pengunjung</div>
-                                    <div class="widget-text">Harap menunjukkan Kartu Tanda Mahasiswa (KTM) atau Kartu Anggota Perpustakaan yang berlaku.</div>
-                                </div>
-                            </div>
-                            <div class="widget-card">
-                                <i class="ph ph-headset"></i>
-                                <div>
-                                    <div class="widget-title">Layanan Pustakawan & Helpdesk</div>
-                                    <div class="widget-text">Butuh bantuan? Hubungi meja layanan utama di Lantai 1 atau via Email: <strong>library@usu.ac.id</strong></div>
-                                </div>
-                            </div>
-                        </div>
+                        {{-- Useful Info Widgets (Populated dynamically in JS) --}}
+                        <div class="detail-widgets-grid" id="dynamic-widgets-grid" style="display:none;"></div>
 
                         {{-- Action Link Button (Shown if link entered in Admin) --}}
                         <div id="detail-actions" class="pt-1" style="{{ $activeHasLink ? '' : 'display:none;' }}">
@@ -1077,23 +1066,34 @@
                 }
             }
 
-            // 2. Meta Grid Visibility (Time, Location, Organizer)
-            if (metaGridEl) {
-                if (item.has_meta) {
-                    metaGridEl.style.display = 'grid';
-                    const timeItem = el('detail-time')?.closest('.meta-item');
-                    const locItem  = el('detail-location')?.closest('.meta-item');
-                    const orgItem  = el('detail-organizer')?.closest('.meta-item');
-
-                    if (timeItem) timeItem.style.display = item.time ? 'flex' : 'none';
-                    if (locItem)  locItem.style.display  = item.location ? 'flex' : 'none';
-                    if (orgItem)  orgItem.style.display  = item.organizer ? 'flex' : 'none';
-
-                    if (el('detail-time'))      el('detail-time').textContent = item.time || '';
-                    if (el('detail-location'))  el('detail-location').textContent = item.location || '';
-                    if (el('detail-organizer')) el('detail-organizer').textContent = item.organizer || '';
+            // Toggle poster-mode class based on item type
+            if (hasContent) {
+                if (item.type === 'poster') {
+                    hasContent.classList.add('poster-mode');
                 } else {
-                    metaGridEl.style.display = 'none';
+                    hasContent.classList.remove('poster-mode');
+                }
+            }
+
+            // 2. Meta Grid Visibility (Populate all dynamic fields)
+            const dynMetaGridEl = el('dynamic-meta-grid');
+            if (dynMetaGridEl) {
+                let metaHtml = '';
+                if (item.time) metaHtml += `<div class="meta-item"><i class="ph ph-clock"></i><div><span class="meta-label">Waktu Operasional / Event</span><span class="meta-val">${item.time}</span></div></div>`;
+                if (item.location) metaHtml += `<div class="meta-item"><i class="ph ph-map-pin"></i><div><span class="meta-label">Lokasi Kegiatan</span><span class="meta-val">${item.location}</span></div></div>`;
+                if (item.organizer) metaHtml += `<div class="meta-item"><i class="ph ph-buildings"></i><div><span class="meta-label">Penyelenggara</span><span class="meta-val">${item.organizer}</span></div></div>`;
+                if (item.book_author) metaHtml += `<div class="meta-item"><i class="ph ph-user"></i><div><span class="meta-label">Penulis</span><span class="meta-val">${item.book_author}</span></div></div>`;
+                if (item.shelf_location) metaHtml += `<div class="meta-item"><i class="ph ph-books"></i><div><span class="meta-label">Lokasi Rak</span><span class="meta-val">${item.shelf_location}</span></div></div>`;
+                if (item.participants) metaHtml += `<div class="meta-item"><i class="ph ph-users"></i><div><span class="meta-label">Sasaran Peserta</span><span class="meta-val">${item.participants}</span></div></div>`;
+                if (item.contact_phone) metaHtml += `<div class="meta-item"><i class="ph ph-phone"></i><div><span class="meta-label">Kontak (Telepon)</span><span class="meta-val">${item.contact_phone}</span></div></div>`;
+                if (item.contact_email) metaHtml += `<div class="meta-item"><i class="ph ph-envelope"></i><div><span class="meta-label">Kontak (Email)</span><span class="meta-val">${item.contact_email}</span></div></div>`;
+                
+                if (metaHtml) {
+                    dynMetaGridEl.style.display = 'grid';
+                    dynMetaGridEl.innerHTML = metaHtml;
+                } else {
+                    dynMetaGridEl.style.display = 'none';
+                    dynMetaGridEl.innerHTML = '';
                 }
             }
 
@@ -1101,18 +1101,41 @@
             if (descBoxEl) {
                 if (item.has_raw_desc) {
                     descBoxEl.style.display = 'block';
-                    if (descEl) descEl.textContent = item.description || '';
+                    if (descEl) descEl.innerHTML = item.description_html || item.description || '';
                 } else {
                     descBoxEl.style.display = 'none';
                 }
             }
 
-            // 4. Widget Cards Visibility (Only show widgets if description or event exists)
-            if (widgetGridEl) {
-                if (item.has_raw_desc || item.category === 'event') {
-                    widgetGridEl.style.display = 'grid';
+            // 4. Widget Cards Visibility (Dynamically render facilities, features, tips, default widgets)
+            const dynWidgetsGridEl = el('dynamic-widgets-grid');
+            if (dynWidgetsGridEl) {
+                let widgetHtml = '';
+                
+                if (item.facilities) {
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-check-circle"></i><div><div class="widget-title">Fasilitas</div><div class="widget-text">${item.facilities}</div></div></div>`;
+                }
+                
+                if (Array.isArray(item.left_features) && item.left_features.length > 0) {
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-star"></i><div><div class="widget-title">Keunggulan</div><div class="widget-text"><ul style="list-style:disc; margin-left:15px; padding-top:4px;">${item.left_features.map(f => `<li>${f}</li>`).join('')}</ul></div></div></div>`;
+                }
+                
+                if (Array.isArray(item.tips_bullets) && item.tips_bullets.length > 0) {
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-lightbulb"></i><div><div class="widget-title">Tips & Trik</div><div class="widget-text"><ul style="list-style:decimal; margin-left:15px; padding-top:4px;">${item.tips_bullets.map(f => `<li>${f}</li>`).join('')}</ul></div></div></div>`;
+                }
+
+                // Default widgets based on category / fallback
+                if (item.category === 'event') {
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-identification-card"></i><div><div class="widget-title">Ketentuan Pengunjung</div><div class="widget-text">Harap menunjukkan Kartu Tanda Mahasiswa (KTM) atau Kartu Anggota Perpustakaan yang berlaku.</div></div></div>`;
+                }
+                
+                if (item.has_raw_desc || widgetHtml) {
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-headset"></i><div><div class="widget-title">Layanan Pustakawan & Helpdesk</div><div class="widget-text">Butuh bantuan? Hubungi meja layanan utama di Lantai 1 atau via Email: <strong>library@usu.ac.id</strong></div></div></div>`;
+                    dynWidgetsGridEl.style.display = 'grid';
+                    dynWidgetsGridEl.innerHTML = widgetHtml;
                 } else {
-                    widgetGridEl.style.display = 'none';
+                    dynWidgetsGridEl.style.display = 'none';
+                    dynWidgetsGridEl.innerHTML = '';
                 }
             }
 

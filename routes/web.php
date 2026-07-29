@@ -25,9 +25,12 @@ Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->nam
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/admin/tambah-cover', [AdminController::class, 'tambahCoverIndex'])->name('admin.tambah-cover');
+Route::get('/admin/tambah-ringkasan', [AdminController::class, 'tambahRingkasanIndex'])->name('admin.tambah-ringkasan');
 Route::post('/admin/books', [AdminController::class, 'store'])->name('admin.books.store');
 Route::get('/admin/books/{id}/edit', [AdminController::class, 'edit'])->name('admin.books.edit');
 Route::put('/admin/books/{id}', [AdminController::class, 'update'])->name('admin.books.update');
+
+Route::put('/admin/books/{id}/ringkasan', [AdminController::class, 'updateRingkasan'])->name('admin.books.update-ringkasan');
 Route::delete('/admin/books/{id}', [AdminController::class, 'destroy'])->name('admin.books.destroy');
 Route::delete('/admin/books/images/{id}', [AdminController::class, 'deleteImage'])->name('admin.books.delete-image');
 

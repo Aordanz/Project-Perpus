@@ -165,11 +165,75 @@ class AdminController extends Controller implements HasMiddleware
             ->orderBy('lokasi', 'asc')
             ->get();
 
+        $actionType = 'cover';
         if ($request->ajax()) {
-            return view('admin.partials.books_table', compact('books'));
+            return view('admin.partials.books_table', compact('books', 'actionType'));
         }
 
-        return view('admin.tambah_cover', compact('books', 'locations'));
+        return view('admin.tambah_cover', compact('books', 'locations', 'actionType'));
+    }
+
+    public function tambahRingkasanIndex(Request $request)
+    {
+        $query = Book::with(['items.location'])->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul_buku', 'like', "%{$search}%")
+                  ->orWhere('pengarang', 'like', "%{$search}%")
+                  ->orWhere('idpenerbit', 'like', "%{$search}%")
+                  ->orWhere('isbn', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('cover_filter')) {
+            $filter = $request->cover_filter;
+            if ($filter === 'no_cover') {
+                $query->where(function ($q) {
+                    $q->whereNull('ringkasanbuku')->orWhere('ringkasanbuku', '');
+                });
+            } elseif ($filter === 'has_cover') {
+                $query->whereNotNull('ringkasanbuku')->where('ringkasanbuku', '!=', '');
+            }
+        }
+
+        if ($request->filled('location_filter') && $request->location_filter !== 'all') {
+            $locFilter = $request->location_filter;
+            if ($locFilter === 'koleksi_terbaru') {
+                $latest40Ids = Book::whereNotNull('tglinput')
+                    ->where('tglinput', '!=', '')
+                    ->where('tglinput', '!=', '0000-00-00 00:00:00')
+                    ->orderByDesc('tglinput')
+                    ->limit(40)
+                    ->pluck('idmaster');
+
+                $query->whereIn('idmaster', $latest40Ids);
+            } else {
+                $query->whereHas('items', function ($itemQuery) use ($locFilter) {
+                    $itemQuery->where('kodelokasi', $locFilter);
+                });
+            }
+        }
+
+        $perPage = $request->input('limit', 10);
+        if ($perPage === 'all') {
+            $perPage = 500;
+        } else {
+            $perPage = is_numeric($perPage) ? min(500, (int)$perPage) : 10;
+        }
+
+        $books = $query->paginate($perPage)->withQueryString();
+        $locations = Location::orderByRaw("CASE WHEN lokasi = 'Belum Ada Lokasi' THEN 1 ELSE 2 END")
+            ->orderBy('lokasi', 'asc')
+            ->get();
+
+        $actionType = 'ringkasan';
+        if ($request->ajax()) {
+            return view('admin.partials.books_table', compact('books', 'actionType'));
+        }
+
+        return view('admin.tambah_ringkasan', compact('books', 'locations', 'actionType'));
     }
 
     public function galeri(Request $request)
@@ -235,7 +299,7 @@ class AdminController extends Controller implements HasMiddleware
             'general_note'         => 'nullable|string',
             'pdf_file'             => 'nullable|file|mimes:pdf|max:20480',
             'images'               => 'nullable|array|max:4',
-            'images.*'             => 'image|mimes:jpeg,png,jpg,gif,svg|max:20480',
+            'images.*'             => 'file|mimes:jpeg,png,jpg,gif,svg,webp,avif,bmp,heic|max:20480',
 
             // Validation for dynamic items
             'items.*.barcode'     => 'required|string|unique:tbleksemplar,nomor_eksemplar|max:255',
@@ -248,6 +312,8 @@ class AdminController extends Controller implements HasMiddleware
             'items.*.type.required'       => 'Tipe eksemplar wajib dipilih.',
             'images.max'                  => 'Maksimal 4 gambar (1 utama & 3 tambahan) yang dapat diunggah sekaligus.',
             'images.*.max'                => 'Ukuran setiap gambar tidak boleh melebihi 20 MB.',
+            'images.*.image'              => 'File yang diunggah harus berupa gambar.',
+            'images.*.mimes'              => 'Format gambar harus jpeg, png, jpg, gif, svg, webp, avif, bmp, atau heic.',
         ]);
 
         try {
@@ -360,14 +426,14 @@ class AdminController extends Controller implements HasMiddleware
             'jenis'                => 'nullable|string|max:255',
             'category'             => 'nullable|string|max:255',
             'general_note'         => 'nullable|string',
-            'cover_image'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
+            'cover_image'          => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,avif,bmp,heic|max:20480',
             'delete_cover'         => 'nullable|boolean',
             'pdf_file'             => 'nullable|file|mimes:pdf|max:20480',
             'delete_pdf'           => 'nullable|boolean',
-            'additional_images.*'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
+            'additional_images.*'  => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,avif,bmp,heic|max:20480',
             'delete_additional_images.*' => 'nullable|integer|exists:galeri_buku,id',
             'image_order_json'     => 'nullable|string',
-            'new_files.*'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
+            'new_files.*'          => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,avif,bmp,heic|max:20480',
  
             // Existing items update
             'items.*.barcode'      => 'required|string|max:255',
@@ -379,8 +445,14 @@ class AdminController extends Controller implements HasMiddleware
             'new_items.*.location_id'  => 'nullable|exists:locations,id',
             'new_items.*.type'         => 'nullable|string|in:STD,KPS',
         ], [
+            'cover_image.image' => 'File sampul buku harus berupa gambar.',
+            'cover_image.mimes' => 'Format sampul buku harus jpeg, png, jpg, gif, svg, webp, avif, bmp, atau heic.',
             'cover_image.max' => 'Ukuran sampul buku tidak boleh melebihi 20 MB.',
+            'additional_images.*.image' => 'File tambahan harus berupa gambar.',
+            'additional_images.*.mimes' => 'Format file tambahan harus jpeg, png, jpg, gif, svg, webp, avif, bmp, atau heic.',
             'additional_images.*.max' => 'Ukuran setiap gambar tambahan tidak boleh melebihi 20 MB.',
+            'new_files.*.image' => 'File gambar baru harus berupa gambar.',
+            'new_files.*.mimes' => 'Format file gambar baru harus jpeg, png, jpg, gif, svg, webp, avif, bmp, atau heic.',
             'new_files.*.max' => 'Ukuran file gambar baru tidak boleh melebihi 20 MB.',
         ]);
 
@@ -585,6 +657,29 @@ class AdminController extends Controller implements HasMiddleware
         }
     }
 
+
+    public function updateRingkasan(Request $request, $id)
+    {
+        $book = Book::where('idmaster', $id)->firstOrFail();
+
+        $request->validate([
+            'ringkasanbuku' => 'nullable|string',
+        ]);
+
+        try {
+            $book->update([
+                'ringkasanbuku' => $request->ringkasanbuku,
+            ]);
+
+            return redirect()->route('admin.tambah-ringkasan')
+                ->with('success', 'Ringkasan buku "' . $book->title . '" berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => 'Gagal memperbarui ringkasan buku: ' . $e->getMessage()]);
+        }
+    }
+
     /**
      * Delete cover image and any additional images of a book.
      */
@@ -767,7 +862,12 @@ class AdminController extends Controller implements HasMiddleware
         }
 
         if (!$image) {
-            throw new \Exception('Tidak dapat membaca gambar.');
+            // Jika GD tidak mendukung (misalnya gambar AVIF atau format lain)
+            // maka simpan file aslinya saja tanpa konversi
+            $extension = $file->getClientOriginalExtension() ?: 'img';
+            $filename = time() . '_' . uniqid() . '.' . $extension;
+            $file->move(public_path('covers'), $filename);
+            return $filename;
         }
 
         // Resize image if it exceeds 1200px width/height to save space
@@ -802,21 +902,8 @@ class AdminController extends Controller implements HasMiddleware
             mkdir(public_path('covers'), 0777, true);
         }
 
-        // Compress and save as AVIF (iteratively ensure it is < 150KB)
-        $quality = 65; // Good balance for AVIF
-        
-        do {
-            ob_start();
-            imageavif($image, null, $quality);
-            $data = ob_get_clean();
-            
-            $size = strlen($data);
-            if ($size <= 150 * 1024 || $quality <= 15) {
-                file_put_contents($destination, $data);
-                break;
-            }
-            $quality -= 10; // Decrease quality to reduce size
-        } while ($quality > 0);
+        // Compress and save as AVIF with a single pass for better performance
+        imageavif($image, $destination, 50);
 
         imagedestroy($image);
         return $filename;

@@ -31,10 +31,18 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-2 space-y-6">
         <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            @if($informationCenter->image_path)
-                <img src="{{ asset($informationCenter->image_path) }}" alt="{{ $informationCenter->title }}" class="w-full aspect-[4/5] object-cover sm:max-w-xs mx-auto mt-6 rounded-2xl shadow border border-slate-100" onerror="this.onerror=null; this.src='{{ asset('perpustakaan_depan.webp') }}';">
+            @if($informationCenter->type === 'poster')
+                @if($informationCenter->image_path)
+                    <img src="{{ asset($informationCenter->image_path) }}" alt="{{ $informationCenter->title }}" class="w-full aspect-[4/5] object-cover max-w-md mx-auto mt-8 rounded-2xl shadow-lg border border-slate-100" onerror="this.onerror=null; this.src='{{ asset('perpustakaan_depan.webp') }}';">
+                @else
+                    <img src="{{ asset('perpustakaan_depan.webp') }}" alt="{{ $informationCenter->title }}" class="w-full aspect-[4/5] object-cover max-w-md mx-auto mt-8 rounded-2xl shadow-lg border border-slate-100">
+                @endif
             @else
-                <img src="{{ asset('perpustakaan_depan.webp') }}" alt="{{ $informationCenter->title }}" class="w-full aspect-[4/5] object-cover sm:max-w-xs mx-auto mt-6 rounded-2xl shadow border border-slate-100">
+                @if($informationCenter->image_path)
+                    <img src="{{ asset($informationCenter->image_path) }}" alt="{{ $informationCenter->title }}" class="w-full aspect-[4/5] object-cover sm:max-w-xs mx-auto mt-6 rounded-2xl shadow border border-slate-100" onerror="this.onerror=null; this.src='{{ asset('perpustakaan_depan.webp') }}';">
+                @else
+                    <img src="{{ asset('perpustakaan_depan.webp') }}" alt="{{ $informationCenter->title }}" class="w-full aspect-[4/5] object-cover sm:max-w-xs mx-auto mt-6 rounded-2xl shadow border border-slate-100">
+                @endif
             @endif
             
             <div class="p-6 sm:p-8">

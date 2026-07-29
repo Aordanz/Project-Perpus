@@ -209,7 +209,7 @@
         </div>
 
         <!-- Global Modal Footer -->
-        <div id="event-popup-footer" class="flex flex-row justify-between items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3.5 border-t border-slate-100 bg-slate-50/80 backdrop-blur-sm relative select-none shrink-0 rounded-b-3xl transition-all duration-300">
+        <div id="event-popup-footer" class="flex flex-row justify-between items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3.5 border-t border-slate-100 bg-slate-50/80 backdrop-blur-sm relative select-none shrink-0 transition-all duration-300">
             <!-- Checkbox: Jangan Tampilkan Lagi -->
             <div class="flex items-center gap-2 z-20 shrink-0">
                 <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
@@ -237,50 +237,20 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-/* Poster full-mode: footer floats over the poster image */
+/* Poster full-mode: footer floats below the poster image */
 #event-popup-content.poster-mode {
-    height: 95vh; /* explicit height so children can inherit h-100% */
+    height: auto;
+    max-height: 95vh;
+    min-height: unset !important;
 }
 #event-popup-content.poster-mode #event-slider-track-wrapper {
-    height: calc(95vh - 58px); /* subtract footer height */
-    min-height: unset;
-    flex: none;
+    aspect-ratio: 4 / 5;
+    max-height: calc(95vh - 50px);
+    width: 100%;
+    flex: 1;
 }
 #event-popup-content.poster-mode #event-slider-track {
     height: 100%;
-}
-#event-popup-content.poster-mode #event-popup-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 40;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255,255,255,0.12);
-    border-radius: 0 0 1.5rem 1.5rem;
-}
-#event-popup-content.poster-mode #event-popup-footer label,
-#event-popup-content.poster-mode #event-popup-footer span {
-    color: rgba(255,255,255,0.85);
-}
-#event-popup-content.poster-mode #event-popup-footer input[type="checkbox"] {
-    border-color: rgba(255,255,255,0.5);
-}
-#event-popup-content.poster-mode #event-popup-footer #event-pagination-container {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(255,255,255,0.2);
-}
-#event-popup-content.poster-mode #event-popup-footer #event-pagination-text {
-    color: #ffffff;
-}
-#event-popup-content.poster-mode #event-popup-footer #prev-event-btn-floating {
-    background: rgba(255,255,255,0.2);
-    border-color: rgba(255,255,255,0.3);
-    color: #ffffff;
-}
-#event-popup-content.poster-mode #event-popup-footer #next-event-btn-floating {
-    background: rgba(16,108,56,0.85);
 }
 </style>
 
@@ -331,53 +301,30 @@
 
                         if (cat === 'event') {
                             badgeLabel = 'EVENT / KEGIATAN'; badgeIcon = 'ph-calendar-check';
-                            badgeCls = 'bg-emerald-50 text-[#106c38] border-emerald-200';
-                            rightGrad = 'linear-gradient(150deg,#04200f,#0c4825,#167c45)';
-                            rightOverlay = 'rgba(4,32,15,0.18)'; accentColor = 'green';
                         } else if (cat === 'announcement') {
                             badgeLabel = 'PENGUMUMAN'; badgeIcon = 'ph-megaphone-simple';
-                            badgeCls = 'bg-blue-50 text-blue-700 border-blue-200';
-                            rightGrad = 'linear-gradient(150deg,#0c1e5c,#1d4ed8,#3b82f6)';
-                            rightOverlay = 'rgba(12,30,92,0.3)'; accentColor = 'blue';
                         } else if (cat === 'maintenance') {
                             badgeLabel = 'PEMELIHARAAN'; badgeIcon = 'ph-wrench';
-                            badgeCls = 'bg-red-50 text-red-700 border-red-200';
-                            rightGrad = 'linear-gradient(150deg,#500c0c,#b91c1c,#f87171)';
-                            rightOverlay = 'rgba(80,12,12,0.35)'; accentColor = 'red';
                         } else if (cat === 'new_collection' || cat === 'book_recommendation') {
                             badgeLabel = cat === 'book_recommendation' ? 'BUKU REKOMENDASI' : 'BUKU BARU'; badgeIcon = 'ph-book-open';
-                            badgeCls = 'bg-purple-50 text-purple-700 border-purple-200';
-                            rightGrad = 'linear-gradient(150deg,#1e0640,#5b21b6,#8b5cf6)';
-                            rightOverlay = 'rgba(30,6,64,0.45)'; accentColor = 'purple';
                         } else if (cat === 'library_news') {
                             badgeLabel = 'BERITA PERPUSTAKAAN'; badgeIcon = 'ph-newspaper';
-                            badgeCls = 'bg-indigo-50 text-indigo-700 border-indigo-200';
-                            rightGrad = 'linear-gradient(150deg,#1e1b4b,#4338ca,#6366f1)';
-                            rightOverlay = 'rgba(30,27,75,0.45)'; accentColor = 'blue';
                         } else if (cat === 'tips') {
                             badgeLabel = 'TIPS & TRIK'; badgeIcon = 'ph-lightbulb-filament';
-                            badgeCls = 'bg-amber-50 text-amber-700 border-amber-200';
-                            rightGrad = 'linear-gradient(150deg,#431407,#c2410c,#f59e0b)';
-                            rightOverlay = 'rgba(67,20,7,0.3)'; accentColor = 'amber';
                         } else if (cat === 'promotion') {
                             badgeLabel = 'PROMO SPESIAL'; badgeIcon = 'ph-tag';
-                            badgeCls = 'bg-orange-50 text-orange-700 border-orange-200';
-                            rightGrad = 'linear-gradient(150deg,#7c1d0c,#c2410c,#fb923c)';
-                            rightOverlay = 'rgba(124,29,12,0.28)'; accentColor = 'orange';
                         } else {
                             badgeLabel = 'INFORMASI'; badgeIcon = 'ph-info';
-                            badgeCls = 'bg-slate-100 text-slate-600 border-slate-200';
-                            rightGrad = 'linear-gradient(150deg,#0f172a,#1e293b,#334155)';
-                            rightOverlay = 'rgba(15,23,42,0.2)'; accentColor = 'green';
                         }
+
+                        // Use default web theme (green) for all categories
+                        badgeCls = 'bg-emerald-50 text-[#106c38] border-emerald-200';
+                        rightGrad = 'linear-gradient(150deg,#04200f,#0c4825,#167c45)';
+                        rightOverlay = 'rgba(4,32,15,0.18)'; 
+                        accentColor = 'green';
 
                         // ─── Accent Button Color ───────────────────────────────────
                         let accentBtnCls = 'bg-[#106c38] hover:bg-[#0e5e30] text-white';
-                        if (accentColor === 'blue')   accentBtnCls = 'bg-blue-600 hover:bg-blue-700 text-white';
-                        if (accentColor === 'purple') accentBtnCls = 'bg-purple-600 hover:bg-purple-700 text-white';
-                        if (accentColor === 'amber')  accentBtnCls = 'bg-amber-500 hover:bg-amber-600 text-white';
-                        if (accentColor === 'orange') accentBtnCls = 'bg-orange-600 hover:bg-orange-700 text-white';
-                        if (accentColor === 'red')    accentBtnCls = 'bg-red-600 hover:bg-red-700 text-white';
 
                         // ─── Category Detail Content ───────────────────────────────
                         let detailHtml = '';
@@ -441,39 +388,39 @@
                         } else if (cat === 'announcement') {
                             detailHtml = `
                                 <div class="flex flex-wrap gap-2 mb-3">
-                                    ${event.date_text ? `<div class="flex items-center gap-1.5 bg-blue-50 border border-blue-100 rounded-lg px-2.5 py-1.5"><i class="ph ph-calendar-blank text-blue-600 text-xs"></i><span class="text-[10.5px] font-bold text-blue-800">${event.date_text}</span></div>` : ''}
-                                    ${event.time ? `<div class="flex items-center gap-1.5 bg-blue-50 border border-blue-100 rounded-lg px-2.5 py-1.5"><i class="ph ph-clock text-blue-600 text-xs"></i><span class="text-[10.5px] font-bold text-blue-800">${event.time}</span></div>` : ''}
+                                    ${event.date_text ? `<div class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5"><i class="ph ph-calendar-blank text-[#106c38] text-xs"></i><span class="text-[10.5px] font-bold text-slate-800">${event.date_text}</span></div>` : ''}
+                                    ${event.time ? `<div class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5"><i class="ph ph-clock text-[#106c38] text-xs"></i><span class="text-[10.5px] font-bold text-slate-800">${event.time}</span></div>` : ''}
                                 </div>
-                                ${event.affected_services ? `<div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-blue-400 uppercase tracking-wide mb-1">Dampak Layanan</p><p class="text-[11px] font-bold text-blue-900">${event.affected_services}</p></div>` : ''}
+                                ${event.affected_services ? `<div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-1">Dampak Layanan</p><p class="text-[11px] font-bold text-slate-800">${event.affected_services}</p></div>` : ''}
                             `;
 
                         } else if (cat === 'maintenance') {
                             detailHtml = `
-                                <div class="flex items-start gap-2.5 bg-red-50 border border-red-100 rounded-xl p-3 mb-3">
-                                    <i class="ph ph-warning text-red-500 text-xl animate-pulse shrink-0 mt-0.5"></i>
-                                    <div><p class="text-[8px] font-black text-red-400 uppercase tracking-wide mb-0.5">Layanan Terdampak</p><p class="text-[11px] font-bold text-red-900">${event.affected_services || 'Sistem Perpustakaan'}</p></div>
+                                <div class="flex items-start gap-2.5 bg-emerald-50 border border-emerald-100 rounded-xl p-3 mb-3">
+                                    <i class="ph ph-warning text-[#106c38] text-xl animate-pulse shrink-0 mt-0.5"></i>
+                                    <div><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Layanan Terdampak</p><p class="text-[11px] font-bold text-slate-800">${event.affected_services || 'Sistem Perpustakaan'}</p></div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-2 mb-2">
                                     ${event.date_text ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Tanggal</p><p class="text-[10.5px] font-bold text-slate-800">${event.date_text}</p></div>` : ''}
                                     ${event.time ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Waktu</p><p class="text-[10.5px] font-bold text-slate-800">${event.time}</p></div>` : ''}
                                     ${event.estimated_downtime ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 col-span-2"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Perkiraan Selesai</p><p class="text-[10.5px] font-bold text-slate-800">${event.estimated_downtime}</p></div>` : ''}
                                 </div>
-                                ${event.alternative_link ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 mb-1"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Akses Alternatif</p><a href="${event.alternative_link}" target="_blank" class="text-[10.5px] font-bold text-blue-600 hover:underline truncate block">${event.alternative_link}</a></div>` : ''}
+                                ${event.alternative_link ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 mb-1"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Akses Alternatif</p><a href="${event.alternative_link}" target="_blank" class="text-[10.5px] font-bold text-[#106c38] hover:underline truncate block">${event.alternative_link}</a></div>` : ''}
                             `;
 
                         } else if (cat === 'new_collection' || cat === 'book_recommendation') {
                             detailHtml = `
                                 <div class="bg-slate-50 border border-slate-100 rounded-xl overflow-hidden mb-3">
-                                    ${event.book_author ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-user-circle text-purple-500 text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penulis</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_author}</span></div>` : ''}
-                                    ${event.book_publisher ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-buildings text-purple-500 text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penerbit</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_publisher}</span></div>` : ''}
-                                    ${event.shelf_location ? `<div class="flex items-center gap-2.5 px-3 py-2"><i class="ph ph-map-pin text-purple-500 text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Lokasi Rak</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.shelf_location}</span></div>` : ''}
+                                    ${event.book_author ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-user-circle text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penulis</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_author}</span></div>` : ''}
+                                    ${event.book_publisher ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-buildings text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penerbit</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_publisher}</span></div>` : ''}
+                                    ${event.shelf_location ? `<div class="flex items-center gap-2.5 px-3 py-2"><i class="ph ph-map-pin text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Lokasi Rak</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.shelf_location}</span></div>` : ''}
                                 </div>
                             `;
                             if (!actionLinks) actionLinks = [{name: 'Lihat Detail Buku', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
 
                         } else if (cat === 'library_news') {
                             detailHtml = `
-                                ${event.news_date ? `<div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-lg mb-3"><i class="ph ph-calendar-blank text-indigo-600 text-sm"></i><span class="text-[10px] font-bold text-indigo-800">${event.news_date}</span></div>` : ''}
+                                ${event.news_date ? `<div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-lg mb-3"><i class="ph ph-calendar-blank text-[#106c38] text-sm"></i><span class="text-[10px] font-bold text-slate-800">${event.news_date}</span></div>` : ''}
                             `;
                             if (!actionLinks) actionLinks = [{name: 'Baca Berita', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
 
@@ -483,13 +430,13 @@
                                 : (event.description || '').split(/\n+/).map(l => l.trim()).filter(l => l.length > 8);
                             showDesc = bullets.length < 2;
                             if (bullets.length >= 2) {
-                                detailHtml = `<ul class="space-y-2 mb-1">${bullets.slice(0, 5).map(tip => `<li class="flex items-start gap-2.5"><div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5" style="min-width:20px"><i class="ph ph-check-fat text-amber-600" style="font-size:9px"></i></div><span class="text-[11px] text-slate-700 leading-relaxed">${tip}</span></li>`).join('')}</ul>`;
+                                detailHtml = `<ul class="space-y-2 mb-1">${bullets.slice(0, 5).map(tip => `<li class="flex items-start gap-2.5"><div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5" style="min-width:20px"><i class="ph ph-check-fat text-[#106c38]" style="font-size:9px"></i></div><span class="text-[11px] text-slate-700 leading-relaxed">${tip}</span></li>`).join('')}</ul>`;
                             }
 
                         } else if (cat === 'promotion') {
                             detailHtml = `
-                                ${event.promo_period ? `<div class="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-xl px-3 py-2 mb-3"><i class="ph ph-calendar text-orange-500 text-base"></i><div><p class="text-[8px] font-black text-orange-400 uppercase tracking-wide leading-none mb-0.5">Periode Promo</p><p class="text-[11px] font-bold text-orange-900">${event.promo_period}</p></div></div>` : ''}
-                                ${event.promo_benefit ? `<div class="bg-orange-50 border border-orange-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-orange-400 uppercase tracking-wide mb-1.5">Yang Kamu Dapatkan &#127873;</p><p class="text-sm font-black text-orange-900">${event.promo_benefit}</p></div>` : ''}
+                                ${event.promo_period ? `<div class="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2 mb-3"><i class="ph ph-calendar text-[#106c38] text-base"></i><div><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Periode Promo</p><p class="text-[11px] font-bold text-slate-800">${event.promo_period}</p></div></div>` : ''}
+                                ${event.promo_benefit ? `<div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-1.5">Yang Kamu Dapatkan &#127873;</p><p class="text-sm font-black text-slate-800">${event.promo_benefit}</p></div>` : ''}
                             `;
                             if (!actionLinks) actionLinks = [{name: 'Lihat Penawaran', url: event.link_url || event.library_url || '#', new_tab: true}];
                         }
@@ -506,34 +453,15 @@
                             `).join('');
                         }
 
-                        // ─── Description text (Instagram/TikTok style with Lihat Selengkapnya) ──
+                        // ─── Description text ──
                         const cleanDesc = (event.description || '').trim();
                         let descHtml = '';
                         if (cleanDesc) {
-                            const isLongDesc = cleanDesc.length > 100;
-                            const shortDesc = isLongDesc ? cleanDesc.slice(0, 95) + '...' : cleanDesc;
-                            const showMoreText = window.currentLocale === 'en' ? 'Show More' : 'Lihat Selengkapnya';
-                            
-                            if (isLongDesc) {
-                                descHtml = `
-                                    <div class="mb-2 sm:mb-3.5 text-[10px] sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere]">
-                                        <div class="desc-box max-h-[45px] sm:max-h-[65px] overflow-hidden transition-all duration-300">
-                                            <span class="desc-short inline">${shortDesc}</span>
-                                            <span class="desc-full hidden whitespace-pre-line">${cleanDesc}</span>
-                                        </div>
-                                        <button type="button" class="desc-toggle-btn text-[#106c38] font-bold hover:underline cursor-pointer inline-flex items-center gap-1 text-[10px] sm:text-xs mt-1 transition-all active:scale-95">
-                                            <span>${showMoreText}</span>
-                                            <i class="ph ph-caret-down text-[10px] sm:text-xs"></i>
-                                        </button>
-                                    </div>
-                                `;
-                            } else {
-                                descHtml = `
-                                    <div class="mb-2 sm:mb-3.5 text-[10px] sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line max-h-[90px] sm:max-h-[140px] overflow-y-auto pr-1 custom-scrollbar">
-                                        ${cleanDesc}
-                                    </div>
-                                `;
-                            }
+                            descHtml = `
+                                <div class="mb-2 sm:mb-3.5 text-[10px] sm:text-[13px] text-slate-700 leading-relaxed text-justify break-words [overflow-wrap:anywhere] whitespace-pre-line">
+                                    ${cleanDesc}
+                                </div>
+                            `;
                         }
 
                         // ─── Direct Link to Informasi Page for this item ───────────────────────
@@ -547,7 +475,7 @@
                             slidesHtml += `
                                 <div class="w-full shrink-0 overflow-hidden relative cursor-pointer group bg-slate-900"
                                      data-type="poster"
-                                     style="width: 100%; flex-shrink: 0; height: calc(95vh - 58px); display: flex; flex-direction: column;"
+                                     style="width: 100%; flex-shrink: 0; height: 100%; display: flex; flex-direction: column;"
                                      onclick="window.location.href='${infoPageUrl}';">
                                     
                                     <!-- FULL-CARD IMAGE CONTAINER -->
@@ -571,9 +499,9 @@
 
                                             <div class="space-y-1.5 pt-4">
                                                 <h3 class="text-white font-black text-base sm:text-lg leading-snug drop-shadow-md line-clamp-2">${event.title}</h3>
-                                                <div class="text-emerald-300 font-bold text-xs flex items-center gap-1.5 pt-0.5">
-                                                    <span>Buka Berita Selengkapnya</span>
-                                                    <i class="ph ph-arrow-right font-bold text-xs group-hover:translate-x-1 transition-transform"></i>
+                                                <div class="text-emerald-300 font-semibold text-[10px] flex items-center gap-1.5 pt-0.5">
+                                                    <span>Klik untuk lebih lanjut</span>
+                                                    <i class="ph ph-arrow-right font-bold text-[10px] group-hover:translate-x-1 transition-transform"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -603,18 +531,15 @@
                             `;
                         } else if (type === 'text') {
                             slidesHtml += `
-                                <a href="${infoPageUrl}" class="w-full shrink-0 h-full overflow-y-auto bg-white cursor-pointer group flex flex-col justify-between p-6 sm:p-8 no-underline text-slate-800 block select-none">
+                                <div onclick="if(!event.target.closest('a') && !event.target.closest('button')) window.location.href='${infoPageUrl}'" class="w-full shrink-0 h-full overflow-y-auto bg-white cursor-pointer group flex flex-col justify-between p-6 sm:p-8 no-underline text-slate-800 block select-none">
                                     <div class="flex-1 flex flex-col justify-start space-y-3">
 
                                         <!-- Category Badge & Direct Link Indicator -->
-                                        <div class="flex items-center justify-between gap-2 mb-2">
+                                        <div class="flex items-center gap-2 mb-2">
                                             <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black uppercase tracking-wide text-[10px] border w-fit ${badgeCls}">
                                                 <i class="ph ${badgeIcon} text-sm"></i>
                                                 <span>${badgeLabel}</span>
                                             </div>
-                                            <span class="text-xs text-[#106c38] font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                                                Lihat Selengkapnya <i class="ph ph-arrow-right font-bold text-xs"></i>
-                                            </span>
                                         </div>
 
                                         <!-- Title -->
@@ -622,35 +547,29 @@
                                             ${event.title}
                                         </h2>
 
-                                        <!-- Description -->
-                                        ${cleanDesc ? `
-                                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed text-justify line-clamp-4">
-                                                ${cleanDesc}
-                                            </p>
-                                        ` : ''}
+                                        <!-- Dynamic Details Layout based on Category -->
+                                        <div class="pt-2 w-full">
+                                            ${detailHtml}
+                                        </div>
 
-                                        <!-- Category Details / Date Info -->
-                                        <div class="pt-2 flex flex-wrap items-center gap-2">
-                                            ${event.start_date ? `
-                                                <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-blue-100">
-                                                    <i class="ph ph-calendar-blank"></i> ${event.start_date ? new Date(event.start_date).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}) : ''}
-                                                </span>
-                                            ` : ''}
-                                            ${event.time ? `
-                                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-[#106c38] text-[11px] font-bold px-2.5 py-1 rounded-lg border border-emerald-100">
-                                                    <i class="ph ph-clock"></i> ${event.time}
-                                                </span>
-                                            ` : ''}
+                                        <!-- Description -->
+                                        <div class="pt-1">
+                                            ${descHtml}
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="pt-3">
+                                            ${actionsHtml}
                                         </div>
 
                                     </div>
 
                                     <!-- Bottom Click Prompt (Covers remaining white space at card bottom) -->
-                                    <div class="pt-5 mt-auto border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-semibold group-hover:text-[#106c38] transition-colors">
-                                        <span>Klik di mana saja untuk melihat detail berita</span>
-                                        <i class="ph ph-caret-right text-sm group-hover:translate-x-1 transition-transform"></i>
+                                    <div class="pt-4 mt-auto border-t border-slate-100 flex items-center justify-end text-[10px] text-slate-400 font-semibold group-hover:text-[#106c38] transition-colors">
+                                        <span>Klik Untuk Selengkapnya..</span>
+                                        <i class="ph ph-caret-right text-[10px] ml-1 group-hover:translate-x-1 transition-transform"></i>
                                     </div>
-                                </a>
+                                </div>
                             `;
                         }
                     });
@@ -660,8 +579,8 @@
                     // Initialize slider
                     initSlider();
 
-                    // Apply poster mode for the first slide immediately
-                    if (loadedEvents.length > 0 && loadedEvents[0].type === 'poster') {
+                    // Apply poster mode for all slides to ensure consistent size
+                    if (loadedEvents.length > 0) {
                         eventContent.classList.add('poster-mode');
                     }
                     // Check if user chose "Jangan tampilkan lagi hari ini" for today
@@ -799,17 +718,8 @@
             }
 
             function updatePosterMode() {
-                // Determine real slide index (accounting for clone padding)
-                let realIdx = slideIndex - 1;
-                if (realIdx < 0) realIdx = totalSlides - 1;
-                if (realIdx >= totalSlides) realIdx = 0;
-                const currentEvent = loadedEvents[realIdx];
-                const isPoster = currentEvent && currentEvent.type === 'poster';
-                if (isPoster) {
-                    eventContent.classList.add('poster-mode');
-                } else {
-                    eventContent.classList.remove('poster-mode');
-                }
+                // Always use poster mode sizing for all slides
+                eventContent.classList.add('poster-mode');
             }
 
             function moveToSlide(index) {
@@ -903,6 +813,7 @@
             eventContent.classList.remove('scale-95', 'opacity-0');
             eventContent.classList.add('scale-100', 'opacity-100');
             document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
         }
 
         function closeEventModal() {
@@ -930,6 +841,7 @@
                 eventModal.classList.remove('flex');
                 eventModal.classList.add('hidden');
                 document.body.style.overflow = '';
+                document.documentElement.style.overflow = '';
             }, 300);
         }
 
@@ -967,7 +879,7 @@
                         shortSpan.classList.remove('hidden');
                         shortSpan.classList.add('inline');
                         if (descBox) {
-                            descBox.classList.add('max-h-[45px]', 'sm:max-h-[65px]', 'overflow-hidden');
+                            descBox.classList.add('max-h-[120px]', 'sm:max-h-[160px]', 'overflow-hidden');
                             descBox.classList.remove('max-h-[3000px]');
                         }
                         toggleBtn.querySelector('span').textContent = window.currentLocale === 'en' ? 'Show More' : 'Lihat Selengkapnya';
@@ -978,7 +890,7 @@
                         fullSpan.classList.remove('hidden');
                         fullSpan.classList.add('inline');
                         if (descBox) {
-                            descBox.classList.remove('max-h-[45px]', 'sm:max-h-[65px]', 'overflow-hidden');
+                            descBox.classList.remove('max-h-[120px]', 'sm:max-h-[160px]', 'overflow-hidden');
                             descBox.classList.add('max-h-[3000px]');
                         }
                         toggleBtn.querySelector('span').textContent = window.currentLocale === 'en' ? 'Show Less' : 'Sembunyikan';

@@ -320,7 +320,17 @@ class BookController extends Controller
     {
         $book = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])->where('idmaster', $id)->firstOrFail();
         
-        return view('detail', compact('book'));
+        $recommendations = null;
+        if (!empty($book->subjek)) {
+            $recommendations = Book::where('subjek', $book->subjek)
+                                   ->where('idmaster', '!=', $id)
+                                   ->paginate(10);
+        } else {
+            // empty paginator fallback
+            $recommendations = Book::where('idmaster', -1)->paginate(10);
+        }
+
+        return view('detail', compact('book', 'recommendations'));
     }
 
     /**

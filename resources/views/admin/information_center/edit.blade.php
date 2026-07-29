@@ -636,7 +636,7 @@
                                                     <span class="text-[10px] font-bold text-emerald-600 mt-0.5 block">Disarankan format Potrait (Rasio 4:5)</span>
                                                 </div>
                                             </div>
-                                            <input type="file" name="images[]" id="image-input" class="hidden" accept="image/jpeg,image/png,image/jpg,image/webp" multiple>
+                                            <input type="file" name="images[]" id="image-input" class="hidden" accept="image/*" multiple>
                                         </label>
                                     </div>
 
@@ -994,6 +994,7 @@
             if (contentContainer) {
                 contentContainer.classList.remove('hidden');
                 contentField.required = true;
+                contentField.disabled = false;
             }
         } else {
             // poster
@@ -1004,10 +1005,10 @@
                 customFieldsCard.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
             }
             if (cardInformasiUtama) {
-                cardInformasiUtama.classList.add('hidden');
-                cardInformasiUtama.querySelectorAll('input, select, textarea').forEach(inp => inp.disabled = true);
+                cardInformasiUtama.classList.remove('hidden');
+                if (titleField) titleField.disabled = false;
             }
-            if (titleField) titleField.required = false;
+            if (titleField) titleField.required = true;
             
             // Require image input ONLY if there's no existing image and it's a poster
             const imageInput = document.getElementById('image-input');
@@ -1019,6 +1020,7 @@
             if (contentContainer) {
                 contentContainer.classList.add('hidden');
                 contentField.required = false;
+                contentField.disabled = true;
             }
         }
     }
