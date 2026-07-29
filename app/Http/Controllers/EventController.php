@@ -97,9 +97,29 @@ class EventController extends Controller
                 return asset($fallbackImages[$fallbackIndex]);
             };
 
+            $hasCustomImage = false;
+            if (!empty($event->image_path)) {
+                $cleanPath = ltrim($event->image_path, '/');
+                if (str_starts_with($cleanPath, 'http')) {
+                    $hasCustomImage = true;
+                } elseif (file_exists(public_path($cleanPath)) && !in_array($cleanPath, $fallbackImages)) {
+                    $hasCustomImage = true;
+                }
+            }
+            if (!$hasCustomImage && is_array($event->images) && count($event->images) > 0) {
+                foreach ($event->images as $img) {
+                    $cImg = ltrim($img, '/');
+                    if (str_starts_with($cImg, 'http') || (file_exists(public_path($cImg)) && !in_array($cImg, $fallbackImages))) {
+                        $hasCustomImage = true;
+                        break;
+                    }
+                }
+            }
+
             return [
                 'id' => $event->id,
                 'type' => $event->type,
+                'has_custom_image' => $hasCustomImage,
                 'title' => $event->title,
                 'category' => $event->category,
                 'description' => $cleanDescription,

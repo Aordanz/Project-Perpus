@@ -65,6 +65,9 @@
         <p class="text-slate-500 text-xs sm:text-sm mt-1">Kelola seluruh informasi perpustakaan yang akan ditampilkan kepada pengguna.</p>
     </div>
     <div class="flex items-center gap-2">
+        <a href="{{ route('informasi') }}" target="_blank" class="px-4 py-2.5 bg-emerald-50 text-[#106c38] hover:bg-emerald-100 font-bold rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 border border-emerald-200">
+            <i class="ph ph-eye font-bold text-base"></i> Preview Sisi User
+        </a>
         <a href="{{ route('admin.information-center.create') }}" class="btn-gold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2">
             <i class="ph ph-plus font-bold"></i> Tambah Informasi
         </a>

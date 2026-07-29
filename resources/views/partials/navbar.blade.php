@@ -21,7 +21,7 @@
                 <a href="{{ route('galeri') }}" class="{{ request()->routeIs('galeri') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Galeri') }}</a>
                 <a href="{{ route('index-judul') }}" class="{{ request()->routeIs('index-judul') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">{{ __('Index Judul') }}</a>
 
-                <a href="#" id="navbar-event-btn" class="text-green-100 font-medium hover:text-white transition pb-1 whitespace-nowrap cursor-pointer">
+                <a href="{{ route('informasi') }}" class="{{ request()->routeIs('informasi') ? 'text-white font-bold border-b-2 border-white' : 'text-green-100 font-medium hover:text-white transition' }} pb-1 whitespace-nowrap">
                     {{ __('Informasi') }}
                 </a>
                 <div class="relative group">
@@ -97,7 +97,7 @@
                     <i class="ph ph-list-bullets text-lg"></i> {{ __('Index Judul') }}
                 </a>
 
-                <a href="#" id="mobile-navbar-event-btn" class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-green-100 hover:text-white hover:bg-white/5 transition cursor-pointer">
+                <a href="{{ route('informasi') }}" class="flex items-center gap-3 px-5 py-3 text-sm font-medium {{ request()->routeIs('informasi') ? 'text-white bg-white/10 font-bold' : 'text-green-100 hover:text-white hover:bg-white/5' }} transition">
                     <i class="ph ph-megaphone text-lg"></i> {{ __('Informasi') }}
                 </a>
 
@@ -194,43 +194,43 @@
 
 <!-- Event Popup Modal -->
 <div id="event-popup-modal" class="fixed inset-0 z-[100] hidden bg-slate-950/60 backdrop-blur-sm overflow-hidden transition-all duration-300 flex items-center justify-center p-4 sm:p-6">
-    <div id="event-popup-content" class="bg-white rounded-3xl shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full max-w-sm flex flex-col" style="max-height: 95vh;">
+    <div id="event-popup-content" class="bg-white rounded-3xl shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full max-w-sm flex flex-col" style="max-height: 92vh;">
         <!-- Close Button (Fixed) -->
         <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-500 bg-slate-100/90 hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/80 hover:scale-105 backdrop-blur-md">
-                <i class="ph ph-x text-lg font-bold"></i>
-            </button>
+            <i class="ph ph-x text-lg font-bold"></i>
+        </button>
 
-            <!-- Slider Track Container (Main Content Area) -->
-            <div id="event-slider-track-wrapper" class="w-full overflow-hidden">
-                <!-- Slides Track -->
-                <div id="event-slider-track" class="flex flex-nowrap will-change-transform">
-                    <!-- Slides will be inserted dynamically -->
-                </div>
-            </div>
-
-            <!-- Global Modal Footer -->
-            <div class="flex flex-row justify-between items-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50 relative overflow-hidden select-none shrink-0 rounded-b-3xl">
-                <!-- Checkbox: Jangan Tampilkan Lagi -->
-                <div class="flex items-center gap-2 z-20">
-                    <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
-                    <label for="global-dont-show-checkbox" class="text-xs text-slate-600 font-semibold cursor-pointer hover:text-slate-800 transition">
-                        {{ __('Jangan tampilkan lagi hari ini') }}
-                    </label>
-                </div>
-
-                <!-- Dynamic Pagination Controls -->
-                <div id="event-pagination-container" class="flex items-center gap-3 z-20 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100 shadow-sm hidden">
-                    <button id="prev-event-btn-floating" type="button" class="w-8 h-8 rounded-full bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white flex items-center justify-center transition-all cursor-pointer hidden shadow border border-[#106c38]/20 group">
-                        <i class="ph ph-caret-left font-bold text-base group-hover:-translate-x-0.5 transition-transform"></i>
-                    </button>
-                    <span id="event-pagination-text" class="text-[13px] font-black text-[#106c38] tracking-widest w-10 text-center">1 / 3</span>
-                    <button id="next-event-btn-floating" type="button" class="w-8 h-8 rounded-full bg-[#106c38] hover:bg-[#0c562c] text-white flex items-center justify-center transition-all cursor-pointer hidden shadow-md shadow-[#106c38]/30 group animate-pulse hover:animate-none">
-                        <i class="ph ph-caret-right font-bold text-base group-hover:translate-x-0.5 transition-transform"></i>
-                    </button>
-                </div>
-
+        <!-- Slider Track Container (Main Content Area) -->
+        <div id="event-slider-track-wrapper" class="w-full overflow-hidden flex-1 min-h-0 flex flex-col">
+            <!-- Slides Track -->
+            <div id="event-slider-track" class="flex flex-nowrap will-change-transform flex-1 min-h-0">
+                <!-- Slides will be inserted dynamically -->
             </div>
         </div>
+
+        <!-- Global Modal Footer -->
+        <div class="flex flex-row justify-between items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3.5 border-t border-slate-100 bg-slate-50/80 backdrop-blur-sm relative select-none shrink-0 rounded-b-3xl">
+            <!-- Checkbox: Jangan Tampilkan Lagi -->
+            <div class="flex items-center gap-2 z-20 shrink-0">
+                <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
+                <label for="global-dont-show-checkbox" class="text-xs text-slate-600 font-semibold cursor-pointer hover:text-slate-800 transition select-none leading-none">
+                    {{ __('Jangan tampilkan lagi hari ini') }}
+                </label>
+            </div>
+
+            <!-- Dynamic Pagination Controls -->
+            <div id="event-pagination-container" class="flex items-center gap-2 z-20 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 shadow-sm hidden shrink-0 whitespace-nowrap">
+                <button id="prev-event-btn-floating" type="button" class="w-7 h-7 rounded-full bg-white hover:bg-[#106c38] text-[#106c38] hover:text-white flex items-center justify-center transition-all cursor-pointer hidden shadow-sm border border-[#106c38]/20 group shrink-0">
+                    <i class="ph ph-caret-left font-bold text-sm group-hover:-translate-x-0.5 transition-transform"></i>
+                </button>
+                <span id="event-pagination-text" class="text-xs font-black text-[#106c38] tracking-wider min-w-[3.25rem] text-center whitespace-nowrap inline-block leading-none">1 / 3</span>
+                <button id="next-event-btn-floating" type="button" class="w-7 h-7 rounded-full bg-[#106c38] hover:bg-[#0c562c] text-white flex items-center justify-center transition-all cursor-pointer hidden shadow-md shadow-[#106c38]/30 group animate-pulse hover:animate-none shrink-0">
+                    <i class="ph ph-caret-right font-bold text-sm group-hover:translate-x-0.5 transition-transform"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 <!-- SweetAlert2 for empty notifications -->
@@ -488,28 +488,53 @@
                             }
                         }
 
+                        // ─── Direct Link to Informasi Page for this item ───────────────────────
+                        const catKey = event.category || 'announcement';
+                        const infoPageUrl = `{{ route('informasi') }}?category=${encodeURIComponent(catKey)}&id=${event.id}`;
+
                         // ─── Slide HTML ────────────────────────────────────────────
-                        const type = event.type || 'poster';
+                        const type = (event.has_custom_image && event.type === 'poster') ? 'poster' : 'text';
                         if (type === 'poster') {
                             slidesHtml += `
-                                <div class="w-full shrink-0 flex flex-col bg-white" data-type="poster">
-                                    <!-- IMAGE ALWAYS 4:5 RATIO -->
-                                    <div class="w-full bg-slate-900 shrink-0" style="aspect-ratio: 4/5; position: relative; overflow: hidden;" id="img-slider-${event.id}">
+                                <div class="w-full shrink-0 flex flex-col bg-slate-900 h-full min-h-0 overflow-hidden relative cursor-pointer group"
+                                     data-type="poster"
+                                     onclick="window.location.href='${infoPageUrl}';">
+                                    
+                                    <!-- FULL-CARD IMAGE CONTAINER (No empty white space) -->
+                                    <div class="w-full h-full relative overflow-hidden flex items-center justify-center" id="img-slider-${event.id}">
                                         ${(event.images_url || [event.image_url]).map((img, idx) => `
                                             <img src="${img}"
                                                  alt="${event.title}"
-                                                 class="absolute inset-0 w-full h-full transition-opacity duration-500 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
-                                                 style="object-fit: ${event.image_fit || 'cover'}; object-position: ${event.image_x !== undefined ? event.image_x : 50}% ${event.image_y !== undefined ? event.image_y : 50}%; transform: scale(${(event.image_scale || 100) / 100});"
+                                                 class="absolute inset-0 w-full h-full transition-all duration-500 group-hover:scale-105 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                                                 style="object-fit: cover; object-position: ${event.image_x !== undefined ? event.image_x : 50}% ${event.image_y !== undefined ? event.image_y : 50}%;"
                                                  loading="lazy"
                                                  id="img-${event.id}-${idx}"
                                                  onerror="this.onerror=null; this.src='${window.assetRoot}perpustakaan_depan.webp';">
                                         `).join('')}
 
+                                        <!-- Gradient Overlay with Category Badge, Title & Direct Link Hint -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-black/30 z-20 flex flex-col justify-between p-5 pointer-events-none">
+                                            <div class="flex items-center justify-between">
+                                                <span class="bg-[#106c38] text-white text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full shadow-md backdrop-blur-sm border border-white/20">
+                                                    ${badgeLabel}
+                                                </span>
+                                            </div>
+
+                                            <div class="space-y-1.5 pt-4">
+                                                <h3 class="text-white font-black text-base sm:text-lg leading-snug drop-shadow-md line-clamp-2">${event.title}</h3>
+                                                <div class="text-emerald-300 font-bold text-xs flex items-center gap-1.5 pt-0.5">
+                                                    <span>Buka Berita Selengkapnya</span>
+                                                    <i class="ph ph-arrow-right font-bold text-xs group-hover:translate-x-1 transition-transform"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <!-- Image Navigation Dots (Only if multiple images) -->
                                         ${(event.images_url && event.images_url.length > 1) ? `
-                                            <div class="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+                                            <div class="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex gap-2" onclick="event.stopPropagation();">
                                                 ${event.images_url.map((_, idx) => `
                                                     <button type="button" onclick="
+                                                        event.stopPropagation();
                                                         const container = document.getElementById('img-slider-${event.id}');
                                                         const images = container.querySelectorAll('img');
                                                         const dots = this.parentElement.querySelectorAll('button');
@@ -536,52 +561,58 @@
                                             </div>
                                         ` : ''}
                                     </div>
-
-                                    <!-- Action Button Area - ALWAYS present, same height for all slides -->
-                                    <div class="shrink-0 bg-white px-4 py-4 border-t border-slate-100">
-                                        ${actionsHtml
-                                            ? `<div class="w-full">${actionsHtml}</div>`
-                                            : `<div class="w-full h-[46px] flex items-center justify-center"><span class="text-[11px] text-slate-300 font-medium tracking-wide">Perpustakaan USU</span></div>`
-                                        }
-                                    </div>
                                 </div>
                             `;
                         } else if (type === 'text') {
                             slidesHtml += `
-                                <div class="w-full shrink-0 h-full overflow-hidden bg-white" data-type="text">
-                                    <div class="flex flex-col h-full items-stretch relative">
-                                        <!-- Scrollable body -->
-                                        <div class="flex-1 overflow-y-auto px-6 sm:px-10 md:px-12 pt-6 sm:pt-8 pb-4 min-h-0 break-words [overflow-wrap:anywhere] custom-scrollbar max-w-4xl mx-auto w-full">
+                                <a href="${infoPageUrl}" class="w-full shrink-0 h-full overflow-y-auto bg-white cursor-pointer group flex flex-col justify-between p-6 sm:p-8 no-underline text-slate-800 block select-none">
+                                    <div class="flex-1 flex flex-col justify-start space-y-3">
 
-                                            <!-- Category Badge -->
-                                            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black uppercase tracking-wide text-[10px] mb-4 border w-fit ${badgeCls}">
+                                        <!-- Category Badge & Direct Link Indicator -->
+                                        <div class="flex items-center justify-between gap-2 mb-2">
+                                            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black uppercase tracking-wide text-[10px] border w-fit ${badgeCls}">
                                                 <i class="ph ${badgeIcon} text-sm"></i>
                                                 <span>${badgeLabel}</span>
                                             </div>
-
-                                            <!-- Title -->
-                                            <h2 class="text-[22px] sm:text-[26px] md:text-[30px] font-black text-slate-900 leading-tight tracking-tight mb-4 break-words [overflow-wrap:anywhere]">
-                                                ${event.title}
-                                            </h2>
-
-                                            <!-- Description -->
-                                            ${descHtml}
-
-                                            <!-- Category Detail -->
-                                            <div class="mt-5">
-                                                ${detailHtml}
-                                            </div>
-
-                                            <!-- Action Buttons -->
-                                            ${actionsHtml ? `
-                                            <div class="mt-8 mb-4 border-t border-slate-100 pt-5">
-                                                <div class="w-full">
-                                                    ${actionsHtml}
-                                                </div>
-                                            </div>` : ''}
+                                            <span class="text-xs text-[#106c38] font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                                Lihat Selengkapnya <i class="ph ph-arrow-right font-bold text-xs"></i>
+                                            </span>
                                         </div>
+
+                                        <!-- Title -->
+                                        <h2 class="text-xl sm:text-2xl font-black text-slate-900 leading-tight tracking-tight break-words group-hover:text-[#106c38] transition-colors">
+                                            ${event.title}
+                                        </h2>
+
+                                        <!-- Description -->
+                                        ${cleanDesc ? `
+                                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed text-justify line-clamp-4">
+                                                ${cleanDesc}
+                                            </p>
+                                        ` : ''}
+
+                                        <!-- Category Details / Date Info -->
+                                        <div class="pt-2 flex flex-wrap items-center gap-2">
+                                            ${event.start_date ? `
+                                                <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-blue-100">
+                                                    <i class="ph ph-calendar-blank"></i> ${event.start_date ? new Date(event.start_date).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}) : ''}
+                                                </span>
+                                            ` : ''}
+                                            ${event.time ? `
+                                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-[#106c38] text-[11px] font-bold px-2.5 py-1 rounded-lg border border-emerald-100">
+                                                    <i class="ph ph-clock"></i> ${event.time}
+                                                </span>
+                                            ` : ''}
+                                        </div>
+
                                     </div>
-                                </div>
+
+                                    <!-- Bottom Click Prompt (Covers remaining white space at card bottom) -->
+                                    <div class="pt-5 mt-auto border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-semibold group-hover:text-[#106c38] transition-colors">
+                                        <span>Klik di mana saja untuk melihat detail berita</span>
+                                        <i class="ph ph-caret-right text-sm group-hover:translate-x-1 transition-transform"></i>
+                                    </div>
+                                </a>
                             `;
                         }
                     });
@@ -1023,8 +1054,8 @@
     });
 </script>
 
-@if(!request()->routeIs('home'))
-<button id="desktop-back-button" onclick="window.history.back();" 
+@if(!request()->routeIs(['home', 'informasi']))
+<button id="desktop-back-button" onclick="window.history.back(); font-bold" 
         class="fixed left-4 lg:left-8 xl:left-12 2xl:left-24 top-28 z-40 hidden md:flex items-center justify-start w-12 hover:w-32 h-12 bg-[#106c38] hover:bg-[#0e5c30] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer select-none group overflow-hidden pl-3.5 border border-transparent"
         title="{{ __('Kembali') }}">
     <div class="flex items-center gap-2.5 whitespace-nowrap">
