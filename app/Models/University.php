@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class University extends Model
 {
+    /** Gunakan database opac_katalog agar tidak mengganggu database OPAC utama server produksi. */
+    protected $connection = 'opac_katalog';
+
     protected $guarded = [];
 
     /**

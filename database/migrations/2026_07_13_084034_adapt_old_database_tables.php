@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /** Migration ini memodifikasi tabel-tabel OPAC lama yang ada di database utama (mysql). */
+    protected $connection = 'mysql';
     /**
      * Run the migrations.
      */

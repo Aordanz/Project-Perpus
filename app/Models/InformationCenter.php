@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class InformationCenter extends Model
 {
+    /** Gunakan database opac_katalog agar tidak mengganggu database OPAC utama server produksi. */
+    protected $connection = 'opac_katalog';
+
     protected $guarded = ['id'];
 
     protected $casts = [

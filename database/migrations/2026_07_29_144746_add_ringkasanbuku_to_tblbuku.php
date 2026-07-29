@@ -6,13 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /** Migration ini memodifikasi tblbuku yang ada di database utama (mysql). */
+    protected $connection = 'mysql';
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::table('tblbuku', function (Blueprint $table) {
-            $table->longText('ringkasanbuku')->nullable()->after('subjek');
+            if (!Schema::hasColumn('tblbuku', 'ringkasanbuku')) {
+                $table->longText('ringkasanbuku')->nullable()->after('subjek');
+            }
         });
     }
 

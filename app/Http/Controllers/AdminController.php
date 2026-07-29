@@ -303,7 +303,7 @@ class AdminController extends Controller implements HasMiddleware
 
             // Validation for dynamic items
             'items.*.barcode'     => 'required|string|unique:tbleksemplar,nomor_eksemplar|max:255',
-            'items.*.location_id' => 'required|exists:locations,id',
+            'items.*.location_id' => 'required|exists:tbllokasi,idlokasi',
             'items.*.type'        => 'required|string|in:STD,KPS',
         ], [
             'items.*.barcode.unique'      => 'Barcode :input sudah digunakan oleh buku lain.',
@@ -437,12 +437,12 @@ class AdminController extends Controller implements HasMiddleware
  
             // Existing items update
             'items.*.barcode'      => 'required|string|max:255',
-            'items.*.location_id'  => 'required|exists:locations,id',
+            'items.*.location_id'  => 'required|exists:tbllokasi,idlokasi',
             'items.*.type'         => 'required|string|in:STD,KPS',
  
             // New items to add
             'new_items.*.barcode'      => 'nullable|string|unique:tbleksemplar,nomor_eksemplar|max:255',
-            'new_items.*.location_id'  => 'nullable|exists:locations,id',
+            'new_items.*.location_id'  => 'nullable|exists:tbllokasi,idlokasi',
             'new_items.*.type'         => 'nullable|string|in:STD,KPS',
         ], [
             'cover_image.image' => 'File sampul buku harus berupa gambar.',
@@ -772,30 +772,19 @@ class AdminController extends Controller implements HasMiddleware
     public function lokasiStore(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|alpha_dash|unique:locations,code|max:255',
+            'name' => 'required|string|unique:tbllokasi,lokasi|max:255',
             'icon' => 'required|string|max:255',
         ], [
-            'code.unique' => 'Kode lokasi sudah terdaftar.',
-            'code.alpha_dash' => 'Kode lokasi hanya boleh berisi huruf, angka, tanda hubung (-), dan garis bawah (_).',
+            'name.unique' => 'Nama lokasi sudah terdaftar.',
+            'name.required' => 'Nama lokasi wajib diisi.',
         ]);
 
         try {
-            // Find current university (usu)
-            $university = \App\Models\University::where('code', 'usu')->first();
-            if (!$university) {
-                $university = \App\Models\University::first();
-            }
-
-            if (!$university) {
-                return redirect()->back()->withErrors(['error' => 'Universitas belum terdaftar di sistem.']);
-            }
-
             Location::create([
-                'university_id' => $university->id,
-                'code' => strtolower($request->code),
-                'name' => $request->name,
+                'lokasi' => $request->name,
                 'icon' => $request->icon,
+                'userinput' => auth()->user()->username ?? 'admin',
+                'tglinput' => now(),
             ]);
 
             return redirect()->route('admin.lokasi.index')
