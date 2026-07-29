@@ -12,8 +12,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;850;900&display=swap" rel="stylesheet">
     
-    <!-- Preload LCP Hero Background -->
-    <link rel="preload" as="image" href="{{ asset('kolam_perpustakaan.webp') }}" fetchpriority="high">
+    <!-- Dynamic Preload LCP Hero Background -->
+    @php
+        $bgFiles = glob(public_path('latarbelakang/*.avif'));
+        natsort($bgFiles);
+        $firstBgName = count($bgFiles) > 0 ? basename(reset($bgFiles)) : '';
+    @endphp
+    @if($firstBgName)
+        <link rel="preload" as="image" href="{{ asset('latarbelakang/' . $firstBgName) }}" fetchpriority="high">
+    @endif
 
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
@@ -253,14 +260,15 @@
         <div class="hero-gradient min-h-[74vh] pt-24 pb-0 relative overflow-hidden flex flex-col justify-start">
         <!-- Background Images Slideshow with Low Opacity Overlay -->
         <div id="hero-bg-slideshow" class="absolute inset-0 z-0">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-100" src="{{ asset('slider1.jpg') }}" fetchpriority="high" alt="Background OPAC USU 1" onerror="this.src='{{ asset('kolam_perpustakaan.webp') }}'">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider2.jpg') }}" alt="Background OPAC USU 2" onerror="this.src='{{ asset('perpustakaan_depan.webp') }}'">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider3.jpg') }}" alt="Background OPAC USU 3" onerror="this.src='{{ asset('perpustakaan_samping.webp') }}'">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider4.jpg') }}" alt="Background OPAC USU 4">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider5.jpg') }}" alt="Background OPAC USU 5">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider6.jpg') }}" alt="Background OPAC USU 6">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider7.jpg') }}" alt="Background OPAC USU 7">
-            <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover opacity-0" src="{{ asset('slider8.jpg') }}" alt="Background OPAC USU 8">
+            @php $firstBg = true; $bgIndex = 1; @endphp
+            @foreach($bgFiles as $bgPath)
+                @php 
+                    $bgName = basename($bgPath); 
+                    $opacity = $firstBg ? 'opacity-100' : 'opacity-0';
+                @endphp
+                <img class="hero-bg-slide absolute inset-0 w-full h-full object-cover {{ $opacity }}" src="{{ asset('latarbelakang/' . $bgName) }}" {!! $firstBg ? 'fetchpriority="high"' : '' !!} alt="Background OPAC USU {{ $bgIndex }}">
+                @php $firstBg = false; $bgIndex++; @endphp
+            @endforeach
             <!-- Dark green static overlay layer to emulate blend and keep it readable but visible -->
             <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/90 via-[#084323]/85 to-[#0c542c]/90 z-10 pointer-events-none"></div>
         </div>
