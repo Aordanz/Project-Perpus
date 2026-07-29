@@ -194,22 +194,22 @@
 
 <!-- Event Popup Modal -->
 <div id="event-popup-modal" class="fixed inset-0 z-[100] hidden bg-slate-950/60 backdrop-blur-sm overflow-hidden transition-all duration-300 flex items-center justify-center p-4 sm:p-6">
-    <div id="event-popup-content" class="bg-white rounded-3xl shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full max-w-sm flex flex-col" style="max-height: 92vh;">
+    <div id="event-popup-content" class="bg-white rounded-3xl shadow-2xl relative overflow-hidden transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full max-w-md flex flex-col" style="max-height: 95vh; min-height: 500px;">
         <!-- Close Button (Fixed) -->
         <button id="close-event-popup" class="absolute top-4 right-4 z-50 text-slate-500 bg-slate-100/90 hover:bg-slate-200 rounded-full p-2 flex items-center justify-center transition cursor-pointer shadow-md border border-slate-200/80 hover:scale-105 backdrop-blur-md">
             <i class="ph ph-x text-lg font-bold"></i>
         </button>
 
         <!-- Slider Track Container (Main Content Area) -->
-        <div id="event-slider-track-wrapper" class="w-full overflow-hidden flex-1 min-h-0 flex flex-col">
+        <div id="event-slider-track-wrapper" class="w-full overflow-hidden flex-1 min-h-0 flex flex-col" style="min-height: 420px;">
             <!-- Slides Track -->
-            <div id="event-slider-track" class="flex flex-nowrap will-change-transform flex-1 min-h-0">
+            <div id="event-slider-track" class="flex flex-nowrap will-change-transform" style="height: 100%; align-items: stretch;">
                 <!-- Slides will be inserted dynamically -->
             </div>
         </div>
 
         <!-- Global Modal Footer -->
-        <div class="flex flex-row justify-between items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3.5 border-t border-slate-100 bg-slate-50/80 backdrop-blur-sm relative select-none shrink-0 rounded-b-3xl">
+        <div id="event-popup-footer" class="flex flex-row justify-between items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3.5 border-t border-slate-100 bg-slate-50/80 backdrop-blur-sm relative select-none shrink-0 rounded-b-3xl transition-all duration-300">
             <!-- Checkbox: Jangan Tampilkan Lagi -->
             <div class="flex items-center gap-2 z-20 shrink-0">
                 <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
@@ -235,6 +235,54 @@
 
 <!-- SweetAlert2 for empty notifications -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+/* Poster full-mode: footer floats over the poster image */
+#event-popup-content.poster-mode {
+    height: 95vh; /* explicit height so children can inherit h-100% */
+}
+#event-popup-content.poster-mode #event-slider-track-wrapper {
+    height: calc(95vh - 58px); /* subtract footer height */
+    min-height: unset;
+    flex: none;
+}
+#event-popup-content.poster-mode #event-slider-track {
+    height: 100%;
+}
+#event-popup-content.poster-mode #event-popup-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    border-radius: 0 0 1.5rem 1.5rem;
+}
+#event-popup-content.poster-mode #event-popup-footer label,
+#event-popup-content.poster-mode #event-popup-footer span {
+    color: rgba(255,255,255,0.85);
+}
+#event-popup-content.poster-mode #event-popup-footer input[type="checkbox"] {
+    border-color: rgba(255,255,255,0.5);
+}
+#event-popup-content.poster-mode #event-popup-footer #event-pagination-container {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.2);
+}
+#event-popup-content.poster-mode #event-popup-footer #event-pagination-text {
+    color: #ffffff;
+}
+#event-popup-content.poster-mode #event-popup-footer #prev-event-btn-floating {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.3);
+    color: #ffffff;
+}
+#event-popup-content.poster-mode #event-popup-footer #next-event-btn-floating {
+    background: rgba(16,108,56,0.85);
+}
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -493,20 +541,21 @@
                         const infoPageUrl = `{{ route('informasi') }}?category=${encodeURIComponent(catKey)}&id=${event.id}`;
 
                         // ─── Slide HTML ────────────────────────────────────────────
-                        const type = (event.has_custom_image && event.type === 'poster') ? 'poster' : 'text';
+                        // Use event.type from DB directly — if admin saved it as 'poster', show poster mode
+                        const type = (event.type === 'poster') ? 'poster' : 'text';
                         if (type === 'poster') {
                             slidesHtml += `
-                                <div class="w-full shrink-0 flex flex-col bg-slate-900 h-full min-h-0 overflow-hidden relative cursor-pointer group"
+                                <div class="w-full shrink-0 overflow-hidden relative cursor-pointer group bg-slate-900"
                                      data-type="poster"
+                                     style="width: 100%; flex-shrink: 0; height: calc(95vh - 58px); display: flex; flex-direction: column;"
                                      onclick="window.location.href='${infoPageUrl}';">
                                     
-                                    <!-- FULL-CARD IMAGE CONTAINER (No empty white space) -->
-                                    <div class="w-full h-full relative overflow-hidden flex items-center justify-center" id="img-slider-${event.id}">
+                                    <!-- FULL-CARD IMAGE CONTAINER -->
+                                    <div style="position: relative; width: 100%; height: 100%; overflow: hidden;" id="img-slider-${event.id}">
                                         ${(event.images_url || [event.image_url]).map((img, idx) => `
                                             <img src="${img}"
                                                  alt="${event.title}"
-                                                 class="absolute inset-0 w-full h-full transition-all duration-500 group-hover:scale-105 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
-                                                 style="object-fit: cover; object-position: ${event.image_x !== undefined ? event.image_x : 50}% ${event.image_y !== undefined ? event.image_y : 50}%;"
+                                                 style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: ${event.image_x !== undefined ? event.image_x : 50}% ${event.image_y !== undefined ? event.image_y : 50}%; transition: opacity 0.5s, transform 0.5s; opacity: ${idx === 0 ? '1' : '0'}; z-index: ${idx === 0 ? '10' : '0'};"
                                                  loading="lazy"
                                                  id="img-${event.id}-${idx}"
                                                  onerror="this.onerror=null; this.src='${window.assetRoot}perpustakaan_depan.webp';">
@@ -539,24 +588,13 @@
                                                         const images = container.querySelectorAll('img');
                                                         const dots = this.parentElement.querySelectorAll('button');
                                                         images.forEach((img, i) => {
-                                                            if (i === ${idx}) {
-                                                                img.classList.remove('opacity-0', 'z-0');
-                                                                img.classList.add('opacity-100', 'z-10');
-                                                            } else {
-                                                                img.classList.add('opacity-0', 'z-0');
-                                                                img.classList.remove('opacity-100', 'z-10');
-                                                            }
+                                                            img.style.opacity = (i === ${idx}) ? '1' : '0';
+                                                            img.style.zIndex = (i === ${idx}) ? '10' : '0';
                                                         });
                                                         dots.forEach((dot, i) => {
-                                                            if (i === ${idx}) {
-                                                                dot.classList.add('bg-white', 'scale-110');
-                                                                dot.classList.remove('bg-white/50');
-                                                            } else {
-                                                                dot.classList.remove('bg-white', 'scale-110');
-                                                                dot.classList.add('bg-white/50');
-                                                            }
+                                                            dot.style.background = (i === ${idx}) ? 'white' : 'rgba(255,255,255,0.5)';
                                                         });
-                                                    " class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/75'}"></button>
+                                                    " style="width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;transition:all 0.3s;background:${idx === 0 ? 'white' : 'rgba(255,255,255,0.5)'}; transform: ${idx === 0 ? 'scale(1.1)' : 'scale(1)'}; padding:0;"></button>
                                                 `).join('')}
                                             </div>
                                         ` : ''}
@@ -622,6 +660,10 @@
                     // Initialize slider
                     initSlider();
 
+                    // Apply poster mode for the first slide immediately
+                    if (loadedEvents.length > 0 && loadedEvents[0].type === 'poster') {
+                        eventContent.classList.add('poster-mode');
+                    }
                     // Check if user chose "Jangan tampilkan lagi hari ini" for today
                     const todayString = new Date().toDateString();
                     let hideToday = false;
@@ -756,6 +798,20 @@
                 paginationText.textContent = `${displayIndex} / ${totalSlides}`;
             }
 
+            function updatePosterMode() {
+                // Determine real slide index (accounting for clone padding)
+                let realIdx = slideIndex - 1;
+                if (realIdx < 0) realIdx = totalSlides - 1;
+                if (realIdx >= totalSlides) realIdx = 0;
+                const currentEvent = loadedEvents[realIdx];
+                const isPoster = currentEvent && currentEvent.type === 'poster';
+                if (isPoster) {
+                    eventContent.classList.add('poster-mode');
+                } else {
+                    eventContent.classList.remove('poster-mode');
+                }
+            }
+
             function moveToSlide(index) {
                 if (isTransitioning) return;
                 isTransitioning = true;
@@ -763,6 +819,7 @@
                 sliderTrack.style.transition = 'transform 650ms cubic-bezier(0.25, 1, 0.5, 1)';
                 sliderTrack.style.transform = `translateX(-${slideIndex * 100}%)`;
                 updatePagination();
+                updatePosterMode();
             }
 
             prevBtn.onclick = function(e) {
@@ -786,10 +843,12 @@
                     sliderTrack.style.transition = 'none';
                     slideIndex = totalSlides;
                     sliderTrack.style.transform = `translateX(-${slideIndex * 100}%)`;
+                    updatePosterMode();
                 } else if (slideIndex === totalSlides + 1) {
                     sliderTrack.style.transition = 'none';
                     slideIndex = 1;
                     sliderTrack.style.transform = `translateX(-${slideIndex * 100}%)`;
+                    updatePosterMode();
                 }
             });
 

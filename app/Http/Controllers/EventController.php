@@ -34,7 +34,7 @@ class EventController extends Controller
                 if (is_string($raw) && (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))) {
                     $decoded = json_decode($raw, true);
                     if (is_array($decoded)) {
-                        if (isset($decoded['description'])) {
+                        if (array_key_exists('description', $decoded)) {
                             return $unwrapText($decoded['description']);
                         }
                     }
@@ -43,7 +43,7 @@ class EventController extends Controller
             };
 
             $descriptionRaw = $unwrapText($event->content);
-            if (empty($descriptionRaw) && $isJson && isset($contentDecoded['description'])) {
+            if (empty($descriptionRaw) && $isJson && array_key_exists('description', $contentDecoded)) {
                 $descriptionRaw = $unwrapText($contentDecoded['description']);
             }
             $cleanDescription = trim(strip_tags($descriptionRaw));
@@ -140,11 +140,11 @@ class EventController extends Controller
                 'end_date' => $event->publish_end_at ? $event->publish_end_at->toIso8601String() : null,
                 
                 // Fields Kategori Event
-                'time' => $isJson ? ($contentDecoded['time'] ?? '08.00 - 16.00 WIB') : '08.00 - 16.00 WIB',
-                'location' => $isJson ? ($contentDecoded['location'] ?? 'Gedung UPT Perpustakaan USU') : 'Gedung UPT Perpustakaan USU',
-                'organizer' => $isJson ? ($contentDecoded['organizer'] ?? 'UPT Perpustakaan Universitas Sumatera Utara') : 'UPT Perpustakaan Universitas Sumatera Utara',
-                'participants' => $isJson ? ($contentDecoded['participants'] ?? 'Civitas Akademika USU & Umum') : 'Civitas Akademika USU & Umum',
-                'facilities' => $isJson ? ($contentDecoded['facilities'] ?? 'Ilmu Bermanfaat, E-Sertifikat') : 'Ilmu Bermanfaat, E-Sertifikat',
+                'time' => ($isJson && !empty($contentDecoded['time'])) ? $contentDecoded['time'] : null,
+                'location' => ($isJson && !empty($contentDecoded['location'])) ? $contentDecoded['location'] : null,
+                'organizer' => ($isJson && !empty($contentDecoded['organizer'])) ? $contentDecoded['organizer'] : null,
+                'participants' => ($isJson && !empty($contentDecoded['participants'])) ? $contentDecoded['participants'] : null,
+                'facilities' => ($isJson && !empty($contentDecoded['facilities'])) ? $contentDecoded['facilities'] : null,
                 'left_features' => ($isJson && is_array($contentDecoded['left_features'] ?? null)) ? $contentDecoded['left_features'] : [],
                 
                 // Fields Kategori Maintenance
