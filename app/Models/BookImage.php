@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class BookImage extends Model
 {
     use HasFactory;
-    
+
+    /** Gunakan database opac_katalog agar tidak mengganggu database OPAC utama server produksi. */
+    protected $connection = 'opac_katalog';
+
     protected $table = 'galeri_buku';
 
     protected $fillable = [
@@ -18,6 +21,6 @@ class BookImage extends Model
 
     public function book()
     {
-        return $this->belongsTo(Book::class, 'book_id', 'idbuku');
+        return $this->belongsTo(Book::class, 'book_id', 'idmaster');
     }
 }

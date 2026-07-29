@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /** Tabel ini masuk ke database opac_katalog, bukan database OPAC utama. */
+    protected $connection = 'opac_katalog';
     /**
      * Run the migrations.
      */

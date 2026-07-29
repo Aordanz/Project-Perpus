@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    /** Migration ini memodifikasi tbluser yang ada di database utama (mysql). */
+    protected $connection = 'mysql';
     /**
      * Menambahkan kolom-kolom yang dibutuhkan Laravel Auth ke tbluser
      * TANPA menghapus atau mengubah kolom yang sudah ada.

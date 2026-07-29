@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /** Tabel ini masuk ke database opac_katalog, bukan database OPAC utama. */
+    protected $connection = 'opac_katalog';
     /**
      * Run the migrations.
      */
@@ -13,7 +15,10 @@ return new class extends Migration
     {
         Schema::create('book_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
+            // Tidak menggunakan foreignId->constrained() karena tabel books (tblbuku)
+            // ada di database OPAC utama, bukan di opac_katalog.
+            // Gunakan unsignedBigInteger biasa untuk menyimpan referensi cross-database.
+            $table->unsignedBigInteger('book_id')->index();
             $table->string('image_path');
             $table->timestamps();
         });
