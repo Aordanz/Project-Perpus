@@ -244,6 +244,10 @@
 
     @include('partials.navbar')
 
+    {{-- ══════════════════════════════════════════════════
+         INFORMATION POP-UP MODAL (Auto-show on page load)
+         Poster ratio: 4:5  |  "Jangan tampilkan hari ini"
+    ══════════════════════════════════════════════════ --}}
     <main>
         <!-- Hero Section -->
         <div class="hero-gradient min-h-[74vh] pt-24 pb-0 relative overflow-hidden flex flex-col justify-start">
