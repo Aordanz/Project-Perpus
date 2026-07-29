@@ -119,13 +119,12 @@ class UserInformationController extends Controller
             $isJson = is_array($contentDecoded);
 
             $descriptionRaw = $unwrapText($item->content);
-            if (empty($descriptionRaw) && $isJson && isset($contentDecoded['description'])) {
+            if (empty($descriptionRaw) && $isJson && array_key_exists('description', $contentDecoded)) {
                 $descriptionRaw = $unwrapText($contentDecoded['description']);
             }
             $cleanDescription = trim(strip_tags($descriptionRaw));
-            if (empty($cleanDescription)) {
-                $cleanDescription = 'Informasi resmi dari UPT Perpustakaan Universitas Sumatera Utara. Silakan hubungi layanan perpustakaan atau kunjungi gedung perpustakaan untuk informasi selengkapnya.';
-            }
+            // NOTE: Do NOT set a fallback description here.
+            // Poster items (image_only) intentionally have no description.
 
             // Parse tips bullets
             $tipsBullets = [];
@@ -173,14 +172,21 @@ class UserInformationController extends Controller
             $hasCustomImage = false;
             if (!empty($item->image_path)) {
                 $cleanPath = ltrim($item->image_path, '/');
-                if (str_starts_with($cleanPath, 'storage/') || str_starts_with($cleanPath, 'http') || !in_array($cleanPath, $fallbackImages)) {
+                if (str_starts_with($cleanPath, 'http')) {
+                    // External URL, always treat as custom image
+                    $hasCustomImage = true;
+                } elseif (!in_array($cleanPath, $fallbackImages) && file_exists(public_path($cleanPath))) {
+                    // Local file that actually exists on disk
                     $hasCustomImage = true;
                 }
             }
             if (!$hasCustomImage && is_array($item->images) && count($item->images) > 0) {
                 foreach ($item->images as $img) {
                     $cImg = ltrim($img, '/');
-                    if (str_starts_with($cImg, 'storage/') || str_starts_with($cImg, 'http') || !in_array($cImg, $fallbackImages)) {
+                    if (str_starts_with($cImg, 'http')) {
+                        $hasCustomImage = true;
+                        break;
+                    } elseif (!in_array($cImg, $fallbackImages) && file_exists(public_path($cImg))) {
                         $hasCustomImage = true;
                         break;
                     }

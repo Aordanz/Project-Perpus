@@ -886,11 +886,11 @@
     </main>
 
     {{-- LIGHTBOX MODAL FOR FULL-SIZE POSTER VIEWING --}}
-    <div id="poster-lightbox">
+    <div id="poster-lightbox" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.9); align-items:center; justify-content:center;">
         <button id="close-lightbox-btn" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/20 hover:bg-white text-white hover:text-black flex items-center justify-center text-xl transition cursor-pointer">
             <i class="ph ph-x"></i>
         </button>
-        <img id="poster-lightbox-img" src="" alt="Poster Preview Full">
+        <img id="poster-lightbox-img" src="" alt="" style="max-width:90vw; max-height:90vh; object-fit:contain; border-radius:12px; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
     </div>
 
     @include('partials.footer')
@@ -937,11 +937,15 @@
             const imgSrc = srcUrl || document.getElementById('detail-image')?.src;
             if (imgSrc && lightboxImg) {
                 lightboxImg.src = imgSrc;
-                lightbox.classList.add('active');
+                lightbox.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
             }
         }
         function closeLightbox() {
-            if (lightbox) lightbox.classList.remove('active');
+            if (lightbox) {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = '';
+            }
         }
 
         if (posterTrigger) posterTrigger.addEventListener('click', () => openLightbox());
