@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link class="flex-shrink-0" rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-    <title>Tambah Cover - Portal Admin OPAC USU</title>
+    <title>Tambah Ringkasan Buku - Portal Admin OPAC USU</title>
 
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -140,10 +140,10 @@
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
                     <div>
                         <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-                            <i class="ph ph-image-plus text-usu-green text-3xl"></i>
-                            <span>Tambah Cover Buku</span>
+                            <i class="ph ph-text-t text-usu-green text-3xl"></i>
+                            <span>Tambah Ringkasan Buku</span>
                         </h1>
-                        <p class="text-slate-500 text-xs sm:text-sm mt-1">Pilih buku di bawah ini untuk menambahkan atau mengubah gambar sampul (cover) buku.</p>
+                        <p class="text-slate-500 text-xs sm:text-sm mt-1">Pilih buku di bawah ini untuk menambahkan atau mengubah ringkasan buku.</p>
                     </div>
                 </div>
 
@@ -192,11 +192,11 @@
                                     <button type="button" id="cover-filter-trigger" class="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none transition-all duration-200 focus:border-usu-green focus:ring-4 focus:ring-[#106c38]/10 cursor-pointer shadow-sm">
                                         <span class="flex items-center gap-2" id="cover-filter-label">
                                             @if(request('cover_filter') == 'no_cover')
-                                                <i class="ph ph-image-square text-rose-500 text-lg"></i>
-                                                <span>Belum Ada Cover</span>
+                                                <i class="ph ph-file-x text-rose-500 text-lg"></i>
+                                                <span>Belum Ada Ringkasan</span>
                                             @elseif(request('cover_filter') == 'has_cover')
-                                                <i class="ph ph-check-square text-emerald-500 text-lg"></i>
-                                                <span>Sudah Ada Cover</span>
+                                                <i class="ph ph-file-text text-emerald-500 text-lg"></i>
+                                                <span>Sudah Ada Ringkasan</span>
                                             @else
                                                 <i class="ph ph-books text-blue-500 text-lg"></i>
                                                 <span>Semua Buku</span>
@@ -218,24 +218,24 @@
                                             <i class="ph ph-check text-usu-green font-bold {{ request('cover_filter', 'all') == 'all' ? '' : 'hidden' }} option-check"></i>
                                         </button>
 
-                                        <!-- Option 2: Belum Ada Cover -->
+                                        <!-- Option 2: Belum Ada Ringkasan -->
                                         <button type="button" class="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 text-slate-700 font-semibold text-sm transition-colors cursor-pointer border-none bg-transparent" data-value="no_cover">
                                             <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center">
-                                                <i class="ph ph-image-square text-lg"></i>
+                                                <i class="ph ph-file-x text-lg"></i>
                                             </div>
                                             <div class="flex-grow">
-                                                <span class="block">Belum Ada Cover</span>
+                                                <span class="block">Belum Ada Ringkasan</span>
                                             </div>
                                             <i class="ph ph-check text-usu-green font-bold {{ request('cover_filter', 'all') == 'no_cover' ? '' : 'hidden' }} option-check"></i>
                                         </button>
 
-                                        <!-- Option 3: Sudah Ada Cover -->
+                                        <!-- Option 3: Sudah Ada Ringkasan -->
                                         <button type="button" class="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 text-slate-700 font-semibold text-sm transition-colors cursor-pointer border-none bg-transparent" data-value="has_cover">
                                             <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center">
-                                                <i class="ph ph-check-square text-lg"></i>
+                                                <i class="ph ph-file-text text-lg"></i>
                                             </div>
                                             <div class="flex-grow">
-                                                <span class="block">Sudah Ada Cover</span>
+                                                <span class="block">Sudah Ada Ringkasan</span>
                                             </div>
                                             <i class="ph ph-check text-usu-green font-bold {{ request('cover_filter', 'all') == 'has_cover' ? '' : 'hidden' }} option-check"></i>
                                         </button>
@@ -258,7 +258,7 @@
 
                                 <!-- Large Search Input -->
                                 <div class="w-full sm:w-72">
-                                    <form id="admin-search-form" action="{{ route('admin.tambah-cover') }}" method="GET" class="relative flex items-center w-full">
+                                    <form id="admin-search-form" action="{{ route('admin.tambah-ringkasan') }}" method="GET" class="relative flex items-center w-full">
                                         <input type="hidden" name="limit" id="admin-limit-select" value="{{ request('limit', 10) }}">
                                         <div class="absolute left-3.5 text-slate-400">
                                             <i class="ph ph-magnifying-glass text-lg"></i>
@@ -653,11 +653,10 @@
 
             // Show Modal
             modal.classList.remove('hidden');
-            setTimeout(() => {
-                card.classList.remove('scale-95', 'opacity-0');
-                card.classList.add('scale-100', 'opacity-100');
-            }, 10);
-            
+            modal.offsetHeight; // force reflow
+            card.classList.remove('scale-95', 'opacity-0');
+            card.classList.add('scale-100', 'opacity-100');
+
             // Prevent body scroll
             document.body.classList.add('overflow-hidden');
         };
@@ -1095,5 +1094,100 @@
             </div>
         </div>
     </div>
+    <!-- Edit Ringkasan Modal -->
+    <div id="edit-ringkasan-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeEditRingkasanModal()"></div>
+        
+        <!-- Modal Content Card -->
+        <div class="relative bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 transform transition-all scale-95 opacity-0 duration-200" id="edit-ringkasan-card">
+            <div class="flex flex-col">
+                <!-- Header -->
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="ph ph-text-t text-usu-green text-2xl"></i>
+                        <span id="modal-ringkasan-title">Tambah/Ubah Ringkasan</span>
+                    </h3>
+                    <button type="button" onclick="closeEditRingkasanModal()" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition flex items-center justify-center border-none cursor-pointer">
+                        <i class="ph ph-x text-lg"></i>
+                    </button>
+                </div>
+                
+                <!-- Form -->
+                <form id="modal-ringkasan-form" action="" method="POST" class="mt-4 flex flex-col gap-4">
+                    @csrf
+                    @method('PUT')
+                    
+                    <!-- Book Information Info Card -->
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Buku yang Dipilih</span>
+                        <h4 id="modal-book-title-display" class="text-sm font-bold text-slate-800 mt-1 leading-snug"></h4>
+                        <span id="modal-book-author-display" class="text-xs text-slate-500 font-medium mt-0.5 block"></span>
+                    </div>
+
+                    <!-- Ringkasan Textarea -->
+                    <div class="flex flex-col gap-1.5 flex-grow">
+                        <label class="text-[11px] font-bold text-slate-500 uppercase">Teks Ringkasan</label>
+                        <textarea name="ringkasanbuku" id="modal-ringkasan-input" rows="10" 
+                            class="w-full text-sm text-slate-700 bg-slate-50 border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-[#106c38]/20 focus:border-[#106c38] transition resize-y"
+                            placeholder="Tuliskan ringkasan buku di sini..."></textarea>
+                        <p class="text-[10px] text-slate-400 mt-1">Masukkan teks yang akan ditampilkan di tab Ringkasan Buku pada halaman detail buku.</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center gap-3 mt-2 pt-4 border-t border-slate-100">
+                        <button type="button" onclick="closeEditRingkasanModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-xs border-none cursor-pointer">
+                            Batal
+                        </button>
+                        <button type="submit" class="flex-1 bg-[#106c38] hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition text-xs border-none cursor-pointer shadow-md shadow-green-100 flex items-center justify-center gap-1.5">
+                            <i class="ph ph-floppy-disk text-base"></i> Simpan Ringkasan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.openEditRingkasanModal = function(button) {
+            const id = button.getAttribute('data-id');
+            const title = button.getAttribute('data-title');
+            const author = button.getAttribute('data-author');
+            const ringkasan = button.getAttribute('data-ringkasan');
+            
+            document.getElementById('modal-book-title-display').innerText = title || "-";
+            document.getElementById('modal-book-author-display').innerText = author || "-";
+            document.getElementById('modal-ringkasan-input').value = ringkasan || "";
+            
+            document.getElementById('modal-ringkasan-form').action = `/admin/books/${id}/ringkasan`;
+            
+            const modal = document.getElementById('edit-ringkasan-modal');
+            const card = document.getElementById('edit-ringkasan-card');
+            
+            modal.classList.remove('hidden');
+            modal.offsetHeight; // force reflow
+            
+            card.classList.remove('scale-95', 'opacity-0');
+            card.classList.add('scale-100', 'opacity-100');
+            
+            // Prevent body scroll
+            document.body.classList.add('overflow-hidden');
+        };
+
+        window.closeEditRingkasanModal = function() {
+            const modal = document.getElementById('edit-ringkasan-modal');
+            const card = document.getElementById('edit-ringkasan-card');
+            
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            
+            // Re-enable body scroll
+            document.body.classList.remove('overflow-hidden');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        };
+    </script>
 </body>
 </html>

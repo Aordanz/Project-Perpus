@@ -56,27 +56,43 @@
                     <!-- Actions -->
                     <td class="px-5 py-4 text-center">
                         @php
-                            $additionalImages = $book->images->pluck('image_path')->map(function($path) {
-                                return asset('covers/' . $path);
-                            })->toArray();
+                            $actionType = $actionType ?? 'cover'; // Default to cover for fallback
                         @endphp
+                        
                         <div class="flex items-center justify-center gap-2">
-                            @if($book->cover_image)
-                                <button type="button" onclick="openUploadCoverModal(this)" data-id="{{ $book->id }}" data-title="{{ $book->title }}" data-author="{{ $book->author }}" data-cover="{{ asset('covers/' . $book->cover_image) }}" data-additional="{{ json_encode($additionalImages) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition inline-flex items-center gap-1.5 shadow-sm border-none cursor-pointer">
-                                    <i class="ph ph-pencil-simple font-bold text-sm"></i> Ubah Cover
-                                </button>
-                                
-                                <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" onclick="confirmDeleteCover(this)" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition inline-flex items-center gap-1.5 shadow-sm border-none cursor-pointer">
-                                        <i class="ph ph-trash font-bold text-sm"></i> Hapus Cover
+                            @if($actionType === 'cover')
+                                @php
+                                    $additionalImages = $book->images->pluck('image_path')->map(function($path) {
+                                        return asset('covers/' . $path);
+                                    })->toArray();
+                                @endphp
+                                @if($book->cover_image)
+                                    <button type="button" onclick="openUploadCoverModal(this)" data-id="{{ $book->id }}" data-title="{{ $book->title }}" data-author="{{ $book->author }}" data-cover="{{ asset('covers/' . $book->cover_image) }}" data-additional="{{ json_encode($additionalImages) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition inline-flex items-center gap-1.5 shadow-sm border-none cursor-pointer">
+                                        <i class="ph ph-pencil-simple font-bold text-sm"></i> Ubah Cover
                                     </button>
-                                </form>
-                            @else
-                                <button type="button" onclick="openUploadCoverModal(this)" data-id="{{ $book->id }}" data-title="{{ $book->title }}" data-author="{{ $book->author }}" data-cover="" data-additional="{{ json_encode($additionalImages) }}" class="bg-[#106c38] hover:bg-green-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition inline-flex items-center gap-1.5 shadow-sm border-none cursor-pointer">
-                                    <i class="ph ph-plus-circle font-bold text-sm"></i> Tambah Cover
-                                </button>
+                                    
+                                    <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" onclick="confirmDeleteCover(this)" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition inline-flex items-center gap-1.5 shadow-sm border-none cursor-pointer">
+                                            <i class="ph ph-trash font-bold text-sm"></i> Hapus Cover
+                                        </button>
+                                    </form>
+                                @else
+                                    <button type="button" onclick="openUploadCoverModal(this)" data-id="{{ $book->id }}" data-title="{{ $book->title }}" data-author="{{ $book->author }}" data-cover="" data-additional="{{ json_encode($additionalImages) }}" class="bg-[#106c38] hover:bg-green-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition inline-flex items-center gap-1.5 shadow-sm border-none cursor-pointer">
+                                        <i class="ph ph-plus-circle font-bold text-sm"></i> Tambah Cover
+                                    </button>
+                                @endif
+                            @elseif($actionType === 'ringkasan')
+                                @if($book->ringkasanbuku)
+                                    <button type="button" onclick="openEditRingkasanModal(this)" data-id="{{ $book->id }}" data-title="{{ $book->title }}" data-author="{{ $book->author }}" data-ringkasan="{{ $book->ringkasanbuku }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition inline-flex items-center gap-1.5 shadow-sm border-none cursor-pointer">
+                                        <i class="ph ph-pencil-simple font-bold text-sm"></i> Ubah Teks
+                                    </button>
+                                @else
+                                    <button type="button" onclick="openEditRingkasanModal(this)" data-id="{{ $book->id }}" data-title="{{ $book->title }}" data-author="{{ $book->author }}" data-ringkasan="" class="bg-[#106c38] hover:bg-green-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition inline-flex items-center gap-1.5 shadow-sm border-none cursor-pointer">
+                                        <i class="ph ph-text-t font-bold text-sm"></i> Tambah Teks
+                                    </button>
+                                @endif
                             @endif
                         </div>
                     </td>

@@ -641,7 +641,7 @@
 
                 // Prev Page Button
                 const prevBtn = document.createElement('button');
-                prevBtn.className = `p-2 sm:px-3.5 sm:py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38] transition text-xs font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:pointer-events-none flex-shrink-0`;
+                prevBtn.className = `p-2 sm:px-4 sm:py-2 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-800 hover:shadow-sm transition-all ease-in-out duration-200 text-sm font-semibold flex items-center gap-1 sm:gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none flex-shrink-0 disabled:border-slate-200 disabled:bg-transparent disabled:text-slate-400 select-none`;
                 prevBtn.innerHTML = `<i class="ph ph-caret-left text-base sm:text-sm"></i> <span class="hidden sm:inline">{{ __('Sebelumnya') }}</span>`;
                 prevBtn.disabled = (currentPage === 1);
                 prevBtn.addEventListener('click', () => {
@@ -664,10 +664,10 @@
                 for (let i = mStart; i <= mEnd; i++) {
                     const pageBtn = document.createElement('button');
                     const isActive = (i === currentPage);
-                    pageBtn.className = `w-8 h-8 rounded-full border transition text-xs font-bold flex items-center justify-center cursor-pointer ${
+                    pageBtn.className = `w-8 h-8 sm:w-10 sm:h-10 rounded-full transition-all text-sm flex items-center justify-center cursor-pointer select-none ${
                         isActive 
-                            ? 'bg-[#106c38] border-[#106c38] text-white shadow-sm' 
-                            : 'border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38]'
+                            ? 'bg-[#106c38] text-white font-bold shadow-md' 
+                            : 'bg-transparent text-slate-600 font-semibold hover:bg-[#106c38]/10 hover:text-[#106c38]'
                     }`;
                     pageBtn.textContent = i;
                     pageBtn.addEventListener('click', () => {
@@ -690,10 +690,10 @@
                     if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
                         const pageBtn = document.createElement('button');
                         const isActive = (i === currentPage);
-                        pageBtn.className = `w-8 h-8 rounded-full border transition text-xs font-bold flex items-center justify-center cursor-pointer ${
+                        pageBtn.className = `w-8 h-8 sm:w-10 sm:h-10 rounded-full transition-all text-sm flex items-center justify-center cursor-pointer select-none ${
                             isActive 
-                                ? 'bg-[#106c38] border-[#106c38] text-white shadow-sm' 
-                                : 'border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38]'
+                                ? 'bg-[#106c38] text-white font-bold shadow-md' 
+                                : 'bg-transparent text-slate-600 font-semibold hover:bg-[#106c38]/10 hover:text-[#106c38]'
                         }`;
                         pageBtn.textContent = i;
                         pageBtn.addEventListener('click', () => {
@@ -716,7 +716,7 @@
 
                 // Next Page Button
                 const nextBtn = document.createElement('button');
-                nextBtn.className = `p-2 sm:px-3.5 sm:py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-[#106c38] hover:text-[#106c38] transition text-xs font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:pointer-events-none flex-shrink-0`;
+                nextBtn.className = `p-2 sm:px-4 sm:py-2 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-800 hover:shadow-sm transition-all ease-in-out duration-200 text-sm font-semibold flex items-center gap-1 sm:gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none flex-shrink-0 disabled:border-slate-200 disabled:bg-transparent disabled:text-slate-400 select-none`;
                 nextBtn.innerHTML = `<span class="hidden sm:inline">{{ __('Berikutnya') }}</span> <i class="ph ph-caret-right text-base sm:text-sm"></i>`;
                 nextBtn.disabled = (currentPage === totalPages);
                 nextBtn.addEventListener('click', () => {

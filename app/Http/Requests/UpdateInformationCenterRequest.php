@@ -39,10 +39,10 @@ class UpdateInformationCenterRequest extends FormRequest
             })->count();
         $maxSortOrder = max(1, $activeCount);
         return [
-            'title' => 'required_if:type,text|nullable|string|max:255',
+            'title' => 'required|string|max:255',
             'content' => 'required_if:type,text|nullable|string',
             'category' => 'required|in:event,announcement,book_recommendation,tips,library_news',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:20480',
+            'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,avif,gif,svg,bmp,heic|max:20480',
             'image_fit' => 'nullable|in:cover,contain,fill',
             'image_position' => 'nullable|in:center,top,bottom',
             'image_scale' => 'nullable|integer|min:50|max:300',
@@ -131,7 +131,7 @@ class UpdateInformationCenterRequest extends FormRequest
             'sort_order.integer' => 'Urutan pengurutan harus berupa angka bulat.',
             'sort_order.max' => 'Urutan pengurutan tidak boleh lebih dari jumlah maksimal informasi yang tersedia.',
             'images.*.image' => 'File yang diunggah harus berupa gambar.',
-            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, webp, avif, gif, svg, bmp, atau heic.',
             'images.*.max' => 'Ukuran gambar tidak boleh melebihi 20MB.',
             'images.*.dimensions' => 'Gambar harus memiliki rasio Potrait 4:5.',
             'image_x.numeric' => 'Format posisi gambar X tidak valid.',

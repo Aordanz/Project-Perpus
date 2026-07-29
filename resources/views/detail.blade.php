@@ -115,7 +115,7 @@
                         <div class="w-full h-full bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow relative">
                             @if(count($allImages) > 0)
                                 <!-- Slideshow wrapper -->
-                                <div class="w-full h-full relative shadow-inner cursor-zoom-in" id="book-slideshow">
+                                <div class="w-full h-full relative shadow-inner cursor-zoom-in" id="book-slideshow" onclick="openLightbox()">
                                     @foreach($allImages as $index => $imgUrl)
                                         <img src="{{ $imgUrl }}" 
                                              alt="Cover {{ $index + 1 }}" 
@@ -234,6 +234,12 @@
                             <button id="btn-tab-bibliografi" onclick="switchTab('bibliografi')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
                                 {{ __('Informasi Detail') }}
                             </button>
+                            <button id="btn-tab-ringkasan" onclick="switchTab('ringkasan')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
+                                {{ __('Ringkasan Buku') }}
+                            </button>
+                            <button id="btn-tab-rekomendasi" onclick="switchTab('rekomendasi')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
+                                {{ __('Rekomendasi') }}
+                            </button>
                         </nav>
                     </div>
 
@@ -349,6 +355,46 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Tab Pane: Ringkasan Buku -->
+                    <div id="pane-ringkasan" class="tab-pane hidden">
+                        @if($book->ringkasanbuku)
+                            <div class="prose prose-sm prose-slate max-w-none p-4 sm:p-6 bg-slate-50/50 rounded-2xl border border-slate-100 text-slate-700 leading-relaxed">
+                                {!! nl2br(e($book->ringkasanbuku)) !!}
+                            </div>
+                        @else
+                            <div class="flex flex-col items-center justify-center p-8 sm:p-12 bg-slate-50/50 rounded-2xl border border-slate-100 border-dashed text-slate-400">
+                                <i class="ph ph-text-align-left text-4xl mb-3 text-slate-300"></i>
+                                <span class="font-medium text-sm">Belum ada ringkasan buku</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Tab Pane: Rekomendasi -->
+                    <div id="pane-rekomendasi" class="tab-pane hidden">
+                        @if($recommendations && $recommendations->count() > 0)
+                            <div class="grid grid-cols-1 gap-3">
+                                @foreach($recommendations as $recBook)
+                                    <a href="{{ route('books.show', $recBook->idmaster) }}" class="p-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl transition flex items-center justify-between group shadow-sm hover:shadow-md cursor-pointer decoration-none">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold text-sm text-[#106c38] group-hover:text-green-800 transition line-clamp-2">{{ $recBook->title ?: 'Judul Tidak Tersedia' }}</span>
+                                        </div>
+                                        <i class="ph ph-arrow-right text-slate-300 group-hover:text-[#106c38] group-hover:translate-x-1 transition-all"></i>
+                                    </a>
+                                @endforeach
+                            </div>
+                            
+                            <!-- Pagination -->
+                            <div class="mt-6 flex justify-center">
+                                {{ $recommendations->appends(request()->query())->links('pagination::tailwind') }}
+                            </div>
+                        @else
+                            <div class="flex flex-col items-center justify-center p-8 sm:p-12 bg-slate-50/50 rounded-2xl border border-slate-100 border-dashed text-slate-400">
+                                <i class="ph ph-books text-4xl mb-3 text-slate-300"></i>
+                                <span class="font-medium text-sm">Belum ada rekomendasi terkait</span>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Contact / Help info (Mobile only) -->
@@ -379,26 +425,29 @@
 
     <script>
         function switchTab(tabId) {
-            const paneKetersediaan = document.getElementById('pane-ketersediaan');
-            const paneBibliografi = document.getElementById('pane-bibliografi');
-            const btnKetersediaan = document.getElementById('btn-tab-ketersediaan');
-            const btnBibliografi = document.getElementById('btn-tab-bibliografi');
+            const panes = {
+                'ketersediaan': document.getElementById('pane-ketersediaan'),
+                'bibliografi': document.getElementById('pane-bibliografi'),
+                'ringkasan': document.getElementById('pane-ringkasan'),
+                'rekomendasi': document.getElementById('pane-rekomendasi')
+            };
+            const btns = {
+                'ketersediaan': document.getElementById('btn-tab-ketersediaan'),
+                'bibliografi': document.getElementById('btn-tab-bibliografi'),
+                'ringkasan': document.getElementById('btn-tab-ringkasan'),
+                'rekomendasi': document.getElementById('btn-tab-rekomendasi')
+            };
 
-            // Reset styles for inactive state
-            const inactiveClass = "border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-sm px-5 py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none";
-            const activeClass = "border-t border-x border-slate-200 border-b-white bg-white text-[#106c38] font-bold text-sm px-5 py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none";
+            const inactiveClass = "border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none";
+            const activeClass = "border-t border-x border-slate-200 border-b-white bg-white text-[#106c38] font-bold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none";
 
-            if (tabId === 'ketersediaan') {
-                paneKetersediaan.classList.remove('hidden');
-                paneBibliografi.classList.add('hidden');
-                btnKetersediaan.className = activeClass;
-                btnBibliografi.className = inactiveClass;
-            } else {
-                paneKetersediaan.classList.add('hidden');
-                paneBibliografi.classList.remove('hidden');
-                btnKetersediaan.className = inactiveClass;
-                btnBibliografi.className = activeClass;
+            for (const key in panes) {
+                if (panes[key]) panes[key].classList.add('hidden');
+                if (btns[key]) btns[key].className = inactiveClass;
             }
+
+            if (panes[tabId]) panes[tabId].classList.remove('hidden');
+            if (btns[tabId]) btns[tabId].className = activeClass;
         }
 
         // Interactive Slideshow/Carousel for Book Cover Images
