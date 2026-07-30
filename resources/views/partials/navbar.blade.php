@@ -209,7 +209,7 @@
         </div>
 
         <!-- Global Modal Footer -->
-        <div id="event-popup-footer" class="flex flex-row justify-between items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3.5 border-t border-slate-100 bg-slate-50/80 backdrop-blur-sm relative select-none shrink-0 transition-all duration-300">
+        <div id="event-popup-footer" class="flex flex-row justify-between items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3.5 border-t border-slate-100 bg-white relative select-none shrink-0 transition-all duration-300 z-50">
             <!-- Checkbox: Jangan Tampilkan Lagi -->
             <div class="flex items-center gap-2 z-20 shrink-0">
                 <input type="checkbox" id="global-dont-show-checkbox" class="w-4 h-4 text-[#106c38] border-slate-300 rounded focus:ring-[#106c38] cursor-pointer">
@@ -707,6 +707,7 @@
             sliderTrack.style.transform = `translateX(-${slideIndex * 100}%)`;
             // Trigger reflow
             sliderTrack.offsetHeight;
+            updatePosterMode();
 
             function updatePagination() {
                 let displayIndex = slideIndex;
@@ -721,6 +722,17 @@
             function updatePosterMode() {
                 // Always use poster mode sizing for all slides
                 eventContent.classList.add('poster-mode');
+                
+                // Change popup container background to avoid white gaps on poster due to subpixel rendering
+                const popupContent = document.getElementById('event-popup-content');
+                const currentSlide = sliderTrack.children[slideIndex];
+                if (currentSlide && currentSlide.getAttribute('data-type') === 'poster') {
+                    popupContent.classList.add('bg-slate-900');
+                    popupContent.classList.remove('bg-white');
+                } else {
+                    popupContent.classList.add('bg-white');
+                    popupContent.classList.remove('bg-slate-900');
+                }
             }
 
             function moveToSlide(index) {
