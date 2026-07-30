@@ -66,7 +66,7 @@
         <div class="max-w-[90rem] mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20 space-y-16">
             
             <!-- New White Container for Contact Info (Screenshot match) -->
-            <div class="bg-white rounded-[2.5rem] p-6 pt-10 sm:p-10 lg:p-12 shadow-[0_15px_60px_rgb(0,0,0,0.08)] relative border border-slate-50 mt-16 lg:mt-24">
+            <div class="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-5 pt-10 sm:p-10 lg:p-12 shadow-[0_15px_60px_rgb(0,0,0,0.08)] relative border border-slate-50 mt-12 sm:mt-16 lg:mt-24">
                 
                 <!-- Background decorations -->
                 <div class="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-emerald-50/80 to-transparent rounded-br-[100px] pointer-events-none"></div>
@@ -75,13 +75,13 @@
                 <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-100/30 blur-3xl rounded-full"></div>
                 
                 <!-- Header -->
-                <div class="relative z-10 text-center mb-16 lg:mb-20">
-                    <h2 class="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-[#115e32] mb-4 tracking-tight">Informasi & Kontak Perpustakaan</h2>
+                <div class="relative z-10 text-center mb-12 sm:mb-16 lg:mb-20">
+                    <h2 class="text-2xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-[#115e32] mb-4 tracking-tight">{{ __('Informasi & Kontak Perpustakaan') }}</h2>
                     <div class="flex items-center justify-center gap-2 mb-4">
                         <div class="h-1 w-12 bg-emerald-200 rounded-full"></div>
                         <div class="h-1 w-3 bg-[#106c38] rounded-full"></div>
                     </div>
-                    <p class="text-slate-500 font-medium text-sm sm:text-base">Temukan informasi penting dan hubungi kami dengan mudah</p>
+                    <p class="text-slate-500 font-medium text-sm sm:text-base">{{ __('Temukan informasi penting dan hubungi kami dengan mudah') }}</p>
                 </div>
 
                 <!-- 4 Cards Grid -->
@@ -94,8 +94,8 @@
                                 <i class="ph ph-map-pin text-[26px] text-[#106c38]"></i>
                             </div>
                         </div>
-                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">Lokasi Utama</h3>
-                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">Alamat Kampus</h4>
+                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">{{ __('Lokasi Utama') }}</h3>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">{{ __('Alamat Kampus') }}</h4>
                         
                         <div class="flex items-center gap-3 text-left w-full mb-6">
                             <div class="w-10 h-10 rounded-xl bg-emerald-50 text-[#106c38] flex items-center justify-center shrink-0">
@@ -111,7 +111,7 @@
 
 
                         <a href="https://maps.google.com/?q=Perpustakaan+Universitas+Sumatera+Utara" target="_blank" class="mt-auto w-full py-3 rounded-2xl border border-slate-200 text-[#106c38] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#106c38] hover:text-white hover:border-[#106c38] transition-colors duration-300">
-                            <i class="ph ph-map-pin text-base"></i> Buka di Google Maps <i class="ph ph-caret-right text-xs"></i>
+                            <i class="ph ph-map-pin text-base"></i> {{ __('Buka di Google Maps') }} <i class="ph ph-caret-right text-xs"></i>
                         </a>
                     </div>
 
@@ -122,8 +122,8 @@
                                 <i class="ph ph-phone text-[26px] text-[#106c38]"></i>
                             </div>
                         </div>
-                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">Hotline & Telefon</h3>
-                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">Telepon</h4>
+                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">{{ __('Hotline & Telefon') }}</h3>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">{{ __('Telepon') }}</h4>
                         
                         <div class="flex flex-col gap-4 text-left w-full mb-6">
                             <div class="flex items-center gap-3.5">
@@ -131,7 +131,7 @@
                                     <i class="ph ph-phone-call text-base"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Reservasi Buku & Referensi</p>
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">{{ __('Reservasi Buku & Referensi') }}</p>
                                     <p class="text-[#106c38] font-extrabold text-sm">0812-6260-2129</p>
                                 </div>
                             </div>
@@ -140,7 +140,7 @@
                                     <i class="ph ph-phone-call text-base"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Reservasi Artikel</p>
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">{{ __('Reservasi Artikel') }}</p>
                                     <p class="text-[#106c38] font-extrabold text-sm">0813-9677-7904</p>
                                 </div>
                             </div>
@@ -149,7 +149,7 @@
                                     <i class="ph ph-phone-call text-base"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Layanan Bebas Pustaka</p>
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">{{ __('Layanan Bebas Pustaka') }}</p>
                                     <p class="text-[#106c38] font-extrabold text-sm">0813-6215-8587</p>
                                 </div>
                             </div>
@@ -158,14 +158,14 @@
                                     <i class="ph ph-phone-call text-base"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">Telepon Kantor (Humas)</p>
+                                    <p class="text-[11px] text-slate-500 font-bold mb-0.5">{{ __('Telepon Kantor (Humas)') }}</p>
                                     <p class="text-[#106c38] font-extrabold text-sm">(+62) 61 813108</p>
                                 </div>
                             </div>
                         </div>
                         
                         <a href="tel:+6261813108" class="mt-auto w-full py-3 rounded-2xl bg-[#106c38] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-emerald-700 transition-colors duration-300 shadow-md shadow-emerald-200">
-                            <i class="ph ph-phone-call text-base"></i> Hubungi Telepon
+                            <i class="ph ph-phone-call text-base"></i> {{ __('Hubungi Telepon') }}
                         </a>
                     </div>
 
@@ -176,8 +176,8 @@
                                 <i class="ph ph-envelope-simple text-[26px] text-[#106c38]"></i>
                             </div>
                         </div>
-                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">Korespondensi Digital</h3>
-                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">Email & Portal</h4>
+                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">{{ __('Korespondensi Digital') }}</h3>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">{{ __('Email & Portal') }}</h4>
                         
                         <div class="flex flex-col gap-3.5 w-full mb-6">
                             <div class="flex items-center gap-3.5 border border-slate-100 p-4 rounded-2xl bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
@@ -203,7 +203,7 @@
 
 
                         <a href="mailto:library@usu.ac.id" class="mt-auto w-full py-3 rounded-2xl border border-slate-200 text-[#106c38] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#106c38] hover:text-white hover:border-[#106c38] transition-colors duration-300">
-                            <i class="ph ph-envelope-simple text-base"></i> Kirim Email <i class="ph ph-caret-right text-xs"></i>
+                            <i class="ph ph-envelope-simple text-base"></i> {{ __('Kirim Email') }} <i class="ph ph-caret-right text-xs"></i>
                         </a>
                     </div>
 
@@ -214,8 +214,8 @@
                                 <i class="ph ph-clock text-[26px] text-[#106c38]"></i>
                             </div>
                         </div>
-                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">Waktu Kunjungan</h3>
-                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">Jam Operasional</h4>
+                        <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">{{ __('Waktu Kunjungan') }}</h3>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">{{ __('Jam Operasional') }}</h4>
                         
                         <div class="flex flex-col gap-4 text-left w-full mb-6">
                             <div class="flex items-center justify-between pb-4 border-b border-slate-50">
@@ -223,7 +223,7 @@
                                     <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
                                         <i class="ph ph-calendar-blank text-base"></i>
                                     </div>
-                                    <span class="text-[13px] font-semibold text-slate-700">Senin – Kamis</span>
+                                    <span class="text-[13px] font-semibold text-slate-700">{{ __('Senin – Kamis') }}</span>
                                 </div>
                                 <span class="text-[13px] font-black text-[#106c38]">08.00 - 20.00</span>
                             </div>
@@ -232,7 +232,7 @@
                                     <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
                                         <i class="ph ph-calendar-blank text-base"></i>
                                     </div>
-                                    <span class="text-[13px] font-semibold text-slate-700">Jumat</span>
+                                    <span class="text-[13px] font-semibold text-slate-700">{{ __('Jumat') }}</span>
                                 </div>
                                 <span class="text-[13px] font-black text-[#106c38]">08.00 - 17.00</span>
                             </div>
@@ -241,16 +241,16 @@
                                     <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
                                         <i class="ph ph-calendar-blank text-base"></i>
                                     </div>
-                                    <span class="text-[13px] font-semibold text-slate-600">Sabtu, Minggu<br> & Libur</span>
+                                    <span class="text-[13px] font-semibold text-slate-600">{!! __('Sabtu, Minggu<br> & Libur') !!}</span>
                                 </div>
-                                <span class="text-[11px] font-extrabold text-rose-500 bg-rose-50 px-3 py-1 rounded-md">Tutup</span>
+                                <span class="text-[11px] font-extrabold text-rose-500 bg-rose-50 px-3 py-1 rounded-md">{{ __('Tutup') }}</span>
                             </div>
                         </div>
                         
                         <div class="mt-auto w-full bg-emerald-50 rounded-2xl p-4 flex items-center gap-4">
                             <i class="ph ph-info text-2xl text-[#106c38]"></i>
                             <div class="text-left">
-                                <p class="text-[11px] font-bold text-slate-500 mb-0.5">Istirahat Jumat:</p>
+                                <p class="text-[11px] font-bold text-slate-500 mb-0.5">{{ __('Istirahat Jumat:') }}</p>
                                 <p class="text-[13px] font-extrabold text-[#106c38]">12.00 - 13.30</p>
                             </div>
                         </div>
@@ -264,7 +264,7 @@
                             <i class="ph-fill ph-bank text-lg"></i>
                         </div>
                         <p class="text-[13px] sm:text-sm font-semibold text-slate-700 leading-snug">
-                            Perpustakaan USU berkomitmen memberikan layanan terbaik<br class="hidden sm:block"> untuk mendukung kebutuhan akademik Anda. <i class="ph-fill ph-heart text-emerald-500"></i>
+                            {!! __('Perpustakaan USU berkomitmen memberikan layanan terbaik<br class="hidden sm:block"> untuk mendukung kebutuhan akademik Anda.') !!} <i class="ph-fill ph-heart text-emerald-500"></i>
                         </p>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 <!-- Top Bar Navigation (Visible on PC and Mobile) -->
 <div class="bg-[#106c38] text-white px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between border-b border-white/10 sticky top-0 z-40 shadow-md w-full">
-    <a href="{{ route('home') }}" class="flex items-center gap-3 hover:opacity-95 transition">
+    <a href="{{ route('admin.index') }}" class="flex items-center gap-3 hover:opacity-95 transition">
         <img src="{{ asset('logousu.webp') }}" class="h-9 w-9 object-contain" alt="Logo USU">
         <div class="flex flex-col">
             <span class="font-extrabold text-xs sm:text-sm tracking-wider font-sans uppercase">PORTAL ADMIN</span>

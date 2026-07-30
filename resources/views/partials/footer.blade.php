@@ -1,22 +1,22 @@
 <!-- Footer -->
-<footer class="bg-[#106c38] py-4 sm:py-6 text-white text-center text-xs sm:text-sm border-t border-emerald-800/40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-2.5 sm:gap-3">
+<footer class="bg-[#106c38] py-2.5 sm:py-5 text-white text-center text-[10px] sm:text-sm border-t border-emerald-800/40 relative z-20">
+    <div class="max-w-7xl mx-auto px-4 pr-14 sm:pr-6 lg:px-8 flex flex-col items-center gap-1.5 sm:gap-3">
         <!-- Copyright Text -->
         <p class="text-white/95 font-medium leading-relaxed max-w-xl mx-auto">
             &copy; 2026 <span class="font-bold">{{ __('Perpustakaan Universitas Sumatera Utara') }}</span> | OPAC.<br class="block sm:hidden"> {{ __('All rights reserved.') }}
         </p>
 
         <!-- Navigation Links -->
-        <div class="flex flex-wrap justify-center items-center gap-x-2 gap-y-1.5 text-white/85 text-[11px] sm:text-xs font-medium max-w-3xl mx-auto">
-            <a href="https://www.usu.ac.id/" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">{{ __('Universitas Sumatera Utara') }}</a>
-            <span class="text-white/40 text-[10px]">&bull;</span>
-            <a href="https://library.usu.ac.id/id" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">{{ __('Perpustakaan USU') }}</a>
-            <span class="text-white/40 text-[10px]">&bull;</span>
-            <a href="https://repositori.usu.ac.id/" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">USU-IR</a>
-            <span class="text-white/40 text-[10px] hidden sm:inline">&bull;</span>
-            <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">{{ __('Scientific eJournals') }}</a>
-            <span class="text-white/40 text-[10px]">&bull;</span>
-            <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition py-1 px-2 rounded-lg hover:bg-white/10">{{ __('Scientific eBooks') }}</a>
+        <div class="flex flex-wrap justify-center items-center gap-x-2 gap-y-1 sm:gap-y-1.5 text-white/85 text-[9px] sm:text-xs font-medium max-w-3xl mx-auto">
+            <a href="https://www.usu.ac.id/" target="_blank" class="hover:text-white transition py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-lg hover:bg-white/10">{{ __('Universitas Sumatera Utara') }}</a>
+            <span class="text-white/40 text-[8px] sm:text-[10px]">&bull;</span>
+            <a href="https://library.usu.ac.id/id" target="_blank" class="hover:text-white transition py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-lg hover:bg-white/10">{{ __('Perpustakaan USU') }}</a>
+            <span class="text-white/40 text-[8px] sm:text-[10px]">&bull;</span>
+            <a href="https://repositori.usu.ac.id/" target="_blank" class="hover:text-white transition py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-lg hover:bg-white/10">USU-IR</a>
+            <span class="text-white/40 text-[8px] sm:text-[10px] hidden sm:inline">&bull;</span>
+            <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-lg hover:bg-white/10">{{ __('Scientific eJournals') }}</a>
+            <span class="text-white/40 text-[8px] sm:text-[10px]">&bull;</span>
+            <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-lg hover:bg-white/10">{{ __('Scientific eBooks') }}</a>
         </div>
     </div>
 </footer>
@@ -106,7 +106,7 @@
 </style>
 
 <!-- AI Assistant Chatbot -->
-<div id="ai-chatbot-container" class="fixed bottom-6 right-6 z-30 flex flex-col items-end pointer-events-none transition-all duration-300">
+<div id="ai-chatbot-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 flex flex-col items-end pointer-events-none transition-all duration-300">
     
     <!-- Chat Window -->
     <div id="ai-chat-window" class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-[320px] h-[400px] mb-4 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right scale-0 opacity-0 pointer-events-auto">
@@ -198,8 +198,8 @@
     <!-- Toggle Button -->
     <div id="ai-toggle-wrapper" class="relative pointer-events-auto group">
         <!-- Main Button -->
-        <button id="ai-toggle-btn" aria-label="{{ __('Buka Asisten AI') }}" class="relative w-14 h-14 rounded-full bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transition-all focus:outline-none border-4 border-white cursor-pointer z-10">
-            <i class="ph ph-chat-circle-dots text-2xl"></i>
+        <button id="ai-toggle-btn" aria-label="{{ __('Buka Asisten AI') }}" class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transition-all focus:outline-none border-[3px] sm:border-4 border-white cursor-pointer z-10">
+            <i class="ph ph-chat-circle-dots text-xl sm:text-2xl"></i>
         </button>
     </div>
 </div>

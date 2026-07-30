@@ -167,16 +167,16 @@
 
     <!-- Main Content Area -->
     <div class="w-full flex-grow flex flex-col min-w-0">
-        <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
+        <main class="flex-grow p-3 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-8">
         
         <!-- Welcome Alert & Summary -->
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 bg-white border border-slate-100 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm">
             <div>
-                <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-                    <i class="ph ph-layout text-usu-green text-3xl"></i>
+                <h1 class="text-lg sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+                    <i class="ph ph-layout text-usu-green text-2xl sm:text-3xl"></i>
                     <span>Dashboard Inventaris Buku</span>
                 </h1>
-                <p class="text-slate-500 text-xs sm:text-sm mt-1">Selamat bekerja! Di sini Anda dapat memantau data sirkulasi dan menambahkan koleksi buku baru secara rinci.</p>
+                <p class="text-slate-500 text-[10px] sm:text-sm mt-1">Selamat bekerja! Di sini Anda dapat memantau data sirkulasi dan menambahkan koleksi buku baru secara rinci.</p>
             </div>
         </div>
 
@@ -203,125 +203,183 @@
         @endif
 
         <!-- Stats Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             <!-- Stat 1: Total Titles -->
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 relative flex items-center gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
-                <div class="text-[#F9C311] text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
+            <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-6 relative flex flex-col sm:flex-row justify-center sm:justify-start items-center text-center sm:text-left gap-2 sm:gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
+                <div class="text-[#F9C311] text-3xl sm:text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
                     <i class="ph ph-book-open"></i>
                 </div>
                 <div>
-                    <span class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Buku</span>
-                    <h3 class="text-3xl font-black text-[#006633] mt-0.5">{{ number_format($totalBooks) }}</h3>
+                    <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight sm:leading-normal">Total Buku</span>
+                    <h3 class="text-xl sm:text-3xl font-black text-[#006633] mt-0 sm:mt-0.5">{{ number_format($totalBooks) }}</h3>
                 </div>
             </div>
 
             <!-- Stat 2: Total Items (Copies) -->
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 relative flex items-center gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
-                <div class="text-[#F9C311] text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
+            <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-6 relative flex flex-col sm:flex-row justify-center sm:justify-start items-center text-center sm:text-left gap-2 sm:gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
+                <div class="text-[#F9C311] text-3xl sm:text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
                     <i class="ph ph-barcode"></i>
                 </div>
                 <div>
-                    <span class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Eksemplar</span>
-                    <h3 class="text-3xl font-black text-[#006633] mt-0.5">{{ number_format($totalItems) }}</h3>
+                    <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight sm:leading-normal">Total Eksemplar</span>
+                    <h3 class="text-xl sm:text-3xl font-black text-[#006633] mt-0 sm:mt-0.5">{{ number_format($totalItems) }}</h3>
                 </div>
             </div>
 
             <!-- Stat 3: Available Items -->
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 relative flex items-center gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
-                <div class="text-[#F9C311] text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
+            <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-6 relative flex flex-col sm:flex-row justify-center sm:justify-start items-center text-center sm:text-left gap-2 sm:gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
+                <div class="text-[#F9C311] text-3xl sm:text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
                     <i class="ph ph-check-square"></i>
                 </div>
                 <div>
-                    <span class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Eksemplar Tersedia</span>
-                    <h3 class="text-3xl font-black text-[#006633] mt-0.5">{{ number_format($availableItems) }}</h3>
+                    <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight sm:leading-normal">Eksemplar Tersedia</span>
+                    <h3 class="text-xl sm:text-3xl font-black text-[#006633] mt-0 sm:mt-0.5">{{ number_format($availableItems) }}</h3>
                 </div>
             </div>
 
             <!-- Stat 4: Borrowed Items -->
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 relative flex items-center gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
-                <div class="text-[#F9C311] text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
+            <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-6 relative flex flex-col sm:flex-row justify-center sm:justify-start items-center text-center sm:text-left gap-2 sm:gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
+                <div class="text-[#F9C311] text-3xl sm:text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
                     <i class="ph ph-user-minus"></i>
                 </div>
                 <div>
-                    <span class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Eksemplar Dipinjam</span>
-                    <h3 class="text-3xl font-black text-[#006633] mt-0.5">{{ number_format($borrowedItems) }}</h3>
+                    <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight sm:leading-normal">Eksemplar Dipinjam</span>
+                    <h3 class="text-xl sm:text-3xl font-black text-[#006633] mt-0 sm:mt-0.5">{{ number_format($borrowedItems) }}</h3>
                 </div>
             </div>
 
             <!-- Stat 5: Books With Cover -->
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 relative flex items-center gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
-                <div class="text-[#F9C311] text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
+            <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-6 relative flex flex-col sm:flex-row justify-center sm:justify-start items-center text-center sm:text-left gap-2 sm:gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
+                <div class="text-[#F9C311] text-3xl sm:text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
                     <i class="ph ph-image"></i>
                 </div>
                 <div>
-                    <span class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Buku Punya Cover</span>
-                    <h3 class="text-3xl font-black text-[#006633] mt-0.5">{{ number_format($totalBooksWithCover) }}</h3>
+                    <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight sm:leading-normal">Memiliki Cover</span>
+                    <h3 class="text-xl sm:text-3xl font-black text-[#006633] mt-0 sm:mt-0.5">{{ number_format($totalBooksWithCover) }}</h3>
                 </div>
             </div>
 
             <!-- Stat 6: Books Without Cover -->
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 relative flex items-center gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
-                <div class="text-[#F9C311] text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
+            <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-6 relative flex flex-col sm:flex-row justify-center sm:justify-start items-center text-center sm:text-left gap-2 sm:gap-4 shadow-sm hover:shadow-md hover:border-[#F9C311]/50 custom-card group transition-all">
+                <div class="text-[#F9C311] text-3xl sm:text-5xl flex-shrink-0 group-hover:scale-110 transition-transform">
                     <i class="ph ph-image-broken"></i>
                 </div>
                 <div>
-                    <span class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Buku Tanpa Cover</span>
-                    <h3 class="text-3xl font-black text-[#006633] mt-0.5">{{ number_format($totalBooksWithoutCover) }}</h3>
+                    <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight sm:leading-normal">Belum Memiliki Cover</span>
+                    <h3 class="text-xl sm:text-3xl font-black text-[#006633] mt-0 sm:mt-0.5">{{ number_format($totalBooksWithoutCover) }}</h3>
                 </div>
             </div>
         </div>
 
         <!-- Location Cover Stats Cards -->
-        <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm p-6 mb-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-[#006633]/10 text-[#006633] flex items-center justify-center text-2xl">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#006633]/10 text-[#006633] flex items-center justify-center text-xl sm:text-2xl">
                         <i class="ph ph-buildings"></i>
                     </div>
                     <div>
-                        <h2 class="text-lg font-bold text-slate-800 tracking-tight">Statistik Kelengkapan Cover per Lokasi</h2>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium">Memantau kelengkapan cover buku untuk semua lokasi perpustakaan.</p>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-800 tracking-tight leading-tight">Statistik Kelengkapan Cover per Lokasi</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 font-medium leading-tight">Memantau kelengkapan cover buku untuk semua lokasi perpustakaan.</p>
                     </div>
                 </div>
 
                 <!-- Dropdown Filter -->
                 <form action="{{ route('admin.index') }}" method="GET" class="flex-shrink-0 w-full sm:w-72">
-                    <select name="lokasi" id="lokasi-select" onchange="this.form.submit()" placeholder="Cari Lokasi...">
-                        <option value="all" {{ request('lokasi', 'all') == 'all' ? 'selected' : '' }}>Semua Lokasi</option>
-                        <option value="koleksi_terbaru" {{ request('lokasi') == 'koleksi_terbaru' ? 'selected' : '' }}>Koleksi Terbaru</option>
+                    <input type="hidden" name="lokasi_ringkasan" value="{{ request('lokasi_ringkasan', 'all') }}">
+                    <select name="lokasi_cover" id="lokasi-select" onchange="this.form.submit()" placeholder="Cari Lokasi...">
+                        <option value="all" {{ request('lokasi_cover', 'all') == 'all' ? 'selected' : '' }}>Semua Lokasi</option>
+                        <option value="koleksi_terbaru" {{ request('lokasi_cover') == 'koleksi_terbaru' ? 'selected' : '' }}>Koleksi Terbaru</option>
                         @foreach($locationsList as $locationName)
-                            <option value="{{ $locationName }}" {{ request('lokasi') == $locationName ? 'selected' : '' }}>{{ $locationName }}</option>
+                            <option value="{{ $locationName }}" {{ request('lokasi_cover') == $locationName ? 'selected' : '' }}>{{ $locationName }}</option>
                         @endforeach
                     </select>
                 </form>
             </div>
             
             <div class="pt-2 border-t border-slate-100">
-                <div class="flex items-center gap-2 mb-4">
-                    <i class="ph {{ request('lokasi') === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin' }} text-usu-green"></i>
-                    <h3 class="text-sm font-bold text-slate-600 uppercase tracking-wider">{{ $selectedLocation }}</h3>
+                <div class="flex items-center gap-2 mb-3 sm:mb-4">
+                    <i class="ph {{ request('lokasi_cover') === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin' }} text-usu-green"></i>
+                    <h3 class="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-wider">{{ $selectedLocationCover }}</h3>
                 </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="grid grid-cols-3 gap-2 sm:gap-6">
                     <!-- Total Buku -->
-                    <div class="border border-slate-200/80 rounded-2xl p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
-                        <div class="text-[#F9C311] text-5xl mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-books"></i></div>
-                        <h4 class="text-4xl font-black text-[#006633] mb-1">{{ number_format($locationStats->total_books) }}</h4>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Buku</span>
+                    <div class="border border-slate-200/80 rounded-xl sm:rounded-2xl p-2 sm:p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
+                        <div class="text-[#F9C311] text-2xl sm:text-5xl mb-1 sm:mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-books"></i></div>
+                        <h4 class="text-lg sm:text-4xl font-black text-[#006633] mb-0 sm:mb-1">{{ number_format($locationStatsCover->total_books) }}</h4>
+                        <span class="text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Total Buku</span>
                     </div>
 
                     <!-- Ber-Cover -->
-                    <div class="border border-slate-200/80 rounded-2xl p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
-                        <div class="text-[#F9C311] text-5xl mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-image"></i></div>
-                        <h4 class="text-4xl font-black text-[#006633] mb-1">{{ number_format($locationStats->with_cover) }}</h4>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Ber-Cover</span>
+                    <div class="border border-slate-200/80 rounded-xl sm:rounded-2xl p-2 sm:p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
+                        <div class="text-[#F9C311] text-2xl sm:text-5xl mb-1 sm:mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-image"></i></div>
+                        <h4 class="text-lg sm:text-4xl font-black text-[#006633] mb-0 sm:mb-1">{{ number_format($locationStatsCover->with_cover) }}</h4>
+                        <span class="text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Memiliki Cover</span>
                     </div>
 
                     <!-- Tanpa Cover -->
-                    <div class="border border-slate-200/80 rounded-2xl p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
-                        <div class="text-[#F9C311] text-5xl mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-image-broken"></i></div>
-                        <h4 class="text-4xl font-black text-[#006633] mb-1">{{ number_format($locationStats->without_cover) }}</h4>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tanpa Cover</span>
+                    <div class="border border-slate-200/80 rounded-xl sm:rounded-2xl p-2 sm:p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
+                        <div class="text-[#F9C311] text-2xl sm:text-5xl mb-1 sm:mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-image-broken"></i></div>
+                        <h4 class="text-lg sm:text-4xl font-black text-[#006633] mb-0 sm:mb-1">{{ number_format($locationStatsCover->without_cover) }}</h4>
+                        <span class="text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Belum Memiliki Cover</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Ringkasan Stats Cards -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#006633]/10 text-[#006633] flex items-center justify-center text-xl sm:text-2xl">
+                        <i class="ph ph-file-text"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-slate-800 tracking-tight leading-tight">Statistik Kelengkapan Ringkasan Buku per Lokasi</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 font-medium leading-tight">Memantau kelengkapan ringkasan buku untuk semua lokasi perpustakaan.</p>
+                    </div>
+                </div>
+
+                <!-- Dropdown Filter -->
+                <form action="{{ route('admin.index') }}" method="GET" class="flex-shrink-0 w-full sm:w-72">
+                    <input type="hidden" name="lokasi_cover" value="{{ request('lokasi_cover', 'all') }}">
+                    <select name="lokasi_ringkasan" id="lokasi-select-ringkasan" onchange="this.form.submit()" placeholder="Cari Lokasi...">
+                        <option value="all" {{ request('lokasi_ringkasan', 'all') == 'all' ? 'selected' : '' }}>Semua Lokasi</option>
+                        <option value="koleksi_terbaru" {{ request('lokasi_ringkasan') == 'koleksi_terbaru' ? 'selected' : '' }}>Koleksi Terbaru</option>
+                        @foreach($locationsList as $locationName)
+                            <option value="{{ $locationName }}" {{ request('lokasi_ringkasan') == $locationName ? 'selected' : '' }}>{{ $locationName }}</option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+            
+            <div class="pt-2 border-t border-slate-100">
+                <div class="flex items-center gap-2 mb-3 sm:mb-4">
+                    <i class="ph {{ request('lokasi_ringkasan') === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin' }} text-usu-green"></i>
+                    <h3 class="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-wider">{{ $selectedLocationRingkasan }}</h3>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 sm:gap-6">
+                    <!-- Total Buku -->
+                    <div class="border border-slate-200/80 rounded-xl sm:rounded-2xl p-2 sm:p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
+                        <div class="text-[#F9C311] text-2xl sm:text-5xl mb-1 sm:mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-books"></i></div>
+                        <h4 class="text-lg sm:text-4xl font-black text-[#006633] mb-0 sm:mb-1">{{ number_format($locationStatsRingkasan->total_books) }}</h4>
+                        <span class="text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Total Buku</span>
+                    </div>
+
+                    <!-- Ber-Ringkasan -->
+                    <div class="border border-slate-200/80 rounded-xl sm:rounded-2xl p-2 sm:p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
+                        <div class="text-[#F9C311] text-2xl sm:text-5xl mb-1 sm:mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-file-text"></i></div>
+                        <h4 class="text-lg sm:text-4xl font-black text-[#006633] mb-0 sm:mb-1">{{ number_format($locationStatsRingkasan->with_ringkasan) }}</h4>
+                        <span class="text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Memiliki Ringkasan</span>
+                    </div>
+
+                    <!-- Tanpa Ringkasan -->
+                    <div class="border border-slate-200/80 rounded-xl sm:rounded-2xl p-2 sm:p-6 bg-white flex flex-col justify-center items-center text-center relative custom-card group shadow-sm hover:shadow-md hover:border-[#F9C311]/50 transition-all">
+                        <div class="text-[#F9C311] text-2xl sm:text-5xl mb-1 sm:mb-3 group-hover:scale-110 transition-transform"><i class="ph ph-file-minus"></i></div>
+                        <h4 class="text-lg sm:text-4xl font-black text-[#006633] mb-0 sm:mb-1">{{ number_format($locationStatsRingkasan->without_ringkasan) }}</h4>
+                        <span class="text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Belum Memiliki Ringkasan</span>
                     </div>
                 </div>
             </div>
@@ -343,6 +401,25 @@
             // Initialize Tom Select for Location
             if (document.getElementById('lokasi-select')) {
                 new TomSelect('#lokasi-select', {
+                    create: false,
+                    placeholder: "Cari Lokasi...",
+                    maxOptions: 100,
+                    render: {
+                        item: function(data, escape) {
+                            var icon = data.value === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin';
+                            return '<div class="flex items-center gap-2"><i class="ph ' + icon + ' text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
+                        },
+                        option: function(data, escape) {
+                            var icon = data.value === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin';
+                            return '<div class="flex items-center gap-2"><i class="ph ' + icon + ' text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
+                        }
+                    }
+                });
+            }
+
+            // Initialize Tom Select for Location Ringkasan
+            if (document.getElementById('lokasi-select-ringkasan')) {
+                new TomSelect('#lokasi-select-ringkasan', {
                     create: false,
                     placeholder: "Cari Lokasi...",
                     maxOptions: 100,

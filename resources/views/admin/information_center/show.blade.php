@@ -107,7 +107,7 @@
                                         // Ganti beberapa label khusus agar lebih cantik
                                         if ($key === 'book_author') $label = 'Penulis';
                                         if ($key === 'book_publisher') $label = 'Penerbit';
-                                        if ($key === 'shelf_location') $label = 'Lokasi Rak';
+                                        if ($key === 'shelf_location') $label = 'Lokasi';
                                         if ($key === 'event_time' || $key === 'announcement_time') $label = 'Waktu';
                                         if ($key === 'event_location' || $key === 'announcement_location') $label = 'Lokasi';
                                         if ($key === 'event_organizer') $label = 'Penyelenggara';

@@ -19,29 +19,32 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Create Default User (Pustakawan) — masuk ke tbluser
         User::factory()->create([
-            'nama_lengkap' => 'Admin Perpustakaan USU',
-            'username'     => 'admin',
-            'email'        => 'admin@usu.ac.id',
-            'password'     => bcrypt('Admin@12345'),
-            'role'         => 'pustakawan',
+            'nama_lengkap'         => 'Admin Perpustakaan USU',
+            'username'             => 'admin',
+            'email'                => 'admin@usu.ac.id',
+            'password'             => bcrypt('Admin@12345'),
+            'role'                 => 'pustakawan',
+            'status_administrator' => 1,
         ]);
 
         // Akun Admin OPAC — masuk ke tbluser
         User::factory()->create([
-            'nama_lengkap' => 'Admin OPAC',
-            'username'     => 'opac',
-            'email'        => 'opac@perpus.usu',
-            'password'     => bcrypt('pustakawan123'),
-            'role'         => 'pustakawan',
+            'nama_lengkap'         => 'Admin OPAC',
+            'username'             => 'opac',
+            'email'                => 'opac@perpus.usu',
+            'password'             => bcrypt('pustakawan123'),
+            'role'                 => 'pustakawan',
+            'status_administrator' => 1,
         ]);
 
         // Create Default User (Anggota) — masuk ke tbluser
         User::factory()->create([
-            'nama_lengkap' => 'Anggota Perpustakaan USU',
-            'username'     => 'anggota',
-            'email'        => 'anggota@usu.ac.id',
-            'password'     => bcrypt('password'),
-            'role'         => 'anggota',
+            'nama_lengkap'         => 'Anggota Perpustakaan USU',
+            'username'             => 'anggota',
+            'email'                => 'anggota@usu.ac.id',
+            'password'             => bcrypt('password'),
+            'role'                 => 'anggota',
+            'status_administrator' => 0,
         ]);
 
         // 2. Create University

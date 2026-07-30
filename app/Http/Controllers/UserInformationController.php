@@ -54,26 +54,6 @@ class UserInformationController extends Controller
                 'active_border' => 'border-amber-400',
                 'glow_color' => 'rgba(245, 158, 11, 0.4)',
             ],
-            'library_news' => [
-                'key' => 'library_news',
-                'title' => 'Berita Perpustakaan',
-                'subtitle' => 'Info & Kabar Terkini',
-                'icon' => 'ph-newspaper',
-                'color' => 'indigo',
-                'bg_badge' => 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
-                'active_border' => 'border-indigo-500',
-                'glow_color' => 'rgba(99, 102, 241, 0.4)',
-            ],
-            'tips' => [
-                'key' => 'tips',
-                'title' => 'Tips & Trick',
-                'subtitle' => 'Panduan Bermanfaat',
-                'icon' => 'ph-lightbulb-filament',
-                'color' => 'orange',
-                'bg_badge' => 'bg-orange-500/10 text-orange-400 border-orange-500/30',
-                'active_border' => 'border-orange-500',
-                'glow_color' => 'rgba(249, 115, 22, 0.4)',
-            ],
         ];
 
         // Helper untuk ekstrak teks deskripsi jika tersimpan JSON
@@ -149,13 +129,13 @@ class UserInformationController extends Controller
             $categoryKey = $item->category;
             if (in_array($categoryKey, ['new_collection'])) {
                 $categoryKey = 'book_recommendation';
-            } elseif (in_array($categoryKey, ['maintenance', 'general'])) {
+            } elseif (in_array($categoryKey, ['maintenance', 'general', 'library_news', 'tips'])) {
                 $categoryKey = 'announcement';
             } elseif (in_array($categoryKey, ['promotion'])) {
                 $categoryKey = 'event';
             }
 
-            if (!in_array($categoryKey, ['announcement', 'event', 'book_recommendation', 'library_news', 'tips'])) {
+            if (!in_array($categoryKey, ['announcement', 'event', 'book_recommendation'])) {
                 $categoryKey = 'announcement';
             }
 
@@ -246,7 +226,9 @@ class UserInformationController extends Controller
                 'facilities' => ($isJson && !empty($contentDecoded['facilities'])) ? $contentDecoded['facilities'] : null,
                 'left_features' => ($isJson && is_array($contentDecoded['left_features'] ?? null)) ? $contentDecoded['left_features'] : [],
                 'tips_bullets' => $tipsBullets,
+                'book_title' => $isJson ? ($contentDecoded['book_title'] ?? null) : null,
                 'book_author' => $isJson ? ($contentDecoded['book_author'] ?? null) : null,
+                'book_publisher' => $isJson ? ($contentDecoded['book_publisher'] ?? null) : null,
                 'shelf_location' => $isJson ? ($contentDecoded['shelf_location'] ?? null) : null,
                 'contact_phone' => $item->contact_phone ?? null,
                 'contact_email' => $item->contact_email ?? null,

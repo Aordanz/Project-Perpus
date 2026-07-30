@@ -650,7 +650,8 @@
 
     <main class="flex-grow info-page-wrapper" style="margin-top: 64px;">
 
-        <div class="three-panel">
+        <!-- Content Section: 3-Panel Layout (Categories, Titles, Details) -->
+        <div class="max-w-[90rem] mx-auto w-full px-2 sm:px-6 lg:px-8 py-4 sm:py-12 flex flex-col h-[calc(100vh-80px)] min-h-[600px] three-panel">
 
             {{-- Connected Edge Pull-Tab Handle attached to Category Sidebar edge (Mobile) --}}
             <button type="button" id="toggle-cat-sidebar-btn" class="mobile-sidebar-handle" title="Sembunyikan / Tampilkan Kategori">
@@ -661,7 +662,7 @@
                  PANEL 1 — CATEGORY LOGO BUTTONS (LEFT)
             ════════════════════════════════════════ --}}
             <div class="panel-categories">
-                <span class="section-label">Kategori</span>
+                <span class="section-label">{{ __('Kategori') }}</span>
 
                 @foreach($categoryConfigs as $key => $config)
                     @php
@@ -672,7 +673,7 @@
                             class="cat-btn {{ $isActive ? 'active' : '' }}"
                             data-category="{{ $key }}">
                         <div class="emblem">
-                            <i class="ph {{ $config['icon'] }} text-2xl {{ $isActive ? 'text-white' : 'text-[#106c38]' }}"></i>
+                            <i class="ph {{ $config['icon'] }} text-2xl {{ $isActive ? 'text-white' : '' }}" {!! !$isActive ? 'style="color: #106c38;"' : '' !!}></i>
                             @if($count > 0)
                                 <span class="badge">{{ $count }}</span>
                             @endif
@@ -692,7 +693,7 @@
                         <span id="current-cat-title">{{ $categoryConfigs[$selectedCategory]['title'] ?? '' }}</span>
                     </div>
                     <span id="current-cat-count" class="data-count">
-                        {{ $categoryCounts[$selectedCategory] ?? 0 }} Data
+                        {{ $categoryCounts[$selectedCategory] ?? 0 }} {{ __('Data') }}
                     </span>
                 </div>
 
@@ -734,7 +735,7 @@
                                              data-img="{{ $item['image_url'] }}">
                                             <img src="{{ $item['image_url'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
                                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[11px] font-bold gap-1">
-                                                <i class="ph ph-magnifying-glass-plus text-base"></i> Perbesar
+                                                <i class="ph ph-magnifying-glass-plus text-base"></i> {{ __('Perbesar') }}
                                             </div>
                                         </div>
                                     @endif
@@ -774,7 +775,7 @@
                                     @if(!empty($item['link_url']))
                                         <a href="{{ $item['link_url'] }}" target="_blank" class="inline-flex items-center gap-1.5 bg-[#106c38] text-white font-bold text-xs px-3 py-2 rounded-lg hover:bg-[#0d5e30] transition shadow-sm w-full justify-center">
                                             <i class="ph ph-arrow-square-out text-sm"></i>
-                                            <span>Buka Tautan Resmi</span>
+                                            <span>{{ __('Buka Tautan Resmi') }}</span>
                                         </a>
                                     @endif
                                 </div>
@@ -784,7 +785,7 @@
                     @empty
                         <div style="text-align:center;padding:40px 10px;color:#94a3b8;">
                             <i class="ph ph-folder-open" style="font-size:36px;display:block;margin-bottom:8px;"></i>
-                            <p style="font-size:12px;">Belum ada pengumuman.</p>
+                            <p style="font-size:12px;">{{ __('Belum ada pengumuman.') }}</p>
                         </div>
                     @endforelse
                 </div>
@@ -816,7 +817,7 @@
                              alt="{{ $activeItem['title'] ?? '' }}">
                         <div class="poster-hover-overlay">
                             <i class="ph ph-magnifying-glass-plus text-lg"></i>
-                            <span>Perbesar Poster</span>
+                            <span>{{ __('Perbesar Poster') }}</span>
                         </div>
                     </div>
 
@@ -852,7 +853,7 @@
                         <div id="detail-actions" class="pt-1" style="{{ $activeHasLink ? '' : 'display:none;' }}">
                             <a id="detail-link-btn" href="{{ $activeItem['link_url'] ?? '#' }}" target="_blank" class="detail-action-btn">
                                 <i class="ph ph-arrow-square-out text-base"></i>
-                                <span>Buka Tautan / Halaman Resmi</span>
+                                <span>{{ __('Buka Tautan / Halaman Resmi') }}</span>
                             </a>
                         </div>
 
@@ -862,9 +863,9 @@
                 {{-- Empty State Wrapper --}}
                 <div id="detail-empty-view" class="detail-empty {{ $showEmpty ? '' : 'hidden' }}">
                     <i class="ph ph-hand-pointing text-[#106c38]" style="font-size:48px;margin-bottom:12px;"></i>
-                    <h3 style="font-size:16px;font-weight:800;color:#1e293b;margin-bottom:4px;">Pilih Judul Informasi</h3>
+                    <h3 style="font-size:16px;font-weight:800;color:#1e293b;margin-bottom:4px;">{{ __('Pilih Judul Informasi') }}</h3>
                     <p style="font-size:12px;color:#64748b;max-width:320px;margin:0 auto;line-height:1.5;">
-                        Silakan klik salah satu judul informasi di sebelah kiri untuk melihat detail selengkapnya.
+                        {{ __('Silakan klik salah satu judul informasi di sebelah kiri untuk melihat detail selengkapnya.') }}
                     </p>
                 </div>
 
@@ -1079,14 +1080,16 @@
             const dynMetaGridEl = el('dynamic-meta-grid');
             if (dynMetaGridEl) {
                 let metaHtml = '';
-                if (item.time) metaHtml += `<div class="meta-item"><i class="ph ph-clock"></i><div><span class="meta-label">Waktu Operasional / Event</span><span class="meta-val">${item.time}</span></div></div>`;
-                if (item.location) metaHtml += `<div class="meta-item"><i class="ph ph-map-pin"></i><div><span class="meta-label">Lokasi Kegiatan</span><span class="meta-val">${item.location}</span></div></div>`;
-                if (item.organizer) metaHtml += `<div class="meta-item"><i class="ph ph-buildings"></i><div><span class="meta-label">Penyelenggara</span><span class="meta-val">${item.organizer}</span></div></div>`;
-                if (item.book_author) metaHtml += `<div class="meta-item"><i class="ph ph-user"></i><div><span class="meta-label">Penulis</span><span class="meta-val">${item.book_author}</span></div></div>`;
-                if (item.shelf_location) metaHtml += `<div class="meta-item"><i class="ph ph-books"></i><div><span class="meta-label">Lokasi Rak</span><span class="meta-val">${item.shelf_location}</span></div></div>`;
-                if (item.participants) metaHtml += `<div class="meta-item"><i class="ph ph-users"></i><div><span class="meta-label">Sasaran Peserta</span><span class="meta-val">${item.participants}</span></div></div>`;
-                if (item.contact_phone) metaHtml += `<div class="meta-item"><i class="ph ph-phone"></i><div><span class="meta-label">Kontak (Telepon)</span><span class="meta-val">${item.contact_phone}</span></div></div>`;
-                if (item.contact_email) metaHtml += `<div class="meta-item"><i class="ph ph-envelope"></i><div><span class="meta-label">Kontak (Email)</span><span class="meta-val">${item.contact_email}</span></div></div>`;
+                if (item.time) metaHtml += `<div class="meta-item"><i class="ph ph-clock"></i><div><span class="meta-label">{{ __('Waktu Operasional / Event') }}</span><span class="meta-val">${item.time}</span></div></div>`;
+                if (item.location) metaHtml += `<div class="meta-item"><i class="ph ph-map-pin"></i><div><span class="meta-label">{{ __('Lokasi Kegiatan') }}</span><span class="meta-val">${item.location}</span></div></div>`;
+                if (item.organizer) metaHtml += `<div class="meta-item"><i class="ph ph-buildings"></i><div><span class="meta-label">{{ __('Penyelenggara') }}</span><span class="meta-val">${item.organizer}</span></div></div>`;
+                if (item.book_title) metaHtml += `<div class="meta-item"><i class="ph ph-book"></i><div><span class="meta-label">{{ __('Judul Buku') }}</span><span class="meta-val">${item.book_title}</span></div></div>`;
+                if (item.book_author) metaHtml += `<div class="meta-item"><i class="ph ph-user"></i><div><span class="meta-label">{{ __('Penulis') }}</span><span class="meta-val">${item.book_author}</span></div></div>`;
+                if (item.book_publisher) metaHtml += `<div class="meta-item"><i class="ph ph-buildings"></i><div><span class="meta-label">{{ __('Penerbit') }}</span><span class="meta-val">${item.book_publisher}</span></div></div>`;
+                if (item.shelf_location) metaHtml += `<div class="meta-item"><i class="ph ph-books"></i><div><span class="meta-label">{{ __('Lokasi') }}</span><span class="meta-val">${item.shelf_location}</span></div></div>`;
+                if (item.participants) metaHtml += `<div class="meta-item"><i class="ph ph-users"></i><div><span class="meta-label">{{ __('Sasaran Peserta') }}</span><span class="meta-val">${item.participants}</span></div></div>`;
+                if (item.contact_phone) metaHtml += `<div class="meta-item"><i class="ph ph-phone"></i><div><span class="meta-label">{{ __('Kontak (Telepon)') }}</span><span class="meta-val">${item.contact_phone}</span></div></div>`;
+                if (item.contact_email) metaHtml += `<div class="meta-item"><i class="ph ph-envelope"></i><div><span class="meta-label">{{ __('Kontak (Email)') }}</span><span class="meta-val">${item.contact_email}</span></div></div>`;
                 
                 if (metaHtml) {
                     dynMetaGridEl.style.display = 'grid';
@@ -1113,24 +1116,24 @@
                 let widgetHtml = '';
                 
                 if (item.facilities) {
-                    widgetHtml += `<div class="widget-card"><i class="ph ph-check-circle"></i><div><div class="widget-title">Fasilitas</div><div class="widget-text">${item.facilities}</div></div></div>`;
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-check-circle"></i><div><div class="widget-title">{{ __('Fasilitas') }}</div><div class="widget-text">${item.facilities}</div></div></div>`;
                 }
                 
                 if (Array.isArray(item.left_features) && item.left_features.length > 0) {
-                    widgetHtml += `<div class="widget-card"><i class="ph ph-star"></i><div><div class="widget-title">Keunggulan</div><div class="widget-text"><ul style="list-style:disc; margin-left:15px; padding-top:4px;">${item.left_features.map(f => `<li>${f}</li>`).join('')}</ul></div></div></div>`;
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-star"></i><div><div class="widget-title">{{ __('Keunggulan') }}</div><div class="widget-text"><ul style="list-style:disc; margin-left:15px; padding-top:4px;">${item.left_features.map(f => `<li>${f}</li>`).join('')}</ul></div></div></div>`;
                 }
                 
                 if (Array.isArray(item.tips_bullets) && item.tips_bullets.length > 0) {
-                    widgetHtml += `<div class="widget-card"><i class="ph ph-lightbulb"></i><div><div class="widget-title">Tips & Trik</div><div class="widget-text"><ul style="list-style:decimal; margin-left:15px; padding-top:4px;">${item.tips_bullets.map(f => `<li>${f}</li>`).join('')}</ul></div></div></div>`;
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-lightbulb"></i><div><div class="widget-title">{{ __('Tips & Trik') }}</div><div class="widget-text"><ul style="list-style:decimal; margin-left:15px; padding-top:4px;">${item.tips_bullets.map(f => `<li>${f}</li>`).join('')}</ul></div></div></div>`;
                 }
 
                 // Default widgets based on category / fallback
                 if (item.category === 'event') {
-                    widgetHtml += `<div class="widget-card"><i class="ph ph-identification-card"></i><div><div class="widget-title">Ketentuan Pengunjung</div><div class="widget-text">Harap menunjukkan Kartu Tanda Mahasiswa (KTM) atau Kartu Anggota Perpustakaan yang berlaku.</div></div></div>`;
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-identification-card"></i><div><div class="widget-title">{{ __('Ketentuan Pengunjung') }}</div><div class="widget-text">{{ __('Harap menunjukkan Kartu Tanda Mahasiswa (KTM) atau Kartu Anggota Perpustakaan yang berlaku.') }}</div></div></div>`;
                 }
                 
                 if (item.has_raw_desc || widgetHtml) {
-                    widgetHtml += `<div class="widget-card"><i class="ph ph-headset"></i><div><div class="widget-title">Layanan Pustakawan & Helpdesk</div><div class="widget-text">Butuh bantuan? Hubungi meja layanan utama di Lantai 1 atau via Email: <strong>library@usu.ac.id</strong></div></div></div>`;
+                    widgetHtml += `<div class="widget-card"><i class="ph ph-headset"></i><div><div class="widget-title">{{ __('Layanan Pustakawan & Helpdesk') }}</div><div class="widget-text">{!! __('Butuh bantuan? Hubungi meja layanan utama di Lantai 1 atau via Email: <strong>library@usu.ac.id</strong>') !!}</div></div></div>`;
                     dynWidgetsGridEl.style.display = 'grid';
                     dynWidgetsGridEl.innerHTML = widgetHtml;
                 } else {
