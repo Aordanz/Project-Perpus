@@ -40,7 +40,7 @@
     @include('partials.admin_sidebar')
 
     <div class="w-full flex-grow flex flex-col min-w-0">
-        <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+        <main class="flex-grow p-3 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6">
             
             @if (session('success'))
                 <div class="bg-green-50 border border-green-200 text-green-800 p-4 rounded-2xl flex gap-3 text-sm font-medium shadow-sm">

@@ -138,19 +138,16 @@
 @section('content')
 
 {{-- PAGE HEADER --}}
-<div class="flex items-start sm:items-center gap-4 mb-6">
-    <a href="{{ route('admin.information-center.index') }}"
-       class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-500 flex items-center justify-center hover:bg-slate-50 hover:text-slate-800 transition-all shadow-sm shrink-0 mt-0.5 sm:mt-0">
-        <i class="ph ph-arrow-left text-lg"></i>
-    </a>
-    <div class="min-w-0 flex-1">
-        <div class="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium mb-1">
-            <a href="{{ route('admin.information-center.index') }}" class="hover:text-slate-600 transition">Information Center</a>
-            <i class="ph ph-caret-right text-[9px]"></i>
-            <span class="text-slate-600 font-semibold">Buat Informasi Baru</span>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+    <div class="flex flex-col">
+        <div class="flex items-center gap-2 mb-1">
+            <a href="{{ route('admin.information-center.index') }}" class="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-usu-green hover:border-usu-green hover:bg-emerald-50 transition-all shadow-sm">
+                <i class="ph ph-arrow-left text-sm sm:text-base font-bold"></i>
+            </a>
+            <span class="text-slate-600 font-semibold text-xs sm:text-sm">Buat Informasi Baru</span>
         </div>
-        <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight leading-tight">Buat Informasi Baru</h1>
-        <p class="text-slate-500 text-xs sm:text-sm mt-0.5">Publikasikan event, pengumuman, tips, koleksi baru, dan info lainnya untuk pengguna perpustakaan.</p>
+        <h1 class="text-lg sm:text-2xl font-black text-slate-800 tracking-tight leading-tight">Buat Informasi Baru</h1>
+        <p class="text-slate-500 text-[10px] sm:text-sm mt-0.5">Publikasikan event, pengumuman, tips, koleksi baru, dan info lainnya untuk pengguna perpustakaan.</p>
     </div>
 </div>
 
@@ -196,12 +193,10 @@
                 <option value="announcement"       {{ old('category') == 'announcement'       ? 'selected' : '' }}>Pengumuman</option>
                 <option value="event"              {{ old('category') == 'event'              ? 'selected' : '' }}>Event / Kegiatan</option>
                 <option value="book_recommendation"{{ old('category') == 'book_recommendation'? 'selected' : '' }}>Buku Rekomendasi</option>
-                <option value="tips"               {{ old('category') == 'tips'               ? 'selected' : '' }}>Tips &amp; Trick</option>
-                <option value="library_news"       {{ old('category') == 'library_news'       ? 'selected' : '' }}>Berita Perpustakaan</option>
             </select>
 
-            {{-- Visual Category Chip Grid (5 Kategori Utama) --}}
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" id="category-grid">
+            {{-- Visual Category Chip Grid (3 Kategori Utama) --}}
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3" id="category-grid">
 
                 {{-- 1. Pengumuman --}}
                 <button type="button" class="cat-chip-btn" data-value="announcement"
@@ -227,22 +222,6 @@
                     <div><div class="cat-chip-label">Buku Rekomendasi</div><div class="cat-chip-sub">Pilihan terbaik</div></div>
                 </button>
                 
-                {{-- 4. Berita Perpustakaan --}}
-                <button type="button" class="cat-chip-btn" data-value="library_news"
-                        style="--chip-color:#4f46e5;--chip-bg:#eef2ff;--chip-ring:rgba(79,70,229,0.13)">
-                    <div class="chip-check"><i class="ph ph-check text-[9px]"></i></div>
-                    <div class="cat-chip-icon bg-indigo-50"><i class="ph ph-newspaper text-indigo-600"></i></div>
-                    <div><div class="cat-chip-label">Berita Perpustakaan</div><div class="cat-chip-sub">Info &amp; kabar terkini</div></div>
-                </button>
-
-                {{-- 5. Tips & Trick --}}
-                <button type="button" class="cat-chip-btn" data-value="tips"
-                        style="--chip-color:#d97706;--chip-bg:#fffbeb;--chip-ring:rgba(217,119,6,0.13)">
-                    <div class="chip-check"><i class="ph ph-check text-[9px]"></i></div>
-                    <div class="cat-chip-icon bg-amber-50"><i class="ph ph-lightbulb-filament text-amber-600"></i></div>
-                    <div><div class="cat-chip-label">Tips &amp; Trick</div><div class="cat-chip-sub">Panduan bermanfaat</div></div>
-                </button>
-
             </div>
 
             {{-- Selected Category Indicator --}}
@@ -447,8 +426,8 @@
                                         <input type="text" name="book_publisher" id="book_publisher" class="fi" placeholder="Erlangga, 2024" value="{{ old('book_publisher') }}">
                                     </div>
                                     <div>
-                                        <label class="fl" for="shelf_location">Lokasi Rak / Klasifikasi</label>
-                                        <input type="text" name="shelf_location" id="shelf_location" class="fi" placeholder="Rak 4B - Umum / DDC 005.1" value="{{ old('shelf_location') }}">
+                                        <label class="fl" for="shelf_location">Lokasi Buku</label>
+                                        <input type="text" name="shelf_location" id="shelf_location" class="fi" placeholder="Fasilkom - TI" value="{{ old('shelf_location') }}">
                                     </div>
                                 </div>
                             </div>
@@ -787,10 +766,7 @@
                     <i class="ph ph-trash"></i>
                 </button>
                 <div class="flex-1">
-                    <p class="fl text-[10px] mb-1">Label Tombol <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></p>
-                    <input type="text" name="action_buttons[${btnIndex}][name]" value="${name}" class="fi fi-sm" placeholder="Contoh: Daftar Lomba">
-                </div>
-                <div class="flex-1">
+                    <input type="hidden" name="action_buttons[${btnIndex}][name]" value="Buka Tautan / Halaman Resmi">
                     <p class="fl text-[10px] mb-1">Link (URL) <span class="ml-1.5 px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-extrabold uppercase tracking-widest">Opsional</span></p>
                     <input type="url" name="action_buttons[${btnIndex}][url]" value="${url}" class="fi fi-sm" placeholder="https://forms.google.com/...">
                 </div>

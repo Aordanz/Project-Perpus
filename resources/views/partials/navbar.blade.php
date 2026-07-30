@@ -300,21 +300,21 @@
                         let badgeLabel, badgeIcon, badgeCls, rightGrad, rightOverlay, accentColor;
 
                         if (cat === 'event') {
-                            badgeLabel = 'EVENT / KEGIATAN'; badgeIcon = 'ph-calendar-check';
+                            badgeLabel = '{{ __("EVENT / KEGIATAN") }}'; badgeIcon = 'ph-calendar-check';
                         } else if (cat === 'announcement') {
-                            badgeLabel = 'PENGUMUMAN'; badgeIcon = 'ph-megaphone-simple';
+                            badgeLabel = '{{ __("PENGUMUMAN") }}'; badgeIcon = 'ph-megaphone-simple';
                         } else if (cat === 'maintenance') {
-                            badgeLabel = 'PEMELIHARAAN'; badgeIcon = 'ph-wrench';
+                            badgeLabel = '{{ __("PEMELIHARAAN") }}'; badgeIcon = 'ph-wrench';
                         } else if (cat === 'new_collection' || cat === 'book_recommendation') {
-                            badgeLabel = cat === 'book_recommendation' ? 'BUKU REKOMENDASI' : 'BUKU BARU'; badgeIcon = 'ph-book-open';
+                            badgeLabel = cat === 'book_recommendation' ? '{{ __("BUKU REKOMENDASI") }}' : '{{ __("BUKU BARU") }}'; badgeIcon = 'ph-book-open';
                         } else if (cat === 'library_news') {
-                            badgeLabel = 'BERITA PERPUSTAKAAN'; badgeIcon = 'ph-newspaper';
+                            badgeLabel = '{{ __("BERITA PERPUSTAKAAN") }}'; badgeIcon = 'ph-newspaper';
                         } else if (cat === 'tips') {
-                            badgeLabel = 'TIPS & TRIK'; badgeIcon = 'ph-lightbulb-filament';
+                            badgeLabel = '{{ __("TIPS & TRIK") }}'; badgeIcon = 'ph-lightbulb-filament';
                         } else if (cat === 'promotion') {
-                            badgeLabel = 'PROMO SPESIAL'; badgeIcon = 'ph-tag';
+                            badgeLabel = '{{ __("PROMO SPESIAL") }}'; badgeIcon = 'ph-tag';
                         } else {
-                            badgeLabel = 'INFORMASI'; badgeIcon = 'ph-info';
+                            badgeLabel = '{{ __("INFORMASI") }}'; badgeIcon = 'ph-info';
                         }
 
                         // Use default web theme (green) for all categories
@@ -370,7 +370,7 @@
                                 </div>
                                 ${(event.left_features && Array.isArray(event.left_features) && event.left_features.length > 0) ? `
                                     <div class="bg-emerald-50/70 border border-emerald-100 rounded-2xl p-3 mb-3">
-                                        <p class="text-[9px] font-black text-emerald-800 uppercase tracking-wider mb-1.5">Informasi Tambahan</p>
+                                        <p class="text-[9px] font-black text-emerald-800 uppercase tracking-wider mb-1.5">{{ __("Informasi Tambahan") }}</p>
                                         <ul class="space-y-1">
                                             ${event.left_features.map(feat => `
                                                 <li class="flex items-center gap-2 text-xs font-bold text-slate-700">
@@ -383,7 +383,7 @@
                                 ` : ''}
                                 ${(event.contact_whatsapp || event.contact_email) ? `<div class="flex items-center gap-2.5 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 mb-1"><span class="text-[8px] font-black text-slate-400 uppercase tracking-wide shrink-0">Hubungi Kami</span><div class="flex flex-wrap gap-3 min-w-0">${event.contact_whatsapp ? `<a href="https://wa.me/${event.contact_whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center"><i class="ph ph-whatsapp-logo text-emerald-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_whatsapp}</span></a>` : ''}${event.contact_email ? `<a href="mailto:${event.contact_email}" class="flex items-center gap-1.5 hover:opacity-75 transition shrink-0"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center"><i class="ph ph-envelope-simple text-blue-600 text-[11px]"></i></div><span class="text-[10px] font-bold text-slate-700">${event.contact_email}</span></a>` : ''}</div></div>` : ''}
                             `;
-                            if (!actionLinks) actionLinks = [{name: 'Lihat Detail', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
+                            if (!actionLinks) actionLinks = [{name: '{{ __("Lihat Detail") }}', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
 
                         } else if (cat === 'announcement') {
                             detailHtml = `
@@ -391,7 +391,7 @@
                                     ${event.date_text ? `<div class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5"><i class="ph ph-calendar-blank text-[#106c38] text-xs"></i><span class="text-[10.5px] font-bold text-slate-800">${event.date_text}</span></div>` : ''}
                                     ${event.time ? `<div class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5"><i class="ph ph-clock text-[#106c38] text-xs"></i><span class="text-[10.5px] font-bold text-slate-800">${event.time}</span></div>` : ''}
                                 </div>
-                                ${event.affected_services ? `<div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-1">Dampak Layanan</p><p class="text-[11px] font-bold text-slate-800">${event.affected_services}</p></div>` : ''}
+                                ${event.affected_services ? `<div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-1">{{ __("Dampak Layanan") }}</p><p class="text-[11px] font-bold text-slate-800">${event.affected_services}</p></div>` : ''}
                             `;
 
                         } else if (cat === 'maintenance') {
@@ -405,24 +405,25 @@
                                     ${event.time ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Waktu</p><p class="text-[10.5px] font-bold text-slate-800">${event.time}</p></div>` : ''}
                                     ${event.estimated_downtime ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 col-span-2"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Perkiraan Selesai</p><p class="text-[10.5px] font-bold text-slate-800">${event.estimated_downtime}</p></div>` : ''}
                                 </div>
-                                ${event.alternative_link ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 mb-1"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Akses Alternatif</p><a href="${event.alternative_link}" target="_blank" class="text-[10.5px] font-bold text-[#106c38] hover:underline truncate block">${event.alternative_link}</a></div>` : ''}
+                                ${event.alternative_link ? `<div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 mb-1"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-0.5">{{ __("Akses Alternatif") }}</p><a href="${event.alternative_link}" target="_blank" class="text-[10.5px] font-bold text-[#106c38] hover:underline truncate block">${event.alternative_link}</a></div>` : ''}
                             `;
 
                         } else if (cat === 'new_collection' || cat === 'book_recommendation') {
                             detailHtml = `
                                 <div class="bg-slate-50 border border-slate-100 rounded-xl overflow-hidden mb-3">
-                                    ${event.book_author ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-user-circle text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penulis</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_author}</span></div>` : ''}
-                                    ${event.book_publisher ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-buildings text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Penerbit</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_publisher}</span></div>` : ''}
-                                    ${event.shelf_location ? `<div class="flex items-center gap-2.5 px-3 py-2"><i class="ph ph-map-pin text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">Lokasi Rak</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.shelf_location}</span></div>` : ''}
+                                    ${event.book_title ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-book text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">{{ __('Judul Buku') }}</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_title}</span></div>` : ''}
+                                    ${event.book_author ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-user-circle text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">{{ __('Penulis') }}</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_author}</span></div>` : ''}
+                                    ${event.book_publisher ? `<div class="flex items-center gap-2.5 px-3 py-2 border-b border-slate-100"><i class="ph ph-buildings text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">{{ __('Penerbit') }}</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.book_publisher}</span></div>` : ''}
+                                    ${event.shelf_location ? `<div class="flex items-center gap-2.5 px-3 py-2"><i class="ph ph-map-pin text-[#106c38] text-sm shrink-0"></i><span class="text-[8.5px] font-black text-slate-400 uppercase w-14 shrink-0">{{ __('Lokasi') }}</span><span class="text-[10.5px] font-bold text-slate-800 truncate flex-1">${event.shelf_location}</span></div>` : ''}
                                 </div>
                             `;
-                            if (!actionLinks) actionLinks = [{name: 'Lihat Detail Buku', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
+                            if (!actionLinks) actionLinks = [{name: '{{ __("Lihat Detail Buku") }}', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
 
                         } else if (cat === 'library_news') {
                             detailHtml = `
                                 ${event.news_date ? `<div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-lg mb-3"><i class="ph ph-calendar-blank text-[#106c38] text-sm"></i><span class="text-[10px] font-bold text-slate-800">${event.news_date}</span></div>` : ''}
                             `;
-                            if (!actionLinks) actionLinks = [{name: 'Baca Berita', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
+                            if (!actionLinks) actionLinks = [{name: '{{ __("Baca Berita") }}', url: event.link_url || event.library_url || 'https://library.usu.ac.id/id', new_tab: true}];
 
                         } else if (cat === 'tips') {
                             const bullets = Array.isArray(event.tips_bullets) && event.tips_bullets.length > 0
@@ -438,7 +439,7 @@
                                 ${event.promo_period ? `<div class="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2 mb-3"><i class="ph ph-calendar text-[#106c38] text-base"></i><div><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide leading-none mb-0.5">Periode Promo</p><p class="text-[11px] font-bold text-slate-800">${event.promo_period}</p></div></div>` : ''}
                                 ${event.promo_benefit ? `<div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 mb-2"><p class="text-[8px] font-black text-slate-400 uppercase tracking-wide mb-1.5">Yang Kamu Dapatkan &#127873;</p><p class="text-sm font-black text-slate-800">${event.promo_benefit}</p></div>` : ''}
                             `;
-                            if (!actionLinks) actionLinks = [{name: 'Lihat Penawaran', url: event.link_url || event.library_url || '#', new_tab: true}];
+                            if (!actionLinks) actionLinks = [{name: '{{ __("Lihat Penawaran") }}', url: event.link_url || event.library_url || '#', new_tab: true}];
                         }
 
                         // ─── Action Buttons ────────────────────────────────────────
@@ -500,7 +501,7 @@
                                             <div class="space-y-1.5 pt-4">
                                                 <h3 class="text-white font-black text-base sm:text-lg leading-snug drop-shadow-md line-clamp-2">${event.title}</h3>
                                                 <div class="text-emerald-300 font-semibold text-[10px] flex items-center gap-1.5 pt-0.5">
-                                                    <span>Klik untuk lebih lanjut</span>
+                                                    <span>{{ __("Klik untuk lebih lanjut") }}</span>
                                                     <i class="ph ph-arrow-right font-bold text-[10px] group-hover:translate-x-1 transition-transform"></i>
                                                 </div>
                                             </div>
@@ -566,7 +567,7 @@
 
                                     <!-- Bottom Click Prompt (Covers remaining white space at card bottom) -->
                                     <div class="pt-4 mt-auto border-t border-slate-100 flex items-center justify-end text-[10px] text-slate-400 font-semibold group-hover:text-[#106c38] transition-colors">
-                                        <span>Klik Untuk Selengkapnya..</span>
+                                        <span>{{ __("Klik Untuk Selengkapnya..") }}</span>
                                         <i class="ph ph-caret-right text-[10px] ml-1 group-hover:translate-x-1 transition-transform"></i>
                                     </div>
                                 </div>

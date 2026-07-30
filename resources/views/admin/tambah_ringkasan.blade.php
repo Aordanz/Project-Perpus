@@ -22,7 +22,13 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 
+    <!-- TinyMCE CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
+
     <style>
+        .tox-tinymce-aux {
+            z-index: 10000 !important;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
@@ -134,16 +140,16 @@
 
     <!-- Main Content Area -->
     <div class="w-full flex-grow flex flex-col min-w-0">
-        <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+        <main class="flex-grow p-3 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6">
         
                 <!-- Header -->
-                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 bg-white border border-slate-100 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm">
                     <div>
-                        <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-                            <i class="ph ph-text-t text-usu-green text-3xl"></i>
+                        <h1 class="text-lg sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+                            <i class="ph ph-text-t text-usu-green text-2xl sm:text-3xl"></i>
                             <span>Tambah Ringkasan Buku</span>
                         </h1>
-                        <p class="text-slate-500 text-xs sm:text-sm mt-1">Pilih buku di bawah ini untuk menambahkan atau mengubah ringkasan buku.</p>
+                        <p class="text-slate-500 text-[10px] sm:text-sm mt-1">Pilih buku di bawah ini untuk menambahkan atau mengubah ringkasan buku.</p>
                     </div>
                 </div>
 
@@ -173,7 +179,7 @@
                 <div class="flex flex-col gap-6 items-start w-full">
                     
                     <!-- Search Panel -->
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex flex-col gap-6 w-full">
+                    <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-4 sm:p-6 shadow-sm flex flex-col gap-4 sm:gap-6 w-full">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div>
                                 <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
@@ -1114,7 +1120,7 @@
                 </div>
                 
                 <!-- Form -->
-                <form id="modal-ringkasan-form" action="" method="POST" class="mt-4 flex flex-col gap-4">
+                <form id="modal-ringkasan-form" action="" method="POST" class="mt-4 flex flex-col gap-4" onsubmit="if(tinymce.get('modal-ringkasan-input')) { tinymce.get('modal-ringkasan-input').save(); }">
                     @csrf
                     @method('PUT')
                     
@@ -1149,6 +1155,20 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            tinymce.init({
+                selector: '#modal-ringkasan-input',
+                menubar: false,
+                plugins: 'lists link code wordcount',
+                toolbar: 'undo redo | fontfamily fontsize | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat | code',
+                setup: function (editor) {
+                    editor.on('change', function () {
+                        editor.save(); // Sync content to textarea
+                    });
+                }
+            });
+        });
+
         window.openEditRingkasanModal = function(button) {
             const id = button.getAttribute('data-id');
             const title = button.getAttribute('data-title');
@@ -1157,7 +1177,12 @@
             
             document.getElementById('modal-book-title-display').innerText = title || "-";
             document.getElementById('modal-book-author-display').innerText = author || "-";
-            document.getElementById('modal-ringkasan-input').value = ringkasan || "";
+            
+            if (tinymce.get('modal-ringkasan-input')) {
+                tinymce.get('modal-ringkasan-input').setContent(ringkasan || "");
+            } else {
+                document.getElementById('modal-ringkasan-input').value = ringkasan || "";
+            }
             
             document.getElementById('modal-ringkasan-form').action = `/admin/books/${id}/ringkasan`;
             

@@ -1,1 +1,0 @@
-<?php require 'vendor/autoload.php'; require 'bootstrap/app.php'; $app = app(); $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap(); print_r(Illuminate\Support\Facades\Schema::getColumnListing('tbleksemplar'));

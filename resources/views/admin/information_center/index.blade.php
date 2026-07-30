@@ -56,20 +56,20 @@
 @endpush
 
 @section('content')
-<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 bg-white border border-slate-100 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm">
     <div>
-        <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-            <i class="ph ph-megaphone text-usu-green text-3xl"></i>
+        <h1 class="text-lg sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+            <i class="ph ph-megaphone text-usu-green text-2xl sm:text-3xl"></i>
             <span>Information Center</span>
         </h1>
-        <p class="text-slate-500 text-xs sm:text-sm mt-1">Kelola seluruh informasi perpustakaan yang akan ditampilkan kepada pengguna.</p>
+        <p class="text-slate-500 text-[10px] sm:text-sm mt-1">Kelola seluruh informasi perpustakaan yang akan ditampilkan kepada pengguna.</p>
     </div>
     <div class="flex items-center gap-2">
-        <a href="{{ route('informasi') }}" target="_blank" class="px-4 py-2.5 bg-emerald-50 text-[#106c38] hover:bg-emerald-100 font-bold rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 border border-emerald-200">
-            <i class="ph ph-eye font-bold text-base"></i> Preview Sisi User
+        <a href="{{ route('informasi') }}" target="_blank" class="px-3 sm:px-4 py-2 sm:py-2.5 bg-emerald-50 text-[#106c38] hover:bg-emerald-100 font-bold rounded-xl text-xs sm:text-sm transition-all shadow-sm flex items-center gap-1 sm:gap-2 border border-emerald-200">
+            <i class="ph ph-eye font-bold text-sm sm:text-base"></i> <span class="hidden sm:inline">Preview Sisi User</span>
         </a>
-        <a href="{{ route('admin.information-center.create') }}" class="btn-gold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2">
-            <i class="ph ph-plus font-bold"></i> Tambah Informasi
+        <a href="{{ route('admin.information-center.create') }}" class="btn-gold px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-sm flex items-center gap-1 sm:gap-2">
+            <i class="ph ph-plus font-bold"></i> <span>Tambah Informasi</span>
         </a>
     </div>
 </div>
@@ -114,13 +114,9 @@
                 <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Kategori</label>
                 <select name="category" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-usu-green/20 focus:border-usu-green transition-all">
                     <option value="">Semua Kategori</option>
-                    <option value="event" {{ request('category') == 'event' ? 'selected' : '' }}>Event / Kegiatan</option>
                     <option value="announcement" {{ request('category') == 'announcement' ? 'selected' : '' }}>Pengumuman</option>
-                    <option value="maintenance" {{ request('category') == 'maintenance' ? 'selected' : '' }}>Pemeliharaan (Maintenance)</option>
-                    <option value="new_collection" {{ request('category') == 'new_collection' ? 'selected' : '' }}>Buku / Koleksi Baru</option>
-                    <option value="tips" {{ request('category') == 'tips' ? 'selected' : '' }}>Tips & Trik</option>
-                    <option value="promotion" {{ request('category') == 'promotion' ? 'selected' : '' }}>Promo / Penawaran</option>
-                    <option value="general" {{ request('category') == 'general' ? 'selected' : '' }}>Informasi Umum</option>
+                    <option value="event" {{ request('category') == 'event' ? 'selected' : '' }}>Event / Kegiatan</option>
+                    <option value="book_recommendation" {{ request('category') == 'book_recommendation' ? 'selected' : '' }}>Buku Rekomendasi</option>
                 </select>
             </div>
 

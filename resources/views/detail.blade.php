@@ -74,7 +74,9 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    @include('partials.navbar')
+    @if(!request()->has('popup'))
+        @include('partials.navbar')
+    @endif
 
     <!-- Main Content Area -->
     @php
@@ -84,20 +86,20 @@
         $availableCopies = $book->items->where('kodestatus_eksemplar', 'TSD')->count();
         $borrowedCopies = $totalCopies - $availableCopies;
     @endphp
-    <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+    <main class="flex-grow max-w-[1400px] w-full mx-auto px-2 sm:px-6 lg:px-8 pt-24 pb-6 sm:pb-12">
         
         <!-- Back button (Below Navbar) -->
-        <div class="mb-6 lg:hidden">
+        <div class="mb-4 sm:mb-6 lg:hidden">
             <button onclick="history.back()" class="inline-flex items-center gap-2 text-[#106c38] hover:text-[#064e3b] transition text-sm font-bold bg-[#106c38]/5 hover:bg-[#106c38]/10 px-4 py-2 rounded-lg border border-[#106c38]/10 cursor-pointer">
                 <i class="ph ph-arrow-left"></i> {{ __('Kembali') }}
             </button>
         </div>
         
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 xl:gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 xl:gap-8">
             <!-- Left Side: Book Cover & Quick Status -->
-            <div class="lg:col-span-1 space-y-6">
+            <div class="lg:col-span-1 space-y-4 sm:space-y-6">
                 <!-- Book Cover Card -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 flex flex-col items-center shadow-sm w-full max-w-[280px] mx-auto">
+                <div class="bg-white rounded-3xl border border-slate-100 p-4 sm:p-6 flex flex-col items-center shadow-sm w-full max-w-[280px] mx-auto">
                     @php
                         $allImages = [];
                         if ($book->cover_image) {
@@ -213,7 +215,7 @@
             <!-- Right Side: Detailed Tables inside Tabs -->
             <div class="lg:col-span-3 space-y-6">
                 <!-- Book Title header -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-sm">
+                <div class="bg-white rounded-3xl border border-slate-100 p-4 sm:p-6 lg:p-8 shadow-sm">
                     <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[10px] font-bold px-3 py-1 rounded-full mb-3 tracking-wider uppercase">
                         {{ __($bigCategoryName) }}
                     </span>
@@ -224,20 +226,20 @@
                 </div>
 
                 <!-- Tabs Card -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-sm">
+                <div class="bg-white rounded-3xl border border-slate-100 p-4 sm:p-6 lg:p-8 shadow-sm">
                     <!-- Tab Headers -->
-                    <div class="border-b border-slate-200 mb-6">
-                        <nav class="flex gap-2 -mb-px" aria-label="Tabs">
-                            <button id="btn-tab-ketersediaan" onclick="switchTab('ketersediaan')" class="border-t border-x border-slate-200 border-b-white bg-white text-[#106c38] font-bold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
+                    <div class="border-b border-slate-200 mb-6 w-full">
+                        <nav class="flex gap-2 -mb-px overflow-x-auto scrollbar-hide whitespace-nowrap pb-1" aria-label="Tabs">
+                            <button id="btn-tab-ketersediaan" onclick="switchTab('ketersediaan')" class="border-t border-x border-slate-200 border-b-white bg-white text-[#106c38] font-bold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none flex-shrink-0">
                                 {{ __('Ketersediaan') }}
                             </button>
-                            <button id="btn-tab-bibliografi" onclick="switchTab('bibliografi')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
+                            <button id="btn-tab-bibliografi" onclick="switchTab('bibliografi')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none flex-shrink-0">
                                 {{ __('Informasi Detail') }}
                             </button>
-                            <button id="btn-tab-ringkasan" onclick="switchTab('ringkasan')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
+                            <button id="btn-tab-ringkasan" onclick="switchTab('ringkasan')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none flex-shrink-0">
                                 {{ __('Ringkasan Buku') }}
                             </button>
-                            <button id="btn-tab-rekomendasi" onclick="switchTab('rekomendasi')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none">
+                            <button id="btn-tab-rekomendasi" onclick="switchTab('rekomendasi')" class="border-t border-x border-transparent hover:text-slate-700 text-slate-500 font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2.5 sm:py-3 rounded-t-xl -mb-[1px] cursor-pointer transition-all focus:outline-none flex-shrink-0">
                                 {{ __('Rekomendasi') }}
                             </button>
                         </nav>
@@ -359,13 +361,13 @@
                     <!-- Tab Pane: Ringkasan Buku -->
                     <div id="pane-ringkasan" class="tab-pane hidden">
                         @if($book->ringkasanbuku)
-                            <div class="prose prose-sm prose-slate max-w-none p-4 sm:p-6 bg-slate-50/50 rounded-2xl border border-slate-100 text-slate-700 leading-relaxed">
-                                {!! nl2br(e($book->ringkasanbuku)) !!}
+                            <div class="prose prose-sm prose-slate max-w-none p-4 sm:p-6 bg-slate-50/50 rounded-2xl border border-slate-100 text-slate-700 leading-relaxed text-left">
+                                {!! $book->ringkasanbuku !!}
                             </div>
                         @else
                             <div class="flex flex-col items-center justify-center p-8 sm:p-12 bg-slate-50/50 rounded-2xl border border-slate-100 border-dashed text-slate-400">
                                 <i class="ph ph-text-align-left text-4xl mb-3 text-slate-300"></i>
-                                <span class="font-medium text-sm">Belum ada ringkasan buku</span>
+                                <span class="font-medium text-sm">{{ __('Belum ada ringkasan buku') }}</span>
                             </div>
                         @endif
                     </div>
@@ -373,11 +375,12 @@
                     <!-- Tab Pane: Rekomendasi -->
                     <div id="pane-rekomendasi" class="tab-pane hidden">
                         @if($recommendations && $recommendations->count() > 0)
+                            <h3 class="font-bold text-slate-800 mb-3">{{ __('Buku Terkait') }}</h3>
                             <div class="grid grid-cols-1 gap-3">
                                 @foreach($recommendations as $recBook)
-                                    <a href="{{ route('books.show', $recBook->idmaster) }}" class="p-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl transition flex items-center justify-between group shadow-sm hover:shadow-md cursor-pointer decoration-none">
+                                    <a href="{{ route('books.show', $recBook->idmaster) }}" target="_blank" class="p-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl transition flex items-center justify-between group shadow-sm hover:shadow-md cursor-pointer decoration-none">
                                         <div class="flex flex-col">
-                                            <span class="font-bold text-sm text-[#106c38] group-hover:text-green-800 transition line-clamp-2">{{ $recBook->title ?: 'Judul Tidak Tersedia' }}</span>
+                                            <span class="font-bold text-sm text-[#106c38] group-hover:text-green-800 transition line-clamp-2">{{ $recBook->title ?: __('Judul Tidak Tersedia') }}</span>
                                         </div>
                                         <i class="ph ph-arrow-right text-slate-300 group-hover:text-[#106c38] group-hover:translate-x-1 transition-all"></i>
                                     </a>
@@ -386,12 +389,12 @@
                             
                             <!-- Pagination -->
                             <div class="mt-6 flex justify-center">
-                                {{ $recommendations->appends(request()->query())->links('pagination::tailwind') }}
+                                {{ $recommendations->appends(array_merge(request()->query(), ['tab' => 'rekomendasi']))->links('pagination::tailwind') }}
                             </div>
                         @else
                             <div class="flex flex-col items-center justify-center p-8 sm:p-12 bg-slate-50/50 rounded-2xl border border-slate-100 border-dashed text-slate-400">
                                 <i class="ph ph-books text-4xl mb-3 text-slate-300"></i>
-                                <span class="font-medium text-sm">Belum ada rekomendasi terkait</span>
+                                <span class="font-medium text-sm">{{ __('Belum ada rekomendasi terkait') }}</span>
                             </div>
                         @endif
                     </div>
@@ -449,6 +452,14 @@
             if (panes[tabId]) panes[tabId].classList.remove('hidden');
             if (btns[tabId]) btns[tabId].className = activeClass;
         }
+
+        // On page load, check if there's a tab query param and switch to it
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('tab') === 'rekomendasi') {
+                switchTab('rekomendasi');
+            }
+        });
 
         // Interactive Slideshow/Carousel for Book Cover Images
         document.addEventListener('DOMContentLoaded', () => {
@@ -680,6 +691,8 @@
         <button id="lightbox-next" class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition cursor-pointer z-[10000] hidden">
             <i class="ph ph-caret-right text-2xl font-bold"></i>
         </button>
+    </div>
+
     </div>
 
     @include('partials.footer')

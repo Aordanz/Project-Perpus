@@ -134,16 +134,16 @@
 
     <!-- Main Content Area -->
     <div class="w-full flex-grow flex flex-col min-w-0">
-        <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+        <main class="flex-grow p-3 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6">
         
                 <!-- Header -->
-                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 bg-white border border-slate-100 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm">
                     <div>
-                        <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-                            <i class="ph ph-image-plus text-usu-green text-3xl"></i>
+                        <h1 class="text-lg sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+                            <i class="ph ph-image-plus text-usu-green text-2xl sm:text-3xl"></i>
                             <span>Tambah Cover Buku</span>
                         </h1>
-                        <p class="text-slate-500 text-xs sm:text-sm mt-1">Pilih buku di bawah ini untuk menambahkan atau mengubah gambar sampul (cover) buku.</p>
+                        <p class="text-slate-500 text-[10px] sm:text-sm mt-1">Pilih buku di bawah ini untuk menambahkan atau mengubah gambar sampul (cover) buku.</p>
                     </div>
                 </div>
 
@@ -173,7 +173,7 @@
                 <div class="flex flex-col gap-6 items-start w-full">
                     
                     <!-- Search Panel -->
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex flex-col gap-6 w-full">
+                    <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-4 sm:p-6 shadow-sm flex flex-col gap-4 sm:gap-6 w-full">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div>
                                 <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">

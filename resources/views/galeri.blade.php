@@ -50,16 +50,16 @@
     <main>
 
     <!-- Header Section -->
-    <div class="relative z-30 pt-24 pb-12 bg-white shadow-sm mb-6">
+    <div class="relative z-30 pt-24 pb-6 sm:pb-12 bg-white shadow-sm mb-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center border border-green-100">
-                        <i class="ph ph-squares-four text-2xl font-bold"></i>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center border border-green-100 flex-shrink-0">
+                        <i class="ph ph-squares-four text-xl sm:text-2xl font-bold"></i>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">{{ __('Galeri Koleksi') }}</h1>
-                        <p class="text-sm text-slate-500 font-medium">{{ __('Jelajahi seluruh koleksi literatur kami.') }}</p>
+                        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-800 tracking-tight">{{ __('Galeri Koleksi') }}</h1>
+                        <p class="text-xs sm:text-sm text-slate-500 font-medium">{{ __('Jelajahi seluruh koleksi literatur kami.') }}</p>
                     </div>
                 </div>
 

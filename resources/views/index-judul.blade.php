@@ -58,35 +58,35 @@
 
     <!-- Content Section -->
     <div class="flex-grow max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20">
-        <div class="bg-white rounded-3xl p-8 md:p-12 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 md:p-12 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative">
             
-            <div class="text-center mb-10">
-                <h2 class="text-2xl font-bold text-slate-800">{{ __('Cari Berdasarkan Awalan') }}</h2>
+            <div class="text-center mb-8 sm:mb-10">
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-800">{{ __('Cari Berdasarkan Awalan') }}</h2>
                 <div class="w-20 h-1 bg-[#106c38] mx-auto mt-4 rounded-full"></div>
             </div>
 
             <!-- Numbers Section -->
-            <div class="mb-10">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">{{ __('Angka') }}</h3>
-                <div class="flex flex-wrap justify-center gap-3">
+            <div class="mb-8 sm:mb-10">
+                <h3 class="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">{{ __('Angka') }}</h3>
+                <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
                     @foreach(range(0, 9) as $number)
                         <a href="{{ route('index-judul.show', ['initial' => $number]) }}" 
-                           class="w-12 h-12 flex items-center justify-center bg-slate-50 hover:bg-[#106c38] text-slate-700 hover:text-white rounded-xl font-bold text-lg border border-slate-200 hover:border-[#106c38] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                           class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-slate-50 hover:bg-[#106c38] text-slate-700 hover:text-white rounded-xl font-bold text-base sm:text-lg border border-slate-200 hover:border-[#106c38] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                             {{ $number }}
                         </a>
                     @endforeach
                 </div>
             </div>
 
-            <div class="w-full h-px bg-slate-100 mb-10"></div>
+            <div class="w-full h-px bg-slate-100 mb-8 sm:mb-10"></div>
 
             <!-- Alphabet Section -->
             <div>
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">{{ __('Abjad') }}</h3>
-                <div class="flex flex-wrap justify-center gap-3">
+                <h3 class="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">{{ __('Abjad') }}</h3>
+                <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
                     @foreach(range('A', 'Z') as $letter)
                         <a href="{{ route('index-judul.show', ['initial' => $letter]) }}" 
-                           class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center bg-slate-50 hover:bg-[#106c38] text-slate-700 hover:text-white rounded-xl font-bold text-lg sm:text-xl border border-slate-200 hover:border-[#106c38] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                           class="w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center bg-slate-50 hover:bg-[#106c38] text-slate-700 hover:text-white rounded-xl font-bold text-base sm:text-xl border border-slate-200 hover:border-[#106c38] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                             {{ $letter }}
                         </a>
                     @endforeach

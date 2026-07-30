@@ -64,8 +64,8 @@
     <div class="flex-grow max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20">
         <div class="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 overflow-hidden">
             
-            <div class="p-8 md:p-12">
-                <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-100">
+            <div class="p-6 sm:p-8 md:p-12">
+                <div class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8 pb-6 border-b border-slate-100">
                     <div class="w-12 h-12 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center flex-shrink-0">
                         <i class="ph ph-magnifying-glass text-2xl font-bold"></i>
                     </div>
@@ -82,7 +82,7 @@
 
                     <div class="grid md:grid-cols-2 gap-8 mt-8">
                         <!-- Pencarian Sederhana -->
-                        <div class="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-100 hover:border-green-200 transition-colors group">
+                        <div class="bg-slate-50 rounded-2xl p-5 sm:p-6 md:p-8 border border-slate-100 hover:border-green-200 transition-colors group">
                             <div class="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center mb-6 text-[#106c38] group-hover:scale-110 transition-transform duration-300">
                                 <i class="ph ph-cursor-click text-2xl"></i>
                             </div>
@@ -98,7 +98,7 @@
                         </div>
 
                         <!-- Pencarian Spesifik -->
-                        <div class="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-100 hover:border-green-200 transition-colors group">
+                        <div class="bg-slate-50 rounded-2xl p-5 sm:p-6 md:p-8 border border-slate-100 hover:border-green-200 transition-colors group">
                             <div class="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center mb-6 text-[#106c38] group-hover:scale-110 transition-transform duration-300">
                                 <i class="ph ph-funnel text-2xl"></i>
                             </div>

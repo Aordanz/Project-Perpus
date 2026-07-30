@@ -46,6 +46,11 @@ class AdminController extends Controller implements HasMiddleware
         
         $totalBooksWithCover = Book::whereNotNull('cover_image')->count();
         $totalBooksWithoutCover = Book::whereNull('cover_image')->count();
+        
+        $totalBooksWithRingkasan = Book::whereNotNull('ringkasanbuku')->where('ringkasanbuku', '!=', '')->count();
+        $totalBooksWithoutRingkasan = Book::where(function($q) {
+            $q->whereNull('ringkasanbuku')->orWhere('ringkasanbuku', '');
+        })->count();
 
         // Get list of all locations for the dropdown, with "Belum Ada Lokasi" at the top
         $locationsList = \Illuminate\Support\Facades\DB::table('tbllokasi')
@@ -53,9 +58,9 @@ class AdminController extends Controller implements HasMiddleware
             ->orderBy('lokasi')
             ->pluck('lokasi');
 
-        // Calculate stats for each Location or Koleksi Terbaru
-        if ($request->filled('lokasi') && $request->lokasi !== 'all') {
-            if ($request->lokasi === 'koleksi_terbaru') {
+        // Calculate stats for each Location or Koleksi Terbaru for Cover
+        if ($request->filled('lokasi_cover') && $request->lokasi_cover !== 'all') {
+            if ($request->lokasi_cover === 'koleksi_terbaru') {
                 $latest40Ids = Book::whereNotNull('tglinput')
                     ->where('tglinput', '!=', '')
                     ->where('tglinput', '!=', '0000-00-00 00:00:00')
@@ -63,34 +68,72 @@ class AdminController extends Controller implements HasMiddleware
                     ->limit(40)
                     ->pluck('idmaster');
 
-                $locationStats = \Illuminate\Support\Facades\DB::table('tblbuku')
+                $locationStatsCover = \Illuminate\Support\Facades\DB::table('tblbuku')
                     ->whereIn('idmaster', $latest40Ids)
                     ->select(
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT idbuku) as total_books'),
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN cover_image IS NOT NULL AND cover_image != "" THEN idbuku END) as with_cover'),
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN cover_image IS NULL OR cover_image = "" THEN idbuku END) as without_cover')
                     )->first();
-                $selectedLocation = 'Koleksi Terbaru';
+                $selectedLocationCover = 'Koleksi Terbaru';
             } else {
-                $locationStats = \Illuminate\Support\Facades\DB::table('tbllokasi')
+                $locationStatsCover = \Illuminate\Support\Facades\DB::table('tbllokasi')
                     ->join('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
                     ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
-                    ->where('tbllokasi.lokasi', $request->lokasi)
+                    ->where('tbllokasi.lokasi', $request->lokasi_cover)
                     ->select(
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as total_books'),
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NOT NULL AND tblbuku.cover_image != "" THEN tblbuku.idbuku END) as with_cover'),
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NULL OR tblbuku.cover_image = "" THEN tblbuku.idbuku END) as without_cover')
                     )->first();
-                $selectedLocation = $request->lokasi;
+                $selectedLocationCover = $request->lokasi_cover;
             }
         } else {
-            // Avoid heavy query when 'Semua Lokasi' is selected
-            $locationStats = (object) [
+            $locationStatsCover = (object) [
                 'total_books' => $totalBooks,
                 'with_cover' => $totalBooksWithCover,
                 'without_cover' => $totalBooksWithoutCover
             ];
-            $selectedLocation = 'Semua Lokasi';
+            $selectedLocationCover = 'Semua Lokasi';
+        }
+
+        // Calculate stats for each Location or Koleksi Terbaru for Ringkasan
+        if ($request->filled('lokasi_ringkasan') && $request->lokasi_ringkasan !== 'all') {
+            if ($request->lokasi_ringkasan === 'koleksi_terbaru') {
+                $latest40Ids = Book::whereNotNull('tglinput')
+                    ->where('tglinput', '!=', '')
+                    ->where('tglinput', '!=', '0000-00-00 00:00:00')
+                    ->orderByDesc('tglinput')
+                    ->limit(40)
+                    ->pluck('idmaster');
+
+                $locationStatsRingkasan = \Illuminate\Support\Facades\DB::table('tblbuku')
+                    ->whereIn('idmaster', $latest40Ids)
+                    ->select(
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT idbuku) as total_books'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN ringkasanbuku IS NOT NULL AND ringkasanbuku != "" THEN idbuku END) as with_ringkasan'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN ringkasanbuku IS NULL OR ringkasanbuku = "" THEN idbuku END) as without_ringkasan')
+                    )->first();
+                $selectedLocationRingkasan = 'Koleksi Terbaru';
+            } else {
+                $locationStatsRingkasan = \Illuminate\Support\Facades\DB::table('tbllokasi')
+                    ->join('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
+                    ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->where('tbllokasi.lokasi', $request->lokasi_ringkasan)
+                    ->select(
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as total_books'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.ringkasanbuku IS NOT NULL AND tblbuku.ringkasanbuku != "" THEN tblbuku.idbuku END) as with_ringkasan'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.ringkasanbuku IS NULL OR tblbuku.ringkasanbuku = "" THEN tblbuku.idbuku END) as without_ringkasan')
+                    )->first();
+                $selectedLocationRingkasan = $request->lokasi_ringkasan;
+            }
+        } else {
+            $locationStatsRingkasan = (object) [
+                'total_books' => $totalBooks,
+                'with_ringkasan' => $totalBooksWithRingkasan,
+                'without_ringkasan' => $totalBooksWithoutRingkasan
+            ];
+            $selectedLocationRingkasan = 'Semua Lokasi';
         }
 
         return view('admin.index', compact(
@@ -100,9 +143,13 @@ class AdminController extends Controller implements HasMiddleware
             'borrowedItems',
             'totalBooksWithCover',
             'totalBooksWithoutCover',
-            'locationStats',
-            'locationsList',
-            'selectedLocation'
+            'totalBooksWithRingkasan',
+            'totalBooksWithoutRingkasan',
+            'locationStatsCover',
+            'selectedLocationCover',
+            'locationStatsRingkasan',
+            'selectedLocationRingkasan',
+            'locationsList'
         ));
     }
 

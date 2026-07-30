@@ -102,22 +102,22 @@
         </div>
 
         <!-- Right Side: Interaction Area -->
-        <div class="md:col-span-7 p-8 md:p-12 flex flex-col justify-center relative">
+        <div class="md:col-span-7 p-6 sm:p-8 md:p-12 flex flex-col justify-center relative">
             
             <!-- Back Button to Home (visible initially or on role selection) -->
-            <a href="{{ route('home') }}" id="btn-back-home" class="absolute top-6 right-8 text-slate-400 hover:text-[#106c38] flex items-center gap-1.5 text-xs font-semibold tracking-wide transition uppercase">
-                <i class="ph ph-house text-base"></i> {{ __('Beranda') }}
+            <a href="{{ route('home') }}" id="btn-back-home" class="absolute top-4 right-4 sm:top-6 sm:right-8 text-slate-400 hover:text-[#106c38] flex items-center gap-1.5 text-xs font-semibold tracking-wide transition uppercase">
+                <i class="ph ph-house text-base"></i> <span class="hidden sm:inline">{{ __('Beranda') }}</span>
             </a>
 
             <!-- SECTION 2: LOGIN FORM -->
             <div id="section-login-form">
 
-                <div class="mb-6">
-                    <span id="form-role-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 bg-green-50 text-[#106c38]">
-                        <i class="ph ph-user-gear"></i> Pustakawan
+                <div class="mb-4 sm:mb-6">
+                    <span id="form-role-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-2 bg-green-50 text-[#106c38]">
+                        <i class="ph ph-user-gear"></i> {{ __('Pustakawan') }}
                     </span>
-                    <h2 id="form-role-title" class="text-2xl font-bold text-slate-800 tracking-tight">
-                        Masuk sebagai Pustakawan
+                    <h2 id="form-role-title" class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">
+                        {{ __('Masuk sebagai Pustakawan') }}
                     </h2>
                     <p class="text-slate-500 text-xs mt-1">{{ __('Masukkan kredensial Anda untuk melanjutkan ke aplikasi.') }}</p>
                 </div>
@@ -147,7 +147,7 @@
 
                     <!-- Username / Email Input -->
                     <div>
-                        <label for="login" id="label-login" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Username </label>
+                        <label for="login" id="label-login" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">{{ __('Username') }}</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <i class="ph ph-user text-lg" id="icon-login"></i>
@@ -215,30 +215,30 @@
             
             Swal.fire({
                 icon: 'error',
-                title: 'Login Gagal',
+                title: '{{ __("Login Gagal") }}',
                 html: errorMessages,
                 confirmButtonColor: '#106c38',
-                confirmButtonText: 'Tutup'
+                confirmButtonText: '{{ __("Tutup") }}'
             });
         @endif
 
         @if (session('error'))
             Swal.fire({
                 icon: 'error',
-                title: 'Gagal',
+                title: '{{ __("Gagal") }}',
                 text: '{{ session('error') }}',
                 confirmButtonColor: '#106c38',
-                confirmButtonText: 'Tutup'
+                confirmButtonText: '{{ __("Tutup") }}'
             });
         @endif
 
         @if (session('success'))
             Swal.fire({
                 icon: 'success',
-                title: 'Berhasil',
+                title: '{{ __("Berhasil") }}',
                 text: '{{ session('success') }}',
                 confirmButtonColor: '#106c38',
-                confirmButtonText: 'Lanjut'
+                confirmButtonText: '{{ __("Lanjut") }}'
             });
         @endif
     </script>
