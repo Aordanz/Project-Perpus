@@ -65,7 +65,7 @@ class ChatbotController extends Controller
                 ],
                 'generationConfig' => [
                     'temperature' => 0.4,
-                    'maxOutputTokens' => 750,
+                    'maxOutputTokens' => 2048,
                 ]
             ]);
 
