@@ -190,23 +190,44 @@
                 </div>
 
                 <!-- Contact / Help info (Desktop only) -->
-                <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 text-white shadow-sm hidden lg:flex flex-col gap-3">
-                    <i class="ph ph-info text-2xl text-green-200"></i>
-                    <!-- <h4 class="font-bold text-sm">{{ __('Butuh bantuan mencari buku?') }}</h4> -->
-                    <p class="text-xs text-green-100/85 leading-relaxed">
-                        <!-- {{ __('Silakan hubungi pustakawan kami di meja informasi atau gunakan layanan pesan instan perpustakaan untuk memandu pencarian Anda di rak buku.') }} -->
-                    </p>
-                    <div class="mt-2 pt-2.5 border-t border-white/10 text-[10px] text-green-100/85 space-y-2">
-                        <div>
-                            <span class="font-bold block text-white mb-0.5">{{ __('Tipe Koleksi:') }}</span>
-                            <ul class="list-disc pl-3.5 space-y-0.5">
-                                <li><strong>STD:</strong> {{ __('Standard (Koleksi dengan jangka waktu pinjam normal)') }}</li>
-                                <li><strong>KPS:</strong> {{ __('Koleksi Pinjam Singkat (Koleksi dengan jangka waktu pinjam terbatas/singkat)') }}</li>
-                            </ul>
+                <div class="bg-[#106c38] rounded-3xl p-6 text-white shadow-md hidden lg:flex flex-col gap-4 border border-emerald-700/50">
+                    <!-- Header -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-emerald-200 shrink-0 border border-white/20">
+                            <i class="ph ph-info text-xl font-bold"></i>
                         </div>
                         <div>
-                            <span class="font-bold block text-white mb-0.5">{{ __('Eksemplar:') }}</span>
-                            <p>{{ __('Jumlah salinan atau unit fisik buku yang tersedia di perpustakaan.') }}</p>
+                            <h4 class="font-extrabold text-sm text-white tracking-wide">{{ __('Keterangan Ketersediaan') }}</h4>
+                            <p class="text-[11px] text-emerald-200/80 font-medium">{{ __('Panduan istilah koleksi') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-white/15 pt-4 space-y-4">
+                        <!-- Tipe Koleksi -->
+                        <div>
+                            <span class="font-extrabold text-[11px] uppercase tracking-wider text-emerald-200 block mb-2.5">{{ __('Tipe Koleksi:') }}</span>
+                            <div class="space-y-2.5">
+                                <div class="flex items-start gap-2.5 text-xs">
+                                    <span class="font-extrabold text-[10px] bg-white text-[#106c38] px-2 py-0.5 rounded-md font-mono shrink-0 mt-0.5 shadow-sm">STD</span>
+                                    <p class="text-[11.5px] text-emerald-50 leading-snug">
+                                        <strong class="font-bold text-white">Standard:</strong> {{ __('Jangka waktu pinjam normal') }}
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-2.5 text-xs">
+                                    <span class="font-extrabold text-[10px] bg-white text-[#106c38] px-2 py-0.5 rounded-md font-mono shrink-0 mt-0.5 shadow-sm">KPS</span>
+                                    <p class="text-[11.5px] text-emerald-50 leading-snug">
+                                        <strong class="font-bold text-white">Pinjam Singkat:</strong> {{ __('Jangka waktu pinjam terbatas/singkat') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Eksemplar -->
+                        <div class="pt-3 border-t border-white/10">
+                            <span class="font-extrabold text-[11px] uppercase tracking-wider text-emerald-200 block mb-1.5">{{ __('Eksemplar:') }}</span>
+                            <p class="text-[11.5px] text-emerald-50 leading-relaxed">
+                                {{ __('Jumlah salinan atau unit fisik buku yang tersedia di perpustakaan.') }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -401,23 +422,44 @@
                 </div>
 
                 <!-- Contact / Help info (Mobile only) -->
-                <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] rounded-3xl p-6 text-white shadow-sm flex lg:hidden flex-col gap-3">
-                    <i class="ph ph-info text-2xl text-green-200"></i>
-                    <h4 class="font-bold text-sm">{{ __('Butuh bantuan mencari buku?') }}</h4>
-                    <p class="text-xs text-green-100/85 leading-relaxed">
-                        {{ __('Silakan hubungi pustakawan kami di meja informasi atau gunakan layanan pesan instan perpustakaan untuk memandu pencarian Anda di rak buku.') }}
-                    </p>
-                    <div class="mt-2 pt-2.5 border-t border-white/10 text-[10px] text-green-100/85 space-y-2">
-                        <div>
-                            <span class="font-bold block text-white mb-0.5">{{ __('Tipe Koleksi:') }}</span>
-                            <ul class="list-disc pl-3.5 space-y-0.5">
-                                <li><strong>STD:</strong> {{ __('Standard (Koleksi dengan jangka waktu pinjam normal)') }}</li>
-                                <li><strong>KPS:</strong> {{ __('Koleksi Pinjam Singkat (Koleksi dengan jangka waktu pinjam terbatas/singkat)') }}</li>
-                            </ul>
+                <div class="bg-[#106c38] rounded-3xl p-5 sm:p-6 text-white shadow-md flex lg:hidden flex-col gap-4 border border-emerald-700/50">
+                    <!-- Header -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-emerald-200 shrink-0 border border-white/20">
+                            <i class="ph ph-info text-xl font-bold"></i>
                         </div>
                         <div>
-                            <span class="font-bold block text-white mb-0.5">{{ __('Eksemplar:') }}</span>
-                            <p>{{ __('Jumlah salinan atau unit fisik buku yang tersedia di perpustakaan.') }}</p>
+                            <h4 class="font-extrabold text-sm text-white tracking-wide">{{ __('Keterangan Ketersediaan') }}</h4>
+                            <p class="text-[11px] text-emerald-200/80 font-medium">{{ __('Panduan istilah koleksi') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-white/15 pt-4 space-y-4">
+                        <!-- Tipe Koleksi -->
+                        <div>
+                            <span class="font-extrabold text-[11px] uppercase tracking-wider text-emerald-200 block mb-2.5">{{ __('Tipe Koleksi:') }}</span>
+                            <div class="space-y-2.5">
+                                <div class="flex items-start gap-2.5 text-xs">
+                                    <span class="font-extrabold text-[10px] bg-white text-[#106c38] px-2 py-0.5 rounded-md font-mono shrink-0 mt-0.5 shadow-sm">STD</span>
+                                    <p class="text-[11.5px] text-emerald-50 leading-snug">
+                                        <strong class="font-bold text-white">Standard:</strong> {{ __('Jangka waktu pinjam normal') }}
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-2.5 text-xs">
+                                    <span class="font-extrabold text-[10px] bg-white text-[#106c38] px-2 py-0.5 rounded-md font-mono shrink-0 mt-0.5 shadow-sm">KPS</span>
+                                    <p class="text-[11.5px] text-emerald-50 leading-snug">
+                                        <strong class="font-bold text-white">Pinjam Singkat:</strong> {{ __('Jangka waktu pinjam terbatas/singkat') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Eksemplar -->
+                        <div class="pt-3 border-t border-white/10">
+                            <span class="font-extrabold text-[11px] uppercase tracking-wider text-emerald-200 block mb-1.5">{{ __('Eksemplar:') }}</span>
+                            <p class="text-[11.5px] text-emerald-50 leading-relaxed">
+                                {{ __('Jumlah salinan atau unit fisik buku yang tersedia di perpustakaan.') }}
+                            </p>
                         </div>
                     </div>
                 </div>
