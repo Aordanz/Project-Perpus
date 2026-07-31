@@ -171,7 +171,8 @@
             menuBackdrop.classList.add('opacity-100');
             menuDrawer.classList.remove('translate-x-full');
             menuDrawer.classList.add('translate-x-0');
-            document.body.style.overflow = 'hidden';
+            // Gunakan classList agar selector CSS body.overflow-hidden dapat mendeteksi ini
+            document.body.classList.add('overflow-hidden');
         }
 
         function closeMenu() {
@@ -179,7 +180,8 @@
             menuBackdrop.classList.add('opacity-0');
             menuDrawer.classList.remove('translate-x-0');
             menuDrawer.classList.add('translate-x-full');
-            document.body.style.overflow = '';
+            // Hapus class, bukan inline style, agar tidak ada konflik
+            document.body.classList.remove('overflow-hidden');
             setTimeout(() => menuPanel.classList.add('pointer-events-none'), 300);
         }
 
@@ -825,7 +827,7 @@
             eventModal.classList.add('opacity-100');
             eventContent.classList.remove('scale-95', 'opacity-0');
             eventContent.classList.add('scale-100', 'opacity-100');
-            document.body.style.overflow = 'hidden';
+            document.body.classList.add('overflow-hidden');
             document.documentElement.style.overflow = 'hidden';
         }
 
@@ -853,7 +855,7 @@
             setTimeout(() => {
                 eventModal.classList.remove('flex');
                 eventModal.classList.add('hidden');
-                document.body.style.overflow = '';
+                document.body.classList.remove('overflow-hidden');
                 document.documentElement.style.overflow = '';
             }, 300);
         }

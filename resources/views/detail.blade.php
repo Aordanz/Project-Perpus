@@ -605,7 +605,7 @@
                 lightbox.offsetHeight; // trigger reflow
                 lightbox.classList.add('opacity-100', 'flex');
                 lightbox.classList.remove('opacity-0');
-                document.body.style.overflow = 'hidden';
+                document.body.classList.add('overflow-hidden');
             }
 
             function closeLightbox() {
@@ -615,7 +615,7 @@
                 setTimeout(() => {
                     lightbox.classList.add('hidden');
                     lightbox.classList.remove('flex');
-                    document.body.style.overflow = '';
+                    document.body.classList.remove('overflow-hidden');
                 }, 300);
             }
 

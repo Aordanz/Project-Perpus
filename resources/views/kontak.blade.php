@@ -215,10 +215,10 @@
                             </div>
                         </div>
                         <h3 class="text-[10px] font-extrabold uppercase tracking-widest text-[#106c38] mb-1.5">{{ __('Waktu Kunjungan') }}</h3>
-                        <h4 class="text-xl font-extrabold text-slate-800 mb-6">{{ __('Jam Operasional') }}</h4>
+                        <h4 class="text-xl font-extrabold text-slate-800 mb-4">{{ __('Jam Operasional') }}</h4>
                         
-                        <div class="flex flex-col gap-4 text-left w-full mb-6">
-                            <div class="flex items-center justify-between pb-4 border-b border-slate-50">
+                        <div class="flex flex-col gap-2.5 text-left w-full mb-3.5">
+                            <div class="flex items-center justify-between pb-2.5 border-b border-slate-50">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
                                         <i class="ph ph-calendar-blank text-base"></i>
@@ -227,7 +227,7 @@
                                 </div>
                                 <span class="text-[13px] font-black text-[#106c38]">08.00 - 20.00</span>
                             </div>
-                            <div class="flex items-center justify-between pb-4 border-b border-slate-50">
+                            <div class="flex items-center justify-between pb-2.5 border-b border-slate-50">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
                                         <i class="ph ph-calendar-blank text-base"></i>
@@ -236,7 +236,7 @@
                                 </div>
                                 <span class="text-[13px] font-black text-[#106c38]">08.00 - 17.00</span>
                             </div>
-                            <div class="flex items-center justify-between pt-1">
+                            <div class="flex items-center justify-between pt-0.5">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#106c38]">
                                         <i class="ph ph-calendar-blank text-base"></i>
@@ -247,11 +247,17 @@
                             </div>
                         </div>
                         
-                        <div class="mt-auto w-full bg-emerald-50 rounded-2xl p-4 flex items-center gap-4">
-                            <i class="ph ph-info text-2xl text-[#106c38]"></i>
-                            <div class="text-left">
-                                <p class="text-[11px] font-bold text-slate-500 mb-0.5">{{ __('Istirahat Jumat:') }}</p>
-                                <p class="text-[13px] font-extrabold text-[#106c38]">12.00 - 13.30</p>
+                        <div class="mt-auto w-full bg-emerald-50 rounded-2xl p-3 flex items-center gap-3 border border-emerald-100/60">
+                            <i class="ph ph-info text-xl text-[#106c38] shrink-0"></i>
+                            <div class="text-left w-full space-y-1">
+                                <div class="flex items-center justify-between gap-1 text-[11px]">
+                                    <span class="font-bold text-slate-600">{{ __('Istirahat Senin – Kamis:') }}</span>
+                                    <span class="font-extrabold text-[#106c38] whitespace-nowrap">12.00 - 13.00</span>
+                                </div>
+                                <div class="flex items-center justify-between gap-1 text-[11px] pt-1 border-t border-emerald-200/50">
+                                    <span class="font-bold text-slate-600">{{ __('Istirahat Jumat:') }}</span>
+                                    <span class="font-extrabold text-[#106c38] whitespace-nowrap">12.00 - 13.30</span>
+                                </div>
                             </div>
                         </div>
                     </div>
