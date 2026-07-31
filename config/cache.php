@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_STORE', 'database'),
+    'default' => env('CACHE_STORE', 'file'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,9 +41,11 @@ return [
 
         'database' => [
             'driver' => 'database',
-            'connection' => env('DB_CACHE_CONNECTION'),
+            // Arahkan ke opac_katalog — tabel 'cache' & 'cache_locks' hanya ada di sana,
+            // bukan di database OPAC utama (perpustakaan_usu).
+            'connection' => env('DB_CACHE_CONNECTION', 'opac_katalog'),
             'table' => env('DB_CACHE_TABLE', 'cache'),
-            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
+            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION', 'opac_katalog'),
             'lock_table' => env('DB_CACHE_LOCK_TABLE'),
         ],
 

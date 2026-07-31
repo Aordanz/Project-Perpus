@@ -523,7 +523,7 @@
                 setTimeout(() => {
                     lightbox.classList.add('hidden');
                     lightbox.classList.remove('flex');
-                    document.body.style.overflow = '';
+                    document.body.classList.remove('overflow-hidden');
                 }, 300);
             }
 
