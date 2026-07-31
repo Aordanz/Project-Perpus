@@ -117,7 +117,7 @@
                         <div class="w-full h-full bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow relative">
                             @if(count($allImages) > 0)
                                 <!-- Slideshow wrapper -->
-                                <div class="w-full h-full relative shadow-inner cursor-zoom-in" id="book-slideshow" onclick="openLightbox()">
+                                <div class="w-full h-full relative shadow-inner cursor-zoom-in" id="book-slideshow">
                                     @foreach($allImages as $index => $imgUrl)
                                         <img src="{{ $imgUrl }}" 
                                              alt="Cover {{ $index + 1 }}" 
@@ -472,101 +472,9 @@
             const btnNext = document.getElementById('btn-slide-next');
             
             const totalSlides = slides.length;
-            if (totalSlides <= 1) {
-                // If only 1 image (or none), do absolutely nothing. No autoplay, no events.
-                return;
-            }
-
+            
             let currentIdx = 0;
             let slideInterval;
-
-            function showSlide(index) {
-                // Handle index wrapping
-                if (index >= totalSlides) {
-                    currentIdx = 0;
-                } else if (index < 0) {
-                    currentIdx = totalSlides - 1;
-                } else {
-                    currentIdx = index;
-                }
-
-                // Update slides opacity & z-index
-                slides.forEach((slide, i) => {
-                    if (i === currentIdx) {
-                        slide.classList.remove('opacity-0', 'z-0');
-                        slide.classList.add('opacity-100', 'z-10');
-                    } else {
-                        slide.classList.remove('opacity-100', 'z-10');
-                        slide.classList.add('opacity-0', 'z-0');
-                    }
-                });
-
-                // Update dots active status
-                dots.forEach((dot, i) => {
-                    if (i === currentIdx) {
-                        dot.classList.add('!bg-white', 'scale-110');
-                    } else {
-                        dot.classList.remove('!bg-white', 'scale-110');
-                    }
-                });
-            }
-
-            function nextSlide() {
-                showSlide(currentIdx + 1);
-            }
-
-            function prevSlide() {
-                showSlide(currentIdx - 1);
-            }
-
-            function startAutoPlay() {
-                stopAutoPlay(); // Prevent duplicates
-                slideInterval = setInterval(nextSlide, 3500); // 3.5 seconds
-            }
-
-            function stopAutoPlay() {
-                if (slideInterval) {
-                    clearInterval(slideInterval);
-                }
-            }
-
-            // Click on image container to open lightbox
-            slideshow.addEventListener('click', (e) => {
-                if (e.target.closest('#btn-slide-prev') || e.target.closest('#btn-slide-next') || e.target.closest('.slide-dot')) {
-                    return;
-                }
-                const activeImg = slides[currentIdx];
-                if (activeImg) {
-                    openLightbox(activeImg.src);
-                }
-            });
-
-            // Nav buttons
-            if (btnNext) {
-                btnNext.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    nextSlide();
-                    startAutoPlay();
-                });
-            }
-
-            if (btnPrev) {
-                btnPrev.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    prevSlide();
-                    startAutoPlay();
-                });
-            }
-
-            // Dot indicators click
-            dots.forEach((dot) => {
-                dot.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const index = parseInt(dot.getAttribute('data-dot-index'));
-                    showSlide(index);
-                    startAutoPlay();
-                });
-            });
 
             // Lightbox functionality
             const lightbox = document.getElementById('image-lightbox-modal');
@@ -575,16 +483,13 @@
             const lightboxPrev = document.getElementById('lightbox-prev');
             const lightboxNext = document.getElementById('lightbox-next');
 
-            // Gather all image URLs from the main slideshow
-            const slideshowImgElements = document.querySelectorAll('.slideshow-slide');
-            const allImageSources = Array.from(slideshowImgElements).map(img => img.src);
+            const allImageSources = Array.from(slides).map(img => img.src);
             let lightboxCurrentIdx = 0;
 
             function updateLightboxImage() {
                 if (!lightboxImg || allImageSources.length === 0) return;
                 lightboxImg.src = allImageSources[lightboxCurrentIdx];
                 
-                // Show/hide navigation buttons in lightbox if there are multiple images
                 if (allImageSources.length > 1) {
                     if (lightboxPrev) lightboxPrev.classList.remove('hidden');
                     if (lightboxNext) lightboxNext.classList.remove('hidden');
@@ -594,19 +499,22 @@
                 }
             }
 
-            function openLightbox(src) {
-                if (!lightbox || !lightboxImg) return;
-                
-                // Match the current slide index
-                lightboxCurrentIdx = currentIdx;
-                updateLightboxImage();
+            slideshow.addEventListener('click', (e) => {
+                if (e.target.closest('#btn-slide-prev') || e.target.closest('#btn-slide-next') || e.target.closest('.slide-dot')) {
+                    return;
+                }
+                const activeImg = slides[currentIdx];
+                if (activeImg) {
+                    lightboxCurrentIdx = currentIdx;
+                    updateLightboxImage();
 
-                lightbox.classList.remove('hidden');
-                lightbox.offsetHeight; // trigger reflow
-                lightbox.classList.add('opacity-100', 'flex');
-                lightbox.classList.remove('opacity-0');
-                document.body.classList.add('overflow-hidden');
-            }
+                    lightbox.classList.remove('hidden');
+                    lightbox.offsetHeight; // trigger reflow
+                    lightbox.classList.add('opacity-100', 'flex');
+                    lightbox.classList.remove('opacity-0');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
 
             function closeLightbox() {
                 if (!lightbox) return;
@@ -652,7 +560,6 @@
                 });
             }
 
-            // Keyboard navigation inside lightbox
             document.addEventListener('keydown', (e) => {
                 if (!lightbox || lightbox.classList.contains('hidden')) return;
                 
@@ -665,8 +572,82 @@
                 }
             });
 
-            // Auto-rotate
-            startAutoPlay();
+            // Carousel functionality
+            if (totalSlides > 1) {
+                function showSlide(index) {
+                    if (index >= totalSlides) {
+                        currentIdx = 0;
+                    } else if (index < 0) {
+                        currentIdx = totalSlides - 1;
+                    } else {
+                        currentIdx = index;
+                    }
+
+                    slides.forEach((slide, i) => {
+                        if (i === currentIdx) {
+                            slide.classList.remove('opacity-0', 'z-0');
+                            slide.classList.add('opacity-100', 'z-10');
+                        } else {
+                            slide.classList.remove('opacity-100', 'z-10');
+                            slide.classList.add('opacity-0', 'z-0');
+                        }
+                    });
+
+                    dots.forEach((dot, i) => {
+                        if (i === currentIdx) {
+                            dot.classList.add('!bg-white', 'scale-110');
+                        } else {
+                            dot.classList.remove('!bg-white', 'scale-110');
+                        }
+                    });
+                }
+
+                function nextSlide() {
+                    showSlide(currentIdx + 1);
+                }
+
+                function prevSlide() {
+                    showSlide(currentIdx - 1);
+                }
+
+                function startAutoPlay() {
+                    stopAutoPlay();
+                    slideInterval = setInterval(nextSlide, 3500);
+                }
+
+                function stopAutoPlay() {
+                    if (slideInterval) {
+                        clearInterval(slideInterval);
+                    }
+                }
+
+                if (btnNext) {
+                    btnNext.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        nextSlide();
+                        startAutoPlay();
+                    });
+                }
+
+                if (btnPrev) {
+                    btnPrev.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        prevSlide();
+                        startAutoPlay();
+                    });
+                }
+
+                dots.forEach((dot) => {
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const index = parseInt(dot.getAttribute('data-dot-index'));
+                        showSlide(index);
+                        startAutoPlay();
+                    });
+                });
+
+                startAutoPlay();
+            }
         });
     </script>
 
