@@ -928,13 +928,13 @@
             if (imgSrc && lightboxImg) {
                 lightboxImg.src = imgSrc;
                 lightbox.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+                document.body.classList.add('overflow-hidden');
             }
         }
         function closeLightbox() {
             if (lightbox) {
                 lightbox.style.display = 'none';
-                document.body.style.overflow = '';
+                document.body.classList.remove('overflow-hidden');
             }
         }
 

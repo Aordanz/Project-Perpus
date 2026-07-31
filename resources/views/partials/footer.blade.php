@@ -90,10 +90,25 @@
 </script>
 
 <style>
+    /* Base transition pada chatbot container (agar reverse transition bekerja) */
+    #ai-chatbot-container {
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+        /* Safe area untuk iPhone dengan notch/home indicator */
+        bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+        right: calc(1rem + env(safe-area-inset-right, 0px));
+    }
+    @media (min-width: 640px) {
+        #ai-chatbot-container {
+            bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+            right: calc(1.5rem + env(safe-area-inset-right, 0px));
+        }
+    }
+
     /* Sembunyikan tombol floating AI Chatbot secara otomatis jika ada Modal atau Drawer Menu yang aktif */
     body.overflow-hidden #ai-chatbot-container,
     body:has(#event-popup-modal:not(.hidden)) #ai-chatbot-container,
     body:has(#search-modal:not(.hidden)) #ai-chatbot-container,
+    body:has(#mobile-menu-panel:not(.pointer-events-none)) #ai-chatbot-container,
     body:has(#mobile-menu:not(.hidden)) #ai-chatbot-container,
     body:has(#mobile-drawer:not(.hidden)) #ai-chatbot-container,
     body:has(#mobile-nav-drawer:not(.hidden)) #ai-chatbot-container {
@@ -101,12 +116,11 @@
         pointer-events: none !important;
         transform: scale(0.85);
         visibility: hidden !important;
-        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
     }
 </style>
 
 <!-- AI Assistant Chatbot -->
-<div id="ai-chatbot-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 flex flex-col items-end pointer-events-none transition-all duration-300">
+<div id="ai-chatbot-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end pointer-events-none">
     
     <!-- Chat Window -->
     <div id="ai-chat-window" class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-[320px] h-[400px] mb-4 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right scale-0 opacity-0 pointer-events-auto">
