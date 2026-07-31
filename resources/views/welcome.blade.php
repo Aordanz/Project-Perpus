@@ -491,7 +491,7 @@
                                 $icon = 'ph-archive';
                             }
                         @endphp
-                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-3 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 w-[200px] sm:w-[290px] shrink-0 h-[85px] sm:h-[105px] cursor-pointer">
+                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-3 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 w-[220px] min-w-[220px] max-w-[220px] sm:w-[290px] sm:min-w-[290px] sm:max-w-[290px] flex-none h-[85px] sm:h-[105px] cursor-pointer">
                             
                             <!-- Card background image with building photo preserved -->
                             <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 group-hover:scale-110 group-hover:opacity-45" 
@@ -576,7 +576,7 @@
                                 $icon = 'ph-archive';
                             }
                         @endphp
-                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-3 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 w-[200px] sm:w-[290px] shrink-0 h-[85px] sm:h-[105px] cursor-pointer">
+                        <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-3 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 w-[220px] min-w-[220px] max-w-[220px] sm:w-[290px] sm:min-w-[290px] sm:max-w-[290px] flex-none h-[85px] sm:h-[105px] cursor-pointer">
                             
                             <!-- Card background image with building photo preserved -->
                             <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 group-hover:scale-110 group-hover:opacity-45" 
