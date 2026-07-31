@@ -1,7 +1,17 @@
 <?php
 $dir = __DIR__ . '/latarbelakang';
 $files = scandir($dir);
-$count = 1;
+$existingAvifs = glob($dir . '/latarbelakang*.avif');
+$highestCount = 0;
+foreach ($existingAvifs as $avif) {
+    if (preg_match('/latarbelakang(\d+)\.avif$/', $avif, $matches)) {
+        $num = (int)$matches[1];
+        if ($num > $highestCount) {
+            $highestCount = $num;
+        }
+    }
+}
+$count = $highestCount + 1;
 
 foreach ($files as $file) {
     if ($file === '.' || $file === '..') continue;
