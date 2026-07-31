@@ -167,27 +167,36 @@ class BookController extends Controller
                 ->where('tblbuku.status_tampil', 1)
                 ->select('tbleksemplar.kodelokasi', DB::raw('count(distinct tbleksemplar.idmaster) as total_judul'))
                 ->groupBy('tbleksemplar.kodelokasi')
-                ->pluck('total_judul', 'kodelokasi');
+                ->pluck('total_judul', 'kodelokasi')
+                ->toArray();
         });
 
-        // Cache: Daftar lokasi (update setiap 60 menit)
-        $locations = Cache::remember('home_locations', 3600, function () use ($locationCounts, $excludedLocationIds) {
+        // Cache: ID lokasi yang valid (update setiap 60 menit)
+        $locationIds = Cache::remember('home_location_ids', 3600, function () use ($locationCounts, $excludedLocationIds) {
             return Location::all()->map(function ($location) use ($locationCounts) {
                 $location->items_count = $locationCounts[$location->idlokasi] ?? 0;
                 return $location;
             })->filter(function ($location) use ($excludedLocationIds) {
                 return !in_array($location->idlokasi, $excludedLocationIds) && $location->items_count > 0;
-            })->sortByDesc('items_count')->values();
+            })->sortByDesc('items_count')->pluck('idlokasi')->toArray();
         });
 
-        // Cache: 20 buku terbaru (update setiap 15 menit)
-        $latestBooks = Cache::remember('home_latest_books', 900, function () {
-            return Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
-                ->latest()->take(20)->get();
+        $locations = Location::whereIn('idlokasi', $locationIds)->get()->map(function ($location) use ($locationCounts) {
+            $location->items_count = $locationCounts[$location->idlokasi] ?? 0;
+            return $location;
+        })->sortByDesc('items_count')->values();
+
+        // Cache: ID 20 buku terbaru (update setiap 15 menit)
+        $latestBookIds = Cache::remember('home_latest_book_ids', 900, function () {
+            return Book::latest()->take(20)->pluck('idbuku')->toArray();
         });
 
-        // Cache: Informasi/Pengumuman aktif (update setiap 5 menit)
-        $activeInfos = Cache::remember('home_active_infos', 300, function () {
+        $latestBooks = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
+            ->whereIn('idbuku', $latestBookIds)
+            ->get();
+
+        // Cache: ID Informasi/Pengumuman aktif (update setiap 5 menit)
+        $activeInfoIds = Cache::remember('home_active_info_ids', 300, function () {
             return \App\Models\InformationCenter::where('status', 'published')
                 ->where('publish_start_at', '<=', now())
                 ->where(function ($q) {
@@ -196,8 +205,14 @@ class BookController extends Controller
                 })
                 ->orderBy('popup_priority', 'asc')
                 ->orderBy('publish_start_at', 'desc')
-                ->get();
+                ->pluck('id')
+                ->toArray();
         });
+
+        $activeInfos = \App\Models\InformationCenter::whereIn('id', $activeInfoIds)
+            ->orderBy('popup_priority', 'asc')
+            ->orderBy('publish_start_at', 'desc')
+            ->get();
 
         return view('welcome', compact('university', 'locations', 'latestBooks', 'activeInfos'));
     }
@@ -353,12 +368,10 @@ class BookController extends Controller
     public function latest(Request $request)
     {
         // Cache key berdasarkan parameter filter agar setiap kombinasi punya cache sendiri
-        $cacheKey = 'latest_books_' . md5($request->q . '|' . $request->location);
+        $cacheKey = 'latest_book_ids_' . md5($request->q . '|' . $request->location);
 
-        $latestBooks = Cache::remember($cacheKey, 600, function () use ($request) {
-            $query = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
-                // Hanya tampilkan buku yang punya tanggal input valid (sama seperti OPAC digilib.usu.ac.id)
-                ->whereNotNull('tglinput')
+        $latestBookIds = Cache::remember($cacheKey, 600, function () use ($request) {
+            $query = Book::whereNotNull('tglinput')
                 ->where('tglinput', '!=', '')
                 ->where('tglinput', '!=', '0000-00-00 00:00:00')
                 ->orderByDesc('tglinput');
@@ -374,12 +387,15 @@ class BookController extends Controller
                 });
             }
 
-            // Ambil 40 terbaru
-            return $query->take(40)->get();
+            return $query->take(40)->pluck('idbuku')->toArray();
         });
 
+        $latestBooks = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
+            ->whereIn('idbuku', $latestBookIds)
+            ->get();
+
         // Cache daftar lokasi untuk filter dropdown (60 menit)
-        $locations = Cache::remember('all_locations', 3600, fn() => Location::all());
+        $locations = Cache::remember('all_locations_list', 3600, fn() => Location::all());
 
         return view('koleksi-terbaru', compact('latestBooks', 'locations'));
     }

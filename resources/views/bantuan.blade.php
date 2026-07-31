@@ -192,9 +192,9 @@
                 </h3>
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5 items-stretch">
                     <!-- Tersedia -->
-                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px]" style="background-color: #ecfdf5; border: 1px solid #a7f3d0;">
+                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-emerald-400 cursor-pointer group" style="background-color: #ecfdf5; border: 1px solid #a7f3d0;">
                         <div class="w-[125px] shrink-0 flex flex-col items-start gap-1">
-                            <span class="w-full inline-flex items-center justify-center gap-1 bg-emerald-600 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm">
+                            <span class="w-full inline-flex items-center justify-center gap-1 bg-emerald-600 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm transition-transform duration-300 group-hover:scale-105">
                                 🟢 {{ __('Tersedia') }}
                             </span>
                             <span class="w-full text-center text-[9.5px] font-mono font-extrabold text-emerald-900 bg-white px-1.5 py-0.5 rounded border border-emerald-300">{{ __('Kode') }}: TSD</span>
@@ -203,9 +203,9 @@
                     </div>
 
                     <!-- Dipinjam -->
-                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px]" style="background-color: #fefce8; border: 1px solid #fef08a;">
+                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-amber-400 cursor-pointer group" style="background-color: #fefce8; border: 1px solid #fef08a;">
                         <div class="w-[125px] shrink-0 flex flex-col items-start gap-1">
-                            <span class="w-full inline-flex items-center justify-center gap-1 bg-amber-500 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm">
+                            <span class="w-full inline-flex items-center justify-center gap-1 bg-amber-500 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm transition-transform duration-300 group-hover:scale-105">
                                 🟡 {{ __('Dipinjam') }}
                             </span>
                             <span class="w-full text-center text-[9.5px] font-mono font-extrabold text-amber-900 bg-white px-1.5 py-0.5 rounded border border-amber-300">{{ __('Kode') }}: PJM</span>
@@ -214,9 +214,9 @@
                     </div>
 
                     <!-- Baca di Tempat -->
-                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px]" style="background-color: #eff6ff; border: 1px solid #bfdbfe;">
+                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-blue-400 cursor-pointer group" style="background-color: #eff6ff; border: 1px solid #bfdbfe;">
                         <div class="w-[125px] shrink-0 flex flex-col items-start gap-1">
-                            <span class="w-full inline-flex items-center justify-center gap-1 bg-blue-600 text-white font-extrabold px-2 py-1 rounded-full text-[11px] shadow-sm">
+                            <span class="w-full inline-flex items-center justify-center gap-1 bg-blue-600 text-white font-extrabold px-2 py-1 rounded-full text-[11px] shadow-sm transition-transform duration-300 group-hover:scale-105">
                                 📖 {{ __('Baca di Tempat') }}
                             </span>
                             <span class="w-full text-center text-[9.5px] font-mono font-extrabold text-blue-900 bg-white px-1.5 py-0.5 rounded border border-blue-300">{{ __('Kode') }}: R / NL</span>
@@ -225,9 +225,9 @@
                     </div>
 
                     <!-- Hilang -->
-                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px]" style="background-color: #fff1f2; border: 1px solid #fecdd3;">
+                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-rose-400 cursor-pointer group" style="background-color: #fff1f2; border: 1px solid #fecdd3;">
                         <div class="w-[125px] shrink-0 flex flex-col items-start gap-1">
-                            <span class="w-full inline-flex items-center justify-center gap-1 bg-rose-600 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm">
+                            <span class="w-full inline-flex items-center justify-center gap-1 bg-rose-600 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm transition-transform duration-300 group-hover:scale-105">
                                 🔴 {{ __('Hilang') }}
                             </span>
                             <span class="w-full text-center text-[9.5px] font-mono font-extrabold text-rose-900 bg-white px-1.5 py-0.5 rounded border border-rose-300">Missing (MIS)</span>
@@ -236,9 +236,9 @@
                     </div>
 
                     <!-- Rusak -->
-                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px]" style="background-color: #fff7ed; border: 1px solid #ffedd5;">
+                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-orange-400 cursor-pointer group" style="background-color: #fff7ed; border: 1px solid #ffedd5;">
                         <div class="w-[125px] shrink-0 flex flex-col items-start gap-1">
-                            <span class="w-full inline-flex items-center justify-center gap-1 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm" style="background-color: #ea580c;">
+                            <span class="w-full inline-flex items-center justify-center gap-1 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm transition-transform duration-300 group-hover:scale-105" style="background-color: #ea580c;">
                                 ⚠️ {{ __('Rusak') }}
                             </span>
                             <span class="w-full text-center text-[9.5px] font-mono font-extrabold px-1.5 py-0.5 rounded" style="color: #9a3412; background-color: #ffffff; border: 1px solid #fdba74;">{{ __('Kode') }}: RSK</span>
@@ -247,9 +247,9 @@
                     </div>
 
                     <!-- Sedang Dijilid -->
-                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px]" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-slate-400 cursor-pointer group" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
                         <div class="w-[125px] shrink-0 flex flex-col items-start gap-1">
-                            <span class="w-full inline-flex items-center justify-center gap-1 bg-slate-700 text-white font-extrabold px-2 py-1 rounded-full text-[11px] shadow-sm">
+                            <span class="w-full inline-flex items-center justify-center gap-1 bg-slate-700 text-white font-extrabold px-2 py-1 rounded-full text-[11px] shadow-sm transition-transform duration-300 group-hover:scale-105">
                                 🔧 {{ __('Sedang Dijilid') }}
                             </span>
                             <span class="w-full text-center text-[9.5px] font-mono font-extrabold text-slate-800 bg-white px-1.5 py-0.5 rounded border border-slate-300">{{ __('Kode') }}: JLD</span>
@@ -258,9 +258,9 @@
                     </div>
 
                     <!-- Ditarik (Weeded) -> Berada di dalam grid 3 kolom utama, dipaksa di tengah (kolom 2) -->
-                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px] ditarik-card-center transition-all" style="background-color: #f3e8ff; border: 1px solid #d8b4fe;">
+                    <div class="p-3.5 rounded-2xl flex items-center gap-3.5 h-[105px] ditarik-card-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-purple-400 cursor-pointer group" style="background-color: #f3e8ff; border: 1px solid #d8b4fe;">
                         <div class="w-[125px] shrink-0 flex flex-col items-start gap-1">
-                            <span class="w-full inline-flex items-center justify-center gap-1 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm" style="background-color: #7e22ce;">
+                            <span class="w-full inline-flex items-center justify-center gap-1 text-white font-extrabold px-2.5 py-1 rounded-full text-xs shadow-sm transition-transform duration-300 group-hover:scale-105" style="background-color: #7e22ce;">
                                 📦 {{ __('Ditarik') }}
                             </span>
                             <span class="w-full text-center text-[9.5px] font-mono font-extrabold px-1.5 py-0.5 rounded" style="color: #6b21a8; background-color: #ffffff; border: 1px solid #c084fc;">Weeded (WED)</span>
