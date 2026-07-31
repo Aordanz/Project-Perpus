@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -429,6 +430,10 @@ class AdminController extends Controller implements HasMiddleware
             }
 
             DB::commit();
+
+            // Auto-clear cache beranda agar buku baru langsung tampil
+            $this->clearBookCache();
+
             return redirect()->route('admin.index')
                 ->with('success', 'Buku "' . $book->title . '" dan eksemplarnya berhasil ditambahkan ke database.');
         } catch (\Exception $e) {
@@ -694,6 +699,10 @@ class AdminController extends Controller implements HasMiddleware
             }
 
             DB::commit();
+
+            // Auto-clear cache beranda agar perubahan buku langsung tampil
+            $this->clearBookCache();
+
             return redirect()->route('admin.tambah-cover')
                 ->with('success', 'Buku "' . $book->title . '" berhasil diperbarui.');
         } catch (\Exception $e) {
@@ -717,6 +726,9 @@ class AdminController extends Controller implements HasMiddleware
             $book->update([
                 'ringkasanbuku' => $request->ringkasanbuku,
             ]);
+
+            // Auto-clear cache beranda agar ringkasan buku langsung tampil
+            $this->clearBookCache();
 
             return redirect()->route('admin.tambah-ringkasan')
                 ->with('success', 'Ringkasan buku "' . $book->title . '" berhasil diperbarui.');
@@ -751,6 +763,9 @@ class AdminController extends Controller implements HasMiddleware
                 $img->delete();
             }
 
+            // Auto-clear cache beranda agar perubahan cover langsung tampil
+            $this->clearBookCache();
+
             return redirect()->route('admin.tambah-cover')
                 ->with('success', 'Gambar cover dan tambahan berhasil dihapus.');
         } catch (\Exception $e) {
@@ -784,6 +799,20 @@ class AdminController extends Controller implements HasMiddleware
                 'message' => 'Gagal menghapus gambar: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Clear semua cache yang berkaitan dengan data buku di beranda & halaman lainnya.
+     * Dipanggil otomatis setiap kali admin menambah, mengubah, atau menghapus buku.
+     */
+    private function clearBookCache(): void
+    {
+        Cache::forget('home_location_counts');
+        Cache::forget('home_locations');
+        Cache::forget('home_latest_books');
+        Cache::forget('all_locations');
+        // Hapus cache koleksi terbaru (tanpa filter)
+        Cache::forget('latest_books_' . md5('|'));
     }
 
     /**

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class InformationCenterController extends Controller
 {
@@ -150,6 +151,9 @@ class InformationCenterController extends Controller
 
             InformationCenter::create($data);
 
+            // Auto-clear cache agar pengumuman baru langsung tampil di beranda
+            Cache::forget('home_active_infos');
+
             return redirect()->route('admin.information-center.index')->with('success', 'Informasi berhasil ditambahkan!');
 
         } catch (\Exception $e) {
@@ -248,6 +252,9 @@ class InformationCenterController extends Controller
 
         $informationCenter->update($data);
 
+        // Auto-clear cache agar perubahan pengumuman langsung tampil di beranda
+        Cache::forget('home_active_infos');
+
         return redirect()->route('admin.information-center.index')->with('success', 'Informasi berhasil diperbarui!');
     }
 
@@ -265,6 +272,10 @@ class InformationCenterController extends Controller
         }
 
         $informationCenter->delete();
+
+        // Auto-clear cache agar pengumuman yang dihapus tidak muncul lagi di beranda
+        Cache::forget('home_active_infos');
+
         return redirect()->route('admin.information-center.index')->with('success', 'Informasi berhasil dihapus!');
     }
 
@@ -460,6 +471,9 @@ class InformationCenterController extends Controller
         $info = InformationCenter::findOrFail($id);
         $info->update(['status' => 'archived']);
 
+        // Auto-clear cache agar perubahan status langsung tampil di beranda
+        Cache::forget('home_active_infos');
+
         return redirect()->route('admin.information-center.index', ['tab' => 'active'])
             ->with('success', 'Informasi "' . $info->title . '" berhasil dipindahkan ke arsip!');
     }
@@ -482,6 +496,9 @@ class InformationCenterController extends Controller
             'publish_end_at'   => null,
             'updated_by'       => $this->getValidUserId(),
         ]);
+
+        // Auto-clear cache agar info yang dipulihkan langsung muncul di beranda
+        Cache::forget('home_active_infos');
 
         return redirect()->route('admin.information-center.index', ['tab' => 'history'])
             ->with('success', "Berhasil menampilkan kembali {$count} data informasi ke status Aktif!");
@@ -512,8 +529,11 @@ class InformationCenterController extends Controller
                 $oldPath = str_replace('/storage/', '', $info->image_path);
                 Storage::disk('public')->delete($oldPath);
             }
-            $info->delete();
+        $info->delete();
         }
+
+        // Auto-clear cache agar info yang dihapus tidak muncul di beranda
+        Cache::forget('home_active_infos');
 
         return redirect()->route('admin.information-center.index', ['tab' => 'history'])
             ->with('success', "Berhasil menghapus {$count} data informasi!");
