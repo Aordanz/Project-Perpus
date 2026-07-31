@@ -152,7 +152,7 @@ class InformationCenterController extends Controller
             InformationCenter::create($data);
 
             // Auto-clear cache agar pengumuman baru langsung tampil di beranda
-            Cache::forget('home_active_infos');
+            Cache::forget('home_active_info_ids');
 
             return redirect()->route('admin.information-center.index')->with('success', 'Informasi berhasil ditambahkan!');
 
@@ -253,7 +253,7 @@ class InformationCenterController extends Controller
         $informationCenter->update($data);
 
         // Auto-clear cache agar perubahan pengumuman langsung tampil di beranda
-        Cache::forget('home_active_infos');
+        Cache::forget('home_active_info_ids');
 
         return redirect()->route('admin.information-center.index')->with('success', 'Informasi berhasil diperbarui!');
     }
@@ -274,7 +274,7 @@ class InformationCenterController extends Controller
         $informationCenter->delete();
 
         // Auto-clear cache agar pengumuman yang dihapus tidak muncul lagi di beranda
-        Cache::forget('home_active_infos');
+        Cache::forget('home_active_info_ids');
 
         return redirect()->route('admin.information-center.index')->with('success', 'Informasi berhasil dihapus!');
     }
@@ -472,7 +472,7 @@ class InformationCenterController extends Controller
         $info->update(['status' => 'archived']);
 
         // Auto-clear cache agar perubahan status langsung tampil di beranda
-        Cache::forget('home_active_infos');
+        Cache::forget('home_active_info_ids');
 
         return redirect()->route('admin.information-center.index', ['tab' => 'active'])
             ->with('success', 'Informasi "' . $info->title . '" berhasil dipindahkan ke arsip!');
@@ -498,7 +498,7 @@ class InformationCenterController extends Controller
         ]);
 
         // Auto-clear cache agar info yang dipulihkan langsung muncul di beranda
-        Cache::forget('home_active_infos');
+        Cache::forget('home_active_info_ids');
 
         return redirect()->route('admin.information-center.index', ['tab' => 'history'])
             ->with('success', "Berhasil menampilkan kembali {$count} data informasi ke status Aktif!");

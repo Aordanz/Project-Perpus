@@ -808,11 +808,10 @@ class AdminController extends Controller implements HasMiddleware
     private function clearBookCache(): void
     {
         Cache::forget('home_location_counts');
-        Cache::forget('home_locations');
-        Cache::forget('home_latest_books');
-        Cache::forget('all_locations');
-        // Hapus cache koleksi terbaru (tanpa filter)
-        Cache::forget('latest_books_' . md5('|'));
+        Cache::forget('home_location_ids');
+        Cache::forget('home_latest_book_ids');
+        Cache::forget('all_locations_list');
+        Cache::forget('latest_book_ids_' . md5('|'));
     }
 
     /**
