@@ -160,8 +160,8 @@ class BookController extends Controller
         // 36 = Belum Ada Lokasi
         $excludedLocationIds = [2, 3, 4, 26, 27, 31, 36];
 
-        // Cache: Hitung jumlah judul per lokasi (update setiap 60 menit)
-        $locationCounts = Cache::remember('home_location_counts', 3600, function () {
+        // Cache: Hitung jumlah judul per lokasi (update setiap 60 menit) - Versi 2
+        $locationCounts = Cache::remember('home_location_counts_v2', 3600, function () {
             return DB::table('tbleksemplar')
                 ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
                 ->where('tblbuku.status_tampil', 1)
@@ -171,32 +171,45 @@ class BookController extends Controller
                 ->toArray();
         });
 
-        // Cache: ID lokasi yang valid (update setiap 60 menit)
-        $locationIds = Cache::remember('home_location_ids', 3600, function () use ($locationCounts, $excludedLocationIds) {
+        // Defensive check: pastikan $locationCounts adalah array
+        if (!is_array($locationCounts)) {
+            $locationCounts = [];
+        }
+
+        // Cache: ID lokasi yang valid (update setiap 60 menit) - Versi 2
+        $locationIds = Cache::remember('home_location_ids_v2', 3600, function () use ($locationCounts, $excludedLocationIds) {
             return Location::all()->map(function ($location) use ($locationCounts) {
-                $location->items_count = $locationCounts[$location->idlokasi] ?? 0;
+                $location->items_count = is_array($locationCounts) ? ($locationCounts[$location->idlokasi] ?? 0) : 0;
                 return $location;
             })->filter(function ($location) use ($excludedLocationIds) {
                 return !in_array($location->idlokasi, $excludedLocationIds) && $location->items_count > 0;
             })->sortByDesc('items_count')->pluck('idlokasi')->toArray();
         });
 
+        if (!is_array($locationIds)) {
+            $locationIds = [];
+        }
+
         $locations = Location::whereIn('idlokasi', $locationIds)->get()->map(function ($location) use ($locationCounts) {
-            $location->items_count = $locationCounts[$location->idlokasi] ?? 0;
+            $location->items_count = is_array($locationCounts) ? ($locationCounts[$location->idlokasi] ?? 0) : 0;
             return $location;
         })->sortByDesc('items_count')->values();
 
-        // Cache: ID 20 buku terbaru (update setiap 15 menit)
-        $latestBookIds = Cache::remember('home_latest_book_ids', 900, function () {
+        // Cache: ID 20 buku terbaru (update setiap 15 menit) - Versi 2
+        $latestBookIds = Cache::remember('home_latest_book_ids_v2', 900, function () {
             return Book::latest()->take(20)->pluck('idbuku')->toArray();
         });
+
+        if (!is_array($latestBookIds)) {
+            $latestBookIds = [];
+        }
 
         $latestBooks = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
             ->whereIn('idbuku', $latestBookIds)
             ->get();
 
-        // Cache: ID Informasi/Pengumuman aktif (update setiap 5 menit)
-        $activeInfoIds = Cache::remember('home_active_info_ids', 300, function () {
+        // Cache: ID Informasi/Pengumuman aktif (update setiap 5 menit) - Versi 2
+        $activeInfoIds = Cache::remember('home_active_info_ids_v2', 300, function () {
             return \App\Models\InformationCenter::where('status', 'published')
                 ->where('publish_start_at', '<=', now())
                 ->where(function ($q) {
@@ -208,6 +221,10 @@ class BookController extends Controller
                 ->pluck('id')
                 ->toArray();
         });
+
+        if (!is_array($activeInfoIds)) {
+            $activeInfoIds = [];
+        }
 
         $activeInfos = \App\Models\InformationCenter::whereIn('id', $activeInfoIds)
             ->orderBy('popup_priority', 'asc')
