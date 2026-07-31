@@ -35,6 +35,7 @@
                         <a href="https://repositori.usu.ac.id/" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">USU-IR</a>
                         <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">{{ __('Scientific eJournals') }}</a>
                         <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">{{ __('Scientific eBooks') }}</a>
+                        <a href="https://resourceguide.usu.ac.id/subjects/" target="_blank" class="block px-5 py-3.5 text-sm text-slate-600 hover:bg-green-50 hover:text-[#106c38] transition">{{ __('Resource Guides') }}</a>
                     </div>
                 </div>
                 
@@ -117,6 +118,9 @@
                 </a>
                 <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
                     <i class="ph ph-book text-base"></i> {{ __('Scientific eBooks') }}
+                </a>
+                <a href="https://resourceguide.usu.ac.id/subjects/" target="_blank" class="flex items-center gap-3 px-5 py-2.5 text-xs font-medium text-green-100 hover:text-white hover:bg-white/5 transition">
+                    <i class="ph ph-compass text-base"></i> {{ __('Resource Guides') }}
                 </a>
 
                 <div class="border-t border-white/10 my-2"></div>

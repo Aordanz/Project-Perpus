@@ -17,6 +17,8 @@
             <a href="https://library.usu.ac.id/id/jurnal-elektronik" target="_blank" class="hover:text-white transition py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-lg hover:bg-white/10">{{ __('Scientific eJournals') }}</a>
             <span class="text-white/40 text-[8px] sm:text-[10px]">&bull;</span>
             <a href="https://library.usu.ac.id/id/buku-elektronik" target="_blank" class="hover:text-white transition py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-lg hover:bg-white/10">{{ __('Scientific eBooks') }}</a>
+            <span class="text-white/40 text-[8px] sm:text-[10px]">&bull;</span>
+            <a href="https://resourceguide.usu.ac.id/subjects/" target="_blank" class="hover:text-white transition py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-lg hover:bg-white/10">{{ __('Resource Guides') }}</a>
         </div>
     </div>
 </footer>
