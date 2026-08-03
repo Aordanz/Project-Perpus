@@ -703,7 +703,7 @@ class AdminController extends Controller implements HasMiddleware
             // Auto-clear cache beranda agar perubahan buku langsung tampil
             $this->clearBookCache();
 
-            return redirect()->route('admin.tambah-cover')
+            return redirect()->back()
                 ->with('success', 'Buku "' . $book->title . '" berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -730,7 +730,7 @@ class AdminController extends Controller implements HasMiddleware
             // Auto-clear cache beranda agar ringkasan buku langsung tampil
             $this->clearBookCache();
 
-            return redirect()->route('admin.tambah-ringkasan')
+            return redirect()->back()
                 ->with('success', 'Ringkasan buku "' . $book->title . '" berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->back()
@@ -766,7 +766,7 @@ class AdminController extends Controller implements HasMiddleware
             // Auto-clear cache beranda agar perubahan cover langsung tampil
             $this->clearBookCache();
 
-            return redirect()->route('admin.tambah-cover')
+            return redirect()->back()
                 ->with('success', 'Gambar cover dan tambahan berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->back()
