@@ -1839,32 +1839,18 @@
 
                 // Initialize
                 updateNewestCarousel();
-                if (window.innerWidth >= 1024) {
-                    startNewestAutoPlay();
-                }
+                startNewestAutoPlay();
 
                 // Pause on hover
                 const carouselTrack = document.getElementById('carousel-koleksi-track');
                 if (carouselTrack) {
                     carouselTrack.addEventListener('mouseenter', () => {
-                        if (window.innerWidth >= 1024) clearInterval(newestAutoScroll);
+                        clearInterval(newestAutoScroll);
                     });
                     carouselTrack.addEventListener('mouseleave', () => {
-                        if (window.innerWidth >= 1024) resetNewestAutoPlay();
+                        resetNewestAutoPlay();
                     });
                 }
-
-                // Window resize handler to toggle auto scroll based on screen width
-                window.addEventListener('resize', () => {
-                    if (window.innerWidth >= 1024) {
-                        if (!newestAutoScroll) startNewestAutoPlay();
-                    } else {
-                        if (newestAutoScroll) {
-                            clearInterval(newestAutoScroll);
-                            newestAutoScroll = null;
-                        }
-                    }
-                });
 
                 // ── Touch / Pointer Swipe with Velocity (All Screens) ─────────────
                 const carouselWrapper = carouselTrack ? carouselTrack.parentElement : null;
