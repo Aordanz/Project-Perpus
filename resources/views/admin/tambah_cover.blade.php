@@ -706,13 +706,19 @@
             }
 
             // Form Submit Validation & AJAX Submission
+            let isSubmitting = false;
+            
             if (uploadForm) {
                 uploadForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    if (isSubmitting) return; // Prevent double submit
+                    
                     if (slots.length === 0) {
                         alert('Harap unggah minimal 1 gambar sebagai cover utama!');
                         return;
                     }
+
+                    isSubmitting = true; // Lock the form
 
                     const submitBtn = uploadForm.querySelector('button[type="submit"]');
                     const originalBtnHTML = submitBtn.innerHTML;
@@ -772,6 +778,7 @@
                         }
                     } catch (error) {
                         showErrorModal(error.message);
+                        isSubmitting = false; // Release the lock on error
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = originalBtnHTML;
                         if (toast) toast.classList.add('hidden');
