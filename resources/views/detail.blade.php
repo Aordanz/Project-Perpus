@@ -293,8 +293,29 @@
                                                     <span class="inline-flex items-center gap-1 bg-green-50 text-green-700 font-bold px-2.5 py-0.5 rounded-full border border-green-200/50 text-xs">
                                                         {{ $item->status }}
                                                     </span>
+                                                @elseif($item->status == 'Dipinjam')
+                                                    @php
+                                                        // Cari transaksi peminjaman aktif untuk eksemplar ini
+                                                        $activeLoan = \Illuminate\Support\Facades\DB::table('tbltransaksi_pinjam')
+                                                            ->where('nomor_eksemplar', $item->barcode)
+                                                            ->where('status_kembali', 1)
+                                                            ->latest('tglpinjam')
+                                                            ->first();
+                                                        
+                                                        $dueDate = $activeLoan ? \Carbon\Carbon::parse($activeLoan->tglkembali)->translatedFormat('d M Y') : 'Menunggu data';
+                                                    @endphp
+                                                    <div class="flex flex-col items-center justify-center gap-1">
+                                                        <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 font-bold px-2.5 py-0.5 rounded-full border border-amber-200/50 text-xs">
+                                                            {{ $item->status }}
+                                                        </span>
+                                                        @if($activeLoan)
+                                                            <span class="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">
+                                                                Sampai : <span class="font-bold text-amber-600">{{ $dueDate }}</span>
+                                                            </span>
+                                                        @endif
+                                                    </div>
                                                 @else
-                                                    <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 font-bold px-2.5 py-0.5 rounded-full border border-amber-200/50 text-xs">
+                                                    <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 font-bold px-2.5 py-0.5 rounded-full border border-rose-200/50 text-xs">
                                                         {{ $item->status }}
                                                     </span>
                                                 @endif
