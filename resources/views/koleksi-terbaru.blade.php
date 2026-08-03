@@ -79,7 +79,7 @@
                     </form>
 
                     <!-- Filter Pop-down Button (Under Search Bar) -->
-                    <div class="relative inline-block self-end">
+                    <!-- <div class="relative inline-block self-end">
                         <button id="type-filter-dropdown-btn" type="button" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 shadow-sm hover:border-[#106c38] hover:text-[#106c38] transition cursor-pointer">
                             <i class="ph ph-funnel text-sm text-[#106c38]"></i>
                             <span>{{ __('Filter Tipe:') }}</span>
@@ -89,8 +89,8 @@
                             <i class="ph ph-caret-down text-xs transition-transform duration-200" id="type-dropdown-arrow"></i>
                         </button>
 
-                        <!-- Pop-down Dropdown Menu -->
-                        <div id="type-filter-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-[60] transition-all duration-200">
+                        Pop-down Dropdown Menu -->
+                        <!-- <div id="type-filter-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-[60] transition-all duration-200">
                             <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 mb-1 flex items-center justify-between">
                                 <span>{{ __('Pilih Tipe Koleksi') }}</span>
                                 <i class="ph ph-funnel text-xs text-[#106c38]"></i>
@@ -120,7 +120,7 @@
                                 </button>
                             @endforeach
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
