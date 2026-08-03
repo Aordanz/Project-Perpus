@@ -207,6 +207,7 @@ class BookController extends Controller
 
         $latestBooks = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
             ->whereIn('idbuku', $latestBookIds)
+            ->orderByDesc('tglinput')
             ->get();
 
         // Cache: ID Informasi/Pengumuman aktif (update setiap 5 menit) - Versi 2
@@ -410,6 +411,7 @@ class BookController extends Controller
 
         $latestBooks = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
             ->whereIn('idbuku', $latestBookIds)
+            ->orderByDesc('tglinput')
             ->get();
 
         // Cache daftar lokasi untuk filter dropdown (60 menit)
