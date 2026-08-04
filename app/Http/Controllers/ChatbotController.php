@@ -12,6 +12,14 @@ class ChatbotController extends Controller
 {
     public function handleChat(Request $request)
     {
+        // 0. Cek Status Aktif/Nonaktif Chatbot
+        $statusPath = storage_path('app/private/chatbot_status.txt');
+        if (file_exists($statusPath) && trim(file_get_contents($statusPath)) === 'disabled') {
+            return response()->json([
+                'jawaban' => 'Maaf, layanan Chatbot AI Perpustakaan sedang dinonaktifkan sementara oleh administrator.'
+            ], 503);
+        }
+
         $request->validate([
             'message' => 'required|string|max:1000'
         ]);

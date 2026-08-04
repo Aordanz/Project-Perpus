@@ -121,6 +121,12 @@
     }
 </style>
 
+@php
+    $chatbotStatusFile = storage_path('app/private/chatbot_status.txt');
+    $isChatbotDisabled = file_exists($chatbotStatusFile) && trim(file_get_contents($chatbotStatusFile)) === 'disabled';
+@endphp
+
+@if(!$isChatbotDisabled)
 <!-- AI Assistant Chatbot -->
 <div id="ai-chatbot-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end pointer-events-none">
     
@@ -144,8 +150,8 @@
                 <i class="ph ph-x text-lg"></i>
             </button>
         </div>
-
-        <!-- Chat Area -->
+        
+        <!-- Messages Area -->
         <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto bg-slate-50 flex flex-col gap-3 text-sm">
             <!-- Initial Message -->
             <div class="flex items-start gap-2 max-w-[90%]">
@@ -205,13 +211,13 @@
                 <i class="ph ph-x text-[10px]"></i>
             </button>
         </div>
-        <!-- Speech bubble tail (bottom-right, curved like classic comic bubble) -->
+        <!-- Speech bubble tail -->
         <svg class="absolute -bottom-[14px] right-[18px] w-[24px] h-[16px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.06)]" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0 C4 0, 8 0, 12 0 C12 4, 14 10, 24 16 C16 14, 8 10, 4 6 C2 4, 0 2, 0 0 Z" fill="white"/>
         </svg>
     </div>
 
-    <!-- Toggle Button -->
+    <!-- Toggle Button Container (Floating Circle) -->
     <div id="ai-toggle-wrapper" class="relative pointer-events-auto group">
         <!-- Main Button -->
         <button id="ai-toggle-btn" aria-label="{{ __('Buka Asisten AI') }}" class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transition-all focus:outline-none border-[3px] sm:border-4 border-white cursor-pointer z-10">
@@ -219,6 +225,7 @@
         </button>
     </div>
 </div>
+@endif
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

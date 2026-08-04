@@ -63,6 +63,12 @@
                 <i class="ph ph-megaphone text-lg"></i>
                 <span>Information Center</span>
             </a>
+
+            <a href="{{ route('admin.chatbot-data') }}" 
+               class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.chatbot-data') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+                <i class="ph ph-robot text-lg"></i>
+                <span>Data AI Chatbot</span>
+            </a>
         </nav>
 
         <!-- Footer Action -->
