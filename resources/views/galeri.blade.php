@@ -25,7 +25,7 @@
             background-color: #f3f4f6; /* slightly darker background like Tokopedia */
         }
         .glass-nav {
-            background: #106c38;
+            background: #ffffff;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .line-clamp-2 {

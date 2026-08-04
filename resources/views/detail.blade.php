@@ -27,7 +27,7 @@
             font-family: 'Inter', sans-serif !important;
         }
         .glass-nav {
-            background: #106c38;
+            background: #ffffff;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .cover-glow {
@@ -298,7 +298,6 @@
                                                         // Cari transaksi peminjaman aktif untuk eksemplar ini
                                                         $activeLoan = \Illuminate\Support\Facades\DB::table('tbltransaksi_pinjam')
                                                             ->where('nomor_eksemplar', $item->barcode)
-                                                            ->where('status_kembali', 1)
                                                             ->latest('tglpinjam')
                                                             ->first();
                                                         

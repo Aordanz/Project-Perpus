@@ -1,5 +1,5 @@
 <!-- Footer -->
-<footer class="bg-[#106c38] py-2.5 sm:py-5 text-white text-center text-[10px] sm:text-sm border-t border-emerald-800/40 relative z-20">
+<footer class="bg-[#1E1E1E] py-2.5 sm:py-5 text-white text-center text-[10px] sm:text-sm border-t border-emerald-800/40 relative z-20">
     <div class="max-w-7xl mx-auto px-4 pr-14 sm:pr-6 lg:px-8 flex flex-col items-center gap-1.5 sm:gap-3">
         <!-- Copyright Text -->
         <p class="text-white/95 font-medium leading-relaxed max-w-xl mx-auto">
