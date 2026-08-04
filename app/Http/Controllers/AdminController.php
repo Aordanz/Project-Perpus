@@ -802,6 +802,93 @@ class AdminController extends Controller implements HasMiddleware
     }
 
     /**
+     * Tampilkan halaman editor data referensi AI Chatbot (data_perpus.txt).
+     */
+    public function chatbotData()
+    {
+        $path    = storage_path('app/private/data_perpus.txt');
+        $content = file_exists($path) ? file_get_contents($path) : '';
+        $backupExists = file_exists($path . '.bak');
+        $charCount = mb_strlen($content);
+
+        $statusPath = storage_path('app/private/chatbot_status.txt');
+        $chatbotDisabled = file_exists($statusPath) && trim(file_get_contents($statusPath)) === 'disabled';
+        $chatbotStatus = $chatbotDisabled ? 'disabled' : 'active';
+
+        return view('admin.chatbot_data', compact('content', 'backupExists', 'charCount', 'chatbotStatus'));
+    }
+
+    /**
+     * Aktifkan / Nonaktifkan layanan AI Chatbot.
+     */
+    public function chatbotToggleStatus(Request $request)
+    {
+        $statusPath = storage_path('app/private/chatbot_status.txt');
+        $currentDisabled = file_exists($statusPath) && trim(file_get_contents($statusPath)) === 'disabled';
+        $newStatus = $currentDisabled ? 'active' : 'disabled';
+
+        file_put_contents($statusPath, $newStatus);
+
+        $msg = $newStatus === 'active'
+            ? 'Layanan AI Chatbot berhasil DIAKTIFKAN kembali untuk pengunjung web.'
+            : 'Layanan AI Chatbot berhasil DINONAKTIFKAN sementara.';
+
+        return redirect()->route('admin.chatbot-data')->with('success', $msg);
+    }
+
+    /**
+     * Simpan perubahan data referensi AI Chatbot ke file data_perpus.txt.
+     * Membuat backup otomatis sebelum menimpa file lama.
+     */
+    public function chatbotDataUpdate(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string|min:10',
+        ], [
+            'content.required' => 'Data referensi AI tidak boleh kosong.',
+            'content.min'      => 'Data referensi AI terlalu pendek (minimal 10 karakter).',
+        ]);
+
+        $path    = storage_path('app/private/data_perpus.txt');
+        $content = $request->input('content');
+
+        // Buat backup file lama sebelum ditimpa
+        if (file_exists($path)) {
+            @copy($path, $path . '.bak');
+        }
+
+        $result = file_put_contents($path, $content);
+
+        if ($result === false) {
+            // Jika gagal tulis, kembalikan dari backup
+            if (file_exists($path . '.bak')) {
+                @copy($path . '.bak', $path);
+            }
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => 'Gagal menyimpan data: Server tidak dapat menulis ke file. File lama telah dipulihkan dari backup.']);
+        }
+
+        return redirect()->route('admin.chatbot-data')
+            ->with('success', 'Data referensi AI Chatbot berhasil disimpan. Cache chatbot lama otomatis tidak berlaku untuk pertanyaan baru.');
+    }
+
+    /**
+     * Hapus semua cache jawaban AI chatbot dari tabel chat_caches.
+     */
+    public function chatbotCacheClear()
+    {
+        try {
+            \App\Models\ChatCache::truncate();
+            return redirect()->route('admin.chatbot-data')
+                ->with('success', 'Seluruh cache jawaban AI Chatbot berhasil dihapus. Chatbot akan memakai data terbaru untuk semua pertanyaan.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.chatbot-data')
+                ->withErrors(['error' => 'Gagal menghapus cache: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
      * Clear semua cache yang berkaitan dengan data buku di beranda & halaman lainnya.
      * Dipanggil otomatis setiap kali admin menambah, mengubah, atau menghapus buku.
      */

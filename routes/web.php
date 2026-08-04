@@ -52,5 +52,11 @@ Route::get('/lang/{locale}', function ($locale) {
 // AI Chatbot Route with Rate Limiting (10 requests per minute)
 Route::post('/api/chat', [ChatbotController::class, 'handleChat'])->middleware('throttle:10,1')->name('chat.api');
 
+// Admin: Kelola Data Referensi AI Chatbot
+Route::get('/admin/chatbot-data', [AdminController::class, 'chatbotData'])->name('admin.chatbot-data');
+Route::post('/admin/chatbot-data', [AdminController::class, 'chatbotDataUpdate'])->name('admin.chatbot-data.update');
+Route::post('/admin/chatbot-data/clear-cache', [AdminController::class, 'chatbotCacheClear'])->name('admin.chatbot-cache.clear');
+Route::post('/admin/chatbot-data/toggle-status', [AdminController::class, 'chatbotToggleStatus'])->name('admin.chatbot-status.toggle');
+
 // Active Event API Route
 Route::get('/api/events/active', [EventController::class, 'getActiveEvent'])->name('events.active');
