@@ -196,9 +196,8 @@ class BookController extends Controller
         })->sortByDesc('items_count')->values();
 
         // Cache: ID 20 buku terbaru (update setiap 15 menit) - Versi 2
-        // SEMENTARA: Hanya menampilkan buku yang memiliki cover_image untuk kebutuhan presentasi
-        $latestBookIds = Cache::remember('home_latest_book_ids_v2_temp_cover', 900, function () {
-            return Book::whereNotNull('cover_image')->where('cover_image', '!=', '')->latest()->take(20)->pluck('idbuku')->toArray();
+        $latestBookIds = Cache::remember('home_latest_book_ids_v2', 900, function () {
+            return Book::latest()->take(20)->pluck('idbuku')->toArray();
         });
 
         if (!is_array($latestBookIds)) {
