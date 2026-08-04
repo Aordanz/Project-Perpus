@@ -29,12 +29,27 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
+        /* Custom Scrollbar for Chrome, Edge, and Safari */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8fafc; /* Sama dengan background body */
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #106c38; 
+            border-radius: 4px; /* Sudut sedikit membulat tanpa celah putih */
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #1E1E1E; 
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
         }
         .glass-nav {
-            background: #106c38;
+            background: #ffffff;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .hero-gradient {
@@ -270,7 +285,7 @@
                 @php $firstBg = false; $bgIndex++; @endphp
             @endforeach
             <!-- Dark green static overlay layer to emulate blend and keep it readable but visible -->
-            <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/90 via-[#084323]/90 to-[#0c542c]/90 z-10 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-[#04331a]/90 via-[#16753D]/90 to-[#3c7656]/90 z-10 pointer-events-none"></div>
         </div>
 
         <!-- Abstract Shapes -->
@@ -305,7 +320,7 @@
                         <button type="submit" class="bg-[#F3C300] hover:bg-[#e0b400] text-[#106c38] font-bold text-sm sm:text-base px-6 py-3 sm:py-4 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 flex-grow md:flex-none cursor-pointer">
                             <i class="ph ph-magnifying-glass"></i>{{ __('Cari') }}
                         </button>
-                        <button type="button" id="open-modal-pencarian-spesifik" class="bg-[#106c38] hover:bg-[#0b4b27] text-white font-bold text-sm sm:text-base px-5 py-3 sm:py-4 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <button type="button" id="open-modal-pencarian-spesifik" class="bg-[#A61E22] hover:bg-[#b74a4e] text-white font-bold text-sm sm:text-base px-5 py-3 sm:py-4 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="ph ph-sliders-horizontal"></i>{{ __('Spesifik') }}
                         </button>
                     </div>

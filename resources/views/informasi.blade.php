@@ -20,7 +20,7 @@
             background-color: #f3f4f6;
         }
         .glass-nav {
-            background: #106c38;
+            background: #ffffff;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -99,7 +99,7 @@
         }
         .cat-btn.active .emblem {
             border-color: #106c38;
-            background: #106c38;
+            background: #ffffff;
             box-shadow: 0 0 0 4px rgba(16,108,56,0.15), 0 4px 14px rgba(16,108,56,0.3);
         }
         .cat-btn.active .emblem i {
@@ -113,7 +113,7 @@
             transform: translateY(-50%) scaleY(0);
             width: 4px;
             height: 32px;
-            background: #106c38;
+            background: #ffffff;
             border-radius: 0 4px 4px 0;
             opacity: 0;
             transition: all 0.2s ease;
@@ -207,7 +207,7 @@
         .panel-titles-body::-webkit-scrollbar-thumb,
         .panel-detail::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .panel-titles-body::-webkit-scrollbar-thumb:hover,
-        .panel-detail::-webkit-scrollbar-thumb:hover { background: #106c38; }
+        .panel-detail::-webkit-scrollbar-thumb:hover { background: #ffffff; }
 
         /* Title Cards */
         .title-card {
@@ -399,7 +399,7 @@
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            background: #106c38;
+            background: #ffffff;
             color: #fff;
             padding: 4px 10px;
             border-radius: 7px;
@@ -506,7 +506,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #106c38;
+            background: #ffffff;
             color: #ffffff;
             font-size: 12px;
             font-weight: 700;
@@ -558,7 +558,7 @@
                 left: 66px;
                 width: 22px;
                 height: 36px;
-                background: #106c38;
+                background: #ffffff;
                 color: #ffffff;
                 border-radius: 0 10px 10px 0;
                 border: 1.5px solid #106c38;
