@@ -64,7 +64,7 @@
             </div>
 
             <!-- Mobile Hamburger Button -->
-            <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl text-white bg-white/15 hover:bg-white/25 active:scale-95 transition cursor-pointer shrink-0" aria-label="Menu">
+            <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl text-[#106c38] bg-white/15 hover:bg-white/25 active:scale-95 transition cursor-pointer shrink-0" aria-label="Menu">
                 <i class="ph ph-list text-2xl" id="mobile-menu-icon"></i>
             </button>
         </div>
@@ -78,8 +78,8 @@
         <div id="mobile-menu-drawer" class="absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl overflow-y-auto">
             <!-- Close Button -->
             <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-                <span class="text-slate-800 font-bold text-sm tracking-wide">{{ __('Menu') }}</span>
-                <button id="mobile-menu-close" aria-label="{{ __('Tutup Menu') }}" class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+                <span class="text-[#106c38] font-bold text-sm tracking-wide">{{ __('Menu') }}</span>
+                <button id="mobile-menu-close" aria-label="{{ __('Tutup Menu') }}" class="w-9 h-9 rounded-lg flex items-center justify-center text-[#106c38] hover:bg-green-50 transition cursor-pointer">
                     <i class="ph ph-x text-xl"></i>
                 </button>
             </div>
