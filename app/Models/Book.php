@@ -159,11 +159,28 @@ class Book extends Model
     }
 
     /**
-     * Get the additional images of the book.
+     * Get all images / gallery of the book (Cover is marked with is_cover = 1, followed by sort_order).
      */
     public function images(): HasMany
     {
-        return $this->hasMany(BookImage::class, 'book_id', 'idmaster');
+        return $this->hasMany(BookImage::class, 'book_id', 'idmaster')
+                    ->orderBy('is_cover', 'desc')
+                    ->orderBy('sort_order', 'asc')
+                    ->orderBy('id', 'asc');
+    }
+
+    /**
+     * Get the main cover image filename from galeri_buku.
+     */
+    public function getCoverImageAttribute(): ?string
+    {
+        if ($this->relationLoaded('images')) {
+            $cover = $this->images->firstWhere('is_cover', 1) ?? $this->images->first();
+            return $cover ? $cover->image_path : ($this->attributes['cover_image'] ?? null);
+        }
+
+        $cover = $this->images()->where('is_cover', 1)->first() ?? $this->images()->first();
+        return $cover ? $cover->image_path : ($this->attributes['cover_image'] ?? null);
     }
 
     /**

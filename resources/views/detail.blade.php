@@ -102,14 +102,14 @@
                 <div class="bg-white rounded-3xl border border-slate-100 p-4 sm:p-6 flex flex-col items-center shadow-sm w-full max-w-[280px] mx-auto">
                     @php
                         $allImages = [];
-                        if ($book->cover_image) {
-                            $allImages[] = asset('covers/' . $book->cover_image);
-                        }
-                        if ($book->images) {
+                        if ($book->images && $book->images->isNotEmpty()) {
                             foreach ($book->images as $img) {
                                 $allImages[] = asset('covers/' . $img->image_path);
                             }
+                        } elseif ($book->cover_image) {
+                            $allImages[] = asset('covers/' . $book->cover_image);
                         }
+                        $allImages = array_values(array_unique($allImages));
                     @endphp
 
                     <div class="relative w-full aspect-[2/3] mb-6 group select-none">

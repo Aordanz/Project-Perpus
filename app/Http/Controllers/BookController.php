@@ -204,7 +204,7 @@ class BookController extends Controller
             $latestBookIds = [];
         }
 
-        $latestBooks = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
+        $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
             ->whereIn('idbuku', $latestBookIds)
             ->orderByDesc('tglinput')
             ->get();
@@ -241,7 +241,7 @@ class BookController extends Controller
     public function indexJudulShow(Request $request, $initial)
     {
         $perPage = $request->input('per_page', 5);
-        $query = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
+        $query = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
             ->where('judul_buku', 'like', $initial . '%')
             ->orderBy('judul_buku', 'asc');
 
@@ -320,7 +320,7 @@ class BookController extends Controller
         $perPage = (int) $request->input('per_page', 10);
         if ($perPage <= 0) $perPage = 10;
         
-        $books = $query->with(['items.location', 'publisherRelation'])->paginate($perPage)->withQueryString();
+        $books = $query->with(['images', 'items.location', 'publisherRelation'])->paginate($perPage)->withQueryString();
 
         // If AJAX/JSON requested, return JSON API response
         if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest' || $request->has('json')) {
@@ -363,7 +363,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $book = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])->where('idmaster', $id)->firstOrFail();
+        $book = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])->where('idmaster', $id)->firstOrFail();
         
         $recommendations = null;
         if (!empty($book->subjek)) {
@@ -408,7 +408,7 @@ class BookController extends Controller
             return $query->take(40)->pluck('idbuku')->toArray();
         });
 
-        $latestBooks = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation'])
+        $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
             ->whereIn('idbuku', $latestBookIds)
             ->orderByDesc('tglinput')
             ->get();
@@ -424,7 +424,7 @@ class BookController extends Controller
      */
     public function galeri(Request $request)
     {
-        $query = Book::with(['items.location', 'publisherRelation', 'collectionTypeRelation']);
+        $query = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation']);
         
         if ($request->filled('q')) {
             $this->applyAdvancedSearch($query, $request->q);

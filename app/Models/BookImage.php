@@ -9,14 +9,18 @@ class BookImage extends Model
 {
     use HasFactory;
 
-    /** Gunakan database opac_katalog agar tidak mengganggu database OPAC utama server produksi. */
-    protected $connection = 'opac_katalog';
-
     protected $table = 'galeri_buku';
 
     protected $fillable = [
         'book_id',
         'image_path',
+        'is_cover',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'is_cover' => 'boolean',
+        'sort_order' => 'integer',
     ];
 
     public function book()
@@ -24,3 +28,4 @@ class BookImage extends Model
         return $this->belongsTo(Book::class, 'book_id', 'idmaster');
     }
 }
+
