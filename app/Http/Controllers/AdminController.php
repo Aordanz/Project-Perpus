@@ -45,8 +45,8 @@ class AdminController extends Controller implements HasMiddleware
         $availableItems = Item::where('kodestatus_eksemplar', 'TSD')->count();
         $borrowedItems = Item::where('kodestatus_eksemplar', 'PJM')->count();
         
-        $totalBooksWithCover = Book::whereNotNull('cover_image')->count();
-        $totalBooksWithoutCover = Book::whereNull('cover_image')->count();
+        $totalBooksWithCover = Book::whereHas('images')->count();
+        $totalBooksWithoutCover = Book::whereDoesntHave('images')->count();
         
         $totalBooksWithRingkasan = Book::whereNotNull('ringkasanbuku')->where('ringkasanbuku', '!=', '')->count();
         $totalBooksWithoutRingkasan = Book::where(function($q) {
@@ -70,22 +70,24 @@ class AdminController extends Controller implements HasMiddleware
                     ->pluck('idmaster');
 
                 $locationStatsCover = \Illuminate\Support\Facades\DB::table('tblbuku')
-                    ->whereIn('idmaster', $latest40Ids)
+                    ->leftJoin('galeri_buku', 'tblbuku.idmaster', '=', 'galeri_buku.book_id')
+                    ->whereIn('tblbuku.idmaster', $latest40Ids)
                     ->select(
-                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT idbuku) as total_books'),
-                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN cover_image IS NOT NULL AND cover_image != "" THEN idbuku END) as with_cover'),
-                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN cover_image IS NULL OR cover_image = "" THEN idbuku END) as without_cover')
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as total_books'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN galeri_buku.id IS NOT NULL THEN tblbuku.idbuku END) as with_cover'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN galeri_buku.id IS NULL THEN tblbuku.idbuku END) as without_cover')
                     )->first();
                 $selectedLocationCover = 'Koleksi Terbaru';
             } else {
                 $locationStatsCover = \Illuminate\Support\Facades\DB::table('tbllokasi')
                     ->join('tbleksemplar', 'tbllokasi.idlokasi', '=', 'tbleksemplar.kodelokasi')
                     ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->leftJoin('galeri_buku', 'tblbuku.idmaster', '=', 'galeri_buku.book_id')
                     ->where('tbllokasi.lokasi', $request->lokasi_cover)
                     ->select(
                         \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT tblbuku.idbuku) as total_books'),
-                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NOT NULL AND tblbuku.cover_image != "" THEN tblbuku.idbuku END) as with_cover'),
-                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN tblbuku.cover_image IS NULL OR tblbuku.cover_image = "" THEN tblbuku.idbuku END) as without_cover')
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN galeri_buku.id IS NOT NULL THEN tblbuku.idbuku END) as with_cover'),
+                        \Illuminate\Support\Facades\DB::raw('COUNT(DISTINCT CASE WHEN galeri_buku.id IS NULL THEN tblbuku.idbuku END) as without_cover')
                     )->first();
                 $selectedLocationCover = $request->lokasi_cover;
             }
@@ -160,7 +162,7 @@ class AdminController extends Controller implements HasMiddleware
     public function tambahCoverIndex(Request $request)
     {
         // Query books with search
-        $query = Book::with(['items.location'])->latest();
+        $query = Book::with(['images', 'items.location'])->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -175,11 +177,9 @@ class AdminController extends Controller implements HasMiddleware
         if ($request->filled('cover_filter')) {
             $filter = $request->cover_filter;
             if ($filter === 'no_cover') {
-                $query->where(function ($q) {
-                    $q->whereNull('cover_image')->orWhere('cover_image', '');
-                });
+                $query->whereDoesntHave('images');
             } elseif ($filter === 'has_cover') {
-                $query->whereNotNull('cover_image')->where('cover_image', '!=', '');
+                $query->whereHas('images');
             }
         }
 
@@ -389,30 +389,20 @@ class AdminController extends Controller implements HasMiddleware
                 $bookData['pdf_file'] = $pdfName;
             }
 
-            // Handle multiple image file upload
+            // Save the book
+            $book = Book::create($bookData);
+
+            // Handle multiple image file upload into galeri_buku
             if ($request->hasFile('images')) {
                 $images = $request->file('images');
-                
-                // First image is the main cover
-                $mainImage = $images[0];
-                $mainName = $this->saveImageAsAvif($mainImage);
-                $bookData['cover_image'] = $mainName;
-
-                // Save the book
-                $book = Book::create($bookData);
-
-                // Save the rest as additional images
-                for ($i = 1; $i < count($images); $i++) {
-                    $img = $images[$i];
+                foreach ($images as $index => $img) {
                     $imgName = $this->saveImageAsAvif($img);
-                    
                     $book->images()->create([
                         'image_path' => $imgName,
+                        'is_cover'   => $index === 0 ? 1 : 0,
+                        'sort_order' => $index,
                     ]);
                 }
-            } else {
-                // Save the book without cover
-                $book = Book::create($bookData);
             }
 
             // Add copies/items if provided
@@ -535,47 +525,38 @@ class AdminController extends Controller implements HasMiddleware
             if ($request->filled('image_order_json')) {
                 $order = json_decode($request->image_order_json, true);
                 
-                $oldCover = $book->cover_image;
-                $oldAddImages = $book->images->pluck('image_path')->toArray();
+                $oldImages = $book->images->pluck('image_path')->toArray();
                 $keptFiles = [];
 
                 $newFiles = $request->file('new_files') ?: [];
-                $finalCoverImage = null;
-                $finalAddImages = [];
+                $finalImageRecords = [];
 
                 foreach ($order as $index => $item) {
                     if ($item['type'] === 'existing') {
                         $filename = basename($item['path']);
                         $keptFiles[] = $filename;
-                        if ($index === 0) {
-                            $finalCoverImage = $filename;
-                        } else {
-                            $finalAddImages[] = $filename;
-                        }
+                        $finalImageRecords[] = [
+                            'image_path' => $filename,
+                            'is_cover'   => $index === 0 ? 1 : 0,
+                            'sort_order' => $index,
+                        ];
                     } elseif ($item['type'] === 'new') {
                         $fileIdx = $item['index'];
                         if (isset($newFiles[$fileIdx])) {
                             $file = $newFiles[$fileIdx];
                             $name = $this->saveImageAsAvif($file);
                             $keptFiles[] = $name;
-                            if ($index === 0) {
-                                $finalCoverImage = $name;
-                            } else {
-                                $finalAddImages[] = $name;
-                            }
+                            $finalImageRecords[] = [
+                                'image_path' => $name,
+                                'is_cover'   => $index === 0 ? 1 : 0,
+                                'sort_order' => $index,
+                            ];
                         }
                     }
                 }
 
-                // Delete unused old main cover image file from disk
-                if ($oldCover && !in_array($oldCover, $keptFiles)) {
-                    if (file_exists(public_path('covers/' . $oldCover))) {
-                        @unlink(public_path('covers/' . $oldCover));
-                    }
-                }
-
-                // Delete unused old additional images from disk
-                foreach ($oldAddImages as $oldPath) {
+                // Delete unused old image files from disk
+                foreach ($oldImages as $oldPath) {
                     if ($oldPath && !in_array($oldPath, $keptFiles)) {
                         if (file_exists(public_path('covers/' . $oldPath))) {
                             @unlink(public_path('covers/' . $oldPath));
@@ -583,34 +564,41 @@ class AdminController extends Controller implements HasMiddleware
                     }
                 }
 
-                $bookData['cover_image'] = $finalCoverImage;
-                
-                // Clear old database entries for additional images
+                // Clear old database entries and re-insert ordered entries into galeri_buku
                 $book->images()->delete();
-                // Create new ordered additional images entries
-                foreach ($finalAddImages as $path) {
-                    $book->images()->create([
-                        'image_path' => $path
-                    ]);
+                foreach ($finalImageRecords as $record) {
+                    $book->images()->create($record);
                 }
             } else {
                 // Handle deleting the cover image (Legacy)
                 if ($request->boolean('delete_cover')) {
-                    if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
-                        @unlink(public_path('covers/' . $book->cover_image));
+                    $cover = $book->images()->where('is_cover', 1)->first() ?? $book->images()->first();
+                    if ($cover) {
+                        if (file_exists(public_path('covers/' . $cover->image_path))) {
+                            @unlink(public_path('covers/' . $cover->image_path));
+                        }
+                        $cover->delete();
                     }
-                    $bookData['cover_image'] = null;
                 }
 
                 // Handle cover image upload (replace old one) (Legacy)
                 if ($request->hasFile('cover_image')) {
-                    // Delete old cover
-                    if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
-                        @unlink(public_path('covers/' . $book->cover_image));
-                    }
                     $image = $request->file('cover_image');
                     $name = $this->saveImageAsAvif($image);
-                    $bookData['cover_image'] = $name;
+                    
+                    $cover = $book->images()->where('is_cover', 1)->first() ?? $book->images()->first();
+                    if ($cover) {
+                        if (file_exists(public_path('covers/' . $cover->image_path))) {
+                            @unlink(public_path('covers/' . $cover->image_path));
+                        }
+                        $cover->update(['image_path' => $name, 'is_cover' => 1]);
+                    } else {
+                        $book->images()->create([
+                            'image_path' => $name,
+                            'is_cover'   => 1,
+                            'sort_order' => 0,
+                        ]);
+                    }
                 }
             }
 
@@ -747,15 +735,7 @@ class AdminController extends Controller implements HasMiddleware
         try {
             $book = Book::where('idmaster', $id)->firstOrFail();
 
-            // Delete the cover image file if it exists
-            if ($book->cover_image && file_exists(public_path('covers/' . $book->cover_image))) {
-                @unlink(public_path('covers/' . $book->cover_image));
-            }
-
-            $book->cover_image = null;
-            $book->save();
-
-            // Also delete all additional images so they don't persist
+            // Delete all images from disk and galeri_buku
             foreach ($book->images as $img) {
                 if (file_exists(public_path('covers/' . $img->image_path))) {
                     @unlink(public_path('covers/' . $img->image_path));
@@ -767,7 +747,7 @@ class AdminController extends Controller implements HasMiddleware
             $this->clearBookCache();
 
             return redirect()->back()
-                ->with('success', 'Gambar cover dan tambahan berhasil dihapus.');
+                ->with('success', 'Gambar cover dan galeri berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => 'Gagal menghapus cover: ' . $e->getMessage()]);
