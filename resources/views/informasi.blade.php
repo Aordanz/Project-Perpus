@@ -103,7 +103,7 @@
             box-shadow: 0 0 0 4px rgba(16,108,56,0.15), 0 4px 14px rgba(16,108,56,0.3);
         }
         .cat-btn.active .emblem i {
-            color: #fff !important;
+            color: #106c38 !important;
         }
         .cat-btn::before {
             content: '';
@@ -673,7 +673,7 @@
                             class="cat-btn {{ $isActive ? 'active' : '' }}"
                             data-category="{{ $key }}">
                         <div class="emblem">
-                            <i class="ph {{ $config['icon'] }} text-2xl {{ $isActive ? 'text-white' : '' }}" {!! !$isActive ? 'style="color: #106c38;"' : '' !!}></i>
+                            <i class="ph-fill {{ $config['icon'] }} text-2xl" {!! !$isActive ? 'style="color: #106c38;"' : '' !!}></i>
                             @if($count > 0)
                                 <span class="badge">{{ $count }}</span>
                             @endif
@@ -689,7 +689,7 @@
             <div class="panel-titles">
                 <div class="panel-titles-header">
                     <div class="cat-name flex items-center gap-1.5">
-                        <i id="current-cat-icon" class="ph ph-megaphone-simple text-[#106c38]"></i>
+                        <i id="current-cat-icon" class="ph-fill ph-megaphone-simple text-[#106c38]"></i>
                         <span id="current-cat-title">{{ $categoryConfigs[$selectedCategory]['title'] ?? '' }}</span>
                     </div>
                     <span id="current-cat-count" class="data-count">
@@ -711,7 +711,7 @@
                              data-category="{{ $item['category'] }}">
 
                             <div class="cat-tag">
-                                <i class="ph {{ $catConf['icon'] }}"></i>
+                                <i class="ph-fill {{ $catConf['icon'] }}"></i>
                                 {{ $catConf['title'] }}
                             </div>
 
@@ -966,7 +966,7 @@
             const countEl = document.getElementById('current-cat-count');
 
             if (titleEl) titleEl.textContent = conf.title || catKey;
-            if (iconEl)  iconEl.className = `ph ${conf.icon || 'ph-info'} text-[#106c38]`;
+            if (iconEl)  iconEl.className = `ph-fill ${conf.icon || 'ph-info'} text-[#106c38]`;
 
             let count = 0;
             let targetToSelect = null;
