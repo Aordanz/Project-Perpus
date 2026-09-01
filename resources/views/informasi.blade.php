@@ -400,10 +400,10 @@
             text-transform: uppercase;
             letter-spacing: 0.06em;
             background: #ffffff;
-            color: #fff;
+            color: #475569;
             padding: 4px 10px;
             border-radius: 7px;
-            box-shadow: 0 2px 6px rgba(16,108,56,0.2);
+            border: 1px solid #e2e8f0;
         }
         .badge-date {
             font-size: 11px;
@@ -506,7 +506,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #ffffff;
+            background: #106c38;
             color: #ffffff;
             font-size: 12px;
             font-weight: 700;
