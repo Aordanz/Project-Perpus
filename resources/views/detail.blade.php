@@ -90,7 +90,7 @@
         
         <!-- Back button (Below Navbar) -->
         <div class="mb-4 sm:mb-6 lg:hidden">
-            <button onclick="history.back()" class="inline-flex items-center gap-2 text-[#106c38] hover:text-[#064e3b] transition text-sm font-bold bg-[#106c38]/5 hover:bg-[#106c38]/10 px-4 py-2 rounded-lg border border-[#106c38]/10 cursor-pointer">
+            <button onclick="window.history.back()" class="inline-flex items-center gap-2 text-[#106c38] hover:text-[#064e3b] transition text-sm font-bold bg-[#106c38]/5 hover:bg-[#106c38]/10 px-4 py-2 rounded-lg border border-[#106c38]/10 cursor-pointer">
                 <i class="ph ph-arrow-left"></i> {{ __('Kembali') }}
             </button>
         </div>

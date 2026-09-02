@@ -1045,7 +1045,7 @@
 </script>
 
 @if(!request()->routeIs(['home', 'informasi']))
-<button id="desktop-back-button" onclick="window.history.back(); font-bold" 
+<button id="desktop-back-button" onclick="window.history.back();" 
         class="fixed left-4 lg:left-8 xl:left-12 2xl:left-24 top-28 z-40 hidden md:flex items-center justify-start w-12 hover:w-32 h-12 bg-[#106c38] hover:bg-[#0e5c30] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer select-none group overflow-hidden pl-3.5 border border-transparent"
         title="{{ __('Kembali') }}">
     <div class="flex items-center gap-2.5 whitespace-nowrap">
@@ -1053,6 +1053,13 @@
         <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold text-xs uppercase tracking-wider">{{ __('Kembali') }}</span>
     </div>
 </button>
+<script>
+    window.addEventListener("pageshow", function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+</script>
 @endif
 
 

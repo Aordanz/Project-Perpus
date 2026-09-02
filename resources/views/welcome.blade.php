@@ -2003,6 +2003,14 @@
             }
         });
     </script>
+    <script>
+        // BFCache fix: if loaded from back/forward cache, reload to prevent blank screen
+        window.addEventListener("pageshow", function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
 
 </body>
 </html>

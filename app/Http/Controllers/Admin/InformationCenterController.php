@@ -320,8 +320,12 @@ Cache::forget('home_active_info_ids_v2');
             return '/storage/' . $path;
         }
 
+        // Cek apakah server support fungsi imageavif
+        $supportAvif = function_exists('imageavif');
+        $extension = $supportAvif ? '.avif' : '.webp';
+
         // Bikin folder penyimpanan di storage/app/public jika belum ada
-        $fileName = uniqid() . '.avif';
+        $fileName = uniqid() . $extension;
         $storagePath = storage_path('app/public/' . $destinationFolder);
         if (!file_exists($storagePath)) {
             mkdir($storagePath, 0755, true);
@@ -329,8 +333,20 @@ Cache::forget('home_active_info_ids_v2');
 
         $fullPath = $storagePath . '/' . $fileName;
 
-        // Konversi ke AVIF dengan kualitas 65 (seimbang antara kompresi dan kualitas visual)
-        imageavif($image, $fullPath, 65);
+        if ($supportAvif) {
+            // Konversi ke AVIF dengan kualitas 65
+            imageavif($image, $fullPath, 65);
+        } else {
+            // Fallback konversi ke WEBP dengan kualitas 75
+            if (function_exists('imagewebp')) {
+                imagewebp($image, $fullPath, 75);
+            } else {
+                // Jika WEBP juga tidak support, simpan JPEG saja
+                imagejpeg($image, str_replace('.webp', '.jpg', $fullPath), 80);
+                $fileName = str_replace('.webp', '.jpg', $fileName);
+            }
+        }
+        
         imagedestroy($image);
 
         return '/storage/' . $destinationFolder . '/' . $fileName;

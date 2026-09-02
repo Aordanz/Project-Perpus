@@ -197,7 +197,26 @@ class BookController extends Controller
 
         // Cache: ID 20 buku terbaru (update setiap 15 menit) - Versi 2
         $latestBookIds = Cache::remember('home_latest_book_ids_v2', 900, function () {
-            return Book::latest()->take(20)->pluck('idbuku')->toArray();
+            $prefix = date('y');
+            $hasNewFormat = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+                ->where('nomor_eksemplar', 'like', $prefix . '%')
+                ->whereRaw('LENGTH(nomor_eksemplar) = 8')
+                ->whereRaw('nomor_eksemplar REGEXP "^[0-9]+$"')
+                ->exists();
+            if (!$hasNewFormat) {
+                $prefix = (string)((int)$prefix - 1);
+            }
+
+            return Book::select('tblbuku.*')
+                ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
+                ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                ->groupBy('tblbuku.idbuku')
+                ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 3) AS UNSIGNED)) DESC')
+                ->take(20)
+                ->pluck('idbuku')
+                ->toArray();
         });
 
         if (!is_array($latestBookIds)) {
@@ -389,10 +408,23 @@ class BookController extends Controller
         $cacheKey = 'latest_book_ids_' . md5($request->q . '|' . $request->location);
 
         $latestBookIds = Cache::remember($cacheKey, 600, function () use ($request) {
-            $query = Book::whereNotNull('tglinput')
-                ->where('tglinput', '!=', '')
-                ->where('tglinput', '!=', '0000-00-00 00:00:00')
-                ->orderByDesc('tglinput');
+            $prefix = date('y');
+            $hasNewFormat = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+                ->where('nomor_eksemplar', 'like', $prefix . '%')
+                ->whereRaw('LENGTH(nomor_eksemplar) = 8')
+                ->whereRaw('nomor_eksemplar REGEXP "^[0-9]+$"')
+                ->exists();
+            if (!$hasNewFormat) {
+                $prefix = (string)((int)$prefix - 1);
+            }
+
+            $query = Book::select('tblbuku.*')
+                ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
+                ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                ->groupBy('tblbuku.idbuku')
+                ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 3) AS UNSIGNED)) DESC');
 
             if ($request->filled('q')) {
                 $this->applyAdvancedSearch($query, $request->q);
