@@ -89,9 +89,8 @@ class EventController extends Controller
                         return $path;
                     }
                     $cleanPath = ltrim($path, '/');
-                    if (file_exists(public_path($cleanPath))) {
-                        return asset($cleanPath);
-                    }
+                    // Langsung kembalikan asset URL tanpa file_exists karena di shared hosting symlink sering bermasalah
+                    return asset($cleanPath);
                 }
                 $fallbackIndex = ($event->id ?? 0) % count($fallbackImages);
                 return asset($fallbackImages[$fallbackIndex]);
@@ -100,16 +99,14 @@ class EventController extends Controller
             $hasCustomImage = false;
             if (!empty($event->image_path)) {
                 $cleanPath = ltrim($event->image_path, '/');
-                if (str_starts_with($cleanPath, 'http')) {
-                    $hasCustomImage = true;
-                } elseif (file_exists(public_path($cleanPath)) && !in_array($cleanPath, $fallbackImages)) {
+                if (!in_array($cleanPath, $fallbackImages)) {
                     $hasCustomImage = true;
                 }
             }
             if (!$hasCustomImage && is_array($event->images) && count($event->images) > 0) {
                 foreach ($event->images as $img) {
                     $cImg = ltrim($img, '/');
-                    if (str_starts_with($cImg, 'http') || (file_exists(public_path($cImg)) && !in_array($cImg, $fallbackImages))) {
+                    if (!in_array($cImg, $fallbackImages)) {
                         $hasCustomImage = true;
                         break;
                     }
