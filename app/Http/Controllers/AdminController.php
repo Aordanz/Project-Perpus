@@ -71,12 +71,12 @@ class AdminController extends Controller implements HasMiddleware
                 if (!$hasNewFormat) {
                     $prefix = (string)((int)$prefix - 1);
                 }
-                $latest40Ids = Book::select('tblbuku.*')
+                $latest40Ids = Book::select('tblbuku.idmaster')
                     ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
                     ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
                     ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
                     ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
-                    ->groupBy('tblbuku.idbuku')
+                    ->groupBy('tblbuku.idmaster')
                     ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 3) AS UNSIGNED)) DESC')
                     ->limit(40)
                     ->pluck('idmaster');
@@ -124,12 +124,12 @@ class AdminController extends Controller implements HasMiddleware
                 if (!$hasNewFormat) {
                     $prefix = (string)((int)$prefix - 1);
                 }
-                $latest40Ids = Book::select('tblbuku.*')
+                $latest40Ids = Book::select('tblbuku.idmaster')
                     ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
                     ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
                     ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
                     ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
-                    ->groupBy('tblbuku.idbuku')
+                    ->groupBy('tblbuku.idmaster')
                     ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 3) AS UNSIGNED)) DESC')
                     ->limit(40)
                     ->pluck('idmaster');
@@ -219,12 +219,12 @@ class AdminController extends Controller implements HasMiddleware
                 if (!$hasNewFormat) {
                     $prefix = (string)((int)$prefix - 1);
                 }
-                $latest40Ids = Book::select('tblbuku.*')
+                $latest40Ids = Book::select('tblbuku.idmaster')
                     ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
                     ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
                     ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
                     ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
-                    ->groupBy('tblbuku.idbuku')
+                    ->groupBy('tblbuku.idmaster')
                     ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 3) AS UNSIGNED)) DESC')
                     ->limit(40)
                     ->pluck('idmaster');
@@ -294,12 +294,12 @@ class AdminController extends Controller implements HasMiddleware
                 if (!$hasNewFormat) {
                     $prefix = (string)((int)$prefix - 1);
                 }
-                $latest40Ids = Book::select('tblbuku.*')
+                $latest40Ids = Book::select('tblbuku.idmaster')
                     ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
                     ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
                     ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
                     ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
-                    ->groupBy('tblbuku.idbuku')
+                    ->groupBy('tblbuku.idmaster')
                     ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 3) AS UNSIGNED)) DESC')
                     ->limit(40)
                     ->pluck('idmaster');
