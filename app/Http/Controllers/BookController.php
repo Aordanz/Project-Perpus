@@ -207,7 +207,7 @@ class BookController extends Controller
                 $prefix = (string)((int)$prefix - 1);
             }
 
-            return Book::select('tblbuku.*')
+            return Book::select('tblbuku.idbuku')
                 ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
                 ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
                 ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
@@ -418,7 +418,7 @@ class BookController extends Controller
                 $prefix = (string)((int)$prefix - 1);
             }
 
-            $query = Book::select('tblbuku.*')
+            $query = Book::select('tblbuku.idbuku')
                 ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
                 ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
                 ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
