@@ -231,7 +231,7 @@ class BookController extends Controller
                 ->where('tblbuku.tahun', $fullYear)
                 ->groupBy('tblbuku.idbuku')
                 ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 5) AS UNSIGNED)) DESC')
-                ->take(20)
+                ->take(5)
                 ->pluck('idbuku')
                 ->toArray();
         });
@@ -240,10 +240,16 @@ class BookController extends Controller
             $latestBookIds = [];
         }
 
-        $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
-            ->whereIn('idbuku', $latestBookIds)
-            ->orderByDesc('tglinput')
-            ->get();
+        $latestBooks = collect();
+        if (!empty($latestBookIds)) {
+            $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
+                ->whereIn('idbuku', $latestBookIds)
+                ->get()
+                ->sortBy(function ($book) use ($latestBookIds) {
+                    return array_search($book->idbuku, $latestBookIds);
+                })
+                ->values();
+        }
 
         // Cache: ID Informasi/Pengumuman aktif (update setiap 5 menit) - Versi 2
         $activeInfoIds = Cache::remember('home_active_info_ids_v2', 300, function () {
@@ -463,10 +469,16 @@ class BookController extends Controller
             return $query->take(40)->pluck('idbuku')->toArray();
         });
 
-        $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
-            ->whereIn('idbuku', $latestBookIds)
-            ->orderByDesc('tglinput')
-            ->get();
+        $latestBooks = collect();
+        if (!empty($latestBookIds)) {
+            $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
+                ->whereIn('idbuku', $latestBookIds)
+                ->get()
+                ->sortBy(function ($book) use ($latestBookIds) {
+                    return array_search($book->idbuku, $latestBookIds);
+                })
+                ->values();
+        }
 
         // Cache daftar lokasi untuk filter dropdown (60 menit)
         $locations = Cache::remember('all_locations_list', 3600, fn() => Location::all());
