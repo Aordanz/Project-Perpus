@@ -327,7 +327,7 @@
                 </form>
             </div>
 
-            <!-- 20 Koleksi Terbaru Carousel -->
+            <!-- 5 Koleksi Terbaru Carousel -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
                 <div class="text-center mb-1 max-w-5xl mx-auto px-4">
                     <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-normal">
