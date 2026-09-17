@@ -167,7 +167,7 @@
 
     <!-- Main Content Area -->
     <div class="w-full flex-grow flex flex-col min-w-0">
-        <main class="flex-grow p-3 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-8">
+        <main class="flex-grow p-3 sm:p-6 lg:p-8 pb-10 sm:pb-14 flex flex-col gap-4 sm:gap-8">
         
         <!-- Welcome Alert & Summary -->
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 bg-white border border-slate-100 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm">
@@ -388,12 +388,7 @@
             </main>
 
             <!-- Footer -->
-            <footer class="bg-[#106c38] text-white/90 py-5 border-t border-white/15 text-center text-xs font-medium mt-auto">
-                <div class="w-full px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p>&copy; 2026 Universitas Sumatera Utara | OPAC Admin. All rights reserved.</p>
-                    <p class="text-white/70">Universitas Sumatera Utara Library</p>
-                </div>
-            </footer>
+            @include('partials.admin_footer')
         </div>
 
     <script>
