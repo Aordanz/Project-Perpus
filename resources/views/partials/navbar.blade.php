@@ -476,8 +476,14 @@
                         const infoPageUrl = `{{ route('informasi') }}?category=${encodeURIComponent(catKey)}&id=${event.id}`;
 
                         // ─── Slide HTML ────────────────────────────────────────────
-                        // Use event.type from DB directly — if admin saved it as 'poster', show poster mode
-                        const type = (event.type === 'poster') ? 'poster' : 'text';
+                        // Use event.type from DB directly. If type is null (legacy data), infer from has_custom_image.
+                        let type = event.type;
+                        if (!type) {
+                            type = event.has_custom_image ? 'poster' : 'text';
+                        } else {
+                            type = (type === 'poster') ? 'poster' : 'text';
+                        }
+                        
                         if (type === 'poster') {
                             slidesHtml += `
                                 <div class="w-full shrink-0 overflow-hidden relative cursor-pointer group bg-slate-900"
