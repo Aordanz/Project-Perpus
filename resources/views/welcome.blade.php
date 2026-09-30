@@ -983,6 +983,11 @@
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[85vh] overflow-hidden border border-emerald-800/10 transform transition-all duration-200 scale-95 opacity-0 flex flex-col" id="modal-hasil-content">
             <!-- Modal Header Banner -->
             <div class="bg-gradient-to-br from-[#064e3b] to-[#106c38] px-5 py-4 md:px-6 md:py-5 text-white relative rounded-t-3xl flex-shrink-0">
+                <!-- Back to filter button (only shows when opened from Pencarian Spesifik) -->
+                <button id="btn-kembali-ke-filter" class="hidden mb-3 flex items-center gap-1.5 text-white/70 hover:text-white text-xs font-semibold transition-all bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg cursor-pointer">
+                    <i class="ph ph-arrow-left text-sm"></i>
+                    {{ __('Kembali ke Filter') }}
+                </button>
                 <div class="flex items-center gap-3.5 md:gap-4 pr-12 md:pr-14">
                     <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-md rounded-xl md:rounded-2xl flex items-center justify-center text-white text-xl md:text-2xl shadow-inner flex-shrink-0">
                         <i id="modal-hasil-icon" class="ph ph-buildings"></i>
@@ -1187,8 +1192,23 @@
             const modalHasil = document.getElementById('modal-hasil-lokasi');
             const modalHasilContent = document.getElementById('modal-hasil-content');
             const btnCloseHasil = document.getElementById('close-modal-hasil-lokasi');
+            const btnKembaliKeFilter = document.getElementById('btn-kembali-ke-filter');
 
-            function openModalHasil() {
+            // Flag: apakah modal hasil dibuka dari Pencarian Spesifik?
+            let fromSpesifik = false;
+
+            function openModalHasil(isFromSpesifik = false) {
+                fromSpesifik = isFromSpesifik;
+                // Tampilkan/sembunyikan tombol kembali ke filter
+                if (btnKembaliKeFilter) {
+                    if (fromSpesifik) {
+                        btnKembaliKeFilter.classList.remove('hidden');
+                        btnKembaliKeFilter.classList.add('flex');
+                    } else {
+                        btnKembaliKeFilter.classList.add('hidden');
+                        btnKembaliKeFilter.classList.remove('flex');
+                    }
+                }
                 modalHasil.classList.remove('hidden');
                 modalHasil.classList.add('flex');
                 setTimeout(() => {
@@ -1204,6 +1224,16 @@
                     modalHasil.classList.remove('flex');
                     modalHasil.classList.add('hidden');
                 }, 200);
+            }
+
+            // Tombol Kembali ke Filter: tutup hasil, buka ulang modal pencarian spesifik
+            if (btnKembaliKeFilter) {
+                btnKembaliKeFilter.addEventListener('click', function () {
+                    closeModalHasil();
+                    setTimeout(() => {
+                        openModal();
+                    }, 220);
+                });
             }
 
             if (btnCloseHasil) btnCloseHasil.addEventListener('click', closeModalHasil);
@@ -1338,7 +1368,8 @@
                     if (searchInput) searchInput.value = '';
                     if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
 
-                    openModalHasil();
+                    // Buka modal hasil dengan flag fromSpesifik = true
+                    openModalHasil(true);
 
                     const formData = new FormData(specificSearchForm);
                     const params = new URLSearchParams();
