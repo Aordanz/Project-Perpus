@@ -296,11 +296,11 @@
                         </li>
                         <li class="flex items-start gap-2">
                             <i class="ph ph-check-circle text-[#106c38] text-sm shrink-0 mt-0.5"></i>
-                            <span><strong>{{ __('Koleksi Standard (STD):') }}</strong> {{ __('Maksimal 3 - 5 eksemplar dengan durasi pinjam selama 7 hari kalender.') }}</span>
+                            <span><strong>{{ __('Koleksi Standard (STD):') }}</strong> {{ __('Maksimal 7 eksemplar dengan durasi pinjam selama 14 hari kerja.') }}</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <i class="ph ph-check-circle text-[#106c38] text-sm shrink-0 mt-0.5"></i>
-                            <span><strong>{{ __('Koleksi Pinjam Singkat (KPS):') }}</strong> {{ __('Maksimal 1 - 2 eksemplar dengan durasi pinjam 3 hari.') }}</span>
+                            <span><strong>{{ __('Koleksi Pinjam Singkat (KPS):') }}</strong> {{ __('Maksimal 2 eksemplar dengan durasi pinjam 2 hari kerja.') }}</span>
                         </li>
                     </ul>
                 </div>
