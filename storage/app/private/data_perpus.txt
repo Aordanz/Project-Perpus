@@ -10,13 +10,14 @@ Website Resmi & OPAC: https://library.usu.ac.id
 - Sekretaris Perpustakaan USU: Sundari, S.Sos., M.Si.
 
 [WAKTU OPERASIONAL]
-- Jam Operasional Perpustakaan USU:
-  * Senin - Kamis: 08.00 - 20.00 WIB
-  * Jumat: 08.00 - 17.00 WIB
-- Ruang Baca Terbuka Lantai 1:
-  * Senin - Jumat: 08.00 - 21.00 WIB
-  * Catatan: Ruang Baca Terbuka Lantai 1 tetap buka hingga pukul 21.00 WIB pada hari Senin-Jumat.
-- Sabtu - Minggu & Hari Libur Nasional: Tutup
+Jam Operasional Perpustakaan USU
+Senin–Kamis: 08.00 – 20.00 WIB
+Jumat: 08.00 – 17.00 WIB
+
+Ruang Baca Terbuka Lantai 1: 
+Senin–Jumat, 08.00–21.00 WIB
+Sabtu–Minggu & Hari Libur Nasional: Tutup
+Catatan : Ruang Baca Terbuka Lantai 1 tetap buka hingga pukul 21.00 WIB pada hari Senin–Jumat.
 
 [SYARAT KEANGGOTAAN & PEMINJAMAN BUKU]
 - Syarat Peminjaman Buku:
@@ -26,7 +27,7 @@ Website Resmi & OPAC: https://library.usu.ac.id
     - Kartu Tanda Dosen (KTD) bagi dosen
     - Kartu Tanda Tenaga Kependidikan bagi tenaga kependidikan
   * Pastikan kartu identitas masih berlaku dan data keanggotaan Anda aktif sebelum melakukan peminjaman.
-- Cara Aktivasi Kartu: Mahasiswa/dosen/tendik membawa kartu identitas asli ke meja layanan sirkulasi perpustakaan untuk diaktivasi oleh petugas. Setelah aktif, kartu berfungsi sebagai kartu perpustakaan.
+- Cara Aktivasi Kartu: Mahasiswa/dosen/tendik membawa kartu identitas asli ke counter layanan sirkulasi Keanggotaan perpustakaan untuk diaktivasi oleh petugas.
 
 [ATURAN TATA TERTIB & BERPAKAIAN]
 - Kewajiban Pengunjung: Mengisi Buku Tamu Elektronik (E-Visitor) di komputer pintu masuk dengan men-scan KTM atau mengetik NIM.
@@ -41,7 +42,7 @@ Website Resmi & OPAC: https://library.usu.ac.id
   * Koleksi Buku Standar (STD): 14 hari kerja
   * Koleksi Pinjam Singkat (KPS): 2 hari kerja
 - Perpanjangan Peminjaman:
-  * Peminjaman dapat diperpanjang sebelum tanggal jatuh tempo melalui Layanan Sirkulasi di Lantai 2.
+  * Peminjaman dapat diperpanjang sebelum tanggal jatuh tempo melalui Counter Layanan Sirkulasi di Lantai 2.
 
 [SANKSI & ATURAN DENDA KETERLAMBATAN]
 - Denda Keterlambatan:
