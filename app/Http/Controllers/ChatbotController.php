@@ -97,11 +97,15 @@ class ChatbotController extends Controller
 
             $aiResponse = $response->json('candidates.0.content.parts.0.text');
 
+            // Jika AI tidak mengembalikan teks, jangan cache error — return langsung
             if (!$aiResponse) {
-                $aiResponse = __("Maaf, saat ini sistem chatbot sedang dalam gangguan.");
+                Log::warning('Gemini API returned empty response. Body: ' . $response->body());
+                return response()->json([
+                    'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan.")
+                ], 500);
             }
 
-            // 6. Simpan Hasil ke Database Cache
+            // 6. Simpan Hasil ke Database Cache (hanya jika jawaban valid)
             ChatCache::create([
                 'pertanyaan_hash' => $messageHash,
                 'pertanyaan' => $normalizedMessage,
