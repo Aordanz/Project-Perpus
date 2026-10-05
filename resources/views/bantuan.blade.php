@@ -292,7 +292,7 @@
                     <ul class="space-y-2 text-xs text-slate-700 leading-relaxed">
                         <li class="flex items-start gap-2">
                             <i class="ph ph-check-circle text-[#106c38] text-sm shrink-0 mt-0.5"></i>
-                            <span>{{ __('Wajib membawa Kartu Tanda Mahasiswa (KTM) / Kartu Anggota Aktif saat melakukan transaksi peminjaman dan pengembalian.') }}</span>
+                            <span>{{ __('Wajib membawa Kartu Tanda Mahasiswa (KTM) / Kartu Anggota Aktif saat melakukan transaksi peminjaman maupun pengembalian.') }}</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <i class="ph ph-check-circle text-[#106c38] text-sm shrink-0 mt-0.5"></i>
