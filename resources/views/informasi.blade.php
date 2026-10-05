@@ -558,7 +558,7 @@
                 left: 66px;
                 width: 22px;
                 height: 36px;
-                background: #ffffff;
+                background: #106c38;
                 color: #ffffff;
                 border-radius: 0 10px 10px 0;
                 border: 1.5px solid #106c38;
@@ -662,6 +662,11 @@
                  PANEL 1 — CATEGORY LOGO BUTTONS (LEFT)
             ════════════════════════════════════════ --}}
             <div class="panel-categories">
+                {{-- Back Button Khusus Halaman Informasi --}}
+                <button type="button" onclick="window.history.back();" class="flex items-center justify-center w-11 h-11 bg-[#106c38] hover:bg-[#0e5c30] text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer mb-2 shrink-0" title="{{ __('Kembali') }}">
+                    <i class="ph ph-arrow-left text-xl font-bold"></i>
+                </button>
+
                 <span class="section-label">{{ __('Kategori') }}</span>
 
                 @foreach($categoryConfigs as $key => $config)

@@ -24,9 +24,8 @@ class BookController extends Controller
         // Bersihkan tanda kutip dari query untuk pencarian yang mengabaikan tanda baca
         $qClean = str_replace(["'", '"', '`'], '', $q);
         
-        // Normalisasi Typo / Leetspeak (misal: 1 -> i, 0 -> o, 4 -> a, 3 -> e, 5 -> s, 7 -> t, 8 -> b, @ -> a)
-        $typoMap = ['1' => 'i', '0' => 'o', '4' => 'a', '3' => 'e', '5' => 's', '7' => 't', '8' => 'b', '@' => 'a'];
-        $qNormalized = strtr(strtolower($qClean), $typoMap);
+        // Kita gunakan huruf kecil untuk mempermudah pencocokan
+        $qNormalized = strtolower($qClean);
 
         // 1. EXACT MATCH (if query is wrapped in quotes)
         if (preg_match('/^"(.*)"$/', $q, $matches)) {
@@ -65,60 +64,72 @@ class BookController extends Controller
         ];
 
         // Kita gabungkan input asli, yang dibersihkan, dan yang dinormalisasi
-        $searchTerms = array_unique([$q, $qClean, $qNormalized]);
         $qLower = strtolower($qNormalized);
         
-        // Auto-correct typos using Levenshtein distance
-        $qWords = explode(' ', $qLower);
+        // Auto-correct typos and Synonyms PER WORD to prevent massive OR search pollution
+        $qWords = explode(' ', preg_replace('/\s+/', ' ', $qLower));
+        $wordVariations = [];
+        
         foreach ($qWords as $w) {
             $wClean = trim($w);
+            if (strlen($wClean) == 0) continue;
+            
+            $variations = [$wClean];
+            
+            // Levenshtein Typo Correction
             if (strlen($wClean) >= 4) {
                 $maxDist = strlen($wClean) <= 5 ? 1 : 2;
                 foreach ($dictionary as $dictWord) {
                     if (abs(strlen($dictWord) - strlen($wClean)) <= $maxDist) {
                         if (levenshtein($wClean, $dictWord) <= $maxDist) {
-                            $searchTerms[] = $dictWord;
+                            $variations[] = $dictWord;
                         }
                     }
                 }
             }
-        }
-
-        // Add related terms if keyword matches our dictionary
-        foreach ($synonyms as $key => $relatedTerms) {
-            if (str_contains($qLower, $key) || in_array($qLower, $relatedTerms)) {
-                $searchTerms[] = $key;
-                $searchTerms = array_merge($searchTerms, $relatedTerms);
+            
+            // Synonyms
+            foreach ($synonyms as $key => $relatedTerms) {
+                if ($wClean === $key || in_array($wClean, $relatedTerms)) {
+                    $variations[] = $key;
+                    $variations = array_merge($variations, $relatedTerms);
+                }
             }
+            
+            $wordVariations[] = array_unique($variations);
         }
-        $searchTerms = array_unique($searchTerms);
 
-        $query->where(function($w) use ($columns, $searchTerms, $qNormalized) {
-            // 3. MULTI-WORD SEARCH (Memastikan SEMUA kata ada)
-            if (str_contains($qNormalized, ' ')) {
-                $words = explode(' ', preg_replace('/\s+/', ' ', trim($qNormalized)));
-                $w->orWhere(function($queryMulti) use ($columns, $words) {
-                    foreach ($words as $word) {
-                        if (strlen($word) > 2) { // Abaikan kata hubung pendek
-                            $queryMulti->where(function($queryWord) use ($columns, $word) {
+        $query->where(function($w) use ($columns, $q, $qClean, $qNormalized, $wordVariations) {
+            
+            // 3. MULTI-WORD SEARCH WITH TYPO/SYNONYM SUPPORT (Memastikan SEMUA kata ada)
+            if (count($wordVariations) > 1) {
+                $w->orWhere(function($queryMulti) use ($columns, $wordVariations) {
+                    foreach ($wordVariations as $variations) {
+                        // Abaikan kata hubung pendek, kecuali kata tersebut satu-satunya variasi
+                        $hasLongWord = false;
+                        foreach($variations as $var) { if (strlen($var) > 2) { $hasLongWord = true; break; } }
+                        if (!$hasLongWord) continue;
+                        
+                        $queryMulti->where(function($queryWord) use ($columns, $variations) {
+                            foreach ($variations as $var) {
                                 foreach ($columns as $column) {
-                                    // Menggunakan DB::raw untuk menghapus petik dari string database saat pencocokan
-                                    $queryWord->orWhereRaw("REPLACE(REPLACE({$column}, '''', ''), '\"', '') LIKE ?", ["%{$word}%"]);
+                                    $queryWord->orWhereRaw("REPLACE(REPLACE({$column}, '''', ''), '\"', '') LIKE ?", ["%{$var}%"]);
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 });
             }
 
-            foreach ($searchTerms as $term) {
-                // PARTIAL MATCH (Normal LIKE)
+            // PARTIAL MATCH FOR FULL STRING
+            $fullTerms = array_unique([$q, $qClean, $qNormalized]);
+            foreach ($fullTerms as $term) {
                 foreach ($columns as $column) {
                     $w->orWhereRaw("REPLACE(REPLACE({$column}, '''', ''), '\"', '') LIKE ?", ["%{$term}%"]);
                 }
             }
             
-            // 4. FUZZY MATCH (mengubah spasi menjadi wildcard '%')
+            // 4. FUZZY MATCH FOR FULL STRING (mengubah spasi menjadi wildcard '%')
             if (str_contains($qNormalized, ' ')) {
                 $qCleanSpaces = preg_replace('/\s+/', ' ', trim($qNormalized));
                 $fuzzyTerm = '%' . str_replace(' ', '%', $qCleanSpaces) . '%';
@@ -129,7 +140,7 @@ class BookController extends Controller
         });
 
         // 5. RELEVANCE SORTING (Prioritaskan buku yang diawali kata kunci)
-        $qTrimmed = trim($qNormalized);
+        $qTrimmed = trim(strtolower($qClean));
         if (!empty($qTrimmed)) {
             $query->orderByRaw("
                 CASE 
@@ -197,17 +208,48 @@ class BookController extends Controller
 
         // Cache: ID 20 buku terbaru (update setiap 15 menit) - Versi 2
         $latestBookIds = Cache::remember('home_latest_book_ids_v2', 900, function () {
-            return Book::latest()->take(20)->pluck('idbuku')->toArray();
+            $yearPrefix = date('y');
+                $prefix = $yearPrefix . '00';
+                $fullYear = date('Y');
+                $hasNewFormat = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+                    ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->exists();
+                if (!$hasNewFormat) {
+                    $prefix = (string)((int)$yearPrefix - 1) . '00';
+                    $fullYear = (string)((int)$fullYear - 1);
+                }
+
+            return Book::select('tblbuku.idbuku')
+                ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
+                ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                ->where('tblbuku.tahun', $fullYear)
+                ->groupBy('tblbuku.idbuku')
+                ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 5) AS UNSIGNED)) DESC')
+                ->take(5)
+                ->pluck('idbuku')
+                ->toArray();
         });
 
         if (!is_array($latestBookIds)) {
             $latestBookIds = [];
         }
 
-        $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
-            ->whereIn('idbuku', $latestBookIds)
-            ->orderByDesc('tglinput')
-            ->get();
+        $latestBooks = collect();
+        if (!empty($latestBookIds)) {
+            $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
+                ->whereIn('idbuku', $latestBookIds)
+                ->get()
+                ->sortBy(function ($book) use ($latestBookIds) {
+                    return array_search($book->idbuku, $latestBookIds);
+                })
+                ->values();
+        }
 
         // Cache: ID Informasi/Pengumuman aktif (update setiap 5 menit) - Versi 2
         $activeInfoIds = Cache::remember('home_active_info_ids_v2', 300, function () {
@@ -389,10 +431,29 @@ class BookController extends Controller
         $cacheKey = 'latest_book_ids_' . md5($request->q . '|' . $request->location);
 
         $latestBookIds = Cache::remember($cacheKey, 600, function () use ($request) {
-            $query = Book::whereNotNull('tglinput')
-                ->where('tglinput', '!=', '')
-                ->where('tglinput', '!=', '0000-00-00 00:00:00')
-                ->orderByDesc('tglinput');
+            $yearPrefix = date('y');
+                $prefix = $yearPrefix . '00';
+                $fullYear = date('Y');
+                $hasNewFormat = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+                    ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->exists();
+                if (!$hasNewFormat) {
+                    $prefix = (string)((int)$yearPrefix - 1) . '00';
+                    $fullYear = (string)((int)$fullYear - 1);
+                }
+
+            $query = Book::select('tblbuku.idbuku')
+                ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
+                ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                ->where('tblbuku.tahun', $fullYear)
+                ->groupBy('tblbuku.idbuku')
+                ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 5) AS UNSIGNED)) DESC');
 
             if ($request->filled('q')) {
                 $this->applyAdvancedSearch($query, $request->q);
@@ -408,10 +469,16 @@ class BookController extends Controller
             return $query->take(40)->pluck('idbuku')->toArray();
         });
 
-        $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
-            ->whereIn('idbuku', $latestBookIds)
-            ->orderByDesc('tglinput')
-            ->get();
+        $latestBooks = collect();
+        if (!empty($latestBookIds)) {
+            $latestBooks = Book::with(['images', 'items.location', 'publisherRelation', 'collectionTypeRelation'])
+                ->whereIn('idbuku', $latestBookIds)
+                ->get()
+                ->sortBy(function ($book) use ($latestBookIds) {
+                    return array_search($book->idbuku, $latestBookIds);
+                })
+                ->values();
+        }
 
         // Cache daftar lokasi untuk filter dropdown (60 menit)
         $locations = Cache::remember('all_locations_list', 3600, fn() => Location::all());

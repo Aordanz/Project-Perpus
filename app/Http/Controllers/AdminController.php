@@ -62,10 +62,28 @@ class AdminController extends Controller implements HasMiddleware
         // Calculate stats for each Location or Koleksi Terbaru for Cover
         if ($request->filled('lokasi_cover') && $request->lokasi_cover !== 'all') {
             if ($request->lokasi_cover === 'koleksi_terbaru') {
-                $latest40Ids = Book::whereNotNull('tglinput')
-                    ->where('tglinput', '!=', '')
-                    ->where('tglinput', '!=', '0000-00-00 00:00:00')
-                    ->orderByDesc('tglinput')
+                $yearPrefix = date('y');
+                $prefix = $yearPrefix . '00';
+                $fullYear = date('Y');
+                $hasNewFormat = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+                    ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->exists();
+                if (!$hasNewFormat) {
+                    $prefix = (string)((int)$yearPrefix - 1) . '00';
+                    $fullYear = (string)((int)$fullYear - 1);
+                }
+                $latest40Ids = Book::select('tblbuku.idmaster')
+                    ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->groupBy('tblbuku.idmaster')
+                    ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 5) AS UNSIGNED)) DESC')
                     ->limit(40)
                     ->pluck('idmaster');
 
@@ -103,10 +121,28 @@ class AdminController extends Controller implements HasMiddleware
         // Calculate stats for each Location or Koleksi Terbaru for Ringkasan
         if ($request->filled('lokasi_ringkasan') && $request->lokasi_ringkasan !== 'all') {
             if ($request->lokasi_ringkasan === 'koleksi_terbaru') {
-                $latest40Ids = Book::whereNotNull('tglinput')
-                    ->where('tglinput', '!=', '')
-                    ->where('tglinput', '!=', '0000-00-00 00:00:00')
-                    ->orderByDesc('tglinput')
+                $yearPrefix = date('y');
+                $prefix = $yearPrefix . '00';
+                $fullYear = date('Y');
+                $hasNewFormat = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+                    ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->exists();
+                if (!$hasNewFormat) {
+                    $prefix = (string)((int)$yearPrefix - 1) . '00';
+                    $fullYear = (string)((int)$fullYear - 1);
+                }
+                $latest40Ids = Book::select('tblbuku.idmaster')
+                    ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->groupBy('tblbuku.idmaster')
+                    ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 5) AS UNSIGNED)) DESC')
                     ->limit(40)
                     ->pluck('idmaster');
 
@@ -186,10 +222,28 @@ class AdminController extends Controller implements HasMiddleware
         if ($request->filled('location_filter') && $request->location_filter !== 'all') {
             $locFilter = $request->location_filter;
             if ($locFilter === 'koleksi_terbaru') {
-                $latest40Ids = Book::whereNotNull('tglinput')
-                    ->where('tglinput', '!=', '')
-                    ->where('tglinput', '!=', '0000-00-00 00:00:00')
-                    ->orderByDesc('tglinput')
+                $yearPrefix = date('y');
+                $prefix = $yearPrefix . '00';
+                $fullYear = date('Y');
+                $hasNewFormat = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+                    ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->exists();
+                if (!$hasNewFormat) {
+                    $prefix = (string)((int)$yearPrefix - 1) . '00';
+                    $fullYear = (string)((int)$fullYear - 1);
+                }
+                $latest40Ids = Book::select('tblbuku.idmaster')
+                    ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->groupBy('tblbuku.idmaster')
+                    ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 5) AS UNSIGNED)) DESC')
                     ->limit(40)
                     ->pluck('idmaster');
 
@@ -249,10 +303,28 @@ class AdminController extends Controller implements HasMiddleware
         if ($request->filled('location_filter') && $request->location_filter !== 'all') {
             $locFilter = $request->location_filter;
             if ($locFilter === 'koleksi_terbaru') {
-                $latest40Ids = Book::whereNotNull('tglinput')
-                    ->where('tglinput', '!=', '')
-                    ->where('tglinput', '!=', '0000-00-00 00:00:00')
-                    ->orderByDesc('tglinput')
+                $yearPrefix = date('y');
+                $prefix = $yearPrefix . '00';
+                $fullYear = date('Y');
+                $hasNewFormat = \Illuminate\Support\Facades\DB::table('tbleksemplar')
+                    ->join('tblbuku', 'tbleksemplar.idmaster', '=', 'tblbuku.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->exists();
+                if (!$hasNewFormat) {
+                    $prefix = (string)((int)$yearPrefix - 1) . '00';
+                    $fullYear = (string)((int)$fullYear - 1);
+                }
+                $latest40Ids = Book::select('tblbuku.idmaster')
+                    ->join('tbleksemplar', 'tblbuku.idmaster', '=', 'tbleksemplar.idmaster')
+                    ->where('tbleksemplar.nomor_eksemplar', 'like', $prefix . '%')
+                    ->whereRaw('LENGTH(tbleksemplar.nomor_eksemplar) = 8')
+                    ->whereRaw('tbleksemplar.nomor_eksemplar REGEXP "^[0-9]+$"')
+                    ->where('tblbuku.tahun', $fullYear)
+                    ->groupBy('tblbuku.idmaster')
+                    ->orderByRaw('MAX(CAST(SUBSTRING(tbleksemplar.nomor_eksemplar, 5) AS UNSIGNED)) DESC')
                     ->limit(40)
                     ->pluck('idmaster');
 

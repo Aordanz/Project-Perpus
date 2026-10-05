@@ -42,7 +42,7 @@
 
     <!-- Main Content Area -->
     <div class="w-full flex-grow flex flex-col min-w-0">
-        <main class="flex-grow p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 pb-10 sm:pb-14 flex flex-col gap-6">
 
         <!-- Breadcrumb -->
         <div class="flex items-center gap-2 text-sm text-slate-500">
@@ -210,12 +210,7 @@
     </main>
 
             <!-- Footer -->
-            <footer class="bg-[#106c38] text-white/90 py-5 border-t border-white/15 text-center text-xs font-medium mt-auto">
-                <div class="w-full px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-                    <p>&copy; {{ date('Y') }} Universitas Sumatera Utara | OPAC Admin.</p>
-                    <p class="text-white/70">Universitas Sumatera Utara Library</p>
-                </div>
-            </footer>
+            @include('partials.admin_footer')
         </div>
 
     <!-- Image Preview JS Script -->

@@ -10,28 +10,47 @@ Website Resmi & OPAC: https://library.usu.ac.id
 - Sekretaris Perpustakaan USU: Sundari, S.Sos., M.Si.
 
 [WAKTU OPERASIONAL]
-- Senin s/d Kamis: 08.00 WIB - 20.00 WIB
-- Jumat: 08.00 WIB - 17.00 WIB (Istirahat siang 12.00 - 13.30 WIB)
-- Sabtu, Minggu, & Libur Nasional: TUTUP / LIBUR
+- Jam Operasional Perpustakaan USU:
+  * Senin - Kamis: 08.00 - 20.00 WIB
+  * Jumat: 08.00 - 17.00 WIB
+- Ruang Baca Terbuka Lantai 1:
+  * Senin - Jumat: 08.00 - 21.00 WIB
+  * Catatan: Ruang Baca Terbuka Lantai 1 tetap buka hingga pukul 21.00 WIB pada hari Senin-Jumat.
+- Sabtu - Minggu & Hari Libur Nasional: Tutup
 
-[ALUR & SYARAT KEANGGOTAAN]
-- Syarat Menjadi Anggota: Harus merupakan Mahasiswa Aktif, Dosen, atau Tenaga Kependidikan Universitas Sumatera Utara (USU).
-- Cara Aktivasi Kartu Anggota: Mahasiswa cukup membawa Kartu Tanda Mahasiswa (KTM) asli ke meja layanan sirkulasi perpustakaan untuk diaktivasi oleh petugas. Setelah aktif, KTM berfungsi sebagai kartu perpustakaan.
+[SYARAT KEANGGOTAAN & PEMINJAMAN BUKU]
+- Syarat Peminjaman Buku:
+  * Terdaftar sebagai mahasiswa, dosen, atau Tenaga Kependidikan aktif Universitas Sumatera Utara (USU).
+  * Menunjukkan kartu identitas yang sesuai, yaitu:
+    - Kartu Tanda Mahasiswa (KTM) bagi mahasiswa
+    - Kartu Tanda Dosen (KTD) bagi dosen
+    - Kartu Tanda Tenaga Kependidikan bagi tenaga kependidikan
+  * Pastikan kartu identitas masih berlaku dan data keanggotaan Anda aktif sebelum melakukan peminjaman.
+- Cara Aktivasi Kartu: Mahasiswa/dosen/tendik membawa kartu identitas asli ke meja layanan sirkulasi perpustakaan untuk diaktivasi oleh petugas. Setelah aktif, kartu berfungsi sebagai kartu perpustakaan.
 
 [ATURAN TATA TERTIB & BERPAKAIAN]
 - Kewajiban Pengunjung: Mengisi Buku Tamu Elektronik (E-Visitor) di komputer pintu masuk dengan men-scan KTM atau mengetik NIM.
 - Aturan Pakaian: Pengunjung wajib berpakaian rapi dan sopan. Wajib menggunakan sepatu. Dilarang memakai kaos oblong, dilarang memakai celana pendek/robek, dan dilarang memakai sandal.
 - Larangan: Dilarang membawa makanan, minuman berwarna/manis (kecuali air putih dalam botol tertutup), dilarang membawa tas besar ke dalam ruang koleksi (tas harus dititipkan di loker).
 
-[ATURAN PEMINJAMAN & PENGEMBALIAN BUKU]
-- Hak Akses: Hanya mahasiswa/dosen yang KTM-nya sudah diaktivasi yang bisa meminjam buku.
-- Kuota Peminjaman: Maksimal meminjam 3 ekor/eksemplar buku dalam sekali pinjam.
-- Durasi Peminjaman: Lama waktu pinjam adalah 7 hari (1 minggu).
-- Perpanjangan Buku: Peminjaman dapat diperpanjang maksimal 1 kali untuk 7 hari berikutnya, asalkan buku tersebut tidak sedang dipesan oleh mahasiswa lain. Perpanjangan dilakukan sebelum tanggal jatuh tempo melalui web OPAC atau meja sirkulasi.
+[ATURAN PEMINJAMAN, DURASI & BATAS MAKSIMAL PINJAM BUKU]
+- Batas Maksimal Peminjaman Buku di Perpustakaan USU (disesuaikan dengan jenis koleksinya):
+  * Koleksi Buku Standar: maksimal 7 eksemplar
+  * Koleksi Pinjam Singkat (KPS): maksimal 3 eksemplar
+- Durasi Peminjaman:
+  * Koleksi Buku Standar (STD): 14 hari kerja
+  * Koleksi Pinjam Singkat (KPS): 2 hari kerja
+- Perpanjangan Peminjaman:
+  * Peminjaman dapat diperpanjang sebelum tanggal jatuh tempo melalui Layanan Sirkulasi di Lantai 2.
 
-[SANKSI & ATURAN DENDA]
-- Denda Keterlambatan: Jika terlambat mengembalikan buku dari tanggal jatuh tempo, akan dikenakan denda sebesar Rp 1.000,- per buku untuk setiap hari keterlambatan (hari libur tetap dihitung).
+[SANKSI & ATURAN DENDA KETERLAMBATAN]
+- Denda Keterlambatan:
+  * Ya, terdapat denda untuk keterlambatan pengembalian buku.
+  * Koleksi Buku Standar (STD): Rp300,- per buku per hari
+  * Koleksi Pinjam Singkat (KPS): Rp600,- per buku per hari
+  * Pastikan buku dikembalikan tepat waktu agar terhindar dari denda.
 - Buku Hilang atau Rusak: Wajib mengganti dengan buku yang sama (judul dan pengarang sama) atau membayar ganti rugi senilai harga buku terbaru berdasarkan kebijakan perpus.
+
 
 [PANDUAN LOKASI GEDUNG & DENAH LANTAI (SPESIFIK)]
 - LANTAI 1:
