@@ -313,11 +313,11 @@
                     <ul class="space-y-2 text-xs text-slate-700 leading-relaxed">
                         <li class="flex items-start gap-2">
                             <i class="ph ph-arrow-right text-[#106c38] text-sm shrink-0 mt-0.5"></i>
-                            <span><strong>{{ __('Perpanjangan (Renewal):') }}</strong> {{ __('Dapat dilakukan 1x perpanjangan sebelum tanggal jatuh tempo, selama buku tidak di-pesan pemustaka lain.') }}</span>
+                            <span><strong>{{ __('Perpanjangan (Renewal):') }}</strong> {{ __('Dapat dilakukan 1 hari sebelum tanggal jatuh tempo.') }}</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <i class="ph ph-warning-circle text-amber-600 text-sm shrink-0 mt-0.5"></i>
-                            <span><strong>{{ __('Keterlambatan Pengembalian:') }}</strong> {{ __('Dikenakan sanksi denda keterlambatan per hari sesuai dengan Peraturan Perpustakaan USU yang berlaku.') }}</span>
+                            <span><strong>{{ __('Keterlambatan Pengembalian:') }}</strong> {{ __('Dikenakan sanksi denda keterlambatan. Untuk Koleksi Buku Standar (STD): Rp300,- per buku per hari, dan Koleksi Pinjam Singkat (KPS): Rp600,- per buku per hari sesuai dengan Peraturan Perpustakaan USU yang berlaku.') }}</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <i class="ph ph-certificate text-emerald-700 text-sm shrink-0 mt-0.5"></i>
