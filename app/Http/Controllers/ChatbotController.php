@@ -63,8 +63,8 @@ class ChatbotController extends Controller
             // 5. Tembak API Google Gemini (dengan fallback model)
             foreach ($models as $model) {
                 $response = Http::withoutVerifying()
-                    ->timeout(20)
-                    ->connectTimeout(8)
+                    ->timeout(30)
+                    ->connectTimeout(10)
                     ->retry(2, 2000, function ($exception, $response) {
                         // Retry jika 503 (server overload) atau 429 (rate limit)
                         return $response && in_array($response->status(), [429, 503]);
@@ -85,7 +85,7 @@ class ChatbotController extends Controller
                     ],
                     'generationConfig' => [
                         'temperature' => 0.4,
-                        'maxOutputTokens' => 768,
+                        'maxOutputTokens' => 2048,
                     ]
                 ]);
 
