@@ -84,31 +84,33 @@ Route::get('/chatbot-diagnose', function () {
         $results['3_outbound_https'] = 'GAGAL: ' . $e->getMessage();
     }
 
-    // 4. Cek koneksi ke Gemini API (test ringan)
+    // 4. Cek koneksi ke Gemini API (test semua model fallback)
     if (!empty($apiKey)) {
-        try {
-            $model = 'gemini-3.6-flash';
-            $geminiResponse = \Illuminate\Support\Facades\Http::withoutVerifying()
-                ->timeout(15)
-                ->connectTimeout(5)
-                ->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
-                    'contents' => [
-                        ['role' => 'user', 'parts' => [['text' => 'Halo, balas singkat saja.']]]
-                    ],
-                    'generationConfig' => ['maxOutputTokens' => 50],
-                ]);
+        $testModels = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+        foreach ($testModels as $model) {
+            try {
+                $geminiResponse = \Illuminate\Support\Facades\Http::withoutVerifying()
+                    ->timeout(15)
+                    ->connectTimeout(5)
+                    ->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
+                        'contents' => [
+                            ['role' => 'user', 'parts' => [['text' => 'Halo, balas singkat saja.']]]
+                        ],
+                        'generationConfig' => ['maxOutputTokens' => 50],
+                    ]);
 
-            $results['4_gemini_status'] = 'HTTP ' . $geminiResponse->status();
-            $results['4_gemini_raw_body'] = json_decode($geminiResponse->body(), true) ?? $geminiResponse->body();
-
-            if ($geminiResponse->successful()) {
-                $aiText = $geminiResponse->json('candidates.0.content.parts.0.text');
-                $results['4_gemini_result'] = !empty($aiText) ? 'OK! Jawaban: "' . \Illuminate\Support\Str::limit($aiText, 100) . '"' : 'WARNING: Response 200 tapi teks kosong!';
-            } else {
-                $results['4_gemini_result'] = 'GAGAL (HTTP ' . $geminiResponse->status() . ')';
+                $status = $geminiResponse->status();
+                if ($geminiResponse->successful()) {
+                    $aiText = $geminiResponse->json('candidates.0.content.parts.0.text');
+                    $results["4_{$model}"] = !empty($aiText)
+                        ? "✅ OK (HTTP {$status}): \"{$aiText}\""
+                        : "⚠️ HTTP {$status} tapi teks kosong. Body: " . \Illuminate\Support\Str::limit($geminiResponse->body(), 200);
+                } else {
+                    $results["4_{$model}"] = "❌ HTTP {$status}: " . \Illuminate\Support\Str::limit($geminiResponse->body(), 200);
+                }
+            } catch (\Exception $e) {
+                $results["4_{$model}"] = '❌ EXCEPTION: ' . $e->getMessage();
             }
-        } catch (\Exception $e) {
-            $results['4_gemini_result'] = 'EXCEPTION: ' . $e->getMessage();
         }
     } else {
         $results['4_gemini_api'] = 'SKIP: API Key kosong, tidak bisa test';
