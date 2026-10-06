@@ -70,7 +70,7 @@ class ChatbotController extends Controller
                 $response = Http::withoutVerifying()
                     ->timeout(30)
                     ->connectTimeout(10)
-                    ->retry(3, 4000, throw: false)
+                    ->retry(1, 1000, throw: false)
                     ->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
                     'system_instruction' => [
                         'parts' => [
