@@ -96,7 +96,7 @@ Route::get('/chatbot-diagnose', function () {
                         'contents' => [
                             ['role' => 'user', 'parts' => [['text' => 'Halo, balas singkat saja.']]]
                         ],
-                        'generationConfig' => ['maxOutputTokens' => 50],
+                        'generationConfig' => ['maxOutputTokens' => 500],
                     ]);
 
                 $status = $geminiResponse->status();
