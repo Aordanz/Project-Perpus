@@ -86,7 +86,7 @@ Route::get('/chatbot-diagnose', function () {
 
     // 4. Cek koneksi ke Gemini API (test semua model fallback)
     if (!empty($apiKey)) {
-        $testModels = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+        $testModels = ['gemini-3.8-flash', 'gemini-3.6-flash'];
         foreach ($testModels as $model) {
             try {
                 $geminiResponse = \Illuminate\Support\Facades\Http::withoutVerifying()
