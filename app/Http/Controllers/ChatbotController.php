@@ -47,8 +47,10 @@ class ChatbotController extends Controller
         // 3. Cek API Key Gemini
         $apiKey = config('services.gemini.key');
         if (empty($apiKey)) {
+            Log::error('Chatbot ERR_KEY: GEMINI_API_KEY kosong atau tidak diset di .env');
             return response()->json([
-                'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan.")
+                'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan."),
+                'debug_code' => 'ERR_KEY'
             ], 500);
         }
 
@@ -103,9 +105,13 @@ class ChatbotController extends Controller
             }
 
             if (!$response || !$response->successful()) {
-                Log::error('Gemini API Error (all models failed): ' . ($response ? $response->body() : 'no response'));
+                $errorBody = $response ? $response->body() : 'no response';
+                $errorStatus = $response ? $response->status() : 'null';
+                Log::error("Chatbot ERR_API: Semua model Gemini gagal. Status: {$errorStatus}. Body: {$errorBody}");
                 return response()->json([
-                    'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan.")
+                    'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan."),
+                    'debug_code' => 'ERR_API',
+                    'debug_status' => $errorStatus
                 ], 500);
             }
 
@@ -113,9 +119,10 @@ class ChatbotController extends Controller
 
             // Jika AI tidak mengembalikan teks, jangan cache error — return langsung
             if (!$aiResponse) {
-                Log::warning('Gemini API returned empty response. Body: ' . $response->body());
+                Log::warning('Chatbot ERR_EMPTY: Gemini API returned empty response. Body: ' . $response->body());
                 return response()->json([
-                    'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan.")
+                    'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan."),
+                    'debug_code' => 'ERR_EMPTY'
                 ], 500);
             }
 
@@ -132,9 +139,11 @@ class ChatbotController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gemini Chatbot Exception: ' . $e->getMessage());
+            Log::error('Chatbot ERR_EXCEPTION: ' . $e->getMessage() . ' | File: ' . $e->getFile() . ':' . $e->getLine());
             return response()->json([
-                'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan.")
+                'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan."),
+                'debug_code' => 'ERR_EXCEPTION',
+                'debug_message' => $e->getMessage()
             ], 500);
         }
     }
