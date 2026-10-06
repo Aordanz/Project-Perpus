@@ -60,52 +60,58 @@ class ChatbotController extends Controller
         // Daftar model yang akan dicoba secara berurutan (fallback)
         // Google merekomendasikan gemini-3.8-flash sebagai model utama (Oct 2026)
         // Model lama (2.0, 2.5) sudah di-sunset oleh Google
-        $models = ['gemini-3.8-flash', 'gemini-3.6-flash'];
+        // Model difokuskan hanya ke 3.6 sesuai permintaan untuk menghindari error 3.8
+        $models = ['gemini-3.6-flash'];
         $response = null;
         $lastStatus = null;
 
         try {
             // 5. Tembak API Google Gemini (dengan fallback model)
             foreach ($models as $model) {
-                $response = Http::withoutVerifying()
-                    ->timeout(30)
-                    ->connectTimeout(10)
-                    ->retry(1, 1000, throw: false)
-                    ->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
-                    'system_instruction' => [
-                        'parts' => [
-                            ['text' => $systemPrompt]
-                        ]
-                    ],
-                    'contents' => [
-                        [
-                            'role' => 'user',
+                try {
+                    $response = Http::withoutVerifying()
+                        ->timeout(30)
+                        ->connectTimeout(10)
+                        ->retry(1, 1000, throw: false)
+                        ->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
+                        'system_instruction' => [
                             'parts' => [
-                                ['text' => $userMessage]
+                                ['text' => $systemPrompt]
                             ]
+                        ],
+                        'contents' => [
+                            [
+                                'role' => 'user',
+                                'parts' => [
+                                    ['text' => $userMessage]
+                                ]
+                            ]
+                        ],
+                        'generationConfig' => [
+                            'temperature' => 0.4,
+                            'maxOutputTokens' => 2048,
                         ]
-                    ],
-                    'generationConfig' => [
-                        'temperature' => 0.4,
-                        'maxOutputTokens' => 2048,
-                    ]
-                ]);
+                    ]);
 
-                // Jika berhasil, keluar dari loop
-                if ($response->successful()) {
-                    Log::info("Gemini: Berhasil menggunakan model {$model}");
+                    // Jika berhasil, keluar dari loop
+                    if ($response->successful()) {
+                        Log::info("Gemini: Berhasil menggunakan model {$model}");
+                        break;
+                    }
+
+                    // Jika 503 atau 429, coba model berikutnya
+                    if (in_array($response->status(), [503, 429])) {
+                        $lastStatus = $response->status();
+                        Log::warning("Gemini model {$model} unavailable (HTTP {$response->status()}), trying next...");
+                        continue;
+                    }
+
+                    // Error lain (404, 400, dll) — langsung berhenti
                     break;
-                }
-
-                // Jika 503 atau 429, coba model berikutnya
-                if (in_array($response->status(), [503, 429])) {
-                    $lastStatus = $response->status();
-                    Log::warning("Gemini model {$model} unavailable (HTTP {$response->status()}), trying next...");
+                } catch (\Exception $e) {
+                    Log::warning("Gemini model {$model} timeout/error: " . $e->getMessage());
                     continue;
                 }
-
-                // Error lain (404, 400, dll) — langsung berhenti
-                break;
             }
 
             if (!$response || !$response->successful()) {
