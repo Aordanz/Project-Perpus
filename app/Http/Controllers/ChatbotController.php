@@ -65,10 +65,7 @@ class ChatbotController extends Controller
                 $response = Http::withoutVerifying()
                     ->timeout(30)
                     ->connectTimeout(10)
-                    ->retry(2, 2000, function ($exception, $response) {
-                        // Retry jika 503 (server overload) atau 429 (rate limit)
-                        return $response && in_array($response->status(), [429, 503]);
-                    }, throw: false)
+                    ->retry(2, 2000, throw: false)
                     ->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
                     'system_instruction' => [
                         'parts' => [
