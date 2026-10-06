@@ -98,14 +98,17 @@ Route::get('/chatbot-diagnose', function () {
                     'generationConfig' => ['maxOutputTokens' => 50],
                 ]);
 
+            $results['4_gemini_status'] = 'HTTP ' . $geminiResponse->status();
+            $results['4_gemini_raw_body'] = json_decode($geminiResponse->body(), true) ?? $geminiResponse->body();
+
             if ($geminiResponse->successful()) {
                 $aiText = $geminiResponse->json('candidates.0.content.parts.0.text');
-                $results['4_gemini_api'] = 'OK! Gemini menjawab: "' . \Illuminate\Support\Str::limit($aiText, 100) . '"';
+                $results['4_gemini_result'] = !empty($aiText) ? 'OK! Jawaban: "' . \Illuminate\Support\Str::limit($aiText, 100) . '"' : 'WARNING: Response 200 tapi teks kosong!';
             } else {
-                $results['4_gemini_api'] = 'GAGAL (HTTP ' . $geminiResponse->status() . '): ' . \Illuminate\Support\Str::limit($geminiResponse->body(), 300);
+                $results['4_gemini_result'] = 'GAGAL (HTTP ' . $geminiResponse->status() . ')';
             }
         } catch (\Exception $e) {
-            $results['4_gemini_api'] = 'EXCEPTION: ' . $e->getMessage();
+            $results['4_gemini_result'] = 'EXCEPTION: ' . $e->getMessage();
         }
     } else {
         $results['4_gemini_api'] = 'SKIP: API Key kosong, tidak bisa test';
