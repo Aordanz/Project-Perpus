@@ -573,13 +573,14 @@ class AdminController extends Controller implements HasMiddleware
         try {
             DB::beginTransaction();
 
-            // Calculate and validate final additional images count (limit to 3)
+            // Calculate and validate final additional images count (limit to 4 total: 1 cover + 3 additional)
             $existingImagesCount = \App\Models\BookImage::where('book_id', $book->id)->count();
             $deletedImagesCount = $request->has('delete_additional_images') ? count($request->delete_additional_images) : 0;
             $newImagesCount = $request->hasFile('additional_images') ? count($request->file('additional_images')) : 0;
-            $finalImagesCount = max(0, $existingImagesCount - $deletedImagesCount) + $newImagesCount;
+            $newFilesCount = $request->hasFile('new_files') ? count($request->file('new_files')) : 0;
+            $finalImagesCount = max(0, $existingImagesCount - $deletedImagesCount) + max($newImagesCount, $newFilesCount);
 
-            if ($finalImagesCount > 3) {
+            if ($finalImagesCount > 4) {
                 throw new \Exception('Maksimal total gambar tambahan adalah 3 foto.');
             }
 
@@ -1099,8 +1100,12 @@ class AdminController extends Controller implements HasMiddleware
             $image = $resizedImage;
         }
 
+        // Cek apakah server support fungsi imageavif
+        $supportAvif = function_exists('imageavif');
+        $extension = $supportAvif ? '.avif' : '.webp';
+
         // Save path
-        $filename = time() . '_' . uniqid() . '.avif';
+        $filename = time() . '_' . uniqid() . $extension;
         $destination = public_path('covers/' . $filename);
 
         // Ensure covers folder exists
@@ -1108,8 +1113,20 @@ class AdminController extends Controller implements HasMiddleware
             mkdir(public_path('covers'), 0777, true);
         }
 
-        // Compress and save as AVIF with a single pass for better performance
-        imageavif($image, $destination, 50);
+        if ($supportAvif) {
+            // Compress and save as AVIF with a single pass for better performance
+            imageavif($image, $destination, 50);
+        } else {
+            // Fallback konversi ke WEBP
+            if (function_exists('imagewebp')) {
+                imagewebp($image, $destination, 75);
+            } else {
+                // Jika WEBP juga tidak support, simpan JPEG saja
+                $filename = str_replace('.webp', '.jpg', $filename);
+                $destination = public_path('covers/' . $filename);
+                imagejpeg($image, $destination, 80);
+            }
+        }
 
         imagedestroy($image);
         return $filename;
