@@ -107,7 +107,14 @@ class Book extends Model
     public function setAuthorAttribute($value) { $this->attributes['pengarang'] = $value; }
 
     public function getPublisherAttribute() { 
-        return $this->publisherRelation ? $this->publisherRelation->penerbit : $this->idpenerbit; 
+        if ($this->publisherRelation && !empty($this->publisherRelation->penerbit)) {
+            return $this->publisherRelation->penerbit;
+        }
+        $val = $this->attributes['publisher'] ?? null;
+        if (!empty($val) && !is_numeric($val)) {
+            return $val;
+        }
+        return '-';
     }
     public function setPublisherAttribute($value) { $this->attributes['idpenerbit'] = $value; }
 
@@ -248,15 +255,15 @@ class Book extends Model
             str_contains($jenis, 'disertasi') => 'bg-amber-500 text-white',
             str_contains($jenis, 'jurnal') => 'bg-orange-500 text-white',
             str_contains($jenis, 'laporan') => 'bg-emerald-600 text-white',
-            str_contains($jenis, 'referensi') => 'bg-indigo-600 text-white',
+            str_contains($jenis, 'referensi') => 'bg-[#00b760] text-white',
             str_contains($jenis, 'makalah') => 'bg-cyan-600 text-white',
             str_contains($jenis, 'karya') => 'bg-teal-600 text-white',
             str_contains($jenis, 'panduan') => 'bg-fuchsia-600 text-white',
             str_contains($jenis, 'diktat') => 'bg-rose-600 text-white',
             str_contains($jenis, 'orasi') || str_contains($jenis, 'pidato') => 'bg-sky-600 text-white',
             str_contains($jenis, 'e-book') => 'bg-sky-500 text-white',
-            str_contains($jenis, 'buku') => 'bg-[#ef4444] text-white',
-            default => 'bg-slate-700 text-white',
+            str_contains($jenis, 'buku') => 'bg-[#00b760] text-white',
+            default => 'bg-[#00b760] text-white',
         };
     }
 

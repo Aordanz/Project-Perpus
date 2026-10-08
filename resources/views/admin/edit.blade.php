@@ -61,7 +61,9 @@
                     @if($book->cover_image)
                         <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover" id="header-cover-preview">
                     @else
-                        <i class="ph ph-book text-2xl" id="header-cover-placeholder"></i>
+                        <div class="w-full h-full relative" id="header-cover-placeholder">
+                            @include('partials.no-cover')
+                        </div>
                     @endif
                 </div>
                 <div>
@@ -168,10 +170,8 @@
                                     Klik untuk mengganti gambar
                                 </div>
                             @else
-                                <div class="flex flex-col items-center text-slate-400 gap-2" id="cover-placeholder">
-                                    <i class="ph ph-image text-5xl"></i>
-                                    <span class="text-xs font-semibold">Belum ada cover</span>
-                                    <span class="text-[10px] text-slate-400">Klik di sini untuk memilih gambar</span>
+                                <div class="w-full h-full" id="cover-placeholder">
+                                    @include('partials.no-cover')
                                 </div>
                                 <img src="" alt="Preview" class="hidden w-full h-full object-cover" id="cover-large-preview">
                             @endif

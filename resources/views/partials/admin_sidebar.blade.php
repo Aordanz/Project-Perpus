@@ -125,3 +125,55 @@
         });
     });
 </script>
+
+<!-- NProgress Loading Indicator (Admin) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+<style>
+    /* Customization for NProgress to match Admin theme */
+    #nprogress .bar {
+        background: #0ea5e9 !important; /* Sky blue for admin */
+        height: 4px !important;
+    }
+    #nprogress .peg {
+        box-shadow: 0 0 10px #0ea5e9, 0 0 5px #0ea5e9 !important;
+    }
+    #nprogress .spinner-icon {
+        border-top-color: #0ea5e9 !important;
+        border-left-color: #0ea5e9 !important;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        NProgress.configure({ showSpinner: true, speed: 400, minimum: 0.1 });
+        
+        document.addEventListener('submit', function(e) {
+            // Prevent showing progress bar for sweetalert confirmations if needed
+            NProgress.start();
+        });
+
+        document.addEventListener('click', function(e) {
+            let target = e.target.closest('a');
+            if (target && target.href && !target.href.startsWith('javascript:')) {
+                // Prevent starting progress for empty anchors, hash links, external tabs, or same-page anchor links
+                if (!target.href.includes('#') && target.target !== '_blank' && target.hostname === window.location.hostname) {
+                    NProgress.start();
+                }
+            }
+        });
+
+        window.addEventListener('load', function() {
+            NProgress.done();
+        });
+
+        window.addEventListener("pageshow", function(event) {
+            NProgress.done();
+        });
+        
+        // Listen for AJAX completion (jQuery since admin panel might use it)
+        if (typeof jQuery !== 'undefined') {
+            $(document).ajaxStart(function() { NProgress.start(); });
+            $(document).ajaxStop(function() { NProgress.done(); });
+        }
+    });
+</script>
