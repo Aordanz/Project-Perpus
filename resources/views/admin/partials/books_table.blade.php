@@ -24,7 +24,7 @@
                                 @if($book->cover_image)
                                     <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                                 @else
-                                    <i class="ph ph-book text-xl"></i>
+                                    @include('partials.no-cover')
                                 @endif
                             </div>
                             <div class="max-w-[200px]">

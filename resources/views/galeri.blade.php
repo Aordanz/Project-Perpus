@@ -156,34 +156,7 @@
                 $activeCategory = request('category');
             @endphp
 
-            <style>
-                .cat-collapsible {
-                    display: none !important;
-                }
-                @media (min-width: 640px) {
-                    .cat-collapsible.sm-visible {
-                        display: inline-flex !important;
-                    }
-                }
-                @media (min-width: 768px) {
-                    .cat-collapsible.md-visible {
-                        display: inline-flex !important;
-                    }
-                }
-                @media (min-width: 1024px) {
-                    .cat-collapsible.lg-visible {
-                        display: inline-flex !important;
-                    }
-                }
-                @media (min-width: 1280px) {
-                    .cat-collapsible.xl-visible {
-                        display: inline-flex !important;
-                    }
-                }
-                .expanded-mode .cat-collapsible {
-                    display: inline-flex !important;
-                }
-            </style>
+
             <div id="category-container" class="flex flex-wrap gap-2 sm:gap-3 justify-center items-center">
                 <!-- Semua Kategori -->
                 <a href="{{ route('galeri', array_merge(request()->except('page', 'category'), ['q' => request('q')])) }}" 
@@ -202,25 +175,15 @@
                 @foreach($ddcCategories as $key => $cat)
                     @php 
                         $isActive = request('category') !== null && request('category') !== '' && (string) $activeCategory === (string) $key; 
-                        $index = $loop->index;
-                        
-                        $visibilityClass = 'cat-collapsible';
-                        if ($index < 1) $visibilityClass = 'cat-collapsible md-visible';
-                        elseif ($index < 2) $visibilityClass = 'cat-collapsible lg-visible';
-                        elseif ($index < 3) $visibilityClass = 'cat-collapsible xl-visible';
                     @endphp
                     <a href="{{ route('galeri', array_merge(request()->except('page'), ['category' => $key, 'q' => request('q')])) }}" 
-                       class="group category-bubble {{ $visibilityClass }} relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40' }}">
+                       class="group category-bubble relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 {{ $isActive ? 'bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40' : 'bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40' }}">
                         <i class="ph {{ $cat['icon'] }} text-base sm:text-lg"></i>
                         <span>{{ __($cat['name']) }}</span>
                     </a>
                 @endforeach
 
-                <!-- Toggle Button -->
-                <button id="toggle-category-btn" class="group flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] inline-flex items-center gap-1 transition-all duration-300 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] hover:ring-2 hover:ring-[#106c38]/40 hover:shadow-md hover:shadow-green-100 cursor-pointer transform hover:-translate-y-0.5">
-                    <span id="toggle-category-text">{{ __('Lainnya') }}</span>
-                    <i id="toggle-category-icon" class="ph ph-caret-down transition-transform duration-300 group-hover:scale-110"></i>
-                </button>
+
             </div>
         </div>
 
@@ -289,27 +252,7 @@
                 });
             }
 
-            const categoryContainer = document.getElementById('category-container');
-            const toggleCategoryBtn = document.getElementById('toggle-category-btn');
-            const toggleCategoryText = document.getElementById('toggle-category-text');
-            const toggleCategoryIcon = document.getElementById('toggle-category-icon');
-            
-            if (toggleCategoryBtn && categoryContainer) {
-                let isExpanded = false;
-                
-                toggleCategoryBtn.addEventListener('click', function() {
-                    isExpanded = !isExpanded;
-                    if (isExpanded) {
-                        categoryContainer.classList.add('expanded-mode');
-                        toggleCategoryText.textContent = '{{ __("Sembunyikan") }}';
-                        toggleCategoryIcon.classList.add('rotate-180');
-                    } else {
-                        categoryContainer.classList.remove('expanded-mode');
-                        toggleCategoryText.textContent = '{{ __("Lainnya") }}';
-                        toggleCategoryIcon.classList.remove('rotate-180');
-                    }
-                });
-            }
+
 
             if (searchInput) {
                 searchInput.addEventListener('input', () => {

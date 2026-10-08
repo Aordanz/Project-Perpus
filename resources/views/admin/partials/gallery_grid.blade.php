@@ -3,14 +3,11 @@
     @forelse($books as $book)
         <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm book-card flex flex-col h-full group relative">
             <!-- Cover Image -->
-            <div class="w-full aspect-[2/3] bg-slate-100 relative">
+            <div class="w-full aspect-[2/3] bg-[#e6f7f0] relative">
                 @if($book->cover_image)
                     <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                 @else
-                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2">
-                        <i class="ph ph-book text-4xl"></i>
-                        <span class="text-[10px] font-semibold uppercase tracking-wider">No Cover</span>
-                    </div>
+                    @include('partials.no-cover')
                 @endif
                 
                 <!-- Overlay Actions -->

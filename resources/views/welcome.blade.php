@@ -353,16 +353,18 @@
                             <a href="{{ route('books.show', $book->id) }}"
                                class="flex h-[225px] sm:h-[285px] md:h-[315px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-all duration-300 max-w-[90vw] md:max-w-4xl hover:-translate-y-2 hover:shadow-[0_32px_60px_-12px_rgba(0,0,0,0.35)] hover:border-[#106c38]/30 group cursor-pointer">
                                 <!-- Cover Panel -->
-                                <div class="w-[150px] sm:w-[190px] md:w-[210px] h-full flex-shrink-0 bg-slate-50 relative overflow-hidden flex items-center justify-center p-2 sm:p-5 border-r border-slate-100">
+                                <div class="w-[150px] sm:w-[190px] md:w-[210px] h-full flex-shrink-0 bg-[#e6f7f0] relative overflow-hidden flex items-center justify-center border-r border-slate-100">
                                     @if ($book->cover_image)
-                                        <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
+                                        <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                                     @else
-                                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4 border border-dashed border-slate-200 rounded-lg bg-slate-100/50">
-                                            <i class="ph ph-book-open text-4xl sm:text-5xl mb-2 text-[#106c38]"></i>
-                                            <span class="text-[9px] sm:text-xs font-semibold text-slate-500 text-center leading-tight">{{ __('Cover Buku') }}</span>
-                                        </div>
+                                        @include('partials.no-cover')
                                     @endif
-                                    <span class="absolute top-3 left-3 bg-red-700 text-white text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded shadow">NEW</span>
+                                    <span class="absolute top-3 left-3 {{ $book->jenis_badge_color }} text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm uppercase tracking-wide z-10">
+                                        {{ $book->jenis_label }}
+                                    </span>
+                                    <span class="absolute bottom-3 left-3 bg-white text-slate-800 text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-lg shadow-sm border border-slate-100/80 z-10 max-w-[85%] truncate">
+                                        {{ __($bigCat) }}
+                                    </span>
                                 </div>
 
                                 <!-- Info Panel -->
@@ -783,7 +785,7 @@
                         <i class="ph ph-graduation-cap"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <h3 class="text-sm md:text-lg font-bold tracking-wide leading-tight break-words pr-2">{{ __('Pencarian Spesifik') }}</h3>
+                        <h3 class="text-sm md:text-lg font-bold text-black tracking-wide leading-tight break-words pr-2">{{ __('Pencarian Spesifik') }}</h3>
                         <p class="text-[10px] md:text-xs text-green-100/90 font-medium font-sans leading-tight mt-0.5 break-words pr-2">{{ __('Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!') }}</p>
                     </div>
                 </div>
@@ -1449,10 +1451,7 @@
                                 
                                 const coverHtml = book.cover_image 
                                     ? `<img src="${book.cover_image}" alt="Cover" class="w-full h-full object-cover">`
-                                    : `<div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-2">
-                                        <i class="ph ph-book-open text-3xl sm:text-2xl mb-1"></i>
-                                        <span class="text-[9px] sm:text-[8px] font-bold text-center leading-tight">NO COVER</span>
-                                       </div>`;
+                                    : `@include('partials.no-cover')`;
 
                                 const cardEl = document.createElement('div');
                                 cardEl.className = 'book-card result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex flex-col sm:flex-row gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group';

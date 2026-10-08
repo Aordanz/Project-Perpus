@@ -114,7 +114,7 @@
 
                     <div class="relative w-full aspect-[2/3] mb-6 group select-none">
                         <!-- Cover Container -->
-                        <div class="w-full h-full bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden cover-glow relative">
+                        <div class="w-full h-full bg-[#e6f7f0] border border-slate-200/80 rounded-2xl overflow-hidden cover-glow relative">
                             @if(count($allImages) > 0)
                                 <!-- Slideshow wrapper -->
                                 <div class="w-full h-full relative shadow-inner cursor-zoom-in" id="book-slideshow">
@@ -126,13 +126,10 @@
                                     @endforeach
                                 </div>
                             @else
-                                <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4">
-                                    <i class="ph ph-book-open text-6xl mb-3"></i>
-                                    <span class="text-xs font-bold text-center leading-normal">{{ __('NO COVER IMAGE') }}</span>
-                                </div>
+                                @include('partials.no-cover')
                             @endif
 
-                            <span class="absolute top-3 left-3 {{ $book->jenis_badge_color }} text-[10px] font-bold px-2 py-0.5 rounded shadow z-20">
+                            <span class="absolute top-3.5 left-3.5 {{ $book->jenis_badge_color }} text-[11px] font-bold px-3 py-1 rounded-xl shadow-sm tracking-wide uppercase z-20">
                                 {{ $book->jenis_label }}
                             </span>
                         </div>

@@ -150,34 +150,7 @@
 
         <!-- Dynamic Quick Filter Chips -->
         <div class="mb-8 max-w-6xl mx-auto px-2">
-            <style>
-                .chip-collapsible {
-                    display: none !important;
-                }
-                @media (min-width: 640px) {
-                    .chip-collapsible.sm-visible {
-                        display: inline-flex !important;
-                    }
-                }
-                @media (min-width: 768px) {
-                    .chip-collapsible.md-visible {
-                        display: inline-flex !important;
-                    }
-                }
-                @media (min-width: 1024px) {
-                    .chip-collapsible.lg-visible {
-                        display: inline-flex !important;
-                    }
-                }
-                @media (min-width: 1280px) {
-                    .chip-collapsible.xl-visible {
-                        display: inline-flex !important;
-                    }
-                }
-                .expanded-mode .chip-collapsible {
-                    display: inline-flex !important;
-                }
-            </style>
+
             <div id="chips-container" class="flex flex-wrap gap-2 sm:gap-3 mb-2 justify-center items-center transition-all duration-300">
                 <!-- Semua Kategori -->
                 <button data-filter="all" class="filter-chip active-chip group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 bg-green-50 border-[#106c38] text-[#106c38] font-bold shadow-md ring-2 ring-[#106c38]/40 whitespace-nowrap">
@@ -193,27 +166,16 @@
 
                 @foreach($existingBigCategories as $index => $cat)
                     @php
-                        $visibilityClass = 'chip-collapsible';
-                        if ($index < 1) $visibilityClass = 'chip-collapsible md-visible';
-                        elseif ($index < 2) $visibilityClass = 'chip-collapsible lg-visible';
-                        elseif ($index < 3) $visibilityClass = 'chip-collapsible xl-visible';
-
                         $iconClass = $iconMap[$cat] ?? 'ph-books';
                     @endphp
                     <button data-filter="subject" data-value="{{ strtolower(trim($cat)) }}" 
-                        class="filter-chip {{ $visibilityClass }} group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40 whitespace-nowrap">
+                        class="filter-chip group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 text-xs sm:text-sm cursor-pointer transform hover:-translate-y-0.5 bg-white border-slate-200 text-slate-700 font-medium hover:bg-green-50/80 hover:border-[#106c38] hover:text-[#106c38] hover:shadow-md hover:shadow-green-100 hover:ring-2 hover:ring-[#106c38]/40 whitespace-nowrap">
                         <i class="ph {{ $iconClass }} text-base sm:text-lg"></i>
                         <span>{{ __($cat) }}</span>
                     </button>
                 @endforeach
 
-                <!-- Toggle Button -->
-                @if(count($existingBigCategories) > 2)
-                    <button id="toggle-chips-btn" class="group flex-shrink-0 text-xs sm:text-sm font-semibold text-[#106c38] hover:text-[#0b4d27] inline-flex items-center gap-1 transition-all duration-300 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm border border-[#106c38]/30 hover:border-[#106c38] hover:ring-2 hover:ring-[#106c38]/40 hover:shadow-md hover:shadow-green-100 cursor-pointer transform hover:-translate-y-0.5">
-                        <span id="toggle-chips-text">{{ __('Lainnya') }}</span>
-                        <i id="toggle-chips-icon" class="ph ph-caret-down transition-transform duration-300 group-hover:scale-110"></i>
-                    </button>
-                @endif
+
             </div>
         </div>
 
@@ -249,16 +211,13 @@
                     </div>
 
                     <!-- Book Cover -->
-                    <div class="w-20 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
+                    <div class="w-20 sm:w-28 aspect-[2/3] bg-[#e6f7f0] border border-slate-200/80 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
                             <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-2">
-                                <i class="ph ph-book-open text-3xl mb-1.5"></i>
-                                <span class="text-[9px] font-bold text-center leading-tight">NO COVER</span>
-                            </div>
+                            @include('partials.no-cover')
                         @endif
-                        <span class="absolute top-2 left-2 {{ $book->jenis_badge_color }} text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
+                        <span class="absolute top-2.5 left-2.5 {{ $book->jenis_badge_color }} text-[9px] font-bold px-2 py-0.5 rounded-lg shadow-sm tracking-wide uppercase z-10">
                             {{ $book->jenis_label }}
                         </span>
                     </div>
@@ -389,27 +348,7 @@
             const paginationBar = document.getElementById('pagination-controls');
             const totalCount = bookCards.length;
             
-            // Toggle Chips Logic
-            const chipsContainer = document.getElementById('chips-container');
-            const toggleChipsBtn = document.getElementById('toggle-chips-btn');
-            const toggleChipsText = document.getElementById('toggle-chips-text');
-            const toggleChipsIcon = document.getElementById('toggle-chips-icon');
-            
-            if (toggleChipsBtn && chipsContainer) {
-                let chipsExpanded = false;
-                toggleChipsBtn.addEventListener('click', () => {
-                    chipsExpanded = !chipsExpanded;
-                    if (chipsExpanded) {
-                        chipsContainer.classList.add('expanded-mode');
-                        toggleChipsText.textContent = '{{ __("Sembunyikan") }}';
-                        toggleChipsIcon.classList.add('rotate-180');
-                    } else {
-                        chipsContainer.classList.remove('expanded-mode');
-                        toggleChipsText.textContent = '{{ __("Lainnya") }}';
-                        toggleChipsIcon.classList.remove('rotate-180');
-                    }
-                });
-            }
+
 
             let activeSearch = searchInput ? searchInput.value.toLowerCase().trim() : '';
             let activeFilter = 'all'; // 'all', 'available', or 'subject'

@@ -138,16 +138,13 @@
                     </div>
 
                     <!-- Book Cover -->
-                    <div class="w-20 sm:w-28 aspect-[2/3] bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
+                    <div class="w-20 sm:w-28 aspect-[2/3] bg-[#e6f7f0] border border-slate-200/80 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
                             <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 p-2">
-                                <i class="ph ph-book-open text-3xl mb-1.5"></i>
-                                <span class="text-[9px] font-bold text-center leading-tight">NO COVER</span>
-                            </div>
+                            @include('partials.no-cover')
                         @endif
-                        <span class="absolute top-2 left-2 {{ $book->jenis_badge_color }} text-[8px] font-bold px-1.5 py-0.5 rounded shadow">
+                        <span class="absolute top-2.5 left-2.5 {{ $book->jenis_badge_color }} text-[9px] font-bold px-2 py-0.5 rounded-lg shadow-sm tracking-wide uppercase z-10">
                             {{ $book->jenis_label }}
                         </span>
                     </div>

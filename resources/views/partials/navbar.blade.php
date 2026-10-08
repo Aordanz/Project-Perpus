@@ -1068,5 +1068,47 @@
 </script>
 @endif
 
+<!-- NProgress Loading Indicator -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+<style>
+    /* Customization for NProgress to match USU Library theme */
+    #nprogress .bar {
+        background: #106c38 !important; /* USU Green */
+        height: 4px !important;
+    }
+    #nprogress .peg {
+        box-shadow: 0 0 10px #106c38, 0 0 5px #106c38 !important;
+    }
+    #nprogress .spinner-icon {
+        border-top-color: #106c38 !important;
+        border-left-color: #106c38 !important;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        NProgress.configure({ showSpinner: true, speed: 400, minimum: 0.1 });
+        
+        document.addEventListener('submit', function() {
+            NProgress.start();
+        });
 
+        document.addEventListener('click', function(e) {
+            let target = e.target.closest('a');
+            if (target && target.href && !target.href.startsWith('javascript:')) {
+                // Prevent starting progress for empty anchors, hash links, external tabs, or same-page anchor links
+                if (!target.href.includes('#') && target.target !== '_blank' && target.hostname === window.location.hostname) {
+                    NProgress.start();
+                }
+            }
+        });
 
+        window.addEventListener('load', function() {
+            NProgress.done();
+        });
+
+        window.addEventListener("pageshow", function(event) {
+            NProgress.done();
+        });
+    });
+</script>
