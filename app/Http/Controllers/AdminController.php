@@ -1099,19 +1099,42 @@ class AdminController extends Controller implements HasMiddleware
             $image = $resizedImage;
         }
 
-        // Save path
-        $filename = time() . '_' . uniqid() . '.avif';
-        $destination = public_path('covers/' . $filename);
+        // // Save path
+        // $filename = time() . '_' . uniqid() . '.avif';
+        // $destination = public_path('covers/' . $filename);
+
+        // // Ensure covers folder exists
+        // if (!file_exists(public_path('covers'))) {
+        //     mkdir(public_path('covers'), 0777, true);
+        // }
+
+        // // Compress and save as AVIF with a single pass for better performance
+        // imageavif($image, $destination, 50);
+
+        // imagedestroy($image);
+        // return $filename;
 
         // Ensure covers folder exists
-        if (!file_exists(public_path('covers'))) {
-            mkdir(public_path('covers'), 0777, true);
-        }
+if (!file_exists(public_path('covers'))) {
+    mkdir(public_path('covers'), 0777, true);
+}
 
-        // Compress and save as AVIF with a single pass for better performance
-        imageavif($image, $destination, 50);
+// Save as AVIF if supported, otherwise fallback to WebP
+if (function_exists('imageavif')) {
+    $filename = time() . '_' . uniqid() . '.avif';
+    $destination = public_path('covers/' . $filename);
 
-        imagedestroy($image);
-        return $filename;
+    // Compress and save as AVIF
+    imageavif($image, $destination, 50);
+} else {
+    $filename = time() . '_' . uniqid() . '.webp';
+    $destination = public_path('covers/' . $filename);
+
+    // Fallback: compress and save as WebP
+    imagewebp($image, $destination, 80);
+}
+
+imagedestroy($image);
+return $filename;
     }
 }
