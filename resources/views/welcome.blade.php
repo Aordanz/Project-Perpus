@@ -785,7 +785,7 @@
                         <i class="ph ph-graduation-cap"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <h3 class="text-sm md:text-lg font-bold text-black tracking-wide leading-tight break-words pr-2">{{ __('Pencarian Spesifik') }}</h3>
+                        <h3 class="text-sm md:text-lg font-bold text-white tracking-wide leading-tight break-words pr-2">{{ __('Pencarian Spesifik') }}</h3>
                         <p class="text-[10px] md:text-xs text-green-100/90 font-medium font-sans leading-tight mt-0.5 break-words pr-2">{{ __('Temukan buku, skripsi, dan jurnal untuk tugas kuliahmu dengan cepat!') }}</p>
                     </div>
                 </div>
@@ -798,13 +798,13 @@
             <form id="modal-pencarian-spesifik-form" action="{{ route('search') }}" method="GET" class="p-5 md:p-8 space-y-4 md:space-y-6 overflow-y-auto flex-grow">
                 <!-- Section 1: Detail Bibliografi -->
                 <div class="space-y-4">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-1.5">
                         <i class="ph ph-info text-sm text-[#106c38]"></i> {{ __('Detail Bibliografi') }}
                     </h4>
                     
                     <!-- Judul -->
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Judul') }}</label>
+                        <label class="text-xs font-bold text-black pl-1">{{ __('Judul') }}</label>
                         <div class="relative flex items-center">
                             <div class="absolute left-4 text-slate-400">
                                 <i class="ph ph-book-open text-xl"></i>
@@ -815,7 +815,7 @@
                     
                     <!-- Pengarang -->
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Pengarang') }}</label>
+                        <label class="text-xs font-bold text-black pl-1">{{ __('Pengarang') }}</label>
                         <div class="relative flex items-center">
                             <div class="absolute left-4 text-slate-400">
                                 <i class="ph ph-user text-xl"></i>
@@ -827,7 +827,7 @@
                     <!-- Penerbit & Subyek -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Penerbit') }}</label>
+                            <label class="text-xs font-bold text-black pl-1">{{ __('Penerbit') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-buildings text-xl"></i>
@@ -836,7 +836,7 @@
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Subyek') }}</label>
+                            <label class="text-xs font-bold text-black pl-1">{{ __('Subjek') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-tag text-xl"></i>
@@ -849,7 +849,7 @@
                     <!-- Tahun Terbit & ISBN -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Tahun Terbit') }}</label>
+                            <label class="text-xs font-bold text-black pl-1">{{ __('Tahun Terbit') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-calendar text-xl"></i>
@@ -858,7 +858,7 @@
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('ISBN') }}</label>
+                            <label class="text-xs font-bold text-black pl-1">{{ __('ISBN') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-barcode text-xl"></i>
@@ -871,7 +871,7 @@
                     <!-- No. Klasifikasi & Barcode -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('No. Klasifikasi') }}</label>
+                            <label class="text-xs font-bold text-black pl-1">{{ __('No. Klasifikasi') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-hash text-xl"></i>
@@ -880,7 +880,7 @@
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Barcode') }}</label>
+                            <label class="text-xs font-bold text-black pl-1">{{ __('Barcode') }}</label>
                             <div class="relative flex items-center">
                                 <div class="absolute left-4 text-slate-400">
                                     <i class="ph ph-qr-code text-xl"></i>
@@ -893,14 +893,14 @@
 
                 <!-- Section 2: Filter Pencarian -->
                 <div class="space-y-4 pt-2 border-t border-slate-100">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-1.5">
                         <i class="ph ph-sliders-horizontal text-sm text-[#106c38]"></i> {{ __('Lokasi & Jenis Koleksi') }}
                     </h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Semua Lokasi -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Lokasi') }}</label>
+                            <label class="text-xs font-bold text-black pl-1">{{ __('Lokasi') }}</label>
                             <div class="relative w-full" id="spec-dropdown-lokasi-container">
                                 <div class="absolute left-4 text-slate-400 z-10 pointer-events-none top-1/2 -translate-y-1/2 flex items-center">
                                     <i class="ph ph-map-pin text-xl"></i>
@@ -928,7 +928,7 @@
                         
                         <!-- Semua Jenis -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-500 pl-1">{{ __('Jenis Koleksi') }}</label>
+                            <label class="text-xs font-bold text-black pl-1">{{ __('Jenis Koleksi') }}</label>
                             <div class="relative w-full" id="spec-dropdown-jenis-container">
                                 <div class="absolute left-4 text-slate-400 z-10 pointer-events-none top-1/2 -translate-y-1/2 flex items-center">
                                     <i class="ph ph-file-text text-xl"></i>
