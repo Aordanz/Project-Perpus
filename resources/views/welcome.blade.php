@@ -507,12 +507,13 @@
                             } elseif (str_contains($nameLower, 'out of stock')) {
                                 $icon = 'ph-archive';
                             }
+                            $bgUrl = asset('lokasi/' . $bgImage);
                         @endphp
                         <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-3 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 w-[220px] min-w-[220px] max-w-[220px] sm:w-[290px] sm:min-w-[290px] sm:max-w-[290px] flex-none h-[85px] sm:h-[105px] cursor-pointer">
                             
                             <!-- Card background image with building photo preserved -->
                             <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 group-hover:scale-110 group-hover:opacity-45" 
-                                 style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                                 style="background-image: url('{{ $bgUrl }}'); 
                                         opacity: 0.32; 
                                         mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);
                                         -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);">
@@ -592,12 +593,13 @@
                             } elseif (str_contains($nameLower, 'out of stock')) {
                                 $icon = 'ph-archive';
                             }
+                            $bgUrl = asset('lokasi/' . $bgImage);
                         @endphp
                         <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-3 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 w-[220px] min-w-[220px] max-w-[220px] sm:w-[290px] sm:min-w-[290px] sm:max-w-[290px] flex-none h-[85px] sm:h-[105px] cursor-pointer">
                             
                             <!-- Card background image with building photo preserved -->
                             <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 group-hover:scale-110 group-hover:opacity-45" 
-                                 style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                                 style="background-image: url('{{ $bgUrl }}'); 
                                         opacity: 0.32; 
                                         mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);
                                         -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);">
@@ -680,12 +682,13 @@
                         } elseif (str_contains($nameLower, 'out of stock')) {
                             $icon = 'ph-archive';
                         }
+                        $bgUrl = asset('lokasi/' . $bgImage);
                     @endphp
                     <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="group relative overflow-hidden bg-gradient-to-br from-[#064e3b] via-[#085a45] to-[#032e20] rounded-2xl p-3 sm:p-5 border border-emerald-500/25 hover:border-[#F3C300] shadow-[0_8px_25px_-5px_rgba(4,51,26,0.35)] hover:shadow-[0_12px_30px_-5px_rgba(16,108,56,0.45)] flex items-center justify-between transition-all duration-300 hover:-translate-y-1.5 h-[85px] sm:h-[105px] w-full cursor-pointer">
                         
                         <!-- Card background image with building photo preserved -->
                         <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-700 group-hover:scale-110 group-hover:opacity-45" 
-                             style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                             style="background-image: url('{{ $bgUrl }}'); 
                                     opacity: 0.32; 
                                     mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);
                                     -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.95) 100%);">

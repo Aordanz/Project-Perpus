@@ -18,9 +18,7 @@
     <!-- Tailwind CSS (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Tom Select CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
 
     <!-- TinyMCE CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
@@ -248,18 +246,37 @@
                                     </div>
                                 </div>
 
-                                 <!-- Location Filter Dropdown (Tom Select) -->
-                                <div class="w-full sm:w-64">
+                                                                 <!-- Location Filter Dropdown (Custom) -->
+                                <div class="w-full sm:w-64 relative" id="loc-wrapper">
                                     <input type="hidden" name="location_filter" id="admin-location-filter" value="{{ request('location_filter', 'all') }}">
-                                    <select id="lokasi-select" placeholder="Cari Lokasi..." onchange="document.getElementById('admin-location-filter').value = this.value; window.performSearch();">
-                                        <option value="all" {{ request('location_filter', 'all') == 'all' ? 'selected' : '' }}>Semua Lokasi</option>
-                                        <option value="koleksi_terbaru" {{ request('location_filter') == 'koleksi_terbaru' ? 'selected' : '' }}>Koleksi Terbaru</option>
-                                        @if(isset($locations))
-                                            @foreach($locations as $loc)
-                                                <option value="{{ $loc->idlokasi }}" {{ request('location_filter') == $loc->idlokasi ? 'selected' : '' }}>{{ $loc->lokasi }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
+                                    <!-- Trigger Button -->
+                                    <button type="button" id="loc-trigger" class="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none transition-all duration-200 cursor-pointer shadow-sm">
+                                        <span id="loc-selected-label" class="flex items-center gap-2 truncate min-w-0">
+                                            @php $locVal = request('location_filter', 'all'); @endphp
+                                            @if($locVal === 'koleksi_terbaru')
+                                                <i class="ph ph-sparkle text-lg flex-shrink-0" style="color:#106c38"></i><span class="truncate">Koleksi Terbaru</span>
+                                            @elseif($locVal !== 'all' && isset($locations))
+                                                @php $selLoc = $locations->firstWhere('idlokasi', $locVal); @endphp
+                                                <i class="ph ph-map-pin text-lg flex-shrink-0" style="color:#106c38"></i><span class="truncate">{{ $selLoc ? $selLoc->lokasi : 'Semua Lokasi' }}</span>
+                                            @else
+                                                <i class="ph ph-map-pin text-slate-400 text-lg flex-shrink-0"></i><span class="truncate">Semua Lokasi</span>
+                                            @endif
+                                        </span>
+                                        <i class="ph ph-caret-down text-slate-400 transition-transform duration-200 flex-shrink-0" id="loc-caret"></i>
+                                    </button>
+                                    <!-- Dropdown Panel -->
+                                    <div id="loc-menu" class="hidden absolute left-0 top-full mt-2 w-full min-w-[260px] bg-white rounded-2xl shadow-xl border border-slate-100 z-[60] overflow-hidden" style="box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);">
+                                        <!-- Search input inside dropdown -->
+                                        <div style="padding: 10px 10px 6px 10px; border-bottom: 1px solid #f1f5f9;">
+                                            <div style="position: relative; display: flex; align-items: center;">
+                                                <i class="ph ph-magnifying-glass" style="position: absolute; left: 10px; color: #94a3b8; font-size: 1rem; pointer-events: none;"></i>
+                                                <input type="text" id="loc-search" placeholder="Cari lokasi/fakultas..." autocomplete="off"
+                                                       style="width: 100%; padding: 7px 10px 7px 32px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.825rem; outline: none; transition: all 0.15s;">
+                                            </div>
+                                        </div>
+                                        <!-- List container with scroll limit (approx 8 items) -->
+                                        <ul id="loc-list" style="max-height: 290px; overflow-y: auto; padding: 6px; margin: 0; display: flex; flex-direction: column; gap: 2px;"></ul>
+                                    </div>
                                 </div>
 
                                 <!-- Large Search Input -->
@@ -420,28 +437,127 @@
                 window.closeCoverMenu = closeCoverMenu;
             }
 
-            // Initialize Tom Select for Location
-            if (document.getElementById('lokasi-select')) {
-                new TomSelect('#lokasi-select', {
-                    create: false,
-                    placeholder: "Cari Lokasi...",
-                    maxOptions: 100,
-                    render: {
-                        item: function(data, escape) {
-                            var icon = data.value === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin';
-                            return '<div class="flex items-center gap-2"><i class="ph ' + icon + ' text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
-                        },
-                        option: function(data, escape) {
-                            var icon = data.value === 'koleksi_terbaru' ? 'ph-sparkle' : 'ph-map-pin';
-                            return '<div class="flex items-center gap-2"><i class="ph ' + icon + ' text-[#106c38] text-lg"></i><span>' + escape(data.text) + '</span></div>';
-                        }
+            // --- Custom Location Dropdown ---
+            (function() {
+                var locOptions = [
+                    { value: 'all', text: 'Semua Lokasi', icon: 'ph-map-pin' },
+                    { value: 'koleksi_terbaru', text: 'Koleksi Terbaru', icon: 'ph-sparkle' },
+                    @if(isset($locations))
+                    @foreach($locations as $loc)
+                    { value: @json((string)$loc->idlokasi), text: @json($loc->lokasi), icon: 'ph-map-pin' },
+                    @endforeach
+                    @endif
+                ];
+
+                var hiddenInput = document.getElementById('admin-location-filter');
+                var trigger     = document.getElementById('loc-trigger');
+                var menu        = document.getElementById('loc-menu');
+                var caret       = document.getElementById('loc-caret');
+                var selLabel    = document.getElementById('loc-selected-label');
+                var locList     = document.getElementById('loc-list');
+                var searchBox   = document.getElementById('loc-search');
+
+                if (!trigger) return;
+
+                function esc(str) {
+                    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+                }
+
+                function buildList(filterText) {
+                    var cur = hiddenInput ? String(hiddenInput.value) : 'all';
+                    var q = (filterText || '').toLowerCase().trim();
+                    var filtered = locOptions.filter(function(opt) {
+                        return !q || opt.text.toLowerCase().indexOf(q) !== -1;
+                    });
+
+                    if (filtered.length === 0) {
+                        locList.innerHTML = '<li style="padding:14px;text-align:center;color:#94a3b8;font-size:0.85rem;list-style:none;">Lokasi tidak ditemukan</li>';
+                        return;
                     }
+
+                    locList.innerHTML = filtered.map(function(opt) {
+                        var active  = String(opt.value) === cur;
+                        var bgStyle = active ? 'background:rgba(16,108,56,0.08);' : '';
+                        var fgColor = active ? '#106c38' : '#334155';
+                        var iColor  = active ? '#106c38' : '#94a3b8';
+                        return '<li style="list-style:none;"><button type="button" data-val="' + esc(opt.value) + '"' +
+                            ' style="' + bgStyle + 'color:' + fgColor + ';width:100%;display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;font-size:0.875rem;font-weight:600;text-align:left;cursor:pointer;border:none;box-sizing:border-box;"' +
+                            (active ? ' data-active="1"' : '') + '>' +
+                            '<i class="ph ' + opt.icon + '" style="font-size:1.1rem;color:' + iColor + ';flex-shrink:0;"></i>' +
+                            '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(opt.text) + '</span>' +
+                            (active ? '<i class="ph ph-check" style="font-size:1rem;color:#106c38;flex-shrink:0;"></i>' : '') +
+                            '</button></li>';
+                    }).join('');
+
+                    locList.querySelectorAll('button[data-val]').forEach(function(btn) {
+                        btn.addEventListener('mouseenter', function() { if (!btn.dataset.active) btn.style.background = '#f8fafc'; });
+                        btn.addEventListener('mouseleave', function() { if (!btn.dataset.active) btn.style.background = ''; });
+                        btn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            var clickedVal = btn.getAttribute('data-val');
+                            var opt = locOptions.find(function(o) { return String(o.value) === String(clickedVal); });
+                            if (opt) selectOption(opt);
+                        });
+                    });
+                }
+
+                function selectOption(opt) {
+                    if (hiddenInput) hiddenInput.value = opt.value;
+                    var iColor = String(opt.value) === 'all' ? '#94a3b8' : '#106c38';
+                    selLabel.innerHTML =
+                        '<i class="ph ' + opt.icon + ' text-lg flex-shrink-0" style="color:' + iColor + ';"></i>' +
+                        '<span class="truncate">' + esc(opt.text) + '</span>';
+                    closeLocMenu();
+                    window.performSearch();
+                }
+
+                function openLocMenu() {
+                    if (searchBox) searchBox.value = '';
+                    buildList('');
+                    menu.classList.remove('hidden');
+                    caret.classList.add('rotate-180');
+                    if (searchBox) {
+                        setTimeout(function() { searchBox.focus(); }, 60);
+                    }
+                }
+
+                function closeLocMenu() {
+                    menu.classList.add('hidden');
+                    caret.classList.remove('rotate-180');
+                }
+                window.closeLocMenu = closeLocMenu;
+
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.contains('hidden') ? openLocMenu() : closeLocMenu();
                 });
-            }
+
+                if (searchBox) {
+                    searchBox.addEventListener('click', function(e) { e.stopPropagation(); });
+                    searchBox.addEventListener('input', function(e) {
+                        buildList(e.target.value);
+                    });
+                    searchBox.addEventListener('focus', function() {
+                        searchBox.style.borderColor = '#106c38';
+                        searchBox.style.background = '#ffffff';
+                        searchBox.style.boxShadow = '0 0 0 3px rgba(16,108,56,0.12)';
+                    });
+                    searchBox.addEventListener('blur', function() {
+                        searchBox.style.borderColor = '#e2e8f0';
+                        searchBox.style.background = '#f8fafc';
+                        searchBox.style.boxShadow = 'none';
+                    });
+                }
+
+                menu.addEventListener('click', function(e) { e.stopPropagation(); });
+
+                buildList('');
+            })();
 
             // Close all dropdowns when clicking outside
             document.addEventListener('click', () => {
                 if (window.closeCoverMenu) window.closeCoverMenu();
+                if (window.closeLocMenu) window.closeLocMenu();
             });
 
             if (searchInput) {

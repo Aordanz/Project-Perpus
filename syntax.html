@@ -448,12 +448,13 @@
                             } elseif (str_contains($nameLower, 'kehutanan')) {
                                 $bgImage = 'kehutanan.jpeg';
                             }
+                            $bgUrl = asset('lokasi/' . $bgImage);
                         @endphp
                         <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#032514] rounded-xl p-6 border border-emerald-800/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.2)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.3)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
                             
                             <!-- Card background image with gradient transparency mask -->
                             <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
-                                 style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                                 style="background-image: url('{{ $bgUrl }}'); 
                                         opacity: 0.45; 
                                         mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
                                         -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
@@ -508,12 +509,13 @@
                             } elseif (str_contains($nameLower, 'kehutanan')) {
                                 $bgImage = 'kehutanan.jpeg';
                             }
+                            $bgUrl = asset('lokasi/' . $bgImage);
                         @endphp
                         <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#032514] rounded-xl p-6 border border-emerald-800/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.2)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.3)] hover:-translate-y-1 w-[220px] sm:w-[280px] shrink-0 h-[85px] sm:h-[100px]">
                             
                             <!-- Card background image with gradient transparency mask -->
                             <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
-                                 style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                                 style="background-image: url('{{ $bgUrl }}'); 
                                         opacity: 0.45; 
                                         mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
                                         -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
@@ -571,12 +573,13 @@
                         } elseif (str_contains($nameLower, 'kehutanan')) {
                             $bgImage = 'kehutanan.jpeg';
                         }
+                        $bgUrl = asset('lokasi/' . $bgImage);
                     @endphp
                     <a href="{{ route('search', ['inLokasi' => $stat->code]) }}" data-location="{{ $stat->code }}" class="bg-[#032514] rounded-xl p-3 sm:p-6 border border-emerald-800/40 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.2)] relative overflow-hidden flex items-center justify-between group cursor-pointer transition-all hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.3)] hover:-translate-y-1 h-[75px] sm:h-[100px] w-full">
                         
                         <!-- Card background image with gradient transparency mask -->
                         <div class="absolute inset-0 bg-cover bg-center pointer-events-none transition-transform duration-500 group-hover:scale-105" 
-                             style="background-image: url('{{ asset('lokasi/' . $bgImage) }}'); 
+                             style="background-image: url('{{ $bgUrl }}'); 
                                     opacity: 0.45; 
                                     mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);
                                     -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.2) 100%);">
