@@ -9,7 +9,7 @@
                     <img src="{{ asset('logousu.webp') }}" alt="USU Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain shrink-0">
                     <div class="flex flex-col shrink-0">
                         <span class="font-bold text-[#106c38] leading-none text-[10px] xs:text-[11px] sm:text-sm group-hover:text-[#1E1E1E]/80 transition whitespace-nowrap">{{ __('Perpustakaan') }}</span>
-                        <span class="font-bold text-[#106c38] leading-tight mt-0.5 text-[9px] xs:text-[10px] sm:text-xs md:text-sm group-hover:text-[#1E1E1E]/80 transition whitespace-nowrap">{{ __('Universitas Sumatera Utara') }}</span>
+                        <span class="font-bold text-[#106c38] leading-tight mt-0.5 text-[9px] xs:text-[10px] sm:text-xs md:text-sm group-hover:text-[#1E1E1E]/80 transition whitespace-nowrap">{{ __('navbar_subtitle') }}</span>
                     </div>
                 </a>
             </div>
