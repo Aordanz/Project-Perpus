@@ -207,13 +207,13 @@
                                 <div class="flex items-start gap-2.5 text-xs">
                                     <span class="font-extrabold text-[10px] bg-white text-[#106c38] px-2 py-0.5 rounded-md font-mono shrink-0 mt-0.5 shadow-sm">STD</span>
                                     <p class="text-[11.5px] text-emerald-50 leading-snug">
-                                        <strong class="font-bold text-white">Standard:</strong> {{ __('Jangka waktu pinjam normal') }}
+                                        <strong class="font-bold text-white">{{ __('Standard:') }}</strong> {{ __('Jangka waktu pinjam normal') }}
                                     </p>
                                 </div>
                                 <div class="flex items-start gap-2.5 text-xs">
                                     <span class="font-extrabold text-[10px] bg-white text-[#106c38] px-2 py-0.5 rounded-md font-mono shrink-0 mt-0.5 shadow-sm">KPS</span>
                                     <p class="text-[11.5px] text-emerald-50 leading-snug">
-                                        <strong class="font-bold text-white">Pinjam Singkat:</strong> {{ __('Jangka waktu pinjam terbatas/singkat') }}
+                                        <strong class="font-bold text-white">{{ __('Pinjam Singkat:') }}</strong> {{ __('Jangka waktu pinjam terbatas/singkat') }}
                                     </p>
                                 </div>
                             </div>
@@ -288,7 +288,7 @@
                                             <td class="px-5 py-4 text-center">
                                                 @if($item->status == 'Tersedia')
                                                     <span class="inline-flex items-center gap-1 bg-green-50 text-green-700 font-bold px-2.5 py-0.5 rounded-full border border-green-200/50 text-xs">
-                                                        {{ $item->status }}
+                                                        {{ __($item->status) }}
                                                     </span>
                                                 @elseif($item->status == 'Dipinjam')
                                                     @php
@@ -302,17 +302,17 @@
                                                     @endphp
                                                     <div class="flex flex-col items-center justify-center gap-1">
                                                         <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 font-bold px-2.5 py-0.5 rounded-full border border-amber-200/50 text-xs">
-                                                            {{ $item->status }}
+                                                            {{ __($item->status) }}
                                                         </span>
                                                         @if($activeLoan)
                                                             <span class="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">
-                                                                Sampai : <span class="font-bold text-amber-600">{{ $dueDate }}</span>
+                                                                {{ __('Sampai') }} : <span class="font-bold text-amber-600">{{ $dueDate }}</span>
                                                             </span>
                                                         @endif
                                                     </div>
                                                 @else
                                                     <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 font-bold px-2.5 py-0.5 rounded-full border border-rose-200/50 text-xs">
-                                                        {{ $item->status }}
+                                                        {{ __($item->status) }}
                                                     </span>
                                                 @endif
                                             </td>
@@ -459,13 +459,13 @@
                                 <div class="flex items-start gap-2.5 text-xs">
                                     <span class="font-extrabold text-[10px] bg-white text-[#106c38] px-2 py-0.5 rounded-md font-mono shrink-0 mt-0.5 shadow-sm">STD</span>
                                     <p class="text-[11.5px] text-emerald-50 leading-snug">
-                                        <strong class="font-bold text-white">Standard:</strong> {{ __('Jangka waktu pinjam normal') }}
+                                        <strong class="font-bold text-white">{{ __('Standard:') }}</strong> {{ __('Jangka waktu pinjam normal') }}
                                     </p>
                                 </div>
                                 <div class="flex items-start gap-2.5 text-xs">
                                     <span class="font-extrabold text-[10px] bg-white text-[#106c38] px-2 py-0.5 rounded-md font-mono shrink-0 mt-0.5 shadow-sm">KPS</span>
                                     <p class="text-[11.5px] text-emerald-50 leading-snug">
-                                        <strong class="font-bold text-white">Pinjam Singkat:</strong> {{ __('Jangka waktu pinjam terbatas/singkat') }}
+                                        <strong class="font-bold text-white">{{ __('Pinjam Singkat:') }}</strong> {{ __('Jangka waktu pinjam terbatas/singkat') }}
                                     </p>
                                 </div>
                             </div>

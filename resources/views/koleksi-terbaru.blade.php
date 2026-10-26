@@ -56,7 +56,7 @@
 
     <!-- Header Section -->
     <div class="relative z-30 pt-24 pb-12 bg-white shadow-sm mb-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl bg-green-50 text-[#106c38] flex items-center justify-center border border-green-100">
@@ -127,7 +127,7 @@
     </div>
 
     <!-- Main Content Area -->
-    <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12">
 
         <!-- Helper Functions and Subject Mapping -->
         @php
@@ -149,7 +149,7 @@
         @endphp
 
         <!-- Dynamic Quick Filter Chips -->
-        <div class="mb-8 max-w-6xl mx-auto px-2">
+        <div class="mb-8 px-2">
 
             <div id="chips-container" class="flex flex-wrap gap-2 sm:gap-3 mb-2 justify-center items-center transition-all duration-300">
                 <!-- Semua Kategori -->
