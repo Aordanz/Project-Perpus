@@ -127,7 +127,7 @@
     </div>
 
     <!-- Main Content Area -->
-    <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12">
 
         <!-- Helper Functions and Subject Mapping -->
         @php
@@ -149,7 +149,7 @@
         @endphp
 
         <!-- Dynamic Quick Filter Chips -->
-        <div class="mb-8 max-w-6xl mx-auto px-2">
+        <div class="mb-8 px-2">
 
             <div id="chips-container" class="flex flex-wrap gap-2 sm:gap-3 mb-2 justify-center items-center transition-all duration-300">
                 <!-- Semua Kategori -->
@@ -196,7 +196,7 @@
                     $bigCategoryName = $book->category ?: 'Umum';
                     $subjValue = strtolower(trim($bigCategoryName));
                 @endphp
-                <a href="{{ route('books.show', $book->id) }}" class="result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 flex gap-3 sm:gap-6 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group cursor-pointer block"
+                <a href="{{ route('books.show', $book->id) }}" class="result-card bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-5 sm:p-8 flex gap-5 sm:gap-8 items-start shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 hover:border-[#106c38]/30 transition-all duration-300 group cursor-pointer block"
                      data-title="{{ strtolower($book->title) }}" 
                      data-author="{{ strtolower($book->author) }}" 
                      data-publisher="{{ strtolower($book->publisher) }}" 
@@ -206,58 +206,58 @@
                      data-available="{{ $availableCopies > 0 ? 'true' : 'false' }}">
                     
                     <!-- Card Numbering Index -->
-                    <div class="flex-shrink-0 text-base sm:text-2xl font-black text-slate-200 group-hover:text-[#106c38]/30 transition-colors select-none w-6 sm:w-8 text-center pt-1.5 sm:pt-4">
+                    <div class="flex-shrink-0 text-xl sm:text-4xl font-black text-slate-200 group-hover:text-[#106c38]/30 transition-colors select-none w-8 sm:w-12 text-center pt-1.5 sm:pt-4">
                         {{ sprintf('%02d', $loop->iteration) }}
                     </div>
 
                     <!-- Book Cover -->
-                    <div class="w-20 sm:w-28 aspect-[2/3] bg-[#e6f7f0] border border-slate-200/80 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
+                    <div class="w-28 sm:w-40 aspect-[2/3] bg-[#e6f7f0] border border-slate-200/80 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative">
                         @if($book->cover_image)
                             <img src="{{ asset('covers/' . $book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                         @else
                             @include('partials.no-cover')
                         @endif
-                        <span class="absolute top-2.5 left-2.5 {{ $book->jenis_badge_color }} text-[9px] font-bold px-2 py-0.5 rounded-lg shadow-sm tracking-wide uppercase z-10">
+                        <span class="absolute top-2.5 left-2.5 {{ $book->jenis_badge_color }} text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-sm tracking-wide uppercase z-10">
                             {{ $book->jenis_label }}
                         </span>
                     </div>
 
                     <!-- Book Details -->
                     <div class="flex-grow flex flex-col h-full">
-                        <div class="mb-2">
+                        <div class="mb-3">
                             <!-- Category Badge -->
-                            <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[9px] font-bold px-2 py-0.5 rounded-full mb-1 tracking-wider uppercase">
+                            <span class="inline-block bg-[#106c38]/5 text-[#106c38] text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-1.5 tracking-wider uppercase">
                                 {{ __($bigCategoryName) }}
                             </span>
-                            <h3 class="text-base sm:text-lg font-bold text-slate-800 group-hover:text-[#106c38] group-hover:underline transition leading-snug">
+                            <h3 class="text-xl sm:text-2xl font-bold text-slate-800 group-hover:text-[#106c38] group-hover:underline transition leading-snug">
                                 {{ $book->title ?: __('Judul Tidak Tersedia') }}
                             </h3>
                         </div>
 
                         <!-- Author & Code -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 mb-4 text-xs font-medium text-slate-500">
-                            <div class="flex items-center gap-1.5">
-                                <i class="ph ph-user text-sm text-slate-400"></i>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5 mb-5 text-sm font-medium text-slate-500">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-user text-base text-slate-400"></i>
                                 <span>{{ __('Pengarang:') }} <strong class="text-slate-700">{{ $book->author }}</strong></span>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <i class="ph ph-hash text-sm text-slate-400"></i>
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-hash text-base text-slate-400"></i>
                                 <span>{{ __('No. Panggil:') }} <strong class="text-slate-700">{{ $book->call_number ?: '-' }}</strong></span>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <i class="ph ph-buildings text-sm text-slate-400"></i>
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-buildings text-base text-slate-400"></i>
                                 <span>{{ __('Penerbit:') }} <strong class="text-slate-700">{{ $book->publisher ?: '-' }}</strong></span>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <i class="ph ph-calendar text-sm text-slate-400"></i>
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-calendar text-base text-slate-400"></i>
                                 <span>{{ __('Tahun Terbit:') }} <strong class="text-slate-700">{{ $book->publish_year ?: '-' }}</strong></span>
                             </div>
                         </div>
 
                         <!-- Availability Pill -->
-                        <div class="mt-auto pt-3 border-t border-slate-50 flex flex-wrap gap-2 items-center justify-between text-xs">
-                            <div class="flex items-center gap-1.5 text-slate-400">
-                                <i class="ph ph-map-pin text-sm text-[#106c38]"></i>
+                        <div class="mt-auto pt-3.5 border-t border-slate-100 flex flex-wrap gap-2 items-center justify-between text-sm">
+                            <div class="flex items-center gap-2 text-slate-400">
+                                <i class="ph ph-map-pin text-base text-[#106c38]"></i>
                                 <span class="font-medium text-slate-500">
                                     {{ __('Lokasi:') }} 
                                     @php
@@ -266,8 +266,6 @@
                                     <strong class="text-slate-700">{{ $locNames->implode(', ') ?: __('Tidak ditentukan') }}</strong>
                                 </span>
                             </div>
-                            
-
                         </div>
                     </div>
                 </a>
