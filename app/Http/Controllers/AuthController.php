@@ -21,7 +21,8 @@ class AuthController extends Controller
 
     /**
      * Handle the login request.
-     * Mendukung login via USERNAME atau EMAIL + password rehashing otomatis.
+     * Mendukung login via USERNAME atau EMAIL.
+     * Hybrid password check (Bcrypt + MD5 LIBAS Delphi) tanpa mengubah/menimpa database.
      */
     public function login(Request $request)
     {
@@ -78,14 +79,16 @@ class AuthController extends Controller
             'is_bcrypt'     => str_starts_with($storedPassword, '$2y$') || str_starts_with($storedPassword, '$2a$'),
         ]);
 
-        if (str_starts_with($storedPassword, '$2y$') || str_starts_with($storedPassword, '$2a$') || str_starts_with($storedPassword, '$argon2')) {
+        // Cek format Bcrypt / Argon2 (jika user pernah dibuat/di-hash di Laravel)
+        if (str_starts_with($storedPassword, '$2y$') || str_starts_with($storedPassword, '$2a$') || str_starts_with($storedPassword, '$2b$') || str_starts_with($storedPassword, '$argon2')) {
             $passwordValid = Hash::check($password, $storedPassword);
             \Log::info('[LOGIN-DEBUG] Bcrypt check result: ' . ($passwordValid ? 'MATCH' : 'FAIL'));
         } else {
-            if ($storedPassword === md5($password)) {
+            // Cek format LIBAS Delphi (MD5 32 hex character, case-insensitive)
+            if (hash_equals(strtolower($storedPassword), md5($password))) {
                 $passwordValid = true;
-                \Log::info('[LOGIN-DEBUG] MD5 match');
-            } elseif ($storedPassword === sha1($password)) {
+                \Log::info('[LOGIN-DEBUG] MD5 match (LIBAS format)');
+            } elseif (hash_equals(strtolower($storedPassword), sha1($password))) {
                 $passwordValid = true;
                 \Log::info('[LOGIN-DEBUG] SHA1 match');
             } elseif ($storedPassword === $password) {
@@ -95,10 +98,9 @@ class AuthController extends Controller
                 \Log::warning('[LOGIN-DEBUG] FAIL: No legacy format matched');
             }
 
-            if ($passwordValid) {
-                $user->forceFill(['password' => Hash::make($password)])->save();
-                \Log::info('[LOGIN-DEBUG] Password rehashed to bcrypt');
-            }
+            // PERHATIAN: JANGAN REHASH KE DATABASE!
+            // Kita sengaja TIDAK menimpa password ke bcrypt agar aplikasi LIBAS Delphi
+            // tetap bisa membaca dan memvalidasi password lama tanpa error.
         }
 
         if (!$passwordValid) {
