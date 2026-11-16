@@ -735,7 +735,7 @@
             const card = document.getElementById('upload-cover-card');
             const form = document.getElementById('modal-upload-form');
             
-            // Set form action dynamically
+            // Set form action dynamically (use relative URL to prevent HTTP/HTTPS domain mismatches)
             form.action = "{{ url('admin/books') }}/" + id;
 
             // Set hidden inputs
@@ -868,24 +868,24 @@
                             method: 'POST',
                             body: formData,
                             headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
                             }
                         });
 
-                        if (response.ok || response.redirected) {
+                        const data = await response.json().catch(() => null);
+
+                        if (response.ok && data && data.success) {
                             window.location.reload();
-                        } else if (response.status === 422) {
-                            const data = await response.json();
+                        } else {
                             let errorMsgs = [];
-                            if (data.errors) {
+                            if (data && data.errors) {
                                 for (let field in data.errors) {
-                                    errorMsgs.push(data.errors[field].join('\\n'));
+                                    errorMsgs.push(data.errors[field].join('\n'));
                                 }
                             }
-                            throw new Error(errorMsgs.join('\\n') || data.message || 'Terjadi kesalahan validasi.');
-                        } else {
-                            const data = await response.json().catch(() => ({}));
-                            throw new Error(data.message || 'Gagal menyimpan data.');
+                            const fullMsg = errorMsgs.join('\n') || (data && data.message) || 'Gagal menyimpan data cover buku.';
+                            throw new Error(fullMsg);
                         }
                     } catch (error) {
                         showErrorModal(error.message);
