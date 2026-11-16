@@ -1108,9 +1108,10 @@ class AdminController extends Controller implements HasMiddleware
         $filename = time() . '_' . uniqid() . $extension;
         $destination = public_path('covers/' . $filename);
 
-        // Ensure covers folder exists
+        // Ensure covers folder exists.
+        // Use 0755 (not 0777) — shared hosting servers typically block world-writable dirs.
         if (!file_exists(public_path('covers'))) {
-            mkdir(public_path('covers'), 0777, true);
+            mkdir(public_path('covers'), 0755, true);
         }
 
         if ($supportAvif) {
