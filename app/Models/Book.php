@@ -171,6 +171,8 @@ class Book extends Model
     public function images(): HasMany
     {
         return $this->hasMany(BookImage::class, 'book_id', 'idmaster')
+                    ->whereNotNull('image_path')
+                    ->where('image_path', '!=', '')
                     ->orderBy('is_cover', 'desc')
                     ->orderBy('sort_order', 'asc')
                     ->orderBy('id', 'asc');
