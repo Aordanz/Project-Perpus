@@ -113,11 +113,12 @@ class AuthController extends Controller
         \Log::info('[LOGIN-DEBUG] Step 5: Password OK, checking role', [
             'user_role'      => $user->role,
             'requested_role' => $role,
-            'match'          => $user->role === $role,
+            'match'          => strtolower($user->role) === strtolower($role),
         ]);
 
-        // Validate role
-        if ($user->role !== $role) {
+        // Validate role — case-insensitive comparison to handle legacy LIBAS Delphi
+        // data where role might be stored as 'Pustakawan' (capital) vs 'pustakawan' (lowercase).
+        if (strtolower($user->role) !== strtolower($role)) {
             $roleName = $role === 'pustakawan' ? 'Pustakawan' : 'Anggota';
             \Log::warning('[LOGIN-DEBUG] FAIL: Role mismatch');
             return back()->withErrors([
@@ -132,18 +133,23 @@ class AuthController extends Controller
         $request->session()->save(); // Force write session to DB before redirect
         \Log::info('[LOGIN-DEBUG] Step 7: Auth::login done. auth()->check() = ' . (auth()->check() ? 'true' : 'false'));
 
-        // Store credentials in cookies if remember is checked
+        // Store login identity in cookies if remember is checked.
+        // SECURITY: We intentionally do NOT store the password in cookies.
+        // Storing plaintext passwords in browser cookies is a critical vulnerability
+        // (exposed via XSS, shared devices, browser storage inspection, etc.).
+        // The browser's built-in credential manager (autocomplete) handles password
+        // remembering securely instead.
         if ($request->boolean('remember')) {
-            Cookie::queue('saved_login',    $loginInput, 60 * 24 * 30);
-            Cookie::queue('saved_password', $password,   60 * 24 * 30);
-            Cookie::queue('remember_role',  $role,       60 * 24 * 30);
-            Cookie::queue('remember_checked', 'true',    60 * 24 * 30);
+            Cookie::queue('saved_login',      $loginInput, 60 * 24 * 30);
+            Cookie::queue('remember_role',    $role,       60 * 24 * 30);
+            Cookie::queue('remember_checked', 'true',      60 * 24 * 30);
         } else {
             Cookie::queue(Cookie::forget('saved_login'));
-            Cookie::queue(Cookie::forget('saved_password'));
             Cookie::queue(Cookie::forget('remember_role'));
             Cookie::queue(Cookie::forget('remember_checked'));
         }
+        // Ensure any old saved_password cookie from previous versions is cleared.
+        Cookie::queue(Cookie::forget('saved_password'));
 
         $roleText      = $role === 'pustakawan' ? 'Pustakawan' : 'Anggota';
         $redirectRoute = $role === 'pustakawan' ? 'admin.index' : 'home';

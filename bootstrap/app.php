@@ -12,6 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Trust only the campus reverse proxy IP — do NOT use '*' (wildcard)
+        // as that opens IP spoofing attacks via X-Forwarded-For header.
+        $middleware->trustProxies(
+            at: env('TRUSTED_PROXIES', '10.168.17.236'),
+            headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO,
+        );
+
         $middleware->web(append: [
             \App\Http\Middleware\Localization::class,
         ]);

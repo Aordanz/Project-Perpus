@@ -140,7 +140,9 @@
                     @csrf
                     @php
                         $savedLogin = request()->cookie('saved_login') ?: old('login');
-                        $savedPassword = request()->cookie('saved_password') ?: '';
+                        // SECURITY: saved_password cookie removed — do not pre-fill passwords from cookies.
+                        // Browser's native autocomplete (autocomplete="current-password") handles this
+                        // securely via the browser's own encrypted credential store.
                         $rememberChecked = request()->cookie('remember_checked') === 'true' ? 'checked' : '';
                     @endphp
                     <input type="hidden" name="role" id="input-role" value="pustakawan">
@@ -166,7 +168,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <i class="ph ph-lock text-lg"></i>
                             </div>
-                            <input type="password" name="password" id="password" value="{{ $savedPassword }}" autocomplete="current-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
+                            <input type="password" name="password" id="password" value="" autocomplete="current-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#106c38] focus:bg-white focus:ring-4 focus:ring-green-100 transition-all">
                             <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 bg-transparent border-none cursor-pointer">
                                 <i class="ph ph-eye-slash text-lg" id="icon-toggle-password"></i>
                             </button>
