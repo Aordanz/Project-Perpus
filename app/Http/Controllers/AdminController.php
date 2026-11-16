@@ -624,6 +624,8 @@ class AdminController extends Controller implements HasMiddleware
                                 'is_cover'   => $index === 0 ? 1 : 0,
                                 'sort_order' => $index,
                             ];
+                        } else {
+                            throw new \Exception("File gambar ke-" . ($index + 1) . " tidak diterima server. Pastikan ukuran file tidak melebihi batas upload server.");
                         }
                     }
                 }
@@ -813,10 +815,25 @@ class AdminController extends Controller implements HasMiddleware
             // Auto-clear cache beranda agar perubahan buku langsung tampil
             $this->clearBookCache();
 
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Buku "' . $book->title . '" berhasil diperbarui.',
+                ]);
+            }
+
             return redirect()->back()
                 ->with('success', 'Buku "' . $book->title . '" berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui buku: ' . $e->getMessage(),
+                ], 422);
+            }
+
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['error' => 'Gagal memperbarui buku: ' . $e->getMessage()]);
@@ -1159,36 +1176,60 @@ class AdminController extends Controller implements HasMiddleware
             $image = $resizedImage;
         }
 
+        $coversDir = public_path('covers');
+        if (!file_exists($coversDir)) {
+            if (!@mkdir($coversDir, 0755, true) && !file_exists($coversDir)) {
+                throw new \Exception("Folder covers ({$coversDir}) tidak ada dan tidak dapat dibuat otomatis oleh PHP. Mohon buat folder 'public/covers' di server.");
+            }
+        }
+
+        if (!is_writable($coversDir)) {
+            @chmod($coversDir, 0775);
+            if (!is_writable($coversDir)) {
+                throw new \Exception("Folder 'public/covers' di server tidak memiliki izin tulis (write permission). Jalankan 'chmod -R 775 public/covers' di server.");
+            }
+        }
+
         // Cek apakah server support fungsi imageavif
         $supportAvif = function_exists('imageavif');
         $extension = $supportAvif ? '.avif' : '.webp';
 
         // Save path
         $filename = time() . '_' . uniqid() . $extension;
-        $destination = public_path('covers/' . $filename);
+        $destination = $coversDir . '/' . $filename;
 
-        // Ensure covers folder exists.
-        // Use 0755 (not 0777) — shared hosting servers typically block world-writable dirs.
-        if (!file_exists(public_path('covers'))) {
-            mkdir(public_path('covers'), 0755, true);
-        }
+        $savedSuccessfully = false;
 
         if ($supportAvif) {
             // Compress and save as AVIF with a single pass for better performance
-            imageavif($image, $destination, 50);
-        } else {
-            // Fallback konversi ke WEBP
-            if (function_exists('imagewebp')) {
-                imagewebp($image, $destination, 75);
-            } else {
-                // Jika WEBP juga tidak support, simpan JPEG saja
-                $filename = str_replace('.webp', '.jpg', $filename);
-                $destination = public_path('covers/' . $filename);
-                imagejpeg($image, $destination, 80);
-            }
+            $savedSuccessfully = @imageavif($image, $destination, 50);
+        }
+
+        if (!$savedSuccessfully && function_exists('imagewebp')) {
+            $filename = str_replace('.avif', '.webp', $filename);
+            $destination = $coversDir . '/' . $filename;
+            $savedSuccessfully = @imagewebp($image, $destination, 75);
+        }
+
+        if (!$savedSuccessfully && function_exists('imagejpeg')) {
+            $filename = str_replace(['.avif', '.webp'], '.jpg', $filename);
+            $destination = $coversDir . '/' . $filename;
+            $savedSuccessfully = @imagejpeg($image, $destination, 80);
         }
 
         imagedestroy($image);
+
+        // Fallback: if GD fails to write compressed format, directly move original file
+        if (!$savedSuccessfully || !file_exists($destination) || filesize($destination) === 0) {
+            $originalExt = $file->getClientOriginalExtension() ?: 'jpg';
+            $filename = time() . '_' . uniqid() . '.' . $originalExt;
+            $destination = $coversDir . '/' . $filename;
+            $file->move($coversDir, $filename);
+            if (!file_exists($destination)) {
+                throw new \Exception("Gagal menyimpan file gambar cover ke {$destination}.");
+            }
+        }
+
         return $filename;
     }
 }
