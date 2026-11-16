@@ -574,7 +574,7 @@ class AdminController extends Controller implements HasMiddleware
             DB::beginTransaction();
 
             // Calculate and validate final additional images count (limit to 4 total: 1 cover + 3 additional)
-            $existingImagesCount = \App\Models\BookImage::where('book_id', $book->id)->count();
+            $existingImagesCount = $book->images()->count();
             $deletedImagesCount = $request->has('delete_additional_images') ? count($request->delete_additional_images) : 0;
             $newImagesCount = $request->hasFile('additional_images') ? count($request->file('additional_images')) : 0;
             $newFilesCount = $request->hasFile('new_files') ? count($request->file('new_files')) : 0;
@@ -637,10 +637,49 @@ class AdminController extends Controller implements HasMiddleware
                     }
                 }
 
-                // Clear old database entries and re-insert ordered entries into galeri_buku
-                $book->images()->delete();
-                foreach ($finalImageRecords as $record) {
-                    $book->images()->create($record);
+                // Synchronize database entries using UPDATE and INSERT (Zero-DELETE strategy).
+                // This prevents SQL 1142 DELETE command denied errors on servers where
+                // database user only has SELECT, INSERT, and UPDATE privileges.
+                $existingImageModels = $book->images()->get();
+                $finalCount = count($finalImageRecords);
+                $existingCount = $existingImageModels->count();
+
+                // 1. Update existing records in-place
+                for ($i = 0; $i < min($finalCount, $existingCount); $i++) {
+                    $existingImageModels[$i]->update([
+                        'image_path' => $finalImageRecords[$i]['image_path'],
+                        'is_cover'   => $finalImageRecords[$i]['is_cover'],
+                        'sort_order' => $finalImageRecords[$i]['sort_order'],
+                    ]);
+                }
+
+                // 2. If there are more new records than existing ones, recycle blank slots or insert
+                for ($i = $existingCount; $i < $finalCount; $i++) {
+                    $recycled = \App\Models\BookImage::where('book_id', 0)
+                        ->orWhere('image_path', '')
+                        ->orWhereNull('image_path')
+                        ->first();
+
+                    if ($recycled) {
+                        $recycled->update([
+                            'book_id'    => $book->idmaster,
+                            'image_path' => $finalImageRecords[$i]['image_path'],
+                            'is_cover'   => $finalImageRecords[$i]['is_cover'],
+                            'sort_order' => $finalImageRecords[$i]['sort_order'],
+                        ]);
+                    } else {
+                        $book->images()->create($finalImageRecords[$i]);
+                    }
+                }
+
+                // 3. If there are leftover existing records (user reduced images), decouple them cleanly
+                for ($i = $finalCount; $i < $existingCount; $i++) {
+                    $existingImageModels[$i]->update([
+                        'book_id'    => 0,
+                        'image_path' => '',
+                        'is_cover'   => 0,
+                        'sort_order' => 9999,
+                    ]);
                 }
             } else {
                 // Handle deleting the cover image (Legacy)
@@ -650,7 +689,12 @@ class AdminController extends Controller implements HasMiddleware
                         if (file_exists(public_path('covers/' . $cover->image_path))) {
                             @unlink(public_path('covers/' . $cover->image_path));
                         }
-                        $cover->delete();
+                        $cover->update([
+                            'book_id'    => 0,
+                            'image_path' => '',
+                            'is_cover'   => 0,
+                            'sort_order' => 9999,
+                        ]);
                     }
                 }
 
@@ -733,14 +777,19 @@ class AdminController extends Controller implements HasMiddleware
             }
 
             if (!$request->filled('image_order_json')) {
-                // Delete selected additional images
+                // Delete selected additional images (Zero-DELETE strategy via decouple)
                 if ($request->has('delete_additional_images')) {
                     $imagesToDelete = \App\Models\BookImage::whereIn('id', $request->delete_additional_images)->get();
                     foreach ($imagesToDelete as $img) {
                         if (file_exists(public_path('covers/' . $img->image_path))) {
                             @unlink(public_path('covers/' . $img->image_path));
                         }
-                        $img->delete();
+                        $img->update([
+                            'book_id'    => 0,
+                            'image_path' => '',
+                            'is_cover'   => 0,
+                            'sort_order' => 9999,
+                        ]);
                     }
                 }
 
@@ -808,12 +857,17 @@ class AdminController extends Controller implements HasMiddleware
         try {
             $book = Book::where('idmaster', $id)->firstOrFail();
 
-            // Delete all images from disk and galeri_buku
+            // Delete all images from disk and decouple from galeri_buku (Zero-DELETE strategy)
             foreach ($book->images as $img) {
                 if (file_exists(public_path('covers/' . $img->image_path))) {
                     @unlink(public_path('covers/' . $img->image_path));
                 }
-                $img->delete();
+                $img->update([
+                    'book_id'    => 0,
+                    'image_path' => '',
+                    'is_cover'   => 0,
+                    'sort_order' => 9999,
+                ]);
             }
 
             // Auto-clear cache beranda agar perubahan cover langsung tampil
@@ -835,12 +889,17 @@ class AdminController extends Controller implements HasMiddleware
         try {
             $img = \App\Models\BookImage::findOrFail($id);
             
-            // Delete the image file if it exists
+            // Delete the image file if it exists, decouple row (Zero-DELETE strategy)
             if ($img->image_path && file_exists(public_path('covers/' . $img->image_path))) {
                 @unlink(public_path('covers/' . $img->image_path));
             }
             
-            $img->delete();
+            $img->update([
+                'book_id'    => 0,
+                'image_path' => '',
+                'is_cover'   => 0,
+                'sort_order' => 9999,
+            ]);
             
             return response()->json([
                 'success' => true,
