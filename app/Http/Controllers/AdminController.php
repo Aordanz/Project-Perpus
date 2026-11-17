@@ -1232,4 +1232,190 @@ class AdminController extends Controller implements HasMiddleware
 
         return $filename;
     }
+
+    // =========================================================================
+    // TAMBAH USER (hanya idgroup=3)
+    // =========================================================================
+
+    /**
+     * Tampilkan form tambah user.
+     * Hanya bisa diakses oleh user dengan idgroup = 3.
+     */
+    public function tambahUserIndex()
+    {
+        if (!auth()->check() || (int) auth()->user()->idgroup !== 3) {
+            abort(403, 'Akses ditolak. Fitur ini hanya untuk Pengolahan / IT Admin (idgroup=3).');
+        }
+
+        // Ambil semua group yang tersedia (idgroup_user 1-15)
+        $groups = DB::table('tblgroup_user')
+            ->whereBetween('idgroup_user', [1, 15])
+            ->orderBy('idgroup_user')
+            ->get();
+
+        return view('admin.tambah_user', compact('groups'));
+    }
+
+    /**
+     * Simpan user baru ke tbluser.
+     * Hanya bisa diakses oleh user dengan idgroup = 3.
+     */
+    public function tambahUserStore(\Illuminate\Http\Request $request)
+    {
+        if (!auth()->check() || (int) auth()->user()->idgroup !== 3) {
+            abort(403, 'Akses ditolak. Fitur ini hanya untuk Pengolahan / IT Admin (idgroup=3).');
+        }
+
+        $groups = DB::table('tblgroup_user')
+            ->whereBetween('idgroup_user', [1, 15])
+            ->pluck('idgroup_user')
+            ->toArray();
+
+        $validated = $request->validate([
+            'username'     => 'required|string|max:50|unique:tbluser,username',
+            'nama_lengkap' => 'required|string|max:100',
+            'keterangan'   => 'nullable|string|max:200',
+            'idgroup'      => 'required|integer|in:' . implode(',', $groups),
+        ], [
+            'username.required'     => 'Username wajib diisi.',
+            'username.unique'       => 'Username sudah digunakan, pilih username lain.',
+            'username.max'          => 'Username maksimal 50 karakter.',
+            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
+            'nama_lengkap.max'      => 'Nama lengkap maksimal 100 karakter.',
+            'keterangan.max'        => 'Keterangan maksimal 200 karakter.',
+            'idgroup.required'      => 'Pilih divisi/jabatan.',
+            'idgroup.in'            => 'Divisi yang dipilih tidak valid.',
+        ]);
+
+        // Password default: username + "123" (user bisa minta ganti nanti)
+        // Gunakan MD5 agar kompatibel dengan sistem LIBAS Delphi
+        $defaultPassword = md5($validated['username'] . '123');
+
+        // Tentukan role berdasarkan idgroup
+        // Misal idgroup 3 = Pengolahan (Pustakawan), lainnya anggota
+        $selectedGroup = DB::table('tblgroup_user')
+            ->where('idgroup_user', $validated['idgroup'])
+            ->first();
+        $role = ($selectedGroup && (int) $selectedGroup->status_administrator === 1)
+            ? 'pustakawan'
+            : 'pustakawan'; // semua yg ditambah via admin dianggap pustakawan
+
+        DB::table('tbluser')->insert([
+            'username'            => $validated['username'],
+            'nama_lengkap'        => $validated['nama_lengkap'],
+            'keterangan'          => $validated['keterangan'] ?? null,
+            'idgroup'             => (int) $validated['idgroup'],
+            'password'            => $defaultPassword,
+            'role'                => 'pustakawan',
+            'status'              => 'Aktif',
+            'status_administrator'=> 1,
+            'iduser_input'        => auth()->user()->iduser,
+            'tglinput'            => now(),
+            'updated_at'          => now(),
+            'email'               => null,
+            'notelp'              => null,
+        ]);
+
+        return redirect()->route('admin.tambah-user')
+            ->with('success', "User \"" . $validated['username'] . "\" berhasil ditambahkan! Password default: " . $validated['username'] . "123 (tolong segera diganti).");
+    }
+
+    // =========================================================================
+    // PERKEMBANGAN (hanya idgroup=3)
+    // =========================================================================
+
+    /**
+     * Tampilkan statistik perkembangan per user (cover & ringkasan).
+     * Hanya bisa diakses oleh user dengan idgroup = 3.
+     */
+    public function perkembangan()
+    {
+        if (!auth()->check() || (int) auth()->user()->idgroup !== 3) {
+            abort(403, 'Akses ditolak. Fitur ini hanya untuk Pengolahan / IT Admin (idgroup=3).');
+        }
+
+        // ---- Statistik Ringkasan per User ----
+        // tblbuku.iduser_input = ID user yang terakhir menginput/mengubah data buku
+        // ringkasanbuku IS NOT NULL AND != '' = buku yang punya ringkasan
+        $ringkasanStats = DB::table('tblbuku')
+            ->join('tbluser', 'tblbuku.iduser_input', '=', 'tbluser.iduser')
+            ->whereNotNull('tblbuku.ringkasanbuku')
+            ->where('tblbuku.ringkasanbuku', '!=', '')
+            ->select(
+                'tbluser.iduser',
+                'tbluser.username',
+                'tbluser.nama_lengkap',
+                'tbluser.keterangan',
+                DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
+            )
+            ->groupBy('tbluser.iduser', 'tbluser.username', 'tbluser.nama_lengkap', 'tbluser.keterangan')
+            ->orderByDesc('jumlah_ringkasan')
+            ->get();
+
+        // ---- Statistik Cover per User ----
+        // galeri_buku tidak punya iduser_input, jadi pakai tblbuku.iduser_input
+        // sebagai proxy: buku yang punya cover di galeri_buku = siapa yg input bukunya
+        $coverStats = DB::table('tblbuku')
+            ->join('tbluser', 'tblbuku.iduser_input', '=', 'tbluser.iduser')
+            ->join('galeri_buku', function($join) {
+                $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
+                     ->where('galeri_buku.is_cover', '=', 1)
+                     ->whereNotNull('galeri_buku.image_path')
+                     ->where('galeri_buku.image_path', '!=', '');
+            })
+            ->select(
+                'tbluser.iduser',
+                'tbluser.username',
+                'tbluser.nama_lengkap',
+                'tbluser.keterangan',
+                DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_cover')
+            )
+            ->groupBy('tbluser.iduser', 'tbluser.username', 'tbluser.nama_lengkap', 'tbluser.keterangan')
+            ->orderByDesc('jumlah_cover')
+            ->get();
+
+        // ---- Gabungkan ke dalam satu koleksi per user ----
+        // Buat map username => data
+        $mergedMap = [];
+
+        foreach ($ringkasanStats as $r) {
+            $mergedMap[$r->iduser] = [
+                'iduser'          => $r->iduser,
+                'username'        => $r->username,
+                'nama_lengkap'    => $r->nama_lengkap,
+                'keterangan'      => $r->keterangan,
+                'jumlah_ringkasan'=> $r->jumlah_ringkasan,
+                'jumlah_cover'    => 0,
+            ];
+        }
+
+        foreach ($coverStats as $c) {
+            if (isset($mergedMap[$c->iduser])) {
+                $mergedMap[$c->iduser]['jumlah_cover'] = $c->jumlah_cover;
+            } else {
+                $mergedMap[$c->iduser] = [
+                    'iduser'          => $c->iduser,
+                    'username'        => $c->username,
+                    'nama_lengkap'    => $c->nama_lengkap,
+                    'keterangan'      => $c->keterangan,
+                    'jumlah_ringkasan'=> 0,
+                    'jumlah_cover'    => $c->jumlah_cover,
+                ];
+            }
+        }
+
+        // Sort by total (cover+ringkasan) descending
+        usort($mergedMap, function($a, $b) {
+            return ($b['jumlah_cover'] + $b['jumlah_ringkasan']) <=> ($a['jumlah_cover'] + $a['jumlah_ringkasan']);
+        });
+
+        $stats = collect($mergedMap);
+
+        // Data untuk grafik (top 10)
+        $chartLabels  = $stats->take(10)->pluck('username')->toArray();
+        $chartCovers  = $stats->take(10)->pluck('jumlah_cover')->toArray();
+        $chartRingkasan = $stats->take(10)->pluck('jumlah_ringkasan')->toArray();
+
+        return view('admin.perkembangan', compact('stats', 'chartLabels', 'chartCovers', 'chartRingkasan'));
+    }
 }
