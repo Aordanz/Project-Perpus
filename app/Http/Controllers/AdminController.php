@@ -1425,10 +1425,132 @@ class AdminController extends Controller implements HasMiddleware
         $stats = collect($mergedMap);
 
         // Data untuk grafik (top 10)
-        $chartLabels  = $stats->take(10)->pluck('username')->toArray();
-        $chartCovers  = $stats->take(10)->pluck('jumlah_cover')->toArray();
+        $chartLabels    = $stats->take(10)->pluck('username')->toArray();
+        $chartCovers    = $stats->take(10)->pluck('jumlah_cover')->toArray();
         $chartRingkasan = $stats->take(10)->pluck('jumlah_ringkasan')->toArray();
 
-        return view('admin.perkembangan', compact('stats', 'chartLabels', 'chartCovers', 'chartRingkasan'));
+        // ---- Data Bulanan untuk PDF ----
+        // Ringkasan per bulan per user
+        $ringkasanBulanan = DB::table('tblbuku')
+            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
+            ->whereNotNull('tblbuku.ringkasanbuku')
+            ->where('tblbuku.ringkasanbuku', '!=', '')
+            ->whereNotNull('tblbuku.userinput')
+            ->where('tblbuku.userinput', '!=', '')
+            ->whereNotNull(DB::raw('COALESCE(tblbuku.tgledit, tblbuku.tglinput)'))
+            ->select(
+                DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as tahun'),
+                DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as bulan'),
+                DB::raw('tblbuku.userinput as username'),
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
+                DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
+            )
+            ->groupBy(
+                DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'),
+                DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'),
+                'tblbuku.userinput',
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\')')
+            )
+            ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
+            ->get();
+
+        // Cover per bulan per user (via galeri_buku.created_at)
+        $coverBulanan = DB::table('tblbuku')
+            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
+            ->join('galeri_buku', function($join) {
+                $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
+                     ->where('galeri_buku.is_cover', '=', 1)
+                     ->whereNotNull('galeri_buku.image_path')
+                     ->where('galeri_buku.image_path', '!=', '');
+            })
+            ->whereNotNull('tblbuku.userinput')
+            ->where('tblbuku.userinput', '!=', '')
+            ->whereNotNull('galeri_buku.created_at')
+            ->select(
+                DB::raw('YEAR(galeri_buku.created_at) as tahun'),
+                DB::raw('MONTH(galeri_buku.created_at) as bulan'),
+                DB::raw('tblbuku.userinput as username'),
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
+                DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_cover')
+            )
+            ->groupBy(
+                DB::raw('YEAR(galeri_buku.created_at)'),
+                DB::raw('MONTH(galeri_buku.created_at)'),
+                'tblbuku.userinput',
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\')')
+            )
+            ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
+            ->get();
+
+        // Gabungkan data bulanan ke satu struktur: ['YYYY-MM' => ['label' => '...', 'users' => [...]]]
+        $monthlyData = [];
+        $namaBulan   = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        foreach ($ringkasanBulanan as $r) {
+            $key = sprintf('%04d-%02d', $r->tahun, $r->bulan);
+            if (!isset($monthlyData[$key])) {
+                $monthlyData[$key] = [
+                    'label' => $namaBulan[$r->bulan] . ' ' . $r->tahun,
+                    'users' => [],
+                ];
+            }
+            $monthlyData[$key]['users'][$r->username] = [
+                'username'        => $r->username,
+                'nama_lengkap'    => $r->nama_lengkap,
+                'keterangan'      => $r->keterangan,
+                'jumlah_ringkasan'=> (int) $r->jumlah_ringkasan,
+                'jumlah_cover'    => 0,
+            ];
+        }
+
+        foreach ($coverBulanan as $c) {
+            $key = sprintf('%04d-%02d', $c->tahun, $c->bulan);
+            if (!isset($monthlyData[$key])) {
+                $monthlyData[$key] = [
+                    'label' => $namaBulan[$c->bulan] . ' ' . $c->tahun,
+                    'users' => [],
+                ];
+            }
+            if (isset($monthlyData[$key]['users'][$c->username])) {
+                $monthlyData[$key]['users'][$c->username]['jumlah_cover'] = (int) $c->jumlah_cover;
+                if (empty($monthlyData[$key]['users'][$c->username]['keterangan']) && !empty($c->keterangan)) {
+                    $monthlyData[$key]['users'][$c->username]['keterangan'] = $c->keterangan;
+                }
+            } else {
+                $monthlyData[$key]['users'][$c->username] = [
+                    'username'        => $c->username,
+                    'nama_lengkap'    => $c->nama_lengkap,
+                    'keterangan'      => $c->keterangan,
+                    'jumlah_ringkasan'=> 0,
+                    'jumlah_cover'    => (int) $c->jumlah_cover,
+                ];
+            }
+        }
+
+        // Urutkan data user per bulan berdasarkan total kontribusi DESC
+        foreach ($monthlyData as $key => &$m) {
+            $userList = array_values($m['users']);
+            usort($userList, function($a, $b) {
+                return ($b['jumlah_cover'] + $b['jumlah_ringkasan']) <=> ($a['jumlah_cover'] + $a['jumlah_ringkasan']);
+            });
+            $m['users'] = $userList;
+            $m['total_cover'] = array_sum(array_column($userList, 'jumlah_cover'));
+            $m['total_ringkasan'] = array_sum(array_column($userList, 'jumlah_ringkasan'));
+        }
+        unset($m);
+
+        // Sort descending by year-month
+        krsort($monthlyData);
+
+        return view('admin.perkembangan', compact(
+            'stats', 'chartLabels', 'chartCovers', 'chartRingkasan', 'monthlyData'
+        ));
     }
 }

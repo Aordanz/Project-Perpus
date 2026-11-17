@@ -20,6 +20,10 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
+    <!-- jsPDF & AutoTable for Client-Side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .bg-usu-green  { background-color: #106c38; }
@@ -42,9 +46,43 @@
                     </h1>
                     <p class="text-slate-500 text-[10px] sm:text-sm mt-1">Statistik kontribusi setiap pustakawan dalam menambahkan cover dan ringkasan buku.</p>
                 </div>
-                <div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 flex items-center gap-2 text-amber-700 text-xs font-semibold flex-shrink-0">
-                    <i class="ph ph-shield-check text-base"></i>
-                    <span>Akses Terbatas: idgroup 3</span>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 flex items-center gap-2 text-amber-700 text-xs font-semibold flex-shrink-0">
+                        <i class="ph ph-shield-check text-base"></i>
+                        <span>Akses: idgroup 3</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Filter Periode & Cetak PDF Bar --}}
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 flex-grow">
+                    <div class="flex items-center gap-2 text-slate-700 font-bold text-xs uppercase tracking-wider shrink-0">
+                        <i class="ph ph-calendar text-usu-green text-lg"></i>
+                        <span>Pilih Periode:</span>
+                    </div>
+                    <select id="periodeSelect" onchange="handlePeriodeChange(this.value)" class="w-full sm:w-64 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-700 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#106c38] transition">
+                        <option value="all">Semua Periode (Total Akumulasi)</option>
+                        @foreach($monthlyData as $keyMonth => $mVal)
+                            <option value="{{ $keyMonth }}">{{ $mVal['label'] }} ({{ count($mVal['users']) }} akun)</option>
+                        @endforeach
+                    </select>
+                    <span id="badgeActivePeriod" class="text-[11px] font-semibold text-[#106c38] bg-green-50 px-2.5 py-1 rounded-lg border border-green-200/60 inline-flex items-center gap-1.5 w-fit">
+                        <i class="ph ph-check-circle"></i>
+                        <span id="badgePeriodText">Menampilkan Total Akumulasi</span>
+                    </span>
+                </div>
+
+                {{-- Action Download PDF --}}
+                <div class="flex items-center gap-2 shrink-0">
+                    <button type="button" onclick="downloadPDF()" class="bg-[#106c38] hover:bg-[#0b4d27] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm cursor-pointer border-none active:scale-95">
+                        <i class="ph ph-file-pdf text-base"></i>
+                        <span>Download PDF</span>
+                    </button>
+                    <button type="button" onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer border-none">
+                        <i class="ph ph-printer text-base"></i>
+                        <span class="hidden sm:inline">Cetak</span>
+                    </button>
                 </div>
             </div>
 
@@ -57,7 +95,7 @@
                     </div>
                     <div>
                         <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Total User Berkontribusi</span>
-                        <h3 class="text-xl sm:text-2xl font-black text-[#006633] mt-0.5">{{ $stats->count() }}</h3>
+                        <h3 id="cardTotalUser" class="text-xl sm:text-2xl font-black text-[#006633] mt-0.5">{{ $stats->count() }}</h3>
                     </div>
                 </div>
 
@@ -68,7 +106,7 @@
                     </div>
                     <div>
                         <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Total Cover Ditambah</span>
-                        <h3 class="text-xl sm:text-2xl font-black text-[#006633] mt-0.5">{{ number_format($stats->sum('jumlah_cover')) }}</h3>
+                        <h3 id="cardTotalCover" class="text-xl sm:text-2xl font-black text-[#006633] mt-0.5">{{ number_format($stats->sum('jumlah_cover')) }}</h3>
                     </div>
                 </div>
 
@@ -79,7 +117,7 @@
                     </div>
                     <div>
                         <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Total Ringkasan Ditambah</span>
-                        <h3 class="text-xl sm:text-2xl font-black text-[#006633] mt-0.5">{{ number_format($stats->sum('jumlah_ringkasan')) }}</h3>
+                        <h3 id="cardTotalRingkasan" class="text-xl sm:text-2xl font-black text-[#006633] mt-0.5">{{ number_format($stats->sum('jumlah_ringkasan')) }}</h3>
                     </div>
                 </div>
 
@@ -91,37 +129,38 @@
                     </div>
                     <div class="min-w-0">
                         <span class="block text-[8px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider leading-tight">Top Kontributor</span>
-                        <h3 class="text-sm sm:text-base font-black text-[#006633] mt-0.5 truncate">
+                        <h3 id="cardTopUser" class="text-sm sm:text-base font-black text-[#006633] mt-0.5 truncate">
                             {{ $topUser ? $topUser['username'] : '-' }}
                         </h3>
-                        @if($topUser)
-                        <p class="text-[9px] text-slate-400 font-medium">
-                            {{ $topUser['jumlah_cover'] }} cover · {{ $topUser['jumlah_ringkasan'] }} ringkasan
+                        <p id="cardTopSub" class="text-[9px] text-slate-400 font-medium">
+                            @if($topUser)
+                                {{ $topUser['jumlah_cover'] }} cover · {{ $topUser['jumlah_ringkasan'] }} ringkasan
+                            @else
+                                Belum ada data
+                            @endif
                         </p>
-                        @endif
                     </div>
                 </div>
             </div>
 
             {{-- Bar Chart (Top 10) --}}
-            <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-sm p-4 sm:p-6">
+            <div id="chartContainer" class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-sm p-4 sm:p-6">
                 <div class="flex items-center gap-3 mb-5">
                     <div class="w-9 h-9 rounded-xl bg-[#106c38]/10 text-[#106c38] flex items-center justify-center text-xl">
                         <i class="ph ph-chart-bar-horizontal"></i>
                     </div>
                     <div>
                         <h2 class="text-base font-bold text-slate-800">Grafik Kontribusi (Top 10 User)</h2>
-                        <p class="text-xs text-slate-500">Perbandingan jumlah cover dan ringkasan yang ditambahkan per akun.</p>
+                        <p id="chartSubText" class="text-xs text-slate-500">Perbandingan jumlah cover dan ringkasan yang ditambahkan per akun.</p>
                     </div>
                 </div>
 
-                @if($stats->isEmpty())
-                <div class="flex flex-col items-center justify-center py-12 text-slate-400">
+                <div id="chartEmptyMessage" class="hidden flex-col items-center justify-center py-12 text-slate-400">
                     <i class="ph ph-chart-bar text-5xl mb-3"></i>
-                    <p class="text-sm font-medium">Belum ada data kontribusi.</p>
+                    <p class="text-sm font-medium">Belum ada data kontribusi untuk periode ini.</p>
                 </div>
-                @else
-                <div class="relative" style="height: 320px;">
+
+                <div id="chartCanvasWrapper" class="relative" style="height: 320px;">
                     <canvas id="perkembanganChart"></canvas>
                 </div>
 
@@ -135,28 +174,31 @@
                         Ringkasan Buku
                     </div>
                 </div>
-                @endif
             </div>
 
             {{-- Data Table --}}
             <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-sm p-4 sm:p-6">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-9 h-9 rounded-xl bg-[#106c38]/10 text-[#106c38] flex items-center justify-center text-xl">
-                        <i class="ph ph-table"></i>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-[#106c38]/10 text-[#106c38] flex items-center justify-center text-xl">
+                            <i class="ph ph-table"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-800">Rincian Per Akun</h2>
+                            <p id="tableSubText" class="text-xs text-slate-500">Detail jumlah kontribusi setiap user, diurutkan dari yang terbanyak.</p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-base font-bold text-slate-800">Rincian Per Akun</h2>
-                        <p class="text-xs text-slate-500">Detail jumlah kontribusi setiap user, diurutkan dari yang terbanyak.</p>
+                    <div class="text-xs font-semibold text-slate-400">
+                        <span id="tableRowCount">{{ $stats->count() }}</span> Akun Ditemukan
                     </div>
                 </div>
 
-                @if($stats->isEmpty())
-                <div class="flex flex-col items-center justify-center py-10 text-slate-400">
+                <div id="tableEmptyState" class="{{ $stats->isEmpty() ? 'flex' : 'hidden' }} flex-col items-center justify-center py-10 text-slate-400">
                     <i class="ph ph-users text-5xl mb-3"></i>
-                    <p class="text-sm font-medium">Belum ada data.</p>
+                    <p class="text-sm font-medium">Belum ada data kontribusi untuk periode yang dipilih.</p>
                 </div>
-                @else
-                <div class="overflow-x-auto">
+
+                <div id="tableWrapper" class="{{ $stats->isEmpty() ? 'hidden' : 'block' }} overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b border-slate-100">
@@ -173,7 +215,7 @@
                                 <th class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-3">Total</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-50">
+                        <tbody id="tableBody" class="divide-y divide-slate-50">
                             @foreach($stats as $index => $user)
                             @php
                                 $total = $user['jumlah_cover'] + $user['jumlah_ringkasan'];
@@ -232,18 +274,18 @@
                         </tbody>
                     </table>
                 </div>
-                @endif
             </div>
 
             {{-- Catatan Metodologi --}}
             <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex gap-3 text-sm">
                 <i class="ph ph-info text-blue-500 text-xl flex-shrink-0 mt-0.5"></i>
                 <div class="text-blue-700 text-xs font-medium leading-relaxed">
-                    <p class="font-bold mb-1">Catatan Metodologi</p>
+                    <p class="font-bold mb-1">Catatan Metodologi & Ekspor</p>
                     <ul class="list-disc pl-4 space-y-1">
-                        <li><strong>Cover:</strong> Dihitung berdasarkan buku yang memiliki cover di galeri, dikaitkan dengan <code class="bg-blue-100 px-1 rounded">iduser_input</code> pada tabel <code class="bg-blue-100 px-1 rounded">tblbuku</code> (user yang menginput/mengupdate data buku tersebut).</li>
-                        <li><strong>Ringkasan:</strong> Dihitung dari buku yang memiliki kolom <code class="bg-blue-100 px-1 rounded">ringkasanbuku</code> terisi, dikaitkan dengan <code class="bg-blue-100 px-1 rounded">iduser_input</code> pada <code class="bg-blue-100 px-1 rounded">tblbuku</code>.</li>
-                        <li>Data ini bersifat aproksimasi karena tabel galeri tidak menyimpan info siapa yang upload cover secara langsung.</li>
+                        <li><strong>Filter Periode:</strong> Pilih bulan tertentu dari dropdown di atas untuk melihat serta mengekspor laporan kinerja akun pada bulan tersebut.</li>
+                        <li><strong>Download PDF:</strong> Dokumen PDF resmi berisi kop Perpustakaan USU, rincian tabel per pustakawan, serta rekapitulasi data akan langsung terunduh secara instan.</li>
+                        <li><strong>Cover:</strong> Dihitung berdasarkan buku ber-cover di galeri buku.</li>
+                        <li><strong>Ringkasan:</strong> Dihitung berdasarkan kelengkapan kolom ringkasan buku.</li>
                     </ul>
                 </div>
             </div>
@@ -253,16 +295,38 @@
         @include('partials.admin_footer')
     </div>
 
-    @if(!$stats->isEmpty())
+    {{-- Script Chart & PDF Export --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const ctx = document.getElementById('perkembanganChart').getContext('2d');
+        // Data Global dari Controller
+        const allStats = @json($stats);
+        const monthlyData = @json($monthlyData);
+        const currentAdminName = "{{ Auth::check() ? (Auth::user()->nama_lengkap ?: Auth::user()->username) : 'Administrator' }}";
 
-            const labels   = @json($chartLabels);
-            const covers   = @json($chartCovers);
-            const ringkasan = @json($chartRingkasan);
+        let myChart = null;
 
-            new Chart(ctx, {
+        // Inisialisasi Chart.js
+        function renderChart(labels, covers, ringkasan) {
+            const ctx = document.getElementById('perkembanganChart');
+            if (!ctx) return;
+
+            const emptyMsg = document.getElementById('chartEmptyMessage');
+            const canvasWrapper = document.getElementById('chartCanvasWrapper');
+
+            if (!labels || labels.length === 0) {
+                if (emptyMsg) emptyMsg.classList.remove('hidden');
+                if (canvasWrapper) canvasWrapper.classList.add('hidden');
+                if (myChart) { myChart.destroy(); myChart = null; }
+                return;
+            }
+
+            if (emptyMsg) emptyMsg.classList.add('hidden');
+            if (canvasWrapper) canvasWrapper.classList.remove('hidden');
+
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx.getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: labels,
@@ -318,9 +382,335 @@
                     }
                 }
             });
+        }
+
+        // Handle Pergantian Periode Dropdown
+        function handlePeriodeChange(selectedPeriod) {
+            let activeList = [];
+            let periodLabel = "Total Akumulasi";
+
+            if (selectedPeriod === 'all') {
+                activeList = allStats;
+                periodLabel = "Total Akumulasi";
+            } else if (monthlyData[selectedPeriod]) {
+                activeList = monthlyData[selectedPeriod].users || [];
+                periodLabel = monthlyData[selectedPeriod].label;
+            }
+
+            // Update Badge & Header Text
+            document.getElementById('badgePeriodText').innerText = "Menampilkan: " + periodLabel;
+            document.getElementById('chartSubText').innerText = "Perbandingan kontribusi untuk periode: " + periodLabel;
+            document.getElementById('tableSubText').innerText = "Detail kontribusi untuk periode: " + periodLabel;
+
+            // Recalculate summary cards
+            const totalUser = activeList.length;
+            const totalCover = activeList.reduce((acc, curr) => acc + (parseInt(curr.jumlah_cover) || 0), 0);
+            const totalRingkasan = activeList.reduce((acc, curr) => acc + (parseInt(curr.jumlah_ringkasan) || 0), 0);
+            const topUser = activeList.length > 0 ? activeList[0] : null;
+
+            document.getElementById('cardTotalUser').innerText = totalUser.toLocaleString('id-ID');
+            document.getElementById('cardTotalCover').innerText = totalCover.toLocaleString('id-ID');
+            document.getElementById('cardTotalRingkasan').innerText = totalRingkasan.toLocaleString('id-ID');
+
+            if (topUser) {
+                document.getElementById('cardTopUser').innerText = topUser.username || '-';
+                document.getElementById('cardTopSub').innerText = (topUser.jumlah_cover || 0) + " cover · " + (topUser.jumlah_ringkasan || 0) + " ringkasan";
+            } else {
+                document.getElementById('cardTopUser').innerText = '-';
+                document.getElementById('cardTopSub').innerText = 'Belum ada data';
+            }
+
+            document.getElementById('tableRowCount').innerText = totalUser;
+
+            // Update Table Body
+            const tbody = document.getElementById('tableBody');
+            const tableWrapper = document.getElementById('tableWrapper');
+            const emptyState = document.getElementById('tableEmptyState');
+
+            if (activeList.length === 0) {
+                tableWrapper.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+                tableWrapper.classList.remove('hidden');
+
+                const maxTotal = (parseInt(activeList[0].jumlah_cover) || 0) + (parseInt(activeList[0].jumlah_ringkasan) || 0);
+
+                let rowsHtml = '';
+                activeList.forEach((u, idx) => {
+                    const rank = idx + 1;
+                    const cCover = parseInt(u.jumlah_cover) || 0;
+                    const cRingkasan = parseInt(u.jumlah_ringkasan) || 0;
+                    const cTotal = cCover + cRingkasan;
+                    const pct = maxTotal > 0 ? Math.round((cTotal / maxTotal) * 100) : 0;
+
+                    let rankBadge = `<span class="text-xs text-slate-400 font-bold pl-1">${rank}</span>`;
+                    if (rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-white text-[10px] font-black">1</span>`;
+                    else if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300 text-slate-700 text-[10px] font-black">2</span>`;
+                    else if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-300 text-white text-[10px] font-black">3</span>`;
+
+                    const initial = (u.username ? u.username.charAt(0) : 'U').toUpperCase();
+
+                    rowsHtml += `
+                        <tr class="hover:bg-slate-50/70 transition group">
+                            <td class="py-3 pr-3">${rankBadge}</td>
+                            <td class="py-3 pr-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-lg bg-[#106c38]/10 text-[#106c38] flex items-center justify-center text-xs font-bold flex-shrink-0">
+                                        ${initial}
+                                    </div>
+                                    <span class="font-bold text-slate-800 text-xs">${u.username || '-'}</span>
+                                </div>
+                            </td>
+                            <td class="py-3 pr-3 hidden sm:table-cell">
+                                <span class="text-xs text-slate-700">${u.nama_lengkap || '-'}</span>
+                            </td>
+                            <td class="py-3 pr-3 hidden md:table-cell">
+                                <span class="text-xs text-slate-500">${u.keterangan || '-'}</span>
+                            </td>
+                            <td class="py-3 pr-3 text-center">
+                                <span class="inline-flex items-center justify-center gap-1 bg-emerald-50 text-emerald-700 font-bold text-xs px-2 py-1 rounded-lg min-w-[2.5rem]">
+                                    <i class="ph ph-image text-sm"></i>
+                                    ${cCover.toLocaleString('id-ID')}
+                                </span>
+                            </td>
+                            <td class="py-3 pr-3 text-center">
+                                <span class="inline-flex items-center justify-center gap-1 bg-amber-50 text-amber-700 font-bold text-xs px-2 py-1 rounded-lg min-w-[2.5rem]">
+                                    <i class="ph ph-file-text text-sm"></i>
+                                    ${cRingkasan.toLocaleString('id-ID')}
+                                </span>
+                            </td>
+                            <td class="py-3 text-center">
+                                <div class="flex flex-col items-center gap-1">
+                                    <span class="font-black text-sm text-[#106c38]">${cTotal.toLocaleString('id-ID')}</span>
+                                    <div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#106c38] rounded-full" style="width: ${pct}%"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = rowsHtml;
+            }
+
+            // Update Chart
+            const top10 = activeList.slice(0, 10);
+            const chartLabels = top10.map(u => u.username || '-');
+            const chartCovers = top10.map(u => parseInt(u.jumlah_cover) || 0);
+            const chartRingkasan = top10.map(u => parseInt(u.jumlah_ringkasan) || 0);
+            renderChart(chartLabels, chartCovers, chartRingkasan);
+        }
+
+        // ==========================================
+        // DOWNLOAD PDF DENGAN jsPDF & AutoTable
+        // ==========================================
+        function downloadPDF() {
+            const periodeKey = document.getElementById('periodeSelect').value;
+            let activeList = [];
+            let periodeLabel = "Semua Periode (Akumulasi)";
+
+            if (periodeKey === 'all') {
+                activeList = allStats;
+                periodeLabel = "Semua Periode (Akumulasi Total)";
+            } else if (monthlyData[periodeKey]) {
+                activeList = monthlyData[periodeKey].users || [];
+                periodeLabel = monthlyData[periodeKey].label;
+            }
+
+            if (!activeList || activeList.length === 0) {
+                alert("Tidak ada data untuk periode ini yang dapat dicetak.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const totalCover = activeList.reduce((acc, curr) => acc + (parseInt(curr.jumlah_cover) || 0), 0);
+            const totalRingkasan = activeList.reduce((acc, curr) => acc + (parseInt(curr.jumlah_ringkasan) || 0), 0);
+            const grandTotal = totalCover + totalRingkasan;
+
+            // ---- KOP SURAT / HEADER RESMI USU ----
+            doc.setFillColor(16, 108, 56); // #106c38
+            doc.rect(0, 0, 210, 8, 'F');
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.setTextColor(16, 108, 56);
+            doc.text('UNIVERSITAS SUMATERA UTARA', 105, 18, { align: 'center' });
+
+            doc.setFontSize(11);
+            doc.setTextColor(30, 41, 59);
+            doc.text('PERPUSTAKAAN UNIVERSITAS SUMATERA UTARA', 105, 23.5, { align: 'center' });
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.5);
+            doc.setTextColor(100, 116, 139);
+            doc.text('Jl. Perpustakaan No. 1 Kampus USU, Medan 20155 | Web: https://digilib.usu.ac.id', 105, 28, { align: 'center' });
+
+            // Garis Pembatas Kop
+            doc.setDrawColor(16, 108, 56);
+            doc.setLineWidth(0.8);
+            doc.line(14, 31, 196, 31);
+            doc.setDrawColor(249, 195, 17); // Aksen Gold
+            doc.setLineWidth(0.4);
+            doc.line(14, 32.2, 196, 32.2);
+
+            // Judul Dokumen
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.setTextColor(15, 23, 42);
+            doc.text('LAPORAN PROGRES KINERJA INPUT PUSTAKAWAN', 105, 40, { align: 'center' });
+
+            doc.setFontSize(10);
+            doc.setTextColor(16, 108, 56);
+            doc.text(`Periode: ${periodeLabel}`, 105, 45, { align: 'center' });
+
+            // Info Cetak
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.5);
+            doc.setTextColor(71, 85, 105);
+            doc.text(`Dicetak Pada: ${dateStr}, pukul ${timeStr} WIB`, 14, 53);
+            doc.text(`Dicetak Oleh: ${currentAdminName}`, 196, 53, { align: 'right' });
+
+            // ---- KOTAK RINGKASAN REKAPITULASI ----
+            doc.setFillColor(248, 250, 252);
+            doc.setDrawColor(226, 232, 240);
+            doc.roundedRect(14, 56, 182, 16, 2, 2, 'FD');
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8);
+            doc.setTextColor(100, 116, 139);
+            doc.text('TOTAL AKUN', 32, 61, { align: 'center' });
+            doc.text('TOTAL COVER', 77, 61, { align: 'center' });
+            doc.text('TOTAL RINGKASAN', 123, 61, { align: 'center' });
+            doc.text('TOTAL KONTRIBUSI', 168, 61, { align: 'center' });
+
+            doc.setFontSize(11);
+            doc.setTextColor(16, 108, 56);
+            doc.text(`${activeList.length}`, 32, 68, { align: 'center' });
+            doc.text(`${totalCover.toLocaleString('id-ID')}`, 77, 68, { align: 'center' });
+            doc.text(`${totalRingkasan.toLocaleString('id-ID')}`, 123, 68, { align: 'center' });
+            doc.text(`${grandTotal.toLocaleString('id-ID')}`, 168, 68, { align: 'center' });
+
+            // Garis pemisah antar kolom rekap
+            doc.setDrawColor(226, 232, 240);
+            doc.line(55, 58, 55, 70);
+            doc.line(100, 58, 100, 70);
+            doc.line(146, 58, 146, 70);
+
+            // ---- TABEL DATA AUTOTABLE ----
+            const tableRows = activeList.map((u, idx) => {
+                const cCover = parseInt(u.jumlah_cover) || 0;
+                const cRingkasan = parseInt(u.jumlah_ringkasan) || 0;
+                const cTotal = cCover + cRingkasan;
+                return [
+                    idx + 1,
+                    u.username || '-',
+                    u.nama_lengkap || '-',
+                    u.keterangan || '-',
+                    cCover.toLocaleString('id-ID'),
+                    cRingkasan.toLocaleString('id-ID'),
+                    cTotal.toLocaleString('id-ID')
+                ];
+            });
+
+            // Baris Total di paling bawah
+            tableRows.push([
+                { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'center', fontStyle: 'bold', fillColor: [241, 245, 249] } },
+                { content: totalCover.toLocaleString('id-ID'), styles: { halign: 'center', fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [16, 108, 56] } },
+                { content: totalRingkasan.toLocaleString('id-ID'), styles: { halign: 'center', fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [16, 108, 56] } },
+                { content: grandTotal.toLocaleString('id-ID'), styles: { halign: 'center', fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [16, 108, 56] } }
+            ]);
+
+            doc.autoTable({
+                startY: 76,
+                head: [['No', 'Username', 'Nama Lengkap', 'Jabatan / Keterangan', 'Cover', 'Ringkasan', 'Total']],
+                body: tableRows,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [16, 108, 56],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold',
+                    fontSize: 8.5,
+                    halign: 'center'
+                },
+                columnStyles: {
+                    0: { cellWidth: 10, halign: 'center' },
+                    1: { cellWidth: 32, fontStyle: 'bold' },
+                    2: { cellWidth: 46 },
+                    3: { cellWidth: 42 },
+                    4: { cellWidth: 16, halign: 'center' },
+                    5: { cellWidth: 18, halign: 'center' },
+                    6: { cellWidth: 18, halign: 'center', fontStyle: 'bold' },
+                },
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2.2,
+                    valign: 'middle',
+                    lineColor: [226, 232, 240],
+                    lineWidth: 0.1
+                },
+                alternateRowStyles: {
+                    fillColor: [248, 250, 252]
+                },
+                margin: { left: 14, right: 14, bottom: 35 },
+                didDrawPage: function (data) {
+                    // Footer Halaman
+                    const pageCount = doc.internal.getNumberOfPages();
+                    doc.setFontSize(7.5);
+                    doc.setTextColor(148, 163, 184);
+                    doc.text(
+                        `Halaman ${data.pageNumber} dari ${pageCount} | Portal Admin Perpustakaan Universitas Sumatera Utara`,
+                        105,
+                        290,
+                        { align: 'center' }
+                    );
+                }
+            });
+
+            // ---- TANDA TANGAN / PENGESAHAN ----
+            let finalY = doc.lastAutoTable.finalY + 12;
+            if (finalY > 240) {
+                doc.addPage();
+                finalY = 25;
+            }
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.5);
+            doc.setTextColor(30, 41, 59);
+            doc.text(`Medan, ${dateStr}`, 155, finalY);
+            doc.text('Petugas / Admin Pelapor,', 155, finalY + 5);
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(currentAdminName, 155, finalY + 25);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
+            doc.setTextColor(100, 116, 139);
+            doc.text('Perpustakaan Universitas Sumatera Utara', 155, finalY + 29);
+
+            // Simpan & Download Berkas
+            const sanitizedPeriod = periodeLabel.replace(/[^a-zA-Z0-9]/g, '_');
+            doc.save(`Laporan_Progres_${sanitizedPeriod}.pdf`);
+        }
+
+        // Jalankan render chart awal
+        document.addEventListener('DOMContentLoaded', function () {
+            const chartLabels   = @json($chartLabels);
+            const chartCovers   = @json($chartCovers);
+            const chartRingkasan = @json($chartRingkasan);
+            renderChart(chartLabels, chartCovers, chartRingkasan);
         });
     </script>
-    @endif
-
 </body>
 </html>
