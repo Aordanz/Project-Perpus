@@ -1335,51 +1335,63 @@ class AdminController extends Controller implements HasMiddleware
         }
 
         // ---- Statistik Ringkasan per User ----
-        // tblbuku.iduser_input = ID user yang terakhir menginput/mengubah data buku
-        // ringkasanbuku IS NOT NULL AND != '' = buku yang punya ringkasan
+        // tblbuku.userinput = nama user yang menginput (string, paling konsisten)
+        // tblbuku.iduser    = ID user (nullable, banyak NULL untuk data lama dari LIBAS)
+        // Pakai LEFT JOIN agar data tanpa iduser (NULL) tetap masuk, dikelompokkan per userinput
         $ringkasanStats = DB::table('tblbuku')
-            ->join('tbluser', 'tblbuku.iduser_input', '=', 'tbluser.iduser')
+            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
             ->whereNotNull('tblbuku.ringkasanbuku')
             ->where('tblbuku.ringkasanbuku', '!=', '')
+            ->whereNotNull('tblbuku.userinput')
+            ->where('tblbuku.userinput', '!=', '')
             ->select(
-                'tbluser.iduser',
-                'tbluser.username',
-                'tbluser.nama_lengkap',
-                'tbluser.keterangan',
+                DB::raw('COALESCE(tbluser.iduser, 0) as iduser'),
+                DB::raw('tblbuku.userinput as username'),
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
                 DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
             )
-            ->groupBy('tbluser.iduser', 'tbluser.username', 'tbluser.nama_lengkap', 'tbluser.keterangan')
+            ->groupBy('tblbuku.userinput',
+                      DB::raw('COALESCE(tbluser.iduser, 0)'),
+                      DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
+                      DB::raw('COALESCE(tbluser.keterangan, \'\')'))
             ->orderByDesc('jumlah_ringkasan')
             ->get();
 
         // ---- Statistik Cover per User ----
-        // galeri_buku tidak punya iduser_input, jadi pakai tblbuku.iduser_input
-        // sebagai proxy: buku yang punya cover di galeri_buku = siapa yg input bukunya
+        // galeri_buku tidak punya kolom user, jadi pakai tblbuku.userinput
+        // LEFT JOIN agar data lama (iduser NULL) tetap masuk
         $coverStats = DB::table('tblbuku')
-            ->join('tbluser', 'tblbuku.iduser_input', '=', 'tbluser.iduser')
+            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
             ->join('galeri_buku', function($join) {
                 $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
                      ->where('galeri_buku.is_cover', '=', 1)
                      ->whereNotNull('galeri_buku.image_path')
                      ->where('galeri_buku.image_path', '!=', '');
             })
+            ->whereNotNull('tblbuku.userinput')
+            ->where('tblbuku.userinput', '!=', '')
             ->select(
-                'tbluser.iduser',
-                'tbluser.username',
-                'tbluser.nama_lengkap',
-                'tbluser.keterangan',
+                DB::raw('COALESCE(tbluser.iduser, 0) as iduser'),
+                DB::raw('tblbuku.userinput as username'),
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
                 DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_cover')
             )
-            ->groupBy('tbluser.iduser', 'tbluser.username', 'tbluser.nama_lengkap', 'tbluser.keterangan')
+            ->groupBy('tblbuku.userinput',
+                      DB::raw('COALESCE(tbluser.iduser, 0)'),
+                      DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
+                      DB::raw('COALESCE(tbluser.keterangan, \'\')'))
             ->orderByDesc('jumlah_cover')
             ->get();
 
         // ---- Gabungkan ke dalam satu koleksi per user ----
-        // Buat map username => data
+        // Key: username (userinput) agar tidak ada duplikat
         $mergedMap = [];
 
         foreach ($ringkasanStats as $r) {
-            $mergedMap[$r->iduser] = [
+            $key = $r->username;
+            $mergedMap[$key] = [
                 'iduser'          => $r->iduser,
                 'username'        => $r->username,
                 'nama_lengkap'    => $r->nama_lengkap,
@@ -1390,10 +1402,11 @@ class AdminController extends Controller implements HasMiddleware
         }
 
         foreach ($coverStats as $c) {
-            if (isset($mergedMap[$c->iduser])) {
-                $mergedMap[$c->iduser]['jumlah_cover'] = $c->jumlah_cover;
+            $key = $c->username;
+            if (isset($mergedMap[$key])) {
+                $mergedMap[$key]['jumlah_cover'] = $c->jumlah_cover;
             } else {
-                $mergedMap[$c->iduser] = [
+                $mergedMap[$key] = [
                     'iduser'          => $c->iduser,
                     'username'        => $c->username,
                     'nama_lengkap'    => $c->nama_lengkap,
