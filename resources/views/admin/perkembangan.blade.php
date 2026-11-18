@@ -20,7 +20,6 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .bg-usu-green  { background-color: #106c38; }
@@ -41,7 +40,7 @@
                         <i class="ph ph-chart-bar text-usu-green text-2xl sm:text-3xl"></i>
                         <span>Perkembangan Per Akun</span>
                     </h1>
-                    <p class="text-slate-500 text-[10px] sm:text-sm mt-1">Statistik kontribusi setiap pustakawan dalam menambahkan cover dan ringkasan buku.</p>
+                    <p class="text-slate-500 text-[10px] sm:text-sm mt-1">Statistik kontribusi pustakawan dalam menambahkan cover dan ringkasan buku.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2.5">
                     <div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 flex items-center gap-2 text-amber-700 text-xs font-semibold flex-shrink-0">
@@ -51,31 +50,46 @@
                 </div>
             </div>
 
-            {{-- Filter Periode --}}
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+            {{-- Filter Periode Control Bar (Redesigned & Clean) --}}
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 flex-grow">
-                    <div class="flex items-center gap-2 text-slate-700 font-bold text-xs uppercase tracking-wider shrink-0">
-                        <i class="ph ph-calendar text-usu-green text-lg"></i>
-                        <span>Pilih Periode:</span>
+                    <div class="flex items-center gap-2 text-slate-700 font-bold text-xs uppercase tracking-wider shrink-0 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200/60">
+                        <i class="ph ph-calendar text-usu-green text-base"></i>
+                        <span class="whitespace-nowrap">Pilih Periode:</span>
                     </div>
-                    <select id="periodeSelect" onchange="handlePeriodeChange(this.value)" class="w-full sm:w-64 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-700 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#106c38] transition">
-                        <option value="all">Semua Periode (Total Akumulasi)</option>
-                        @foreach($monthlyData as $keyMonth => $mVal)
-                            <option value="{{ $keyMonth }}">{{ $mVal['label'] }} ({{ count($mVal['users']) }} akun)</option>
-                        @endforeach
-                    </select>
-                    <span id="badgeActivePeriod" class="text-[11px] font-semibold text-[#106c38] bg-green-50 px-2.5 py-1 rounded-lg border border-green-200/60 inline-flex items-center gap-1.5 w-fit">
-                        <i class="ph ph-check-circle"></i>
+                    
+                    <div class="relative w-full sm:w-80">
+                        <select
+                            id="periodeSelect"
+                            onchange="handlePeriodeChange(this.value)"
+                            class="w-full appearance-none border border-slate-300 hover:border-[#106c38] focus:border-[#106c38] rounded-xl pl-3.5 pr-10 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#106c38]/15 transition cursor-pointer shadow-sm"
+                        >
+                            <option value="all">Semua Periode (Total Akumulasi)</option>
+                            @foreach($monthlyData as $keyMonth => $mVal)
+                                <option value="{{ $keyMonth }}">{{ $mVal['label'] }} ({{ count($mVal['users']) }} akun)</option>
+                            @endforeach
+                        </select>
+                        <i class="ph ph-caret-down absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"></i>
+                    </div>
+
+                    <span id="badgeActivePeriod" class="text-xs font-semibold text-[#106c38] bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200/60 inline-flex items-center gap-1.5 w-fit">
+                        <i class="ph ph-check-circle text-emerald-600"></i>
                         <span id="badgePeriodText">Menampilkan Total Akumulasi</span>
                     </span>
+                </div>
+
+                {{-- Quick Info on the right to balance space --}}
+                <div class="flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/50 self-start lg:self-auto">
+                    <i class="ph ph-lightning text-amber-500 text-base"></i>
+                    <span>Diperbarui otomatis dari database</span>
                 </div>
             </div>
 
             {{-- Summary Cards --}}
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
                 {{-- Total User Aktif --}}
-                <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 shadow-sm">
-                    <div class="text-[#106c38] text-3xl sm:text-4xl flex-shrink-0">
+                <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 shadow-sm hover:border-[#106c38]/30 transition">
+                    <div class="w-12 h-12 rounded-xl bg-[#106c38]/10 text-[#106c38] flex items-center justify-center text-2xl flex-shrink-0">
                         <i class="ph ph-users-three"></i>
                     </div>
                     <div>
@@ -85,8 +99,8 @@
                 </div>
 
                 {{-- Total Cover --}}
-                <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 shadow-sm">
-                    <div class="text-[#F9C311] text-3xl sm:text-4xl flex-shrink-0">
+                <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 shadow-sm hover:border-[#106c38]/30 transition">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl flex-shrink-0">
                         <i class="ph ph-image"></i>
                     </div>
                     <div>
@@ -96,8 +110,8 @@
                 </div>
 
                 {{-- Total Ringkasan --}}
-                <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 shadow-sm">
-                    <div class="text-[#F9C311] text-3xl sm:text-4xl flex-shrink-0">
+                <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 shadow-sm hover:border-[#106c38]/30 transition">
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl flex-shrink-0">
                         <i class="ph ph-file-text"></i>
                     </div>
                     <div>
@@ -108,8 +122,8 @@
 
                 {{-- Top Kontributor --}}
                 @php $topUser = $stats->first(); @endphp
-                <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 shadow-sm">
-                    <div class="text-[#106c38] text-3xl sm:text-4xl flex-shrink-0">
+                <div class="bg-white border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 shadow-sm hover:border-[#106c38]/30 transition">
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-2xl flex-shrink-0">
                         <i class="ph ph-trophy"></i>
                     </div>
                     <div class="min-w-0">
@@ -117,7 +131,7 @@
                         <h3 id="cardTopUser" class="text-sm sm:text-base font-black text-[#006633] mt-0.5 truncate">
                             {{ $topUser ? $topUser['username'] : '-' }}
                         </h3>
-                        <p id="cardTopSub" class="text-[9px] text-slate-400 font-medium">
+                        <p id="cardTopSub" class="text-[9px] text-slate-400 font-medium truncate">
                             @if($topUser)
                                 {{ $topUser['jumlah_cover'] }} cover · {{ $topUser['jumlah_ringkasan'] }} ringkasan
                             @else
@@ -128,15 +142,29 @@
                 </div>
             </div>
 
-            {{-- Bar Chart (Top 10) --}}
+            {{-- Grafik Kontribusi (Leaderboard Horizontal Stacked Bar) --}}
             <div id="chartContainer" class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-sm p-4 sm:p-6">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-9 h-9 rounded-xl bg-[#106c38]/10 text-[#106c38] flex items-center justify-center text-xl">
-                        <i class="ph ph-chart-bar-horizontal"></i>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-[#106c38]/10 text-[#106c38] flex items-center justify-center text-xl">
+                            <i class="ph ph-chart-bar-horizontal"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-800">Peringkat Kontribusi Pustakawan</h2>
+                            <p id="chartSubText" class="text-xs text-slate-500">Perbandingan jumlah cover dan ringkasan yang ditambahkan per akun.</p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-base font-bold text-slate-800">Grafik Kontribusi (Top 10 User)</h2>
-                        <p id="chartSubText" class="text-xs text-slate-500">Perbandingan jumlah cover dan ringkasan yang ditambahkan per akun.</p>
+
+                    {{-- Legend --}}
+                    <div class="flex items-center gap-4 text-xs font-semibold text-slate-600 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-100 self-start sm:self-auto">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-[#106c38] inline-block"></span>
+                            <span>Cover Buku</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-[#F9C311] inline-block"></span>
+                            <span>Ringkasan Buku</span>
+                        </div>
                     </div>
                 </div>
 
@@ -145,19 +173,8 @@
                     <p class="text-sm font-medium">Belum ada data kontribusi untuk periode ini.</p>
                 </div>
 
-                <div id="chartCanvasWrapper" class="relative" style="height: 320px;">
+                <div id="chartCanvasWrapper" class="relative w-full" style="min-height: 240px;">
                     <canvas id="perkembanganChart"></canvas>
-                </div>
-
-                <div class="flex flex-wrap gap-4 mt-4 justify-center">
-                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                        <span class="w-3 h-3 rounded-full bg-[#106c38] inline-block"></span>
-                        Cover Buku
-                    </div>
-                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                        <span class="w-3 h-3 rounded-full bg-[#F9C311] inline-block"></span>
-                        Ringkasan Buku
-                    </div>
                 </div>
             </div>
 
@@ -170,11 +187,11 @@
                         </div>
                         <div>
                             <h2 class="text-base font-bold text-slate-800">Rincian Per Akun</h2>
-                            <p id="tableSubText" class="text-xs text-slate-500">Detail jumlah kontribusi setiap user, diurutkan dari yang terbanyak.</p>
+                            <p id="tableSubText" class="text-xs text-slate-500">Detail kontribusi pustakawan diurutkan dari yang terbanyak.</p>
                         </div>
                     </div>
-                    <div class="text-xs font-semibold text-slate-400">
-                        <span id="tableRowCount">{{ $stats->count() }}</span> Akun Ditemukan
+                    <div class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
+                        <span id="tableRowCount" class="text-[#106c38] font-bold">{{ $stats->count() }}</span> Akun Terdaftar
                     </div>
                 </div>
 
@@ -186,38 +203,36 @@
                 <div id="tableWrapper" class="{{ $stats->isEmpty() ? 'hidden' : 'block' }} overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="border-b border-slate-100">
-                                <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-3 pr-3">#</th>
-                                <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-3 pr-3">Username</th>
-                                <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-3 pr-3 hidden sm:table-cell">Nama Lengkap</th>
-                                <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-3 pr-3 hidden md:table-cell">Jabatan</th>
-                                <th class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-3 pr-3">
+                            <tr class="border-b border-slate-100 text-slate-500">
+                                <th class="text-center text-[10px] font-bold uppercase tracking-wider pb-3 pr-3 w-12">Peringkat</th>
+                                <th class="text-left text-[10px] font-bold uppercase tracking-wider pb-3 pr-3">Username</th>
+                                <th class="text-left text-[10px] font-bold uppercase tracking-wider pb-3 pr-3 hidden sm:table-cell">Nama Lengkap</th>
+                                <th class="text-left text-[10px] font-bold uppercase tracking-wider pb-3 pr-3 hidden md:table-cell">Jabatan</th>
+                                <th class="text-center text-[10px] font-bold uppercase tracking-wider pb-3 pr-3 w-28">
                                     <span class="flex items-center justify-center gap-1"><i class="ph ph-image text-sm"></i> Cover</span>
                                 </th>
-                                <th class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-3 pr-3">
+                                <th class="text-center text-[10px] font-bold uppercase tracking-wider pb-3 pr-3 w-28">
                                     <span class="flex items-center justify-center gap-1"><i class="ph ph-file-text text-sm"></i> Ringkasan</span>
                                 </th>
-                                <th class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-3">Total</th>
+                                <th class="text-center text-[10px] font-bold uppercase tracking-wider pb-3 w-28">Total</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody" class="divide-y divide-slate-50">
                             @foreach($stats as $index => $user)
                             @php
                                 $total = $user['jumlah_cover'] + $user['jumlah_ringkasan'];
-                                $maxTotal = ($stats->first()['jumlah_cover'] ?? 0) + ($stats->first()['jumlah_ringkasan'] ?? 0);
-                                $pct = $maxTotal > 0 ? round(($total / $maxTotal) * 100) : 0;
                                 $rank = $index + 1;
                             @endphp
                             <tr class="hover:bg-slate-50/70 transition group">
-                                <td class="py-3 pr-3">
+                                <td class="py-3 pr-3 text-center">
                                     @if($rank === 1)
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-white text-[10px] font-black">1</span>
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-white text-[11px] font-black shadow-sm" title="Peringkat 1">1</span>
                                     @elseif($rank === 2)
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300 text-slate-700 text-[10px] font-black">2</span>
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-400 text-white text-[11px] font-black shadow-sm" title="Peringkat 2">2</span>
                                     @elseif($rank === 3)
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-300 text-white text-[10px] font-black">3</span>
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-[11px] font-black shadow-sm" title="Peringkat 3">3</span>
                                     @else
-                                        <span class="text-xs text-slate-400 font-bold pl-1">{{ $rank }}</span>
+                                        <span class="text-xs text-slate-400 font-semibold">{{ $rank }}</span>
                                     @endif
                                 </td>
                                 <td class="py-3 pr-3">
@@ -229,30 +244,25 @@
                                     </div>
                                 </td>
                                 <td class="py-3 pr-3 hidden sm:table-cell">
-                                    <span class="text-xs text-slate-700">{{ $user['nama_lengkap'] ?? '-' }}</span>
+                                    <span class="text-xs text-slate-700 font-medium">{{ $user['nama_lengkap'] ?? '-' }}</span>
                                 </td>
                                 <td class="py-3 pr-3 hidden md:table-cell">
                                     <span class="text-xs text-slate-500">{{ $user['keterangan'] ?? '-' }}</span>
                                 </td>
                                 <td class="py-3 pr-3 text-center">
-                                    <span class="inline-flex items-center justify-center gap-1 bg-emerald-50 text-emerald-700 font-bold text-xs px-2 py-1 rounded-lg min-w-[2.5rem]">
-                                        <i class="ph ph-image text-sm"></i>
+                                    <span class="inline-flex items-center justify-center gap-1 bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-lg min-w-[3rem]">
                                         {{ number_format($user['jumlah_cover']) }}
                                     </span>
                                 </td>
                                 <td class="py-3 pr-3 text-center">
-                                    <span class="inline-flex items-center justify-center gap-1 bg-amber-50 text-amber-700 font-bold text-xs px-2 py-1 rounded-lg min-w-[2.5rem]">
-                                        <i class="ph ph-file-text text-sm"></i>
+                                    <span class="inline-flex items-center justify-center gap-1 bg-amber-50 text-amber-700 font-bold text-xs px-2.5 py-1 rounded-lg min-w-[3rem]">
                                         {{ number_format($user['jumlah_ringkasan']) }}
                                     </span>
                                 </td>
                                 <td class="py-3 text-center">
-                                    <div class="flex flex-col items-center gap-1">
-                                        <span class="font-black text-sm text-[#106c38]">{{ number_format($total) }}</span>
-                                        <div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                                            <div class="h-full bg-[#106c38] rounded-full" style="width: {{ $pct }}%"></div>
-                                        </div>
-                                    </div>
+                                    <span class="inline-flex items-center justify-center font-black text-xs text-white bg-[#106c38] px-3 py-1 rounded-lg min-w-[3rem] shadow-xs">
+                                        {{ number_format($total) }}
+                                    </span>
                                 </td>
                             </tr>
                             @endforeach
@@ -265,10 +275,10 @@
             <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex gap-3 text-sm">
                 <i class="ph ph-info text-blue-500 text-xl flex-shrink-0 mt-0.5"></i>
                 <div class="text-blue-700 text-xs font-medium leading-relaxed">
-                    <p class="font-bold mb-1">Catatan Metodologi & Ekspor</p>
+                    <p class="font-bold mb-1">Catatan Metodologi</p>
                     <ul class="list-disc pl-4 space-y-1">
-                        <li><strong>Filter Periode:</strong> Pilih bulan tertentu dari dropdown di atas untuk melihat kinerja akun pada bulan tersebut.</li>
-                        <li><strong>Cover:</strong> Dihitung berdasarkan buku ber-cover di galeri buku.</li>
+                        <li><strong>Filter Periode:</strong> Pilih bulan tertentu dari menu dropdown di atas untuk melihat kinerja kontribusi akun pada periode tersebut.</li>
+                        <li><strong>Cover:</strong> Dihitung berdasarkan buku yang memiliki foto cover di galeri buku.</li>
                         <li><strong>Ringkasan:</strong> Dihitung berdasarkan kelengkapan kolom ringkasan buku.</li>
                     </ul>
                 </div>
@@ -287,7 +297,7 @@
 
         let myChart = null;
 
-        // Inisialisasi Chart.js
+        // Inisialisasi Chart.js — Horizontal Stacked Bar (Rata, Proporsional, Rapih)
         function renderChart(labels, covers, ringkasan) {
             const ctx = document.getElementById('perkembanganChart');
             if (!ctx) return;
@@ -305,6 +315,10 @@
             if (emptyMsg) emptyMsg.classList.add('hidden');
             if (canvasWrapper) canvasWrapper.classList.remove('hidden');
 
+            // Sesuaikan tinggi canvas secara dinamis agar batang selalu proporsional dan tidak gemuk
+            const dynamicHeight = Math.max(220, labels.length * 48 + 40);
+            canvasWrapper.style.height = dynamicHeight + 'px';
+
             if (myChart) {
                 myChart.destroy();
             }
@@ -317,49 +331,73 @@
                         {
                             label: 'Cover Buku',
                             data: covers,
-                            backgroundColor: 'rgba(16, 108, 56, 0.85)',
+                            backgroundColor: '#106c38',
                             borderRadius: 6,
                             borderSkipped: false,
+                            maxBarThickness: 24,
+                            barPercentage: 0.8,
+                            categoryPercentage: 0.8,
                         },
                         {
                             label: 'Ringkasan Buku',
                             data: ringkasan,
-                            backgroundColor: 'rgba(249, 195, 17, 0.85)',
+                            backgroundColor: '#F9C311',
                             borderRadius: 6,
                             borderSkipped: false,
+                            maxBarThickness: 24,
+                            barPercentage: 0.8,
+                            categoryPercentage: 0.8,
                         }
                     ]
                 },
                 options: {
+                    indexAxis: 'y', // Horizontal Bar Chart: Rata, sejajar, dan proporsional
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { family: 'Inter', size: 12, weight: '700' },
+                            bodyFont: { family: 'Inter', size: 11 },
+                            padding: 10,
+                            cornerRadius: 8,
                             callbacks: {
                                 label: function(context) {
-                                    return ' ' + context.dataset.label + ': ' + context.parsed.y.toLocaleString('id-ID');
+                                    return ' ' + context.dataset.label + ': ' + context.parsed.x.toLocaleString('id-ID');
+                                },
+                                afterBody: function(items) {
+                                    if (items.length > 1) {
+                                        let total = 0;
+                                        items.forEach(it => { total += it.parsed.x; });
+                                        return '\n Total Kontribusi: ' + total.toLocaleString('id-ID');
+                                    }
+                                    return '';
                                 }
                             }
                         }
                     },
                     scales: {
                         x: {
-                            grid: { display: false },
-                            ticks: {
-                                font: { family: 'Inter', size: 11, weight: '600' },
-                                color: '#475569',
-                            }
-                        },
-                        y: {
+                            stacked: true, // Ditumpuk agar total kontribusi terlihat jelas & tidak miring
                             beginAtZero: true,
                             grid: { color: '#f1f5f9' },
                             ticks: {
+                                stepSize: 1,
+                                precision: 0,
                                 font: { family: 'Inter', size: 11 },
                                 color: '#94a3b8',
                                 callback: function(val) {
-                                    return val.toLocaleString('id-ID');
+                                    return Number.isInteger(val) ? val.toLocaleString('id-ID') : null;
                                 }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Inter', size: 12, weight: '600' },
+                                color: '#334155',
                             }
                         }
                     }
@@ -419,26 +457,23 @@
                 emptyState.classList.remove('flex');
                 tableWrapper.classList.remove('hidden');
 
-                const maxTotal = (parseInt(activeList[0].jumlah_cover) || 0) + (parseInt(activeList[0].jumlah_ringkasan) || 0);
-
                 let rowsHtml = '';
                 activeList.forEach((u, idx) => {
                     const rank = idx + 1;
                     const cCover = parseInt(u.jumlah_cover) || 0;
                     const cRingkasan = parseInt(u.jumlah_ringkasan) || 0;
                     const cTotal = cCover + cRingkasan;
-                    const pct = maxTotal > 0 ? Math.round((cTotal / maxTotal) * 100) : 0;
 
-                    let rankBadge = `<span class="text-xs text-slate-400 font-bold pl-1">${rank}</span>`;
-                    if (rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-white text-[10px] font-black">1</span>`;
-                    else if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300 text-slate-700 text-[10px] font-black">2</span>`;
-                    else if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-300 text-white text-[10px] font-black">3</span>`;
+                    let rankBadge = `<span class="text-xs text-slate-400 font-semibold">${rank}</span>`;
+                    if (rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-white text-[11px] font-black shadow-sm" title="Peringkat 1">1</span>`;
+                    else if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-400 text-white text-[11px] font-black shadow-sm" title="Peringkat 2">2</span>`;
+                    else if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-[11px] font-black shadow-sm" title="Peringkat 3">3</span>`;
 
                     const initial = (u.username ? u.username.charAt(0) : 'U').toUpperCase();
 
                     rowsHtml += `
                         <tr class="hover:bg-slate-50/70 transition group">
-                            <td class="py-3 pr-3">${rankBadge}</td>
+                            <td class="py-3 pr-3 text-center">${rankBadge}</td>
                             <td class="py-3 pr-3">
                                 <div class="flex items-center gap-2">
                                     <div class="w-7 h-7 rounded-lg bg-[#106c38]/10 text-[#106c38] flex items-center justify-center text-xs font-bold flex-shrink-0">
@@ -448,30 +483,25 @@
                                 </div>
                             </td>
                             <td class="py-3 pr-3 hidden sm:table-cell">
-                                <span class="text-xs text-slate-700">${u.nama_lengkap || '-'}</span>
+                                <span class="text-xs text-slate-700 font-medium">${u.nama_lengkap || '-'}</span>
                             </td>
                             <td class="py-3 pr-3 hidden md:table-cell">
                                 <span class="text-xs text-slate-500">${u.keterangan || '-'}</span>
                             </td>
                             <td class="py-3 pr-3 text-center">
-                                <span class="inline-flex items-center justify-center gap-1 bg-emerald-50 text-emerald-700 font-bold text-xs px-2 py-1 rounded-lg min-w-[2.5rem]">
-                                    <i class="ph ph-image text-sm"></i>
+                                <span class="inline-flex items-center justify-center gap-1 bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-lg min-w-[3rem]">
                                     ${cCover.toLocaleString('id-ID')}
                                 </span>
                             </td>
                             <td class="py-3 pr-3 text-center">
-                                <span class="inline-flex items-center justify-center gap-1 bg-amber-50 text-amber-700 font-bold text-xs px-2 py-1 rounded-lg min-w-[2.5rem]">
-                                    <i class="ph ph-file-text text-sm"></i>
+                                <span class="inline-flex items-center justify-center gap-1 bg-amber-50 text-amber-700 font-bold text-xs px-2.5 py-1 rounded-lg min-w-[3rem]">
                                     ${cRingkasan.toLocaleString('id-ID')}
                                 </span>
                             </td>
                             <td class="py-3 text-center">
-                                <div class="flex flex-col items-center gap-1">
-                                    <span class="font-black text-sm text-[#106c38]">${cTotal.toLocaleString('id-ID')}</span>
-                                    <div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-[#106c38] rounded-full" style="width: ${pct}%"></div>
-                                    </div>
-                                </div>
+                                <span class="inline-flex items-center justify-center font-black text-xs text-white bg-[#106c38] px-3 py-1 rounded-lg min-w-[3rem] shadow-xs">
+                                    ${cTotal.toLocaleString('id-ID')}
+                                </span>
                             </td>
                         </tr>
                     `;

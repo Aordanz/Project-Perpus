@@ -54,10 +54,15 @@ Route::get('/lang/{locale}', function ($locale) {
 Route::post('/api/chat', [ChatbotController::class, 'handleChat'])->middleware('throttle:10,1')->name('chat.api');
 
 // Admin: Kelola Data Referensi AI Chatbot
-// Admin: Tambah User & Perkembangan (hanya idgroup=3)
+// Admin: Tambah User, Hapus User & Perkembangan (hanya idgroup=3)
 Route::get('/admin/tambah-user', [AdminController::class, 'tambahUserIndex'])->name('admin.tambah-user');
 Route::post('/admin/tambah-user', [AdminController::class, 'tambahUserStore'])->name('admin.tambah-user.store');
+Route::delete('/admin/tambah-user/{id}', [AdminController::class, 'tambahUserDestroy'])->name('admin.tambah-user.destroy');
 Route::get('/admin/perkembangan', [AdminController::class, 'perkembangan'])->name('admin.perkembangan');
+
+// Admin: Ganti Password (semua user pustakawan)
+Route::get('/admin/ganti-password', [AdminController::class, 'gantiPasswordIndex'])->name('admin.ganti-password');
+Route::post('/admin/ganti-password', [AdminController::class, 'gantiPasswordUpdate'])->name('admin.ganti-password.update');
 
 Route::get('/admin/chatbot-data', [AdminController::class, 'chatbotData'])->name('admin.chatbot-data');
 Route::post('/admin/chatbot-data', [AdminController::class, 'chatbotDataUpdate'])->name('admin.chatbot-data.update');

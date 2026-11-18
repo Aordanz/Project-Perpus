@@ -1330,6 +1330,95 @@ class AdminController extends Controller implements HasMiddleware
             ->with('success', "User \"" . $validated['username'] . "\" berhasil ditambahkan! Password default: " . $validated['username'] . "123 (tolong segera diganti).");
     }
 
+    /**
+     * Hapus user dari tbluser.
+     * Hanya bisa diakses oleh user dengan idgroup = 3.
+     */
+    public function tambahUserDestroy($id)
+    {
+        if (!auth()->check() || (int) auth()->user()->idgroup !== 3) {
+            abort(403, 'Akses ditolak. Fitur ini hanya untuk Pengolahan / IT Admin (idgroup=3).');
+        }
+
+        $currentUserId = auth()->user()->iduser;
+        if ((int) $id === (int) $currentUserId) {
+            return redirect()->back()->withErrors(['error' => 'Anda tidak dapat menghapus akun Anda sendiri yang sedang digunakan.']);
+        }
+
+        $user = DB::table('tbluser')->where('iduser', $id)->first();
+        if (!$user) {
+            return redirect()->back()->withErrors(['error' => 'User tidak ditemukan.']);
+        }
+
+        DB::table('tbluser')->where('iduser', $id)->delete();
+
+        return redirect()->route('admin.tambah-user')
+            ->with('success', "User \"" . ($user->username ?? $user->nama_lengkap) . "\" berhasil dihapus dari sistem.");
+    }
+
+    /**
+     * Tampilkan form ganti password untuk user yang sedang login.
+     */
+    public function gantiPasswordIndex()
+    {
+        return view('admin.ganti_password');
+    }
+
+    /**
+     * Proses ubah password user yang sedang login.
+     */
+    public function gantiPasswordUpdate(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'password'         => 'required|string|min:6|confirmed',
+        ], [
+            'current_password.required' => 'Password saat ini wajib diisi.',
+            'password.required'         => 'Password baru wajib diisi.',
+            'password.min'              => 'Password baru minimal 6 karakter.',
+            'password.confirmed'        => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        $user = auth()->user();
+        $storedPassword = $user->getAttributes()['password'] ?? '';
+        $currentInput = $request->current_password;
+
+        // Validasi password lama (hybrid Bcrypt / MD5 LIBAS Delphi / SHA1 / plaintext)
+        $valid = false;
+        if (str_starts_with($storedPassword, '$2y$') || str_starts_with($storedPassword, '$2a$') || str_starts_with($storedPassword, '$2b$')) {
+            $valid = \Illuminate\Support\Facades\Hash::check($currentInput, $storedPassword);
+        } elseif (hash_equals(strtolower($storedPassword), md5($currentInput))) {
+            $valid = true;
+        } elseif (hash_equals(strtolower($storedPassword), sha1($currentInput))) {
+            $valid = true;
+        } elseif ($storedPassword === $currentInput) {
+            $valid = true;
+        }
+
+        if (!$valid) {
+            return redirect()->back()
+                ->withErrors(['current_password' => 'Password saat ini yang Anda masukkan salah.']);
+        }
+
+        // Simpan password baru menggunakan MD5 agar tetap kompatibel dengan aplikasi desktop LIBAS Delphi kampus
+        $newHashed = md5($request->password);
+
+        DB::table('tbluser')
+            ->where('iduser', $user->iduser)
+            ->update([
+                'password'   => $newHashed,
+                'updated_at' => now(),
+            ]);
+
+        // Logout dan redirect ke halaman login agar sesi bersih dengan password baru
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')
+            ->with('success', 'Password Anda berhasil diperbarui! Silakan login kembali menggunakan password baru Anda.');
+    }
+
     // =========================================================================
     // PERKEMBANGAN (hanya idgroup=3)
     // =========================================================================
