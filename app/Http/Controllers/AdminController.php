@@ -827,16 +827,26 @@ class AdminController extends Controller implements HasMiddleware
         } catch (\Exception $e) {
             DB::rollBack();
 
+            // Tangani error privilege database server (INSERT/UPDATE/DELETE denied)
+            $msg = $e->getMessage();
+            if (str_contains($msg, '1142') || str_contains($msg, 'command denied')) {
+                $friendlyMsg = 'Upload cover gagal: server database kampus belum mengizinkan operasi ini. '
+                    . 'Mohon hubungi admin IT kampus untuk memberikan hak INSERT/UPDATE pada tabel galeri_buku '
+                    . 'ke user digilib@10.168.17.233. (Error: ' . $msg . ')';
+            } else {
+                $friendlyMsg = 'Gagal memperbarui buku: ' . $msg;
+            }
+
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gagal memperbarui buku: ' . $e->getMessage(),
+                    'message' => $friendlyMsg,
                 ], 422);
             }
 
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['error' => 'Gagal memperbarui buku: ' . $e->getMessage()]);
+                ->withErrors(['error' => $friendlyMsg]);
         }
     }
 
@@ -1231,5 +1241,326 @@ class AdminController extends Controller implements HasMiddleware
         }
 
         return $filename;
+    }
+
+    // =========================================================================
+    // TAMBAH USER (hanya idgroup=3)
+    // =========================================================================
+
+    /**
+     * Tampilkan form tambah user.
+     * Hanya bisa diakses oleh user dengan idgroup = 3.
+     */
+    public function tambahUserIndex()
+    {
+        if (!auth()->check() || (int) auth()->user()->idgroup !== 3) {
+            abort(403, 'Akses ditolak. Fitur ini hanya untuk Pengolahan / IT Admin (idgroup=3).');
+        }
+
+        // Ambil semua group yang tersedia (idgroup_user 1-15)
+        $groups = DB::table('tblgroup_user')
+            ->whereBetween('idgroup_user', [1, 15])
+            ->orderBy('idgroup_user')
+            ->get();
+
+        return view('admin.tambah_user', compact('groups'));
+    }
+
+    /**
+     * Simpan user baru ke tbluser.
+     * Hanya bisa diakses oleh user dengan idgroup = 3.
+     */
+    public function tambahUserStore(\Illuminate\Http\Request $request)
+    {
+        if (!auth()->check() || (int) auth()->user()->idgroup !== 3) {
+            abort(403, 'Akses ditolak. Fitur ini hanya untuk Pengolahan / IT Admin (idgroup=3).');
+        }
+
+        $groups = DB::table('tblgroup_user')
+            ->whereBetween('idgroup_user', [1, 15])
+            ->pluck('idgroup_user')
+            ->toArray();
+
+        $validated = $request->validate([
+            'username'     => 'required|string|max:50|unique:tbluser,username',
+            'nama_lengkap' => 'required|string|max:100',
+            'keterangan'   => 'nullable|string|max:200',
+            'idgroup'      => 'required|integer|in:' . implode(',', $groups),
+        ], [
+            'username.required'     => 'Username wajib diisi.',
+            'username.unique'       => 'Username sudah digunakan, pilih username lain.',
+            'username.max'          => 'Username maksimal 50 karakter.',
+            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
+            'nama_lengkap.max'      => 'Nama lengkap maksimal 100 karakter.',
+            'keterangan.max'        => 'Keterangan maksimal 200 karakter.',
+            'idgroup.required'      => 'Pilih divisi/jabatan.',
+            'idgroup.in'            => 'Divisi yang dipilih tidak valid.',
+        ]);
+
+        // Password default: username + "123" (user bisa minta ganti nanti)
+        // Gunakan MD5 agar kompatibel dengan sistem LIBAS Delphi
+        $defaultPassword = md5($validated['username'] . '123');
+
+        // Tentukan role berdasarkan idgroup
+        // Misal idgroup 3 = Pengolahan (Pustakawan), lainnya anggota
+        $selectedGroup = DB::table('tblgroup_user')
+            ->where('idgroup_user', $validated['idgroup'])
+            ->first();
+        $role = ($selectedGroup && (int) $selectedGroup->status_administrator === 1)
+            ? 'pustakawan'
+            : 'pustakawan'; // semua yg ditambah via admin dianggap pustakawan
+
+        DB::table('tbluser')->insert([
+            'username'            => $validated['username'],
+            'nama_lengkap'        => $validated['nama_lengkap'],
+            'keterangan'          => $validated['keterangan'] ?? null,
+            'idgroup'             => (int) $validated['idgroup'],
+            'password'            => $defaultPassword,
+            'role'                => 'pustakawan',
+            'status'              => 'Aktif',
+            'status_administrator'=> 1,
+            'iduser_input'        => auth()->user()->iduser,
+            'tglinput'            => now(),
+            'updated_at'          => now(),
+            'email'               => null,
+            'notelp'              => null,
+        ]);
+
+        return redirect()->route('admin.tambah-user')
+            ->with('success', "User \"" . $validated['username'] . "\" berhasil ditambahkan! Password default: " . $validated['username'] . "123 (tolong segera diganti).");
+    }
+
+    // =========================================================================
+    // PERKEMBANGAN (hanya idgroup=3)
+    // =========================================================================
+
+    /**
+     * Tampilkan statistik perkembangan per user (cover & ringkasan).
+     * Hanya bisa diakses oleh user dengan idgroup = 3.
+     */
+    public function perkembangan()
+    {
+        if (!auth()->check() || (int) auth()->user()->idgroup !== 3) {
+            abort(403, 'Akses ditolak. Fitur ini hanya untuk Pengolahan / IT Admin (idgroup=3).');
+        }
+
+        // ---- Statistik Ringkasan per User ----
+        // tblbuku.userinput = nama user yang menginput (string, paling konsisten)
+        // tblbuku.iduser    = ID user (nullable, banyak NULL untuk data lama dari LIBAS)
+        // Pakai LEFT JOIN agar data tanpa iduser (NULL) tetap masuk, dikelompokkan per userinput
+        $ringkasanStats = DB::table('tblbuku')
+            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
+            ->whereNotNull('tblbuku.ringkasanbuku')
+            ->where('tblbuku.ringkasanbuku', '!=', '')
+            ->whereNotNull('tblbuku.userinput')
+            ->where('tblbuku.userinput', '!=', '')
+            ->select(
+                DB::raw('COALESCE(tbluser.iduser, 0) as iduser'),
+                DB::raw('tblbuku.userinput as username'),
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
+                DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
+            )
+            ->groupBy('tblbuku.userinput',
+                      DB::raw('COALESCE(tbluser.iduser, 0)'),
+                      DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
+                      DB::raw('COALESCE(tbluser.keterangan, \'\')'))
+            ->orderByDesc('jumlah_ringkasan')
+            ->get();
+
+        // ---- Statistik Cover per User ----
+        // galeri_buku tidak punya kolom user, jadi pakai tblbuku.userinput
+        // LEFT JOIN agar data lama (iduser NULL) tetap masuk
+        $coverStats = DB::table('tblbuku')
+            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
+            ->join('galeri_buku', function($join) {
+                $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
+                     ->where('galeri_buku.is_cover', '=', 1)
+                     ->whereNotNull('galeri_buku.image_path')
+                     ->where('galeri_buku.image_path', '!=', '');
+            })
+            ->whereNotNull('tblbuku.userinput')
+            ->where('tblbuku.userinput', '!=', '')
+            ->select(
+                DB::raw('COALESCE(tbluser.iduser, 0) as iduser'),
+                DB::raw('tblbuku.userinput as username'),
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
+                DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_cover')
+            )
+            ->groupBy('tblbuku.userinput',
+                      DB::raw('COALESCE(tbluser.iduser, 0)'),
+                      DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
+                      DB::raw('COALESCE(tbluser.keterangan, \'\')'))
+            ->orderByDesc('jumlah_cover')
+            ->get();
+
+        // ---- Gabungkan ke dalam satu koleksi per user ----
+        // Key: username (userinput) agar tidak ada duplikat
+        $mergedMap = [];
+
+        foreach ($ringkasanStats as $r) {
+            $key = $r->username;
+            $mergedMap[$key] = [
+                'iduser'          => $r->iduser,
+                'username'        => $r->username,
+                'nama_lengkap'    => $r->nama_lengkap,
+                'keterangan'      => $r->keterangan,
+                'jumlah_ringkasan'=> $r->jumlah_ringkasan,
+                'jumlah_cover'    => 0,
+            ];
+        }
+
+        foreach ($coverStats as $c) {
+            $key = $c->username;
+            if (isset($mergedMap[$key])) {
+                $mergedMap[$key]['jumlah_cover'] = $c->jumlah_cover;
+            } else {
+                $mergedMap[$key] = [
+                    'iduser'          => $c->iduser,
+                    'username'        => $c->username,
+                    'nama_lengkap'    => $c->nama_lengkap,
+                    'keterangan'      => $c->keterangan,
+                    'jumlah_ringkasan'=> 0,
+                    'jumlah_cover'    => $c->jumlah_cover,
+                ];
+            }
+        }
+
+        // Sort by total (cover+ringkasan) descending
+        usort($mergedMap, function($a, $b) {
+            return ($b['jumlah_cover'] + $b['jumlah_ringkasan']) <=> ($a['jumlah_cover'] + $a['jumlah_ringkasan']);
+        });
+
+        $stats = collect($mergedMap);
+
+        // Data untuk grafik (top 10)
+        $chartLabels    = $stats->take(10)->pluck('username')->toArray();
+        $chartCovers    = $stats->take(10)->pluck('jumlah_cover')->toArray();
+        $chartRingkasan = $stats->take(10)->pluck('jumlah_ringkasan')->toArray();
+
+        // ---- Data Bulanan untuk PDF ----
+        // Ringkasan per bulan per user
+        $ringkasanBulanan = DB::table('tblbuku')
+            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
+            ->whereNotNull('tblbuku.ringkasanbuku')
+            ->where('tblbuku.ringkasanbuku', '!=', '')
+            ->whereNotNull('tblbuku.userinput')
+            ->where('tblbuku.userinput', '!=', '')
+            ->whereNotNull(DB::raw('COALESCE(tblbuku.tgledit, tblbuku.tglinput)'))
+            ->select(
+                DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as tahun'),
+                DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as bulan'),
+                DB::raw('tblbuku.userinput as username'),
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
+                DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
+            )
+            ->groupBy(
+                DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'),
+                DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'),
+                'tblbuku.userinput',
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\')')
+            )
+            ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
+            ->get();
+
+        // Cover per bulan per user (via galeri_buku.created_at)
+        $coverBulanan = DB::table('tblbuku')
+            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
+            ->join('galeri_buku', function($join) {
+                $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
+                     ->where('galeri_buku.is_cover', '=', 1)
+                     ->whereNotNull('galeri_buku.image_path')
+                     ->where('galeri_buku.image_path', '!=', '');
+            })
+            ->whereNotNull('tblbuku.userinput')
+            ->where('tblbuku.userinput', '!=', '')
+            ->whereNotNull('galeri_buku.created_at')
+            ->select(
+                DB::raw('YEAR(galeri_buku.created_at) as tahun'),
+                DB::raw('MONTH(galeri_buku.created_at) as bulan'),
+                DB::raw('tblbuku.userinput as username'),
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
+                DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_cover')
+            )
+            ->groupBy(
+                DB::raw('YEAR(galeri_buku.created_at)'),
+                DB::raw('MONTH(galeri_buku.created_at)'),
+                'tblbuku.userinput',
+                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
+                DB::raw('COALESCE(tbluser.keterangan, \'\')')
+            )
+            ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
+            ->get();
+
+        // Gabungkan data bulanan ke satu struktur: ['YYYY-MM' => ['label' => '...', 'users' => [...]]]
+        $monthlyData = [];
+        $namaBulan   = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        foreach ($ringkasanBulanan as $r) {
+            $key = sprintf('%04d-%02d', $r->tahun, $r->bulan);
+            if (!isset($monthlyData[$key])) {
+                $monthlyData[$key] = [
+                    'label' => $namaBulan[$r->bulan] . ' ' . $r->tahun,
+                    'users' => [],
+                ];
+            }
+            $monthlyData[$key]['users'][$r->username] = [
+                'username'        => $r->username,
+                'nama_lengkap'    => $r->nama_lengkap,
+                'keterangan'      => $r->keterangan,
+                'jumlah_ringkasan'=> (int) $r->jumlah_ringkasan,
+                'jumlah_cover'    => 0,
+            ];
+        }
+
+        foreach ($coverBulanan as $c) {
+            $key = sprintf('%04d-%02d', $c->tahun, $c->bulan);
+            if (!isset($monthlyData[$key])) {
+                $monthlyData[$key] = [
+                    'label' => $namaBulan[$c->bulan] . ' ' . $c->tahun,
+                    'users' => [],
+                ];
+            }
+            if (isset($monthlyData[$key]['users'][$c->username])) {
+                $monthlyData[$key]['users'][$c->username]['jumlah_cover'] = (int) $c->jumlah_cover;
+                if (empty($monthlyData[$key]['users'][$c->username]['keterangan']) && !empty($c->keterangan)) {
+                    $monthlyData[$key]['users'][$c->username]['keterangan'] = $c->keterangan;
+                }
+            } else {
+                $monthlyData[$key]['users'][$c->username] = [
+                    'username'        => $c->username,
+                    'nama_lengkap'    => $c->nama_lengkap,
+                    'keterangan'      => $c->keterangan,
+                    'jumlah_ringkasan'=> 0,
+                    'jumlah_cover'    => (int) $c->jumlah_cover,
+                ];
+            }
+        }
+
+        // Urutkan data user per bulan berdasarkan total kontribusi DESC
+        foreach ($monthlyData as $key => &$m) {
+            $userList = array_values($m['users']);
+            usort($userList, function($a, $b) {
+                return ($b['jumlah_cover'] + $b['jumlah_ringkasan']) <=> ($a['jumlah_cover'] + $a['jumlah_ringkasan']);
+            });
+            $m['users'] = $userList;
+            $m['total_cover'] = array_sum(array_column($userList, 'jumlah_cover'));
+            $m['total_ringkasan'] = array_sum(array_column($userList, 'jumlah_ringkasan'));
+        }
+        unset($m);
+
+        // Sort descending by year-month
+        krsort($monthlyData);
+
+        return view('admin.perkembangan', compact(
+            'stats', 'chartLabels', 'chartCovers', 'chartRingkasan', 'monthlyData'
+        ));
     }
 }

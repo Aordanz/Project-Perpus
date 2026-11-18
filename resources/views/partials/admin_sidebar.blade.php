@@ -69,6 +69,23 @@
                 <i class="ph ph-robot text-lg"></i>
                 <span>Data AI Chatbot</span>
             </a>
+
+            @if(Auth::check() && (int) Auth::user()->idgroup === 3)
+            {{-- Divider khusus idgroup=3 --}}
+            <div class="border-t border-white/10 my-1"></div>
+
+            <a href="{{ route('admin.tambah-user') }}" 
+               class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.tambah-user') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+                <i class="ph ph-user-plus text-lg"></i>
+                <span>Tambah User</span>
+            </a>
+
+            <a href="{{ route('admin.perkembangan') }}" 
+               class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.perkembangan') ? 'bg-[#064e3b] text-white border-l-4 border-white shadow-inner' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+                <i class="ph ph-chart-bar text-lg"></i>
+                <span>Perkembangan</span>
+            </a>
+            @endif
         </nav>
 
         <!-- Footer Action -->

@@ -104,4 +104,13 @@ class User extends Authenticatable
     {
         return $this->role === 'anggota';
     }
+
+    /**
+     * Cek apakah user memiliki akses super-admin (idgroup = 3 / Pengolahan).
+     * Hanya idgroup 3 yang bisa melihat fitur Tambah User & Perkembangan.
+     */
+    public function isIdgroup3(): bool
+    {
+        return (int) $this->idgroup === 3;
+    }
 }
