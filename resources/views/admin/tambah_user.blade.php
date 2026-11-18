@@ -252,7 +252,8 @@
                                 <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-2 pr-4">Username</th>
                                 <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-2 pr-4">Nama Lengkap</th>
                                 <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-2 pr-4 hidden sm:table-cell">Jabatan</th>
-                                <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-2 hidden md:table-cell">Divisi</th>
+                                <th class="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-2 pr-4 hidden md:table-cell">Divisi</th>
+                                <th class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider pb-2">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
@@ -267,10 +268,31 @@
                                 <td class="py-2.5 pr-4 hidden sm:table-cell">
                                     <span class="text-xs text-slate-500">{{ $u->keterangan ?? '-' }}</span>
                                 </td>
-                                <td class="py-2.5 hidden md:table-cell">
+                                <td class="py-2.5 pr-4 hidden md:table-cell">
                                     <span class="inline-flex items-center gap-1 bg-[#106c38]/10 text-[#106c38] text-[10px] font-bold px-2 py-0.5 rounded-full">
                                         {{ $u->nama_group ?? 'Group ' . $u->idgroup }}
                                     </span>
+                                </td>
+                                <td class="py-2.5 text-center">
+                                    @if(Auth::check() && Auth::user()->iduser == $u->iduser)
+                                        <span class="inline-flex items-center gap-1 text-[10px] bg-slate-100 text-slate-500 font-semibold px-2.5 py-1 rounded-lg">
+                                            <i class="ph ph-user"></i> Akun Anda
+                                        </span>
+                                    @else
+                                        <form id="form-delete-{{ $u->iduser }}" action="{{ route('admin.tambah-user.destroy', $u->iduser) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button
+                                                type="button"
+                                                onclick="confirmDeleteUser({{ $u->iduser }}, '{{ addslashes($u->username) }}')"
+                                                class="inline-flex items-center gap-1 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg transition border-none cursor-pointer"
+                                                title="Hapus user ini"
+                                            >
+                                                <i class="ph ph-trash text-sm"></i>
+                                                <span>Hapus</span>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -283,6 +305,26 @@
 
         @include('partials.admin_footer')
     </div>
+
+    <script>
+        function confirmDeleteUser(userId, username) {
+            Swal.fire({
+                title: 'Hapus User?',
+                html: `Apakah Anda yakin ingin menghapus user <strong>"${username}"</strong>?<br><span class="text-xs text-rose-500">Akun akan dihapus dari sistem dan tidak bisa digunakan untuk login lagi.</span>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e11d48',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('form-delete-' + userId).submit();
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
