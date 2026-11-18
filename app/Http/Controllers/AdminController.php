@@ -827,16 +827,26 @@ class AdminController extends Controller implements HasMiddleware
         } catch (\Exception $e) {
             DB::rollBack();
 
+            // Tangani error privilege database server (INSERT/UPDATE/DELETE denied)
+            $msg = $e->getMessage();
+            if (str_contains($msg, '1142') || str_contains($msg, 'command denied')) {
+                $friendlyMsg = 'Upload cover gagal: server database kampus belum mengizinkan operasi ini. '
+                    . 'Mohon hubungi admin IT kampus untuk memberikan hak INSERT/UPDATE pada tabel galeri_buku '
+                    . 'ke user digilib@10.168.17.233. (Error: ' . $msg . ')';
+            } else {
+                $friendlyMsg = 'Gagal memperbarui buku: ' . $msg;
+            }
+
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gagal memperbarui buku: ' . $e->getMessage(),
+                    'message' => $friendlyMsg,
                 ], 422);
             }
 
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['error' => 'Gagal memperbarui buku: ' . $e->getMessage()]);
+                ->withErrors(['error' => $friendlyMsg]);
         }
     }
 
