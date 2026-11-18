@@ -505,7 +505,7 @@
         }
 
         // ==========================================
-        // DOWNLOAD PDF DENGAN jsPDF & AutoTable
+        // DOWNLOAD PDF PROFESIONAL — jsPDF & AutoTable
         // ==========================================
         function downloadPDF() {
             const periodeKey = document.getElementById('periodeSelect').value;
@@ -526,182 +526,364 @@
             }
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            const W = 210, H = 297;
+            const ML = 18, MR = 18;   // margin kiri & kanan
+            const CW = W - ML - MR;   // content width  = 174 mm
+
+            const GREEN  = [16, 108, 56];
+            const GOLD   = [184, 134, 11];
+            const DARK   = [15,  23,  42];
+            const BODY   = [51,  65,  85];
+            const MUTED  = [100, 116, 139];
+            const BORDER = [203, 213, 225];
+            const BG1    = [248, 250, 252];
+            const BG2    = [241, 245, 249];
+            const WHITE  = [255, 255, 255];
+
+            const totalCover    = activeList.reduce((a, c) => a + (parseInt(c.jumlah_cover)    || 0), 0);
+            const totalRingkasan= activeList.reduce((a, c) => a + (parseInt(c.jumlah_ringkasan)|| 0), 0);
+            const grandTotal    = totalCover + totalRingkasan;
+            const now           = new Date();
+            const dateStr       = now.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+            const timeStr       = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+            const nomorSurat    = `PUS/LAP/${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+
+            // ============================================================
+            // HELPER: gambar header & footer di setiap halaman
+            // ============================================================
+            function drawPageChrome(pageNum, totalPages) {
+                // ── Garis tepi profesional (border seluruh halaman) ──
+                doc.setDrawColor(...BORDER);
+                doc.setLineWidth(0.3);
+                doc.rect(10, 10, W - 20, H - 20);
+
+                // ── Accent bar kiri ──
+                doc.setFillColor(...GREEN);
+                doc.rect(10, 10, 4, H - 20, 'F');
+
+                // ── HEADER: blok latar hijau gelap ──
+                doc.setFillColor(...GREEN);
+                doc.rect(14, 10, W - 24, 36, 'F');
+
+                // Logo placeholder (lingkaran putih berteks USU)
+                doc.setFillColor(...WHITE);
+                doc.circle(26, 28, 9, 'F');
+                doc.setTextColor(...GREEN);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(7);
+                doc.text('USU', 26, 29.5, { align: 'center' });
+
+                // Nama institusi
+                doc.setTextColor(...WHITE);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(12);
+                doc.text('PERPUSTAKAAN UNIVERSITAS SUMATERA UTARA', 40, 23);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
+                doc.setTextColor(187, 229, 206);   // white-green muted
+                doc.text('Jl. Perpustakaan No. 1, Kampus USU, Medan 20155', 40, 29);
+                doc.text('Telp. (061) 8211612  |  digilib.usu.ac.id', 40, 34);
+
+                // Nomor dokumen (pojok kanan header)
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7);
+                doc.setTextColor(187, 229, 206);
+                doc.text(`No. Dok: ${nomorSurat}`, W - MR - 2, 23, { align: 'right' });
+
+                // ── Garis emas di bawah header ──
+                doc.setFillColor(249, 195, 17);
+                doc.rect(14, 46, W - 24, 1.2, 'F');
+
+                // ── FOOTER ──
+                doc.setFillColor(...BG1);
+                doc.rect(14, H - 20, W - 24, 10, 'F');
+                doc.setDrawColor(...BORDER);
+                doc.setLineWidth(0.2);
+                doc.line(14, H - 20, W - 14, H - 20);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7);
+                doc.setTextColor(...MUTED);
+                doc.text('Perpustakaan Universitas Sumatera Utara — Dokumen Resmi Bersifat Internal', ML + 2, H - 13);
+                doc.text(`Halaman ${pageNum} / ${totalPages}`, W - MR - 2, H - 13, { align: 'right' });
+
+                // Reset warna teks ke normal
+                doc.setTextColor(...DARK);
+            }
+
+            // ============================================================
+            // HALAMAN 1 — Kop + Info Dokumen + Ringkasan + Tabel
+            // ============================================================
+            drawPageChrome(1, 1); // sementara, nanti di-override
+
+            let curY = 54;   // tepat di bawah garis emas
+
+            // ── JUDUL LAPORAN ──
+            doc.setFillColor(240, 253, 244);   // green-50
+            doc.setDrawColor(...GREEN);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(ML, curY, CW, 20, 2, 2, 'FD');
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(13);
+            doc.setTextColor(...GREEN);
+            doc.text('LAPORAN PROGRES KINERJA INPUT PUSTAKAWAN', ML + CW / 2, curY + 8, { align: 'center' });
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(...BODY);
+            doc.text(`Periode Pelaporan  :  ${periodeLabel}`, ML + CW / 2, curY + 14, { align: 'center' });
+            curY += 24;
+
+            // ── INFO DOKUMEN 2 KOLOM ──
+            const colW = (CW - 4) / 2;
+
+            // Kolom kiri
+            doc.setFillColor(...BG1);
+            doc.setDrawColor(...BORDER);
+            doc.setLineWidth(0.2);
+            doc.roundedRect(ML, curY, colW, 24, 1.5, 1.5, 'FD');
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(7.5);
+            doc.setTextColor(...MUTED);
+            doc.text('INFORMASI LAPORAN', ML + 4, curY + 5);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(...BODY);
+            const infoLeft = [
+                ['Tanggal Cetak', `: ${dateStr}`],
+                ['Pukul',         `: ${timeStr} WIB`],
+                ['Nomor Dokumen', `: ${nomorSurat}`],
+            ];
+            infoLeft.forEach(([label, val], i) => {
+                doc.setFont('helvetica', 'bold');
+                doc.text(label, ML + 4, curY + 11 + i * 4.5);
+                doc.setFont('helvetica', 'normal');
+                doc.text(val, ML + 30, curY + 11 + i * 4.5);
             });
 
-            const totalCover = activeList.reduce((acc, curr) => acc + (parseInt(curr.jumlah_cover) || 0), 0);
-            const totalRingkasan = activeList.reduce((acc, curr) => acc + (parseInt(curr.jumlah_ringkasan) || 0), 0);
-            const grandTotal = totalCover + totalRingkasan;
-
-            // ---- KOP SURAT / HEADER RESMI USU ----
-            doc.setFillColor(16, 108, 56); // #106c38
-            doc.rect(0, 0, 210, 8, 'F');
+            // Kolom kanan
+            const colRX = ML + colW + 4;
+            doc.setFillColor(...BG1);
+            doc.roundedRect(colRX, curY, colW, 24, 1.5, 1.5, 'FD');
 
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(14);
-            doc.setTextColor(16, 108, 56);
-            doc.text('UNIVERSITAS SUMATERA UTARA', 105, 18, { align: 'center' });
-
-            doc.setFontSize(11);
-            doc.setTextColor(30, 41, 59);
-            doc.text('PERPUSTAKAAN UNIVERSITAS SUMATERA UTARA', 105, 23.5, { align: 'center' });
+            doc.setFontSize(7.5);
+            doc.setTextColor(...MUTED);
+            doc.text('DICETAK OLEH', colRX + 4, curY + 5);
 
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8.5);
-            doc.setTextColor(100, 116, 139);
-            doc.text('Jl. Perpustakaan No. 1 Kampus USU, Medan 20155 | Web: https://digilib.usu.ac.id', 105, 28, { align: 'center' });
+            doc.setFontSize(8);
+            doc.setTextColor(...BODY);
+            const infoRight = [
+                ['Nama',    `: ${currentAdminName}`],
+                ['Jabatan', `: Administrator / Pengolahan`],
+                ['Unit',    `: Perpustakaan USU`],
+            ];
+            infoRight.forEach(([label, val], i) => {
+                doc.setFont('helvetica', 'bold');
+                doc.text(label, colRX + 4, curY + 11 + i * 4.5);
+                doc.setFont('helvetica', 'normal');
+                // Potong teks jika terlalu panjang
+                const maxW = colW - 24;
+                const truncVal = doc.getTextWidth(val) > maxW
+                    ? doc.splitTextToSize(val, maxW)[0] + '…'
+                    : val;
+                doc.text(truncVal, colRX + 22, curY + 11 + i * 4.5);
+            });
+            curY += 28;
 
-            // Garis Pembatas Kop
-            doc.setDrawColor(16, 108, 56);
-            doc.setLineWidth(0.8);
-            doc.line(14, 31, 196, 31);
-            doc.setDrawColor(249, 195, 17); // Aksen Gold
-            doc.setLineWidth(0.4);
-            doc.line(14, 32.2, 196, 32.2);
-
-            // Judul Dokumen
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.setTextColor(15, 23, 42);
-            doc.text('LAPORAN PROGRES KINERJA INPUT PUSTAKAWAN', 105, 40, { align: 'center' });
-
-            doc.setFontSize(10);
-            doc.setTextColor(16, 108, 56);
-            doc.text(`Periode: ${periodeLabel}`, 105, 45, { align: 'center' });
-
-            // Info Cetak
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8.5);
-            doc.setTextColor(71, 85, 105);
-            doc.text(`Dicetak Pada: ${dateStr}, pukul ${timeStr} WIB`, 14, 53);
-            doc.text(`Dicetak Oleh: ${currentAdminName}`, 196, 53, { align: 'right' });
-
-            // ---- KOTAK RINGKASAN REKAPITULASI ----
-            doc.setFillColor(248, 250, 252);
-            doc.setDrawColor(226, 232, 240);
-            doc.roundedRect(14, 56, 182, 16, 2, 2, 'FD');
-
+            // ── REKAP STATISTIK (4 kotak) ──
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(8);
-            doc.setTextColor(100, 116, 139);
-            doc.text('TOTAL AKUN', 32, 61, { align: 'center' });
-            doc.text('TOTAL COVER', 77, 61, { align: 'center' });
-            doc.text('TOTAL RINGKASAN', 123, 61, { align: 'center' });
-            doc.text('TOTAL KONTRIBUSI', 168, 61, { align: 'center' });
+            doc.setTextColor(...MUTED);
+            doc.text('REKAPITULASI', ML, curY + 4);
 
-            doc.setFontSize(11);
-            doc.setTextColor(16, 108, 56);
-            doc.text(`${activeList.length}`, 32, 68, { align: 'center' });
-            doc.text(`${totalCover.toLocaleString('id-ID')}`, 77, 68, { align: 'center' });
-            doc.text(`${totalRingkasan.toLocaleString('id-ID')}`, 123, 68, { align: 'center' });
-            doc.text(`${grandTotal.toLocaleString('id-ID')}`, 168, 68, { align: 'center' });
+            curY += 7;
+            const statW = (CW - 9) / 4;
+            const stats4 = [
+                { label: 'Total Akun',          value: activeList.length, icon: '●' },
+                { label: 'Total Cover',          value: totalCover,        icon: '■' },
+                { label: 'Total Ringkasan',      value: totalRingkasan,    icon: '▲' },
+                { label: 'Total Kontribusi',     value: grandTotal,        icon: '★' },
+            ];
 
-            // Garis pemisah antar kolom rekap
-            doc.setDrawColor(226, 232, 240);
-            doc.line(55, 58, 55, 70);
-            doc.line(100, 58, 100, 70);
-            doc.line(146, 58, 146, 70);
+            stats4.forEach((s, i) => {
+                const sx = ML + i * (statW + 3);
+                // Kotak dengan border hijau atas
+                doc.setFillColor(...WHITE);
+                doc.setDrawColor(...BORDER);
+                doc.setLineWidth(0.2);
+                doc.roundedRect(sx, curY, statW, 20, 1.5, 1.5, 'FD');
+                // Accent bar atas hijau
+                doc.setFillColor(...GREEN);
+                doc.roundedRect(sx, curY, statW, 2.5, 1, 1, 'F');
 
-            // ---- TABEL DATA AUTOTABLE ----
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(...GREEN);
+                doc.text(s.value.toLocaleString('id-ID'), sx + statW / 2, curY + 13, { align: 'center' });
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7);
+                doc.setTextColor(...MUTED);
+                doc.text(s.label.toUpperCase(), sx + statW / 2, curY + 18, { align: 'center' });
+            });
+            curY += 24;
+
+            // ── TABEL DATA ──
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8);
+            doc.setTextColor(...MUTED);
+            doc.text('RINCIAN DATA KINERJA PUSTAKAWAN', ML, curY + 4);
+            curY += 7;
+
             const tableRows = activeList.map((u, idx) => {
-                const cCover = parseInt(u.jumlah_cover) || 0;
-                const cRingkasan = parseInt(u.jumlah_ringkasan) || 0;
-                const cTotal = cCover + cRingkasan;
+                const cCover    = parseInt(u.jumlah_cover)     || 0;
+                const cRingkasan= parseInt(u.jumlah_ringkasan) || 0;
+                const cTotal    = cCover + cRingkasan;
                 return [
-                    idx + 1,
-                    u.username || '-',
-                    u.nama_lengkap || '-',
-                    u.keterangan || '-',
-                    cCover.toLocaleString('id-ID'),
-                    cRingkasan.toLocaleString('id-ID'),
-                    cTotal.toLocaleString('id-ID')
+                    { content: idx + 1, styles: { halign: 'center', fontStyle: 'bold' } },
+                    { content: u.nama_lengkap || u.username || '-' },
+                    { content: u.username || '-', styles: { fontStyle: 'bold', textColor: GREEN } },
+                    { content: u.keterangan || '-' },
+                    { content: cCover.toLocaleString('id-ID'),     styles: { halign: 'center' } },
+                    { content: cRingkasan.toLocaleString('id-ID'), styles: { halign: 'center' } },
+                    { content: cTotal.toLocaleString('id-ID'),     styles: { halign: 'center', fontStyle: 'bold', textColor: GREEN } },
                 ];
             });
 
-            // Baris Total di paling bawah
+            // Baris total
             tableRows.push([
-                { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'center', fontStyle: 'bold', fillColor: [241, 245, 249] } },
-                { content: totalCover.toLocaleString('id-ID'), styles: { halign: 'center', fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [16, 108, 56] } },
-                { content: totalRingkasan.toLocaleString('id-ID'), styles: { halign: 'center', fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [16, 108, 56] } },
-                { content: grandTotal.toLocaleString('id-ID'), styles: { halign: 'center', fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [16, 108, 56] } }
+                { content: '', styles: { fillColor: BG2 } },
+                { content: 'JUMLAH TOTAL', colSpan: 3, styles: { halign: 'right', fontStyle: 'bold', fillColor: BG2, textColor: DARK } },
+                { content: totalCover.toLocaleString('id-ID'),     styles: { halign: 'center', fontStyle: 'bold', fillColor: BG2, textColor: GREEN } },
+                { content: totalRingkasan.toLocaleString('id-ID'), styles: { halign: 'center', fontStyle: 'bold', fillColor: BG2, textColor: GREEN } },
+                { content: grandTotal.toLocaleString('id-ID'),     styles: { halign: 'center', fontStyle: 'bold', fillColor: BG2, textColor: GREEN } },
             ]);
 
             doc.autoTable({
-                startY: 76,
-                head: [['No', 'Username', 'Nama Lengkap', 'Jabatan / Keterangan', 'Cover', 'Ringkasan', 'Total']],
+                startY: curY,
+                head: [[
+                    { content: 'No',           styles: { halign: 'center' } },
+                    { content: 'Nama Lengkap'  },
+                    { content: 'Username',     styles: { halign: 'center' } },
+                    { content: 'Jabatan / Keterangan' },
+                    { content: 'Cover',        styles: { halign: 'center' } },
+                    { content: 'Ringkasan',    styles: { halign: 'center' } },
+                    { content: 'Total',        styles: { halign: 'center' } },
+                ]],
                 body: tableRows,
                 theme: 'grid',
                 headStyles: {
-                    fillColor: [16, 108, 56],
-                    textColor: [255, 255, 255],
+                    fillColor: GREEN,
+                    textColor: WHITE,
                     fontStyle: 'bold',
-                    fontSize: 8.5,
-                    halign: 'center'
+                    fontSize: 8,
+                    cellPadding: { top: 3, bottom: 3, left: 2, right: 2 },
                 },
                 columnStyles: {
-                    0: { cellWidth: 10, halign: 'center' },
-                    1: { cellWidth: 32, fontStyle: 'bold' },
-                    2: { cellWidth: 46 },
-                    3: { cellWidth: 42 },
-                    4: { cellWidth: 16, halign: 'center' },
-                    5: { cellWidth: 18, halign: 'center' },
-                    6: { cellWidth: 18, halign: 'center', fontStyle: 'bold' },
+                    0: { cellWidth: 8  },
+                    1: { cellWidth: 44 },
+                    2: { cellWidth: 28 },
+                    3: { cellWidth: 48 },
+                    4: { cellWidth: 16 },
+                    5: { cellWidth: 16 },
+                    6: { cellWidth: 14 },
                 },
                 styles: {
                     fontSize: 8,
-                    cellPadding: 2.2,
+                    cellPadding: { top: 2.5, bottom: 2.5, left: 2, right: 2 },
                     valign: 'middle',
-                    lineColor: [226, 232, 240],
-                    lineWidth: 0.1
+                    lineColor: BORDER,
+                    lineWidth: 0.15,
+                    textColor: BODY,
                 },
-                alternateRowStyles: {
-                    fillColor: [248, 250, 252]
-                },
-                margin: { left: 14, right: 14, bottom: 35 },
-                didDrawPage: function (data) {
-                    // Footer Halaman
-                    const pageCount = doc.internal.getNumberOfPages();
-                    doc.setFontSize(7.5);
-                    doc.setTextColor(148, 163, 184);
-                    doc.text(
-                        `Halaman ${data.pageNumber} dari ${pageCount} | Portal Admin Perpustakaan Universitas Sumatera Utara`,
-                        105,
-                        290,
-                        { align: 'center' }
-                    );
+                alternateRowStyles: { fillColor: BG1 },
+                margin: { left: ML, right: MR, bottom: 30 },
+                didDrawPage: function(data) {
+                    // Render header+footer di setiap halaman
+                    const pg = data.pageNumber;
+                    // pageCount belum final saat ini — set after
+                    drawPageChrome(pg, '…');
                 }
             });
 
-            // ---- TANDA TANGAN / PENGESAHAN ----
-            let finalY = doc.lastAutoTable.finalY + 12;
-            if (finalY > 240) {
-                doc.addPage();
-                finalY = 25;
+            // Sekarang update semua footer dengan jumlah halaman final
+            const totalPages = doc.internal.getNumberOfPages();
+            for (let p = 1; p <= totalPages; p++) {
+                doc.setPage(p);
+                drawPageChrome(p, totalPages);
             }
+
+            // ── TANDA TANGAN di halaman terakhir ──
+            doc.setPage(totalPages);
+            let finalY = doc.lastAutoTable.finalY + 10;
+            if (finalY > H - 55) {
+                doc.addPage();
+                finalY = 60;
+                drawPageChrome(totalPages + 1, totalPages + 1);
+            }
+
+            // Blok tanda tangan
+            const sigW = 72;
+            const sigX = W - MR - sigW;
+
+            doc.setFillColor(...BG1);
+            doc.setDrawColor(...BORDER);
+            doc.setLineWidth(0.2);
+            doc.roundedRect(sigX, finalY, sigW, 48, 2, 2, 'FD');
+
+            // Accent bar hijau atas
+            doc.setFillColor(...GREEN);
+            doc.roundedRect(sigX, finalY, sigW, 2.5, 1, 1, 'F');
 
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(8.5);
-            doc.setTextColor(30, 41, 59);
-            doc.text(`Medan, ${dateStr}`, 155, finalY);
-            doc.text('Petugas / Admin Pelapor,', 155, finalY + 5);
+            doc.setTextColor(...BODY);
+            doc.text(`Medan, ${dateStr}`, sigX + sigW / 2, finalY + 7, { align: 'center' });
 
             doc.setFont('helvetica', 'bold');
-            doc.text(currentAdminName, 155, finalY + 25);
+            doc.setFontSize(8.5);
+            doc.setTextColor(...DARK);
+            doc.text('Mengetahui,', sigX + sigW / 2, finalY + 12, { align: 'center' });
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(...BODY);
+            doc.text('Kepala Perpustakaan / Admin Pelapor', sigX + sigW / 2, finalY + 16, { align: 'center' });
+
+            // Area tanda tangan (garis bawah)
+            doc.setDrawColor(...BORDER);
+            doc.setLineWidth(0.3);
+            doc.line(sigX + 8, finalY + 38, sigX + sigW - 8, finalY + 38);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8.5);
+            doc.setTextColor(...DARK);
+            doc.text(currentAdminName, sigX + sigW / 2, finalY + 42, { align: 'center' });
+
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(7.5);
-            doc.setTextColor(100, 116, 139);
-            doc.text('Perpustakaan Universitas Sumatera Utara', 155, finalY + 29);
+            doc.setTextColor(...MUTED);
+            doc.text('Perpustakaan Universitas Sumatera Utara', sigX + sigW / 2, finalY + 46, { align: 'center' });
 
-            // Simpan & Download Berkas
-            const sanitizedPeriod = periodeLabel.replace(/[^a-zA-Z0-9]/g, '_');
-            doc.save(`Laporan_Progres_${sanitizedPeriod}.pdf`);
+            // Catatan kaki laporan
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(7.5);
+            doc.setTextColor(...MUTED);
+            const footNote = 'Laporan ini dibuat secara otomatis oleh sistem Portal Admin Perpustakaan USU. Data bersumber dari basis data internal dan bersifat resmi.';
+            const footLines = doc.splitTextToSize(footNote, CW);
+            doc.text(footLines, ML, finalY + 7);
+
+            // ── SIMPAN PDF ──
+            const sanitizedPeriod = periodeLabel.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_');
+            doc.save(`Laporan_Progres_${sanitizedPeriod}_${now.getFullYear()}.pdf`);
         }
 
         // Jalankan render chart awal
