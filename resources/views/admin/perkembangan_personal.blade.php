@@ -187,19 +187,19 @@
                         </div>
                         <div>
                             <h2 class="text-sm sm:text-base font-bold text-slate-800">Aktivitas Buku Terakhir Anda</h2>
-                            <p class="text-xs text-slate-500">Menampilkan hingga 50 buku yang paling baru Anda input atau perbarui.</p>
+                            <p class="text-xs text-slate-500">Menampilkan daftar buku yang telah Anda tambahkan cover atau ringkasannya.</p>
                         </div>
                     </div>
                     <div class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl self-start sm:self-auto">
-                        <span class="text-[#106c38] font-bold">{{ $recentBooks->count() }}</span> Buku Tercatat
+                        <span class="text-[#106c38] font-bold">{{ $recentBooks->count() }}</span> Buku Berkontribusi
                     </div>
                 </div>
 
                 @if($recentBooks->isEmpty())
                 <div class="flex flex-col items-center justify-center py-10 text-slate-400">
                     <i class="ph ph-book-open text-4xl mb-2 text-slate-300"></i>
-                    <p class="text-xs font-semibold text-slate-600">Belum ada buku yang tercatat pada akun ini</p>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Buku yang Anda tambahkan cover atau ringkasannya akan muncul di sini secara otomatis.</p>
+                    <p class="text-xs font-semibold text-slate-600">Belum ada cover atau ringkasan buku yang ditambahkan</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Buku yang Anda tambahkan cover atau ringkasannya akan otomatis muncul di sini.</p>
                 </div>
                 @else
                 <div class="overflow-x-auto custom-scrollbar">
@@ -218,7 +218,7 @@
                         <tbody class="divide-y divide-slate-50 text-xs">
                             @foreach($recentBooks as $idx => $b)
                             <tr class="hover:bg-slate-50/70 transition">
-                                <td class="py-3 pr-3 text-center text-slate-400 font-semibold">{{ $idx + 1 }}</td>
+                                <td class="py-3 pr-3 text-center text-slate-700 font-bold">{{ $idx + 1 }}</td>
                                 <td class="py-3 pr-3">
                                     <div class="flex items-center gap-3">
                                         @if($b->cover_image && file_exists(public_path('covers/' . $b->cover_image)))
