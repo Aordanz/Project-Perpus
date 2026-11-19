@@ -24,6 +24,29 @@
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .bg-usu-green  { background-color: #106c38; }
         .text-usu-green { color: #106c38; }
+
+        /* Custom Dropdown */
+        #dropdownPanel {
+            animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes dropdownIn {
+            from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+            to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+        .dropdown-option.active-option {
+            background-color: #f0fdf4;
+        }
+        .dropdown-option.active-option .option-check {
+            display: inline-block !important;
+        }
+        .dropdown-option.active-option span.text-xs {
+            color: #106c38;
+            font-weight: 600;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen bg-slate-50 flex flex-col">
@@ -58,18 +81,82 @@
                         <span class="whitespace-nowrap">Pilih Periode:</span>
                     </div>
                     
-                    <div class="relative w-full sm:w-80">
-                        <select
-                            id="periodeSelect"
-                            onchange="handlePeriodeChange(this.value)"
-                            class="w-full appearance-none border border-slate-300 hover:border-[#106c38] focus:border-[#106c38] rounded-xl pl-3.5 pr-10 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#106c38]/15 transition cursor-pointer shadow-sm"
-                        >
+                    {{-- Custom Dropdown Periode --}}
+                    <div class="relative w-full sm:w-80" id="customDropdownWrapper">
+                        {{-- Hidden native select (untuk handlePeriodeChange tetap berjalan) --}}
+                        <select id="periodeSelect" onchange="handlePeriodeChange(this.value)" class="hidden">
                             <option value="all">Semua Periode (Total Akumulasi)</option>
                             @foreach($monthlyData as $keyMonth => $mVal)
                                 <option value="{{ $keyMonth }}">{{ $mVal['label'] }} ({{ count($mVal['users']) }} akun)</option>
                             @endforeach
                         </select>
-                        <i class="ph ph-caret-down absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"></i>
+
+                        {{-- Trigger Button --}}
+                        <button
+                            type="button"
+                            id="dropdownTrigger"
+                            onclick="toggleCustomDropdown()"
+                            class="w-full flex items-center justify-between gap-2 bg-white border border-slate-200 hover:border-[#106c38] rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition-all duration-200 group"
+                        >
+                            <div class="flex items-center gap-2 min-w-0">
+                                <i class="ph ph-calendar-blank text-[#106c38] text-sm shrink-0"></i>
+                                <span id="dropdownLabel" class="truncate">Semua Periode (Total Akumulasi)</span>
+                            </div>
+                            <i id="dropdownCaret" class="ph ph-caret-down text-slate-400 text-sm shrink-0 transition-transform duration-200"></i>
+                        </button>
+
+                        {{-- Dropdown Panel --}}
+                        <div
+                            id="dropdownPanel"
+                            class="hidden absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden"
+                        >
+                            {{-- Search (kalau opsi banyak) --}}
+                            <div class="p-2 border-b border-slate-100">
+                                <div class="flex items-center gap-2 bg-slate-50 rounded-xl px-3 py-2">
+                                    <i class="ph ph-magnifying-glass text-slate-400 text-sm"></i>
+                                    <input
+                                        type="text"
+                                        id="dropdownSearch"
+                                        placeholder="Cari periode..."
+                                        oninput="filterDropdownOptions(this.value)"
+                                        class="bg-transparent text-xs text-slate-700 placeholder-slate-400 outline-none w-full"
+                                    />
+                                </div>
+                            </div>
+
+                            {{-- Options List --}}
+                            <ul id="dropdownOptions" class="max-h-56 overflow-y-auto py-1.5 custom-scrollbar">
+                                <li
+                                    data-value="all"
+                                    data-label="Semua Periode (Total Akumulasi)"
+                                    onclick="selectDropdownOption(this)"
+                                    class="dropdown-option flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-emerald-50 transition-colors duration-150 group/item"
+                                >
+                                    <span class="w-5 h-5 flex items-center justify-center rounded-full bg-emerald-100 shrink-0">
+                                        <i class="ph ph-stack text-[#106c38] text-xs"></i>
+                                    </span>
+                                    <span class="text-xs font-semibold text-slate-700 group-hover/item:text-[#106c38] transition-colors">Semua Periode (Total Akumulasi)</span>
+                                    <i class="ph ph-check text-[#106c38] text-sm ml-auto option-check"></i>
+                                </li>
+                                @foreach($monthlyData as $keyMonth => $mVal)
+                                <li
+                                    data-value="{{ $keyMonth }}"
+                                    data-label="{{ $mVal['label'] }}"
+                                    onclick="selectDropdownOption(this)"
+                                    class="dropdown-option flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-emerald-50 transition-colors duration-150 group/item"
+                                >
+                                    <span class="w-5 h-5 flex items-center justify-center rounded-full bg-slate-100 shrink-0">
+                                        <i class="ph ph-calendar text-slate-500 text-xs"></i>
+                                    </span>
+                                    <span class="text-xs font-medium text-slate-600 group-hover/item:text-[#106c38] transition-colors">
+                                        {{ $mVal['label'] }}
+                                        <span class="ml-1 text-[10px] font-semibold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full">{{ count($mVal['users']) }} akun</span>
+                                    </span>
+                                    <i class="ph ph-check text-[#106c38] text-sm ml-auto option-check hidden"></i>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
 
                     <span id="badgeActivePeriod" class="text-xs font-semibold text-[#106c38] bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200/60 inline-flex items-center gap-1.5 w-fit">
@@ -191,7 +278,7 @@
                         </div>
                     </div>
                     <div class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
-                        <span id="tableRowCount" class="text-[#106c38] font-bold">{{ $stats->count() }}</span> Akun Terdaftar
+                        <span id="tableRowCount" class="text-[#106c38] font-bold">{{ $totalUserTerdaftar }}</span> Akun Terdaftar
                     </div>
                 </div>
 
@@ -404,6 +491,75 @@
                 }
             });
         }
+
+        // =========================================================
+        // Custom Dropdown Logic
+        // =========================================================
+        let dropdownOpen = false;
+
+        function toggleCustomDropdown() {
+            dropdownOpen ? closeCustomDropdown() : openCustomDropdown();
+        }
+
+        function openCustomDropdown() {
+            dropdownOpen = true;
+            document.getElementById('dropdownPanel').classList.remove('hidden');
+            document.getElementById('dropdownCaret').style.transform = 'rotate(180deg)';
+            document.getElementById('dropdownTrigger').classList.add('border-[#106c38]', 'ring-2', 'ring-[#106c38]/15');
+            // reset search
+            document.getElementById('dropdownSearch').value = '';
+            filterDropdownOptions('');
+            setTimeout(() => document.getElementById('dropdownSearch').focus(), 50);
+        }
+
+        function closeCustomDropdown() {
+            dropdownOpen = false;
+            document.getElementById('dropdownPanel').classList.add('hidden');
+            document.getElementById('dropdownCaret').style.transform = 'rotate(0deg)';
+            document.getElementById('dropdownTrigger').classList.remove('border-[#106c38]', 'ring-2', 'ring-[#106c38]/15');
+        }
+
+        function selectDropdownOption(el) {
+            const value = el.dataset.value;
+            const labelText = el.dataset.label || el.textContent.trim();
+
+            // Update trigger label
+            document.getElementById('dropdownLabel').textContent = labelText;
+
+            // Update active state semua opsi
+            document.querySelectorAll('.dropdown-option').forEach(opt => {
+                opt.classList.remove('active-option');
+            });
+            el.classList.add('active-option');
+
+            // Update hidden select & trigger onChange
+            const nativeSelect = document.getElementById('periodeSelect');
+            nativeSelect.value = value;
+            handlePeriodeChange(value);
+
+            closeCustomDropdown();
+        }
+
+        function filterDropdownOptions(query) {
+            const q = query.toLowerCase();
+            document.querySelectorAll('.dropdown-option').forEach(opt => {
+                const text = opt.textContent.toLowerCase();
+                opt.style.display = text.includes(q) ? '' : 'none';
+            });
+        }
+
+        // Tutup dropdown kalau klik di luar
+        document.addEventListener('click', function(e) {
+            const wrapper = document.getElementById('customDropdownWrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                closeCustomDropdown();
+            }
+        });
+
+        // Set active option awal
+        document.querySelectorAll('.dropdown-option').forEach(opt => {
+            if (opt.dataset.value === 'all') opt.classList.add('active-option');
+        });
 
         // Handle Pergantian Periode Dropdown
         function handlePeriodeChange(selectedPeriod) {
