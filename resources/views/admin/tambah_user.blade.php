@@ -120,7 +120,7 @@
                             id="username"
                             name="username"
                             value="{{ old('username') }}"
-                            placeholder="Contoh: budi.santoso"
+                            placeholder="Contoh: joy"
                             class="input-field {{ $errors->has('username') ? 'border-rose-400 bg-rose-50' : '' }}"
                             required
                             autocomplete="off"
@@ -141,7 +141,7 @@
                             id="nama_lengkap"
                             name="nama_lengkap"
                             value="{{ old('nama_lengkap') }}"
-                            placeholder="Contoh: Budi Santoso, S.Sos."
+                            placeholder="Contoh: joy, S.Sos."
                             class="input-field {{ $errors->has('nama_lengkap') ? 'border-rose-400 bg-rose-50' : '' }}"
                             required
                         >
@@ -169,27 +169,21 @@
                         <p class="text-slate-400 text-[10px] mt-1">Opsional. Isi jabatan atau keterangan akun ini.</p>
                     </div>
 
-                    {{-- Divisi / idgroup --}}
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5" for="idgroup">
-                            Divisi / Kelompok Akses <span class="text-rose-500">*</span>
-                        </label>
-                        <select
-                            id="idgroup"
-                            name="idgroup"
-                            class="input-field {{ $errors->has('idgroup') ? 'border-rose-400 bg-rose-50' : '' }}"
-                            required
-                        >
-                            <option value="">— Pilih Divisi —</option>
-                            @foreach($groups as $group)
-                                <option value="{{ $group->idgroup_user }}" {{ old('idgroup') == $group->idgroup_user ? 'selected' : '' }}>
-                                    [{{ $group->idgroup_user }}] {{ $group->nama_group }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('idgroup')
-                            <p class="text-rose-500 text-xs mt-1 font-medium">{{ $message }}</p>
-                        @enderror
+                    {{-- Info Kelompok Akses (Otomatis idgroup 212) --}}
+                    <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-[#106c38] text-white flex items-center justify-center text-base font-bold flex-shrink-0 shadow-xs">
+                                <i class="ph ph-shield-check"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-slate-800">Kelompok Akses Otomatis:</span>
+                                <span class="text-[#106c38] font-bold ml-1">Pustakawan (idgroup 212)</span>
+                                <p class="text-[11px] text-slate-500 font-normal mt-0.5">Semua user baru otomatis masuk ke grup khusus web ini sehingga tidak bertabrakan dengan grup Delphi LIBAS.</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-1 rounded-full flex-shrink-0">
+                            <i class="ph ph-check"></i> Terisolasi Aman
+                        </span>
                     </div>
 
                     {{-- Info Password --}}
@@ -198,7 +192,7 @@
                         <div class="text-blue-700 text-xs font-medium leading-relaxed">
                             <p class="font-bold mb-1">Informasi Password</p>
                             <p>Password default akan diset secara otomatis menjadi: <strong>[username]123</strong></p>
-                            <p class="mt-1">Contoh: jika username = <code class="bg-blue-100 px-1 rounded">budi.santoso</code>, maka password default = <code class="bg-blue-100 px-1 rounded">budi.santoso123</code></p>
+                            <p class="mt-1">Contoh: jika username = <code class="bg-blue-100 px-1 rounded">joy</code>, maka password default = <code class="bg-blue-100 px-1 rounded">joy123</code></p>
                             <p class="mt-1 text-blue-600">⚠️ Minta user untuk segera mengganti password setelah login pertama kali.</p>
                         </div>
                     </div>
@@ -270,7 +264,7 @@
                                 </td>
                                 <td class="py-2.5 pr-4 hidden md:table-cell">
                                     <span class="inline-flex items-center gap-1 bg-[#106c38]/10 text-[#106c38] text-[10px] font-bold px-2 py-0.5 rounded-full">
-                                        {{ $u->nama_group ?? 'Group ' . $u->idgroup }}
+                                        {{ (int)$u->idgroup === 212 ? 'Pustakawan Web (212)' : ($u->nama_group ?? 'Group ' . ($u->idgroup ?? '-')) }}
                                     </span>
                                 </td>
                                 <td class="py-2.5 text-center">
