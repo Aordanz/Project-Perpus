@@ -245,11 +245,11 @@
                     {{-- Legend --}}
                     <div class="flex items-center gap-4 text-xs font-semibold text-slate-600 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-100 self-start sm:self-auto">
                         <div class="flex items-center gap-1.5">
-                            <span class="w-3 h-3 rounded bg-[#106c38] inline-block"></span>
+                            <span class="w-3 h-3 rounded inline-block shrink-0 shadow-xs" style="background-color: #106c38;"></span>
                             <span>Cover Buku</span>
                         </div>
                         <div class="flex items-center gap-1.5">
-                            <span class="w-3 h-3 rounded bg-[#F9C311] inline-block"></span>
+                            <span class="w-3 h-3 rounded inline-block shrink-0 shadow-xs" style="background-color: #F9C311;"></span>
                             <span>Ringkasan Buku</span>
                         </div>
                     </div>
@@ -313,13 +313,13 @@
                             <tr class="hover:bg-slate-50/70 transition group">
                                 <td class="py-3 pr-3 text-center">
                                     @if($rank === 1)
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-white text-[11px] font-black shadow-sm" title="Peringkat 1">1</span>
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-black shadow-sm" style="background-color: #d97706; color: #ffffff;" title="Peringkat 1">1</span>
                                     @elseif($rank === 2)
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-400 text-white text-[11px] font-black shadow-sm" title="Peringkat 2">2</span>
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-black shadow-sm" style="background-color: #64748b; color: #ffffff;" title="Peringkat 2">2</span>
                                     @elseif($rank === 3)
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-[11px] font-black shadow-sm" title="Peringkat 3">3</span>
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-black shadow-sm" style="background-color: #b45309; color: #ffffff;" title="Peringkat 3">3</span>
                                     @else
-                                        <span class="text-xs text-slate-400 font-semibold">{{ $rank }}</span>
+                                        <span class="text-xs text-slate-600 font-bold">{{ $rank }}</span>
                                     @endif
                                 </td>
                                 <td class="py-3 pr-3">
@@ -620,10 +620,10 @@
                     const cRingkasan = parseInt(u.jumlah_ringkasan) || 0;
                     const cTotal = cCover + cRingkasan;
 
-                    let rankBadge = `<span class="text-xs text-slate-400 font-semibold">${rank}</span>`;
-                    if (rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-white text-[11px] font-black shadow-sm" title="Peringkat 1">1</span>`;
-                    else if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-400 text-white text-[11px] font-black shadow-sm" title="Peringkat 2">2</span>`;
-                    else if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-[11px] font-black shadow-sm" title="Peringkat 3">3</span>`;
+                    let rankBadge = `<span class="text-xs text-slate-600 font-bold">${rank}</span>`;
+                    if (rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-black shadow-sm" style="background-color: #d97706; color: #ffffff;" title="Peringkat 1">1</span>`;
+                    else if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-black shadow-sm" style="background-color: #64748b; color: #ffffff;" title="Peringkat 2">2</span>`;
+                    else if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-black shadow-sm" style="background-color: #b45309; color: #ffffff;" title="Peringkat 3">3</span>`;
 
                     const initial = (u.username ? u.username.charAt(0) : 'U').toUpperCase();
 

@@ -1547,11 +1547,13 @@ class AdminController extends Controller implements HasMiddleware
             $chartCovers    = array_values(array_column($monthlyMap, 'cover'));
             $chartRingkasan = array_values(array_column($monthlyMap, 'ringkasan'));
 
-            // Buku-buku yang dikontribusikan oleh user ini (terbaru, limit 50)
+            // Buku-buku yang dikontribusikan oleh user ini (HANYA yang sudah memiliki cover atau ringkasan, limit 50)
             $recentBooks = DB::table('tblbuku')
                 ->leftJoin('galeri_buku', function($join) {
                     $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
-                         ->where('galeri_buku.is_cover', '=', 1);
+                         ->where('galeri_buku.is_cover', '=', 1)
+                         ->whereNotNull('galeri_buku.image_path')
+                         ->where('galeri_buku.image_path', '!=', '');
                 })
                 ->where(function($q) use ($myIdUser, $myUsername, $myNamaLengkap) {
                     $q->where('tblbuku.iduser', $myIdUser)
@@ -1560,13 +1562,29 @@ class AdminController extends Controller implements HasMiddleware
                         $q->orWhere('tblbuku.userinput', $myNamaLengkap);
                     }
                 })
+                ->where(function($q) {
+                    $q->where(function($qCover) {
+                        $qCover->whereNotNull('galeri_buku.image_path')
+                               ->where('galeri_buku.image_path', '!=', '');
+                    })->orWhere(function($qRingkasan) {
+                        $qRingkasan->whereNotNull('tblbuku.ringkasanbuku')
+                                   ->where('tblbuku.ringkasanbuku', '!=', '');
+                    });
+                })
                 ->select(
                     'tblbuku.idmaster',
                     'tblbuku.judul_buku',
                     'tblbuku.nopanggil',
                     'tblbuku.ringkasanbuku',
                     DB::raw('COALESCE(tblbuku.tgledit, tblbuku.tglinput) as tgl_aktivitas'),
-                    'galeri_buku.image_path as cover_image'
+                    DB::raw('MAX(galeri_buku.image_path) as cover_image')
+                )
+                ->groupBy(
+                    'tblbuku.idmaster',
+                    'tblbuku.judul_buku',
+                    'tblbuku.nopanggil',
+                    'tblbuku.ringkasanbuku',
+                    DB::raw('COALESCE(tblbuku.tgledit, tblbuku.tglinput)')
                 )
                 ->orderByDesc(DB::raw('COALESCE(tblbuku.tgledit, tblbuku.tglinput)'))
                 ->limit(50)
