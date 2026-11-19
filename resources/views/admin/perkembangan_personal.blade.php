@@ -266,11 +266,14 @@
                                 </td>
                                 <td class="py-3 text-center">
                                     <div class="inline-flex items-center gap-1.5">
-                                        <a href="{{ route('admin.books.edit', $b->idmaster) }}" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition" title="Edit Cover Buku">
+                                        <a href="{{ route('admin.tambah-cover', ['search' => $b->idmaster]) }}" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition" title="Kelola Cover Buku">
                                             <i class="ph ph-image text-sm"></i>
                                         </a>
-                                        <a href="{{ route('admin.books.edit-ringkasan', $b->idmaster) }}" class="p-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition" title="Edit Ringkasan Buku">
+                                        <a href="{{ route('admin.tambah-ringkasan', ['search' => $b->idmaster]) }}" class="p-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition" title="Kelola Ringkasan Buku">
                                             <i class="ph ph-text-align-left text-sm"></i>
+                                        </a>
+                                        <a href="{{ route('admin.books.edit', $b->idmaster) }}" class="p-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition" title="Edit Detail Buku">
+                                            <i class="ph ph-pencil-simple text-sm"></i>
                                         </a>
                                     </div>
                                 </td>
