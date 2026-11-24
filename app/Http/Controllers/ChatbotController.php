@@ -28,13 +28,17 @@ class ChatbotController extends Controller
         $normalizedMessage = strtolower(trim($userMessage));
         $messageHash = hash('sha256', $normalizedMessage);
 
-        // 1. Optimasi 1: Cek Cache di Database
-        $cache = ChatCache::where('pertanyaan_hash', $messageHash)->first();
-        if ($cache) {
-            return response()->json([
-                'jawaban' => $cache->jawaban,
-                'source' => 'cache'
-            ]);
+        // 1. Optimasi 1: Cek Cache di Database (aman jika tabel chat_caches belum dibuat)
+        try {
+            $cache = ChatCache::where('pertanyaan_hash', $messageHash)->first();
+            if ($cache) {
+                return response()->json([
+                    'jawaban' => $cache->jawaban,
+                    'source' => 'cache'
+                ]);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Chatbot cache read warning: ' . $e->getMessage());
         }
 
         // 2. Ambil data referensi perpustakaan
@@ -44,10 +48,10 @@ class ChatbotController extends Controller
             $referenceData = file_get_contents($path);
         }
 
-        // 3. Cek API Key Groq
-        $apiKey = env('GROQ_API_KEY');
+        // 3. Cek API Key Groq (cek dari config/services.php terlebih dahulu agar aman saat config:cache)
+        $apiKey = config('services.groq.key') ?: env('GROQ_API_KEY');
         if (empty($apiKey)) {
-            Log::error('Chatbot ERR_KEY: GROQ_API_KEY kosong atau tidak diset di .env');
+            Log::error('Chatbot ERR_KEY: GROQ_API_KEY kosong atau tidak terdaftar di config/services.php maupun .env');
             return response()->json([
                 'jawaban' => __("Maaf, saat ini sistem chatbot sedang dalam gangguan."),
                 'debug_code' => 'ERR_KEY'
@@ -140,12 +144,16 @@ class ChatbotController extends Controller
                 ], 500);
             }
 
-            // 6. Simpan Hasil ke Database Cache (hanya jika jawaban valid)
-            ChatCache::create([
-                'pertanyaan_hash' => $messageHash,
-                'pertanyaan' => $normalizedMessage,
-                'jawaban' => $aiResponse
-            ]);
+            // 6. Simpan Hasil ke Database Cache (hanya jika jawaban valid & database tersedia)
+            try {
+                ChatCache::create([
+                    'pertanyaan_hash' => $messageHash,
+                    'pertanyaan' => $normalizedMessage,
+                    'jawaban' => $aiResponse
+                ]);
+            } catch (\Throwable $e) {
+                Log::warning('Chatbot cache write warning: ' . $e->getMessage());
+            }
 
             return response()->json([
                 'jawaban' => $aiResponse,

@@ -22,8 +22,16 @@ return Application::configure(basePath: dirname(__DIR__))
                      \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO,
         );
 
+        $middleware->validateCsrfTokens(except: [
+            'api/chat',
+        ]);
+
         $middleware->web(append: [
             \App\Http\Middleware\Localization::class,
+        ]);
+
+        $middleware->alias([
+            'pustakawan' => \App\Http\Middleware\EnsurePustakawan::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

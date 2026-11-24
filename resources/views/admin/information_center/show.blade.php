@@ -123,7 +123,7 @@
                         </div>
                     @else
                         <div class="prose prose-slate max-w-none text-sm">
-                            {!! $informationCenter->content !!}
+                            {!! preg_replace('/\s*on\w+\s*=\s*(["\']).*?\1/i', '', strip_tags($informationCenter->content, '<p><br><b><strong><i><em><u><ul><ol><li><h1><h2><h3><h4><blockquote><span><table><thead><tbody><tr><th><td><a>')) !!}
                         </div>
                     @endif
                 @else

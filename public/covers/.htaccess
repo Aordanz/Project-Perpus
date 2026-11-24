@@ -1,0 +1,12 @@
+# Block direct execution of script files in upload directory
+<FilesMatch "(?i)\.(php|phtml|phar|pl|py|jsp|asp|htm|html|shtml|sh|cgi)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Deny,Allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+Options -Indexes -ExecCGI

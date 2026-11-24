@@ -490,7 +490,7 @@
             addMessage('<div class="flex items-center gap-1"><div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div><div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div></div>', 'bot', loadingId);
 
             try {
-                const response = await fetch('/api/chat', {
+                const response = await fetch('{{ route('chat.api') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
