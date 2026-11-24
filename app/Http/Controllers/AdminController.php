@@ -456,7 +456,8 @@ class AdminController extends Controller implements HasMiddleware
             // Handle optional PDF/E-book upload
             if ($request->hasFile('pdf_file')) {
                 $pdf = $request->file('pdf_file');
-                $pdfName = time() . '_' . preg_replace('/\s+/', '_', $pdf->getClientOriginalName());
+                $safeBaseName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', pathinfo($pdf->getClientOriginalName(), PATHINFO_FILENAME));
+                $pdfName = time() . '_' . \Illuminate\Support\Str::random(8) . '_' . substr($safeBaseName, 0, 50) . '.pdf';
                 $pdf->move(public_path('ebooks'), $pdfName);
                 $bookData['pdf_file'] = $pdfName;
             }
@@ -736,7 +737,8 @@ class AdminController extends Controller implements HasMiddleware
                     @unlink(public_path('ebooks/' . $book->pdf_file));
                 }
                 $pdf = $request->file('pdf_file');
-                $pdfName  = time() . '_' . preg_replace('/\s+/', '_', $pdf->getClientOriginalName());
+                $safeBaseName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', pathinfo($pdf->getClientOriginalName(), PATHINFO_FILENAME));
+                $pdfName  = time() . '_' . \Illuminate\Support\Str::random(8) . '_' . substr($safeBaseName, 0, 50) . '.pdf';
                 $pdf->move(public_path('ebooks'), $pdfName);
                 $bookData['pdf_file'] = $pdfName;
             }
@@ -866,8 +868,18 @@ class AdminController extends Controller implements HasMiddleware
         ]);
 
         try {
+            $rawRingkasan = $request->ringkasanbuku;
+            $cleanRingkasan = null;
+            if ($rawRingkasan !== null && $rawRingkasan !== '') {
+                // Strip dangerous script/iframe/style/embed tags while preserving safe rich text formatting
+                $cleanRingkasan = strip_tags($rawRingkasan, '<p><br><b><strong><i><em><u><ul><ol><li><h1><h2><h3><h4><blockquote><span><table><thead><tbody><tr><th><td><a>');
+                // Strip inline javascript and on* event handlers
+                $cleanRingkasan = preg_replace('/\s*on\w+\s*=\s*(["\']).*?\1/i', '', $cleanRingkasan);
+                $cleanRingkasan = preg_replace('/javascript:/i', '', $cleanRingkasan);
+            }
+
             $updateData = [
-                'ringkasanbuku' => $request->ringkasanbuku,
+                'ringkasanbuku' => $cleanRingkasan,
                 'tgledit'       => now(),
             ];
             if (auth()->check()) {

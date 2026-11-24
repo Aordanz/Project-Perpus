@@ -400,7 +400,7 @@
                     <div id="pane-ringkasan" class="tab-pane hidden">
                         @if($book->ringkasanbuku)
                             <div class="prose prose-sm prose-slate max-w-none p-4 sm:p-6 bg-slate-50/50 rounded-2xl border border-slate-100 text-slate-700 leading-relaxed text-left">
-                                {!! $book->ringkasanbuku !!}
+                                {!! preg_replace('/\s*on\w+\s*=\s*(["\']).*?\1/i', '', strip_tags($book->ringkasanbuku, '<p><br><b><strong><i><em><u><ul><ol><li><h1><h2><h3><h4><blockquote><span><table><thead><tbody><tr><th><td><a>')) !!}
                             </div>
                         @else
                             <div class="flex flex-col items-center justify-center p-8 sm:p-12 bg-slate-50/50 rounded-2xl border border-slate-100 border-dashed text-slate-400">

@@ -24,25 +24,6 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post')->middleware('throttle:5,1');
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-Route::get('/admin/tambah-cover', [AdminController::class, 'tambahCoverIndex'])->name('admin.tambah-cover');
-Route::get('/admin/tambah-ringkasan', [AdminController::class, 'tambahRingkasanIndex'])->name('admin.tambah-ringkasan');
-Route::post('/admin/books', [AdminController::class, 'store'])->name('admin.books.store');
-Route::get('/admin/books/{id}/edit', [AdminController::class, 'edit'])->name('admin.books.edit');
-Route::put('/admin/books/{id}', [AdminController::class, 'update'])->name('admin.books.update');
-
-Route::put('/admin/books/{id}/ringkasan', [AdminController::class, 'updateRingkasan'])->name('admin.books.update-ringkasan');
-Route::delete('/admin/books/{id}', [AdminController::class, 'destroy'])->name('admin.books.destroy');
-Route::delete('/admin/books/images/{id}', [AdminController::class, 'deleteImage'])->name('admin.books.delete-image');
-
-Route::post('admin/information-center/bulk-republish-history', [\App\Http\Controllers\Admin\InformationCenterController::class, 'bulkRepublishHistory'])->name('admin.information-center.bulk-republish-history');
-Route::post('admin/information-center/bulk-delete-history', [\App\Http\Controllers\Admin\InformationCenterController::class, 'bulkDeleteHistory'])->name('admin.information-center.bulk-delete-history');
-Route::post('admin/information-center/{id}/archive', [\App\Http\Controllers\Admin\InformationCenterController::class, 'archive'])->name('admin.information-center.archive');
-Route::post('admin/information-center/{id}/republish', [\App\Http\Controllers\Admin\InformationCenterController::class, 'republish'])->name('admin.information-center.republish');
-
-Route::resource('admin/information-center', \App\Http\Controllers\Admin\InformationCenterController::class)->names('admin.information-center');
-
-
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'id'])) {
         session()->put('locale', $locale);
@@ -51,23 +32,49 @@ Route::get('/lang/{locale}', function ($locale) {
 });
 
 // AI Chatbot Route with Rate Limiting (10 requests per minute)
-Route::post('/api/chat', [ChatbotController::class, 'handleChat'])->middleware('throttle:10,1')->name('chat.api');
+Route::match(['get', 'post'], '/api/chat', [ChatbotController::class, 'handleChat'])->middleware('throttle:10,1')->name('chat.api');
 
-// Admin: Kelola Data Referensi AI Chatbot
-// Admin: Tambah User, Hapus User & Perkembangan (hanya idgroup=3)
-Route::get('/admin/tambah-user', [AdminController::class, 'tambahUserIndex'])->name('admin.tambah-user');
-Route::post('/admin/tambah-user', [AdminController::class, 'tambahUserStore'])->name('admin.tambah-user.store');
-Route::delete('/admin/tambah-user/{id}', [AdminController::class, 'tambahUserDestroy'])->name('admin.tambah-user.destroy');
-Route::get('/admin/perkembangan', [AdminController::class, 'perkembangan'])->name('admin.perkembangan');
+// Active Event API Route
+Route::get('/api/events/active', [EventController::class, 'getActiveEvent'])->name('events.active');
 
-// Admin: Ganti Password (semua user pustakawan)
-Route::get('/admin/ganti-password', [AdminController::class, 'gantiPasswordIndex'])->name('admin.ganti-password');
-Route::post('/admin/ganti-password', [AdminController::class, 'gantiPasswordUpdate'])->name('admin.ganti-password.update');
+// =========================================================================
+// ADMIN & PUSTAKAWAN PROTECTED ROUTES (Strict Auth & Role Check)
+// =========================================================================
+Route::middleware(['pustakawan'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/tambah-cover', [AdminController::class, 'tambahCoverIndex'])->name('admin.tambah-cover');
+    Route::get('/admin/tambah-ringkasan', [AdminController::class, 'tambahRingkasanIndex'])->name('admin.tambah-ringkasan');
+    Route::post('/admin/books', [AdminController::class, 'store'])->name('admin.books.store');
+    Route::get('/admin/books/{id}/edit', [AdminController::class, 'edit'])->name('admin.books.edit');
+    Route::put('/admin/books/{id}', [AdminController::class, 'update'])->name('admin.books.update');
 
-Route::get('/admin/chatbot-data', [AdminController::class, 'chatbotData'])->name('admin.chatbot-data');
-Route::post('/admin/chatbot-data', [AdminController::class, 'chatbotDataUpdate'])->name('admin.chatbot-data.update');
-Route::post('/admin/chatbot-data/clear-cache', [AdminController::class, 'chatbotCacheClear'])->name('admin.chatbot-cache.clear');
-Route::post('/admin/chatbot-data/toggle-status', [AdminController::class, 'chatbotToggleStatus'])->name('admin.chatbot-status.toggle');
+    Route::put('/admin/books/{id}/ringkasan', [AdminController::class, 'updateRingkasan'])->name('admin.books.update-ringkasan');
+    Route::delete('/admin/books/{id}', [AdminController::class, 'destroy'])->name('admin.books.destroy');
+    Route::delete('/admin/books/images/{id}', [AdminController::class, 'deleteImage'])->name('admin.books.delete-image');
+
+    // Information Center Admin Routes
+    Route::post('admin/information-center/bulk-republish-history', [\App\Http\Controllers\Admin\InformationCenterController::class, 'bulkRepublishHistory'])->name('admin.information-center.bulk-republish-history');
+    Route::post('admin/information-center/bulk-delete-history', [\App\Http\Controllers\Admin\InformationCenterController::class, 'bulkDeleteHistory'])->name('admin.information-center.bulk-delete-history');
+    Route::post('admin/information-center/{id}/archive', [\App\Http\Controllers\Admin\InformationCenterController::class, 'archive'])->name('admin.information-center.archive');
+    Route::post('admin/information-center/{id}/republish', [\App\Http\Controllers\Admin\InformationCenterController::class, 'republish'])->name('admin.information-center.republish');
+    Route::resource('admin/information-center', \App\Http\Controllers\Admin\InformationCenterController::class)->names('admin.information-center');
+
+    // Admin: Kelola Data Referensi AI Chatbot
+    // Admin: Tambah User, Hapus User & Perkembangan (hanya idgroup=3)
+    Route::get('/admin/tambah-user', [AdminController::class, 'tambahUserIndex'])->name('admin.tambah-user');
+    Route::post('/admin/tambah-user', [AdminController::class, 'tambahUserStore'])->name('admin.tambah-user.store');
+    Route::delete('/admin/tambah-user/{id}', [AdminController::class, 'tambahUserDestroy'])->name('admin.tambah-user.destroy');
+    Route::get('/admin/perkembangan', [AdminController::class, 'perkembangan'])->name('admin.perkembangan');
+
+    // Admin: Ganti Password (semua user pustakawan)
+    Route::get('/admin/ganti-password', [AdminController::class, 'gantiPasswordIndex'])->name('admin.ganti-password');
+    Route::post('/admin/ganti-password', [AdminController::class, 'gantiPasswordUpdate'])->name('admin.ganti-password.update');
+
+    Route::get('/admin/chatbot-data', [AdminController::class, 'chatbotData'])->name('admin.chatbot-data');
+    Route::post('/admin/chatbot-data', [AdminController::class, 'chatbotDataUpdate'])->name('admin.chatbot-data.update');
+    Route::post('/admin/chatbot-data/clear-cache', [AdminController::class, 'chatbotCacheClear'])->name('admin.chatbot-cache.clear');
+    Route::post('/admin/chatbot-data/toggle-status', [AdminController::class, 'chatbotToggleStatus'])->name('admin.chatbot-status.toggle');
+});
 
 // Active Event API Route
 Route::get('/api/events/active', [EventController::class, 'getActiveEvent'])->name('events.active');

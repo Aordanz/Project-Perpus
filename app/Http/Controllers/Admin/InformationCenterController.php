@@ -12,8 +12,26 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
-class InformationCenterController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class InformationCenterController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            function ($request, $next) {
+                if (!auth()->check()) {
+                    return redirect()->route('login');
+                }
+                if (auth()->user()->role !== 'pustakawan') {
+                    abort(403, 'Akses ditolak. Halaman ini khusus pustakawan.');
+                }
+                return $next($request);
+            },
+        ];
+    }
+
     public function index(Request $request)
     {
         $tab = $request->query('tab', 'active');
