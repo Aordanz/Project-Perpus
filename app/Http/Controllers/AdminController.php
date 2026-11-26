@@ -1698,10 +1698,32 @@ class AdminController extends Controller implements HasMiddleware
         $chartCovers    = $statsForChart->pluck('jumlah_cover')->values()->toArray();
         $chartRingkasan = $statsForChart->pluck('jumlah_ringkasan')->values()->toArray();
 
-        // ---- Data Bulanan untuk PDF ----
+        // ---- Data Bulanan (khusus akun dengan role = 'pustakawan') ----
+        $pustakawanById = [];
+        $pustakawanByKey = [];
+        foreach ($semuaUser as $u) {
+            $pustakawanById[$u->iduser] = $u;
+            if (!empty($u->username)) {
+                $pustakawanByKey[strtolower(trim($u->username))] = $u;
+            }
+            if (!empty($u->nama_lengkap)) {
+                $pustakawanByKey[strtolower(trim($u->nama_lengkap))] = $u;
+            }
+        }
+
+        $resolvePustakawan = function ($iduser, $userinput) use ($pustakawanById, $pustakawanByKey) {
+            if ($iduser && isset($pustakawanById[$iduser])) {
+                return $pustakawanById[$iduser];
+            }
+            $key = strtolower(trim((string) $userinput));
+            if ($key !== '' && isset($pustakawanByKey[$key])) {
+                return $pustakawanByKey[$key];
+            }
+            return null;
+        };
+
         // Ringkasan per bulan per user
         $ringkasanBulanan = DB::table('tblbuku')
-            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
             ->whereNotNull('tblbuku.ringkasanbuku')
             ->where('tblbuku.ringkasanbuku', '!=', '')
             ->whereNotNull('tblbuku.userinput')
@@ -1710,17 +1732,15 @@ class AdminController extends Controller implements HasMiddleware
             ->select(
                 DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as tahun'),
                 DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as bulan'),
+                'tblbuku.iduser',
                 DB::raw('tblbuku.userinput as username'),
-                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
-                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
                 DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
             )
             ->groupBy(
                 DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'),
                 DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'),
-                'tblbuku.userinput',
-                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
-                DB::raw('COALESCE(tbluser.keterangan, \'\')')
+                'tblbuku.iduser',
+                'tblbuku.userinput'
             )
             ->orderBy('tahun', 'desc')
             ->orderBy('bulan', 'desc')
@@ -1728,7 +1748,6 @@ class AdminController extends Controller implements HasMiddleware
 
         // Cover per bulan per user (via galeri_buku.created_at)
         $coverBulanan = DB::table('tblbuku')
-            ->leftJoin('tbluser', 'tblbuku.iduser', '=', 'tbluser.iduser')
             ->join('galeri_buku', function($join) {
                 $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
                      ->where('galeri_buku.is_cover', '=', 1)
@@ -1741,17 +1760,15 @@ class AdminController extends Controller implements HasMiddleware
             ->select(
                 DB::raw('YEAR(galeri_buku.created_at) as tahun'),
                 DB::raw('MONTH(galeri_buku.created_at) as bulan'),
+                'tblbuku.iduser',
                 DB::raw('tblbuku.userinput as username'),
-                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput) as nama_lengkap'),
-                DB::raw('COALESCE(tbluser.keterangan, \'\') as keterangan'),
                 DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_cover')
             )
             ->groupBy(
                 DB::raw('YEAR(galeri_buku.created_at)'),
                 DB::raw('MONTH(galeri_buku.created_at)'),
-                'tblbuku.userinput',
-                DB::raw('COALESCE(tbluser.nama_lengkap, tblbuku.userinput)'),
-                DB::raw('COALESCE(tbluser.keterangan, \'\')')
+                'tblbuku.iduser',
+                'tblbuku.userinput'
             )
             ->orderBy('tahun', 'desc')
             ->orderBy('bulan', 'desc')
@@ -1763,6 +1780,11 @@ class AdminController extends Controller implements HasMiddleware
                         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
         foreach ($ringkasanBulanan as $r) {
+            $matched = $resolvePustakawan($r->iduser, $r->username);
+            if (!$matched) {
+                continue;
+            }
+
             $key = sprintf('%04d-%02d', $r->tahun, $r->bulan);
             if (!isset($monthlyData[$key])) {
                 $monthlyData[$key] = [
@@ -1770,16 +1792,26 @@ class AdminController extends Controller implements HasMiddleware
                     'users' => [],
                 ];
             }
-            $monthlyData[$key]['users'][$r->username] = [
-                'username'        => $r->username,
-                'nama_lengkap'    => $r->nama_lengkap,
-                'keterangan'      => $r->keterangan,
-                'jumlah_ringkasan'=> (int) $r->jumlah_ringkasan,
-                'jumlah_cover'    => 0,
-            ];
+
+            $uname = $matched->username;
+            if (!isset($monthlyData[$key]['users'][$uname])) {
+                $monthlyData[$key]['users'][$uname] = [
+                    'username'        => $uname,
+                    'nama_lengkap'    => $matched->nama_lengkap ?? $uname,
+                    'keterangan'      => $matched->keterangan ?? '',
+                    'jumlah_ringkasan'=> 0,
+                    'jumlah_cover'    => 0,
+                ];
+            }
+            $monthlyData[$key]['users'][$uname]['jumlah_ringkasan'] += (int) $r->jumlah_ringkasan;
         }
 
         foreach ($coverBulanan as $c) {
+            $matched = $resolvePustakawan($c->iduser, $c->username);
+            if (!$matched) {
+                continue;
+            }
+
             $key = sprintf('%04d-%02d', $c->tahun, $c->bulan);
             if (!isset($monthlyData[$key])) {
                 $monthlyData[$key] = [
@@ -1787,20 +1819,18 @@ class AdminController extends Controller implements HasMiddleware
                     'users' => [],
                 ];
             }
-            if (isset($monthlyData[$key]['users'][$c->username])) {
-                $monthlyData[$key]['users'][$c->username]['jumlah_cover'] = (int) $c->jumlah_cover;
-                if (empty($monthlyData[$key]['users'][$c->username]['keterangan']) && !empty($c->keterangan)) {
-                    $monthlyData[$key]['users'][$c->username]['keterangan'] = $c->keterangan;
-                }
-            } else {
-                $monthlyData[$key]['users'][$c->username] = [
-                    'username'        => $c->username,
-                    'nama_lengkap'    => $c->nama_lengkap,
-                    'keterangan'      => $c->keterangan,
+
+            $uname = $matched->username;
+            if (!isset($monthlyData[$key]['users'][$uname])) {
+                $monthlyData[$key]['users'][$uname] = [
+                    'username'        => $uname,
+                    'nama_lengkap'    => $matched->nama_lengkap ?? $uname,
+                    'keterangan'      => $matched->keterangan ?? '',
                     'jumlah_ringkasan'=> 0,
-                    'jumlah_cover'    => (int) $c->jumlah_cover,
+                    'jumlah_cover'    => 0,
                 ];
             }
+            $monthlyData[$key]['users'][$uname]['jumlah_cover'] += (int) $c->jumlah_cover;
         }
 
         // Urutkan data user per bulan berdasarkan total kontribusi DESC
