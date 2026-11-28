@@ -1458,7 +1458,7 @@ class AdminController extends Controller implements HasMiddleware
             $myNamaLengkap = $currentUser->nama_lengkap;
             $myIdUser      = $currentUser->iduser;
 
-            // Total Cover pribadi
+            // Total Cover pribadi (hitung buku unik berdasarkan idmaster agar sinkron dengan grafik & supervisor)
             $myTotalCover = DB::table('tblbuku')
                 ->join('galeri_buku', function($join) {
                     $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
@@ -1473,9 +1473,10 @@ class AdminController extends Controller implements HasMiddleware
                         $q->orWhere('tblbuku.userinput', $myNamaLengkap);
                     }
                 })
-                ->count();
+                ->distinct('tblbuku.idmaster')
+                ->count('tblbuku.idmaster');
 
-            // Total Ringkasan pribadi
+            // Total Ringkasan pribadi (hitung buku unik berdasarkan idmaster)
             $myTotalRingkasan = DB::table('tblbuku')
                 ->whereNotNull('tblbuku.ringkasanbuku')
                 ->where('tblbuku.ringkasanbuku', '!=', '')
@@ -1486,7 +1487,8 @@ class AdminController extends Controller implements HasMiddleware
                         $q->orWhere('tblbuku.userinput', $myNamaLengkap);
                     }
                 })
-                ->count();
+                ->distinct('tblbuku.idmaster')
+                ->count('tblbuku.idmaster');
 
             // Riwayat Bulanan Pribadi
             $namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -1528,7 +1530,7 @@ class AdminController extends Controller implements HasMiddleware
                 ->select(
                     DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as tahun'),
                     DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as bulan'),
-                    DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
+                    DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_ringkasan')
                 )
                 ->groupBy(DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'), DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'))
                 ->get();
@@ -1625,7 +1627,48 @@ class AdminController extends Controller implements HasMiddleware
             ->orderBy('username')
             ->get();
 
-        // ---- Statistik Cover per User (berdasarkan username di tblbuku) ----
+        // ---- Peta lookup khusus akun dengan role = 'pustakawan' ----
+        $pustakawanById = [];
+        $pustakawanByKey = [];
+        $mergedMapById = [];
+        foreach ($semuaUser as $u) {
+            $pustakawanById[$u->iduser] = $u;
+            if (!empty($u->username)) {
+                $pustakawanByKey[strtolower(trim($u->username))] = $u;
+            }
+            if (!empty($u->nama_lengkap)) {
+                $pustakawanByKey[strtolower(trim($u->nama_lengkap))] = $u;
+            }
+            $mergedMapById[$u->iduser] = [
+                'iduser'           => $u->iduser,
+                'username'         => $u->username,
+                'nama_lengkap'     => $u->nama_lengkap,
+                'keterangan'       => $u->keterangan,
+                'jumlah_cover'     => 0,
+                'jumlah_ringkasan' => 0,
+            ];
+        }
+
+        $resolvePustakawan = function ($iduser, $userinput) use ($pustakawanById, $pustakawanByKey) {
+            if ($iduser && isset($pustakawanById[$iduser])) {
+                return $pustakawanById[$iduser];
+            }
+            $key = strtolower(trim((string) $userinput));
+            if ($key !== '' && isset($pustakawanByKey[$key])) {
+                return $pustakawanByKey[$key];
+            }
+            return null;
+        };
+
+        $hasUserAttribution = function ($q) {
+            $q->where(function ($sub) {
+                $sub->whereNotNull('tblbuku.iduser')->where('tblbuku.iduser', '>', 0);
+            })->orWhere(function ($sub) {
+                $sub->whereNotNull('tblbuku.userinput')->where('tblbuku.userinput', '!=', '');
+            });
+        };
+
+        // ---- Statistik Cover per User (sinkron dengan personal: iduser / username / nama_lengkap, DISTINCT idmaster) ----
         $coverStats = DB::table('tblbuku')
             ->join('galeri_buku', function($join) {
                 $join->on('galeri_buku.book_id', '=', 'tblbuku.idmaster')
@@ -1633,57 +1676,43 @@ class AdminController extends Controller implements HasMiddleware
                      ->whereNotNull('galeri_buku.image_path')
                      ->where('galeri_buku.image_path', '!=', '');
             })
-            ->whereNotNull('tblbuku.userinput')
-            ->where('tblbuku.userinput', '!=', '')
+            ->where($hasUserAttribution)
             ->select(
+                'tblbuku.iduser',
                 DB::raw('tblbuku.userinput as username'),
                 DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_cover')
             )
-            ->groupBy('tblbuku.userinput')
-            ->get()
-            ->keyBy('username');
+            ->groupBy('tblbuku.iduser', 'tblbuku.userinput')
+            ->get();
 
-        // ---- Statistik Ringkasan per User ----
+        foreach ($coverStats as $row) {
+            $matched = $resolvePustakawan($row->iduser, $row->username);
+            if ($matched) {
+                $mergedMapById[$matched->iduser]['jumlah_cover'] += (int) $row->jumlah_cover;
+            }
+        }
+
+        // ---- Statistik Ringkasan per User (sinkron dengan personal: iduser / username / nama_lengkap, DISTINCT idmaster) ----
         $ringkasanStats = DB::table('tblbuku')
             ->whereNotNull('tblbuku.ringkasanbuku')
             ->where('tblbuku.ringkasanbuku', '!=', '')
-            ->whereNotNull('tblbuku.userinput')
-            ->where('tblbuku.userinput', '!=', '')
+            ->where($hasUserAttribution)
             ->select(
+                'tblbuku.iduser',
                 DB::raw('tblbuku.userinput as username'),
-                DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
+                DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_ringkasan')
             )
-            ->groupBy('tblbuku.userinput')
-            ->get()
-            ->keyBy('username');
+            ->groupBy('tblbuku.iduser', 'tblbuku.userinput')
+            ->get();
 
-        // ---- Gabungkan: semua user + kontribusi mereka (0 jika belum ada) ----
-        $mergedMap = [];
-
-        foreach ($semuaUser as $u) {
-            $cover = 0;
-            if (isset($coverStats[$u->username])) {
-                $cover += (int) $coverStats[$u->username]->jumlah_cover;
-            } elseif ($u->nama_lengkap && isset($coverStats[$u->nama_lengkap])) {
-                $cover += (int) $coverStats[$u->nama_lengkap]->jumlah_cover;
+        foreach ($ringkasanStats as $row) {
+            $matched = $resolvePustakawan($row->iduser, $row->username);
+            if ($matched) {
+                $mergedMapById[$matched->iduser]['jumlah_ringkasan'] += (int) $row->jumlah_ringkasan;
             }
-
-            $ringkasan = 0;
-            if (isset($ringkasanStats[$u->username])) {
-                $ringkasan += (int) $ringkasanStats[$u->username]->jumlah_ringkasan;
-            } elseif ($u->nama_lengkap && isset($ringkasanStats[$u->nama_lengkap])) {
-                $ringkasan += (int) $ringkasanStats[$u->nama_lengkap]->jumlah_ringkasan;
-            }
-
-            $mergedMap[] = [
-                'iduser'           => $u->iduser,
-                'username'         => $u->username,
-                'nama_lengkap'     => $u->nama_lengkap,
-                'keterangan'       => $u->keterangan,
-                'jumlah_cover'     => $cover,
-                'jumlah_ringkasan' => $ringkasan,
-            ];
         }
+
+        $mergedMap = array_values($mergedMapById);
 
         // Sort by total (cover+ringkasan) descending
         usort($mergedMap, function($a, $b) {
@@ -1699,42 +1728,18 @@ class AdminController extends Controller implements HasMiddleware
         $chartRingkasan = $statsForChart->pluck('jumlah_ringkasan')->values()->toArray();
 
         // ---- Data Bulanan (khusus akun dengan role = 'pustakawan') ----
-        $pustakawanById = [];
-        $pustakawanByKey = [];
-        foreach ($semuaUser as $u) {
-            $pustakawanById[$u->iduser] = $u;
-            if (!empty($u->username)) {
-                $pustakawanByKey[strtolower(trim($u->username))] = $u;
-            }
-            if (!empty($u->nama_lengkap)) {
-                $pustakawanByKey[strtolower(trim($u->nama_lengkap))] = $u;
-            }
-        }
-
-        $resolvePustakawan = function ($iduser, $userinput) use ($pustakawanById, $pustakawanByKey) {
-            if ($iduser && isset($pustakawanById[$iduser])) {
-                return $pustakawanById[$iduser];
-            }
-            $key = strtolower(trim((string) $userinput));
-            if ($key !== '' && isset($pustakawanByKey[$key])) {
-                return $pustakawanByKey[$key];
-            }
-            return null;
-        };
-
         // Ringkasan per bulan per user
         $ringkasanBulanan = DB::table('tblbuku')
             ->whereNotNull('tblbuku.ringkasanbuku')
             ->where('tblbuku.ringkasanbuku', '!=', '')
-            ->whereNotNull('tblbuku.userinput')
-            ->where('tblbuku.userinput', '!=', '')
+            ->where($hasUserAttribution)
             ->whereNotNull(DB::raw('COALESCE(tblbuku.tgledit, tblbuku.tglinput)'))
             ->select(
                 DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as tahun'),
                 DB::raw('MONTH(COALESCE(tblbuku.tgledit, tblbuku.tglinput)) as bulan'),
                 'tblbuku.iduser',
                 DB::raw('tblbuku.userinput as username'),
-                DB::raw('COUNT(tblbuku.idmaster) as jumlah_ringkasan')
+                DB::raw('COUNT(DISTINCT tblbuku.idmaster) as jumlah_ringkasan')
             )
             ->groupBy(
                 DB::raw('YEAR(COALESCE(tblbuku.tgledit, tblbuku.tglinput))'),
@@ -1754,8 +1759,7 @@ class AdminController extends Controller implements HasMiddleware
                      ->whereNotNull('galeri_buku.image_path')
                      ->where('galeri_buku.image_path', '!=', '');
             })
-            ->whereNotNull('tblbuku.userinput')
-            ->where('tblbuku.userinput', '!=', '')
+            ->where($hasUserAttribution)
             ->whereNotNull('galeri_buku.created_at')
             ->select(
                 DB::raw('YEAR(galeri_buku.created_at) as tahun'),
